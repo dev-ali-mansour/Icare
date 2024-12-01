@@ -14,6 +14,8 @@ android {
         applicationId = "eg.edu.cu.csds.icare"
         minSdk = 23
         targetSdk = 34
+        multiDexEnabled = true
+        vectorDrawables.useSupportLibrary = true
         versionCode = 1
         versionName = "1.0"
 
@@ -61,6 +63,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.multidex)
     implementation(platform(libs.koin.bom))
     implementation(libs.bundles.koin)
     implementation(libs.splashScreen)
