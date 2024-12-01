@@ -16,7 +16,7 @@ splashScreen = "1.0.1"
 ktxSerialization = "1.6.3"
 ksp = "2.0.0-1.0.22"
 firebase = "33.6.0"
-
+timber = "5.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -47,6 +47,7 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
 firebase-auth = { module = "com.google.firebase:firebase-auth-ktx" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 [bundles]
 koin = ["koin-annotations", "koin-compiler", "koin-androidx-workmanager", "koin-androidx-compose", "koin-androidx-compose-navigation"]
