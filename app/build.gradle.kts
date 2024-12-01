@@ -65,6 +65,8 @@ dependencies {
     implementation(libs.bundles.koin)
     implementation(libs.splashScreen)
     implementation(libs.kotlinx.serialization.json)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
