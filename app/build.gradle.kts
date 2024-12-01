@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(platform(libs.koin.bom))
     implementation(libs.bundles.koin)
+    implementation(libs.splashScreen)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
