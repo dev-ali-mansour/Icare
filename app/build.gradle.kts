@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId = "eg.edu.cu.csds.icare"
         minSdk = 23
-        targetSdk = 34
+        targetSdk = 35
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
         versionCode = 1
