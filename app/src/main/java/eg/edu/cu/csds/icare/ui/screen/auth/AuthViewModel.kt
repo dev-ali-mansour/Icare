@@ -50,8 +50,6 @@ class AuthViewModel(
         private set
     var emailState = mutableStateOf("")
         private set
-    var alphaNumberState = mutableStateOf("")
-        private set
     var nationalIdState = mutableStateOf("")
         private set
     var phoneState = mutableStateOf("")
