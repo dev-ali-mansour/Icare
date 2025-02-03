@@ -3,3 +3,8 @@
 /workspace.xml
 /compiler.xml
 /codeStyles/
+.name
+# GitHub Copilot persisted chat sessions
+/copilot/chatSessions
+/kotlinc.xml
+/other.xml
