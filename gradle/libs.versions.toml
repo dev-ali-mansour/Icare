@@ -15,7 +15,7 @@ koinKSP = "1.3.1"
 splashScreen = "1.0.1"
 ktxSerialization = "1.6.3"
 ksp = "2.0.0-1.0.22"
-firebase = "33.6.0"
+firebaseBom = "33.8.0"
 timber = "5.0.1"
 
 [libraries]
@@ -43,7 +43,7 @@ koin-androidx-workmanager = { module = "io.insert-koin:koin-androidx-workmanager
 koin-androidx-compose-navigation = { module = "io.insert-koin:koin-androidx-compose-navigation" }
 splashScreen = { module = "androidx.core:core-splashscreen", version.ref = "splashScreen" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "ktxSerialization" }
-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
 firebase-auth = { module = "com.google.firebase:firebase-auth-ktx" }
