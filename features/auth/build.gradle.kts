@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "eg.edu.cu.csds.icare.login"
+    namespace = "eg.edu.cu.csds.icare.auth"
     compileSdk = BuildConfig.COMPILE_SDK_VERSION
 
     defaultConfig {
