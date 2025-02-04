@@ -1,6 +1,8 @@
 [versions]
 agp = "8.8.0"
 kotlin = "2.1.10"
+ksp = "2.1.10-1.0.29"
+appcompat = "1.7.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -8,32 +10,37 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.0"
 constrainLayout = "1.1.0"
+navigationCompose = "2.8.6"
 composeBom = "2025.01.01"
+coilCompose = "2.6.0"
 multidex = "2.0.1"
 koinBom = "4.0.2"
 koinKSP = "1.4.0"
 splashScreen = "1.0.1"
 ktxSerialization = "1.8.0"
-ksp = "2.1.10-1.0.29"
 firebaseBom = "33.8.0"
 timber = "5.0.1"
 
 [libraries]
+appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "appcompat" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
-androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-androidx-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+androidx-ui = { module = "androidx.compose.ui:ui" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+compose-animation = { group = "androidx.compose.animation", name = "animation" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constrainLayout" }
+androidx-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coilCompose" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleRuntimeKtx" }
 multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koinBom" }
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koinKSP" }
@@ -49,9 +56,20 @@ firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
 firebase-auth = { module = "com.google.firebase:firebase-auth-ktx" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
+#Test Libraries
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+
 [bundles]
+appcompat = ["appcompat", "appcompat-resources"]
+compose = ["androidx-activity-compose", "androidx-compose-foundation", "androidx-ui", "androidx-ui-tooling", "androidx-ui-tooling-preview", "androidx-ui-graphics", "compose-runtime", "compose-animation", "androidx-material3", "androidx-constraintlayout", "androidx-navigation"]
 koin = ["koin-annotations", "koin-compiler", "koin-androidx-workmanager", "koin-androidx-compose", "koin-androidx-compose-navigation"]
+coil = ["coil-compose", "coil-gif"]
 firebase = ["firebase-crashlytics", "firebase-messaging", "firebase-auth"]
+lifecycle = ["androidx-lifecycle-runtime-ktx", "androidx-lifecycle-process"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -59,4 +77,5 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 
