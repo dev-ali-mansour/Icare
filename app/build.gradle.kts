@@ -1,4 +1,14 @@
+import build.Build
+import build.BuildConfig
+import build.BuildDimensions
+import build.BuildTypes
+import build.BuildVariables
+import extensions.getLocalProperty
+import flavors.FlavorTypes
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
+import release.ReleaseConfig
+import signing.SigningTypes
+import test.TestBuildConfig
 
 plugins {
     alias(libs.plugins.android.application)
@@ -25,7 +35,7 @@ android {
     }
 
     signingConfigs {
-        create(BuildTypes.RELEASE) {
+        create(SigningTypes.RELEASE) {
             storeFile = file(project.getLocalProperty("release_key.store"))
             storePassword = project.getLocalProperty("release_key.store_password")
             keyAlias = project.getLocalProperty("release_key.alias")
@@ -33,7 +43,7 @@ android {
             enableV1Signing = true
             enableV2Signing = true
         }
-        create(BuildTypes.RELEASE_EXTERNAL_QA) {
+        create(SigningTypes.RELEASE_EXTERNAL_QA) {
             storeFile = file(project.getLocalProperty("qa_key.store"))
             storePassword = project.getLocalProperty("qa_key.store_password")
             keyAlias = project.getLocalProperty("qa_key.alias")
@@ -41,7 +51,7 @@ android {
             enableV1Signing = true
             enableV2Signing = true
         }
-        getByName(BuildTypes.DEBUG) {
+        getByName(SigningTypes.DEBUG) {
             storeFile = File(project.rootProject.rootDir, "debug.keystore")
             storePassword = "android"
             keyAlias = "androiddebugkey"

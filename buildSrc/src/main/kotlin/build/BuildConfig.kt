@@ -1,3 +1,5 @@
+package build
+
 object BuildConfig {
     const val APP_ID="eg.edu.cu.csds.icare"
     const val MIN_SDK_VERSION=23
