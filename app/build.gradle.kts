@@ -61,6 +61,22 @@ android {
             enableUnitTestCoverage = Build.Release.enableUnitTestCoverage
             isDebuggable = Build.Release.isDebuggable
             signingConfig = signingConfigs.getByName(BuildTypes.RELEASE)
+
+            buildConfigField(
+                "String",
+                BuildVariables.BASE_URL,
+                project.getLocalProperty("prod_endpoint")
+            )
+            buildConfigField(
+                "boolean",
+                BuildVariables.CAN_CLEAR_CACHE,
+                project.getLocalProperty("dev.clear_cache")
+            )
+            buildConfigField(
+                "int",
+                BuildVariables.DB_VERSION,
+                project.getLocalProperty("dev.db_version")
+            )
         }
 
         getByName(BuildTypes.DEBUG) {
@@ -70,6 +86,22 @@ android {
             versionNameSuffix = Build.Debug.versionNameSuffix
             applicationIdSuffix = Build.Debug.applicationIdSuffix
             signingConfig = signingConfigs.getByName(BuildTypes.DEBUG)
+
+            buildConfigField(
+                "String",
+                BuildVariables.BASE_URL,
+                project.getLocalProperty("debug_endpoint")
+            )
+            buildConfigField(
+                "boolean",
+                BuildVariables.CAN_CLEAR_CACHE,
+                project.getLocalProperty("dev.clear_cache")
+            )
+            buildConfigField(
+                "int",
+                BuildVariables.DB_VERSION,
+                project.getLocalProperty("dev.db_version")
+            )
         }
 
         create(BuildTypes.RELEASE_EXTERNAL_QA) {
@@ -79,6 +111,22 @@ android {
             versionNameSuffix = Build.ReleaseExternalQA.versionNameSuffix
             applicationIdSuffix = Build.ReleaseExternalQA.applicationIdSuffix
             signingConfig = signingConfigs.getByName(BuildTypes.RELEASE_EXTERNAL_QA)
+
+            buildConfigField(
+                "String",
+                BuildVariables.BASE_URL,
+                project.getLocalProperty("qa_endpoint")
+            )
+            buildConfigField(
+                "boolean",
+                BuildVariables.CAN_CLEAR_CACHE,
+                project.getLocalProperty("debug_endpoint")
+            )
+            buildConfigField(
+                "int",
+                BuildVariables.DB_VERSION,
+                project.getLocalProperty("dev.clear_cache")
+            )
         }
     }
     flavorDimensions.add(BuildDimensions.APP)
