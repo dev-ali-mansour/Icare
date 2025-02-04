@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             IcareTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
+                        name = getString(R.string.app_name),
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
