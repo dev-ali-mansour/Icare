@@ -17,6 +17,8 @@ constrainLayout = "1.1.0"
 navigationCompose = "2.8.6"
 composeBom = "2025.01.01"
 coilCompose = "2.6.0"
+appUpdates = "2.1.0"
+androidxBrowser = "1.8.0"
 multidex = "2.0.1"
 koinBom = "4.0.2"
 koinKSP = "1.4.0"
@@ -57,6 +59,8 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose"
 coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coilCompose" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleRuntimeKtx" }
+app-update = { module = "com.google.android.play:app-update-ktx", version.ref = "appUpdates" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "androidxBrowser" }
 multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koinBom" }
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koinKSP" }
