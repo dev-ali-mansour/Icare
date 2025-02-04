@@ -6,11 +6,10 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
-    namespace = "eg.edu.cu.csds.icare.auth"
+    namespace = "eg.edu.cu.csds.icare.core.ui"
     compileSdk = BuildConfig.COMPILE_SDK_VERSION
 
     defaultConfig {
@@ -39,15 +38,26 @@ android {
     kotlinOptions {
         JavaVersion.VERSION_21
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
 }
 
 dependencies {
-    ksp(libs.koin.compiler)
-    implementation(project(":core:ui"))
+    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    api(libs.timber)
+    api(platform(libs.androidx.compose.bom))
+    api(libs.bundles.compose)
+    api(libs.bundles.coil)
+    api(libs.bundles.appcompat)
+    api(platform(libs.koin.bom))
+    api(libs.bundles.koin)
+    api(platform(libs.firebase.bom))
+    api(libs.firebase.auth)
+    implementation(libs.androidx.browser)
+    implementation(libs.kotlinx.serialization.json)
+
+    testApi(libs.bundles.app.test)
+    androidTestApi(libs.androidx.ui.test.manifest)
+    debugApi(libs.androidx.ui.tooling)
+    debugApi(libs.androidx.ui.test.junit4)
+
     implementation(project(":core:domain"))
 }
