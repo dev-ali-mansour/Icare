@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,28 +9,101 @@ plugins {
 }
 
 android {
-    namespace = "eg.edu.cu.csds.icare"
-    compileSdk = 35
+    namespace = BuildConfig.APP_ID
+    compileSdk = BuildConfig.COMPILE_SDK_VERSION
 
     defaultConfig {
-        applicationId = "eg.edu.cu.csds.icare"
-        minSdk = 23
-        targetSdk = 35
+        applicationId = BuildConfig.APP_ID
+        minSdk = BuildConfig.MIN_SDK_VERSION
+        targetSdk = BuildConfig.TARGET_SDK_VERSION
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = ReleaseConfig.VERSION_CODE
+        versionName = ReleaseConfig.VERSION_NAME
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = TestBuildConfig.TEST_INSTRUMENTATION_RUNNER
+    }
+
+    signingConfigs {
+        create(BuildTypes.RELEASE) {
+            storeFile = file(project.getLocalProperty("release_key.store"))
+            storePassword = project.getLocalProperty("release_key.store_password")
+            keyAlias = project.getLocalProperty("release_key.alias")
+            keyPassword = project.getLocalProperty("release_key.key_password")
+            enableV1Signing = true
+            enableV2Signing = true
+        }
+        create(BuildTypes.RELEASE_EXTERNAL_QA) {
+            storeFile = file(project.getLocalProperty("qa_key.store"))
+            storePassword = project.getLocalProperty("qa_key.store_password")
+            keyAlias = project.getLocalProperty("qa_key.alias")
+            keyPassword = project.getLocalProperty("qa_key.key_password")
+            enableV1Signing = true
+            enableV2Signing = true
+        }
+        getByName(BuildTypes.DEBUG) {
+            storeFile = File(project.rootProject.rootDir, "debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+            enableV1Signing = true
+            enableV2Signing = true
+        }
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = false
+        getByName(BuildTypes.RELEASE) {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            isMinifyEnabled = Build.Release.isMinifyEnabled
+            enableUnitTestCoverage = Build.Release.enableUnitTestCoverage
+            isDebuggable = Build.Release.isDebuggable
+            signingConfig = signingConfigs.getByName(BuildTypes.RELEASE)
+        }
+
+        getByName(BuildTypes.DEBUG) {
+            isMinifyEnabled = Build.Debug.isMinifyEnabled
+            isDebuggable = Build.Debug.isDebuggable
+            enableUnitTestCoverage = Build.Debug.enableUnitTestCoverage
+            versionNameSuffix = Build.Debug.versionNameSuffix
+            applicationIdSuffix = Build.Debug.applicationIdSuffix
+            signingConfig = signingConfigs.getByName(BuildTypes.DEBUG)
+        }
+
+        create(BuildTypes.RELEASE_EXTERNAL_QA) {
+            isMinifyEnabled = Build.ReleaseExternalQA.isMinifyEnabled
+            isDebuggable = Build.ReleaseExternalQA.isDebuggable
+            enableUnitTestCoverage = Build.ReleaseExternalQA.enableUnitTestCoverage
+            versionNameSuffix = Build.ReleaseExternalQA.versionNameSuffix
+            applicationIdSuffix = Build.ReleaseExternalQA.applicationIdSuffix
+            signingConfig = signingConfigs.getByName(BuildTypes.RELEASE_EXTERNAL_QA)
+        }
+    }
+    flavorDimensions.add(BuildDimensions.APP)
+    flavorDimensions.add(BuildDimensions.STORE)
+    productFlavors {
+        create(FlavorTypes.GOOGLE) {
+            dimension = BuildDimensions.STORE
+            applicationIdSuffix = ".$name"
+            versionNameSuffix = "-$name"
+        }
+        create(FlavorTypes.HUAWEI) {
+            dimension = BuildDimensions.STORE
+            applicationIdSuffix = ".$name"
+            versionNameSuffix = "-$name"
+        }
+        create(FlavorTypes.PATIENT) {
+            dimension = BuildDimensions.APP
+            applicationIdSuffix = ".$name"
+            versionNameSuffix = "-$name"
+
+        }
+        create(FlavorTypes.DOCTOR) {
+            dimension = BuildDimensions.APP
+            applicationIdSuffix = ".$name"
+            versionNameSuffix = "-$name"
         }
     }
     compileOptions {
@@ -42,8 +117,12 @@ android {
         compose = true
         buildConfig = true
     }
-    composeCompiler{
-        enableStrongSkippingMode = true
+    composeCompiler {
+        featureFlags.set(
+            setOf(
+                ComposeFeatureFlag.StrongSkipping.disabled()
+            )
+        )
     }
     packaging {
         resources {
