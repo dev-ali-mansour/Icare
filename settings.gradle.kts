@@ -23,4 +23,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Icare"
 include(":app")
+include(":core:domain")
 include(":features:auth")
