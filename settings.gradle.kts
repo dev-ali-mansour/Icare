@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
         google {
@@ -21,4 +23,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Icare"
 include(":app")
- 
+include(":features:auth")
