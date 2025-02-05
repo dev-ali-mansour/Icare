@@ -38,7 +38,7 @@ integrity = "1.4.0"
 jose4j = "0.9.6"
 rootbeer = "0.1.0"
 workManager = "2.10.0"
-ktlint = "11.0.0"
+ktlint = "12.1.2"
 
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }

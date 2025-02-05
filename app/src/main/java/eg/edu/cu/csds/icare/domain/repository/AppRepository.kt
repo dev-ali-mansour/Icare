@@ -5,5 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface AppRepository {
     suspend fun saveOnBoardingState(completed: Boolean)
+
     fun getOnBoardingState(): Flow<Resource<Boolean>>
 }

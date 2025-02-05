@@ -12,5 +12,5 @@ data class User(
     val address: String = "",
     val nationalId: String = "",
     val photoPath: String = "",
-    val permissions: List<Short> = listOf(),
+    val permissions: List<Short> = listOf()
 )

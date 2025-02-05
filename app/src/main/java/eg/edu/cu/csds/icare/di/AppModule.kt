@@ -5,7 +5,8 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import org.koin.dsl.module
 
-val appModule = module {
-    single { Dispatchers.IO }
-    single { Firebase.auth }
-}
+val appModule =
+    module {
+        single { Dispatchers.IO }
+        single { Firebase.auth }
+    }

@@ -10,7 +10,6 @@ class Register(private val repository: AuthRepository) {
         email: String,
         nationalId: String,
         phone: String,
-        password: String,
-    ): Flow<Resource<Nothing?>> =
-        repository.register(name, email, nationalId, phone, password)
+        password: String
+    ): Flow<Resource<Nothing?>> = repository.register(name, email, nationalId, phone, password)
 }

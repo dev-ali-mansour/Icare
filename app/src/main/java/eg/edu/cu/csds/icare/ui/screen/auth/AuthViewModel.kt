@@ -18,14 +18,13 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
-
 class AuthViewModel(
     private val dispatcher: CoroutineDispatcher,
     private val register: Register,
     private val signInWithEmailAndPassword: SignInWithEmailAndPassword,
     private val sendRecoveryMail: SendRecoveryMail,
     private val signOut: SignOut,
-    private val deleteAccount: DeleteAccount,
+    private val deleteAccount: DeleteAccount
 ) : ViewModel() {
     private val _registerResFlow =
         MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())

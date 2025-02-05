@@ -4,15 +4,16 @@ import eg.edu.cu.csds.icare.ui.screen.auth.AuthViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-val viewModelModule = module {
-    viewModel {
-        AuthViewModel(
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-        )
+val viewModelModule =
+    module {
+        viewModel {
+            AuthViewModel(
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get()
+            )
+        }
     }
-}
