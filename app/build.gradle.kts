@@ -6,6 +6,7 @@ import build.BuildVariables
 import extensions.getLocalProperty
 import flavors.FlavorTypes
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 import release.ReleaseConfig
 import signing.SigningTypes
 import test.TestBuildConfig
@@ -16,6 +17,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -33,7 +35,6 @@ android {
 
         testInstrumentationRunner = TestBuildConfig.TEST_INSTRUMENTATION_RUNNER
     }
-
     signingConfigs {
         create(SigningTypes.RELEASE) {
             storeFile = file(project.getLocalProperty("release_key.store"))
@@ -60,7 +61,6 @@ android {
             enableV2Signing = true
         }
     }
-
     buildTypes {
         getByName(BuildTypes.RELEASE) {
             proguardFiles(
@@ -140,23 +140,12 @@ android {
         }
     }
     flavorDimensions.add(BuildDimensions.APP)
-    flavorDimensions.add(BuildDimensions.STORE)
     productFlavors {
-        create(FlavorTypes.GOOGLE) {
-            dimension = BuildDimensions.STORE
-            applicationIdSuffix = ".$name"
-            versionNameSuffix = "-$name"
-        }
-        create(FlavorTypes.HUAWEI) {
-            dimension = BuildDimensions.STORE
-            applicationIdSuffix = ".$name"
-            versionNameSuffix = "-$name"
-        }
+
         create(FlavorTypes.PATIENT) {
             dimension = BuildDimensions.APP
             applicationIdSuffix = ".$name"
             versionNameSuffix = "-$name"
-
         }
         create(FlavorTypes.DOCTOR) {
             dimension = BuildDimensions.APP
@@ -176,11 +165,7 @@ android {
         buildConfig = true
     }
     composeCompiler {
-        featureFlags.set(
-            setOf(
-                ComposeFeatureFlag.StrongSkipping.disabled()
-            )
-        )
+        featureFlags.set(setOf(ComposeFeatureFlag.StrongSkipping.disabled()))
     }
     packaging {
         resources {
@@ -188,7 +173,29 @@ android {
         }
     }
 }
-
+tasks.getByPath("preBuild").dependsOn("ktlintFormat")
+ktlint {
+    android = true
+    ignoreFailures = false
+    outputToConsole = true
+    outputColorName = "RED"
+    verbose = true
+    enableExperimentalRules = true
+    filter {
+        include("**/kotlin/**")
+        exclude("**/generated/**")
+    }
+    /*disabledRules.addAll(
+        "final-newline",
+        "no-wildcard-imports",
+        "max-line-length",
+        "import-ordering",
+    )*/
+    reporters {
+        reporter(ReporterType.JSON)
+        reporter(ReporterType.CHECKSTYLE)
+    }
+}
 dependencies {
 
     implementation(libs.androidx.core.ktx)

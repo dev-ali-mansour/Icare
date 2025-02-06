@@ -28,5 +28,4 @@ sealed class Build {
         override val isDebuggable = false
         override val enableUnitTestCoverage = false
     }
-
 }
