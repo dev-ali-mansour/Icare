@@ -1,6 +1,6 @@
 package eg.edu.cu.csds.icare.core.domain
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /**
