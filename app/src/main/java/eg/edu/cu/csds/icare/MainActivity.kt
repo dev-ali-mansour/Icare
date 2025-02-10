@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
                         name = getString(R.string.app_name),
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
                     )
                 }
             }
@@ -34,24 +34,24 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(
     name: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         Text(
             text = "Hello $name!",
-            modifier = modifier
+            modifier = modifier,
         )
         Text(
             text = "Base URL: ${BuildConfig.BASE_URL}",
-            modifier = modifier
+            modifier = modifier,
         )
         Text(
             text = "DB Version: ${BuildConfig.DB_VERSION}",
-            modifier = modifier
+            modifier = modifier,
         )
         Text(
             text = "Can Clear Cache: ${BuildConfig.CAN_CLEAR_CACHE}",
-            modifier = modifier
+            modifier = modifier,
         )
     }
 }

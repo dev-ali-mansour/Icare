@@ -10,12 +10,12 @@ interface AuthRepository {
         email: String,
         nationalId: String,
         phone: String,
-        password: String
+        password: String,
     ): Flow<Resource<Nothing?>>
 
     fun signInWithEmailAndPassword(
         email: String,
-        password: String
+        password: String,
     ): Flow<Resource<Boolean>>
 
     fun sendRecoveryEmail(email: String): Flow<Resource<Nothing?>>

@@ -24,7 +24,7 @@ class AuthViewModel(
     private val signInWithEmailAndPassword: SignInWithEmailAndPassword,
     private val sendRecoveryMail: SendRecoveryMail,
     private val signOut: SignOut,
-    private val deleteAccount: DeleteAccount
+    private val deleteAccount: DeleteAccount,
 ) : ViewModel() {
     private val _registerResFlow =
         MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
@@ -88,7 +88,7 @@ class AuthViewModel(
                 email = emailState.value,
                 nationalId = nationalIdState.value,
                 phone = phoneState.value,
-                password = passwordState.value
+                password = passwordState.value,
             ).collectLatest {
                 _isLoading.value = it is Resource.Loading
                 _registerResFlow.value = it

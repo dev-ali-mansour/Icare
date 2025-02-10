@@ -65,7 +65,7 @@ android {
         getByName(BuildTypes.RELEASE) {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
             isMinifyEnabled = Build.Release.isMinifyEnabled
             enableUnitTestCoverage = Build.Release.enableUnitTestCoverage
@@ -75,17 +75,17 @@ android {
             buildConfigField(
                 "String",
                 BuildVariables.BASE_URL,
-                project.getLocalProperty("prod_endpoint")
+                project.getLocalProperty("prod_endpoint"),
             )
             buildConfigField(
                 "boolean",
                 BuildVariables.CAN_CLEAR_CACHE,
-                project.getLocalProperty("dev.clear_cache")
+                project.getLocalProperty("dev.clear_cache"),
             )
             buildConfigField(
                 "int",
                 BuildVariables.DB_VERSION,
-                project.getLocalProperty("dev.db_version")
+                project.getLocalProperty("dev.db_version"),
             )
         }
 
@@ -100,17 +100,17 @@ android {
             buildConfigField(
                 "String",
                 BuildVariables.BASE_URL,
-                project.getLocalProperty("debug_endpoint")
+                project.getLocalProperty("debug_endpoint"),
             )
             buildConfigField(
                 "boolean",
                 BuildVariables.CAN_CLEAR_CACHE,
-                project.getLocalProperty("dev.clear_cache")
+                project.getLocalProperty("dev.clear_cache"),
             )
             buildConfigField(
                 "int",
                 BuildVariables.DB_VERSION,
-                project.getLocalProperty("dev.db_version")
+                project.getLocalProperty("dev.db_version"),
             )
         }
 
@@ -125,17 +125,17 @@ android {
             buildConfigField(
                 "String",
                 BuildVariables.BASE_URL,
-                project.getLocalProperty("qa_endpoint")
+                project.getLocalProperty("qa_endpoint"),
             )
             buildConfigField(
                 "boolean",
                 BuildVariables.CAN_CLEAR_CACHE,
-                project.getLocalProperty("debug_endpoint")
+                project.getLocalProperty("debug_endpoint"),
             )
             buildConfigField(
                 "int",
                 BuildVariables.DB_VERSION,
-                project.getLocalProperty("dev.clear_cache")
+                project.getLocalProperty("dev.clear_cache"),
             )
         }
     }

@@ -13,7 +13,7 @@ val viewModelModule =
                 get(),
                 get(),
                 get(),
-                get()
+                get(),
             )
         }
     }

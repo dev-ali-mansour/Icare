@@ -15,7 +15,7 @@ class MyApplication : MultiDexApplication() {
             androidContext(this@MyApplication)
             modules(
                 appModule,
-                viewModelModule
+                viewModelModule,
             )
         }
     }
