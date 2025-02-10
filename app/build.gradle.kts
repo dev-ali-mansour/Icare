@@ -185,12 +185,6 @@ ktlint {
         include("**/kotlin/**")
         exclude("**/generated/**")
     }
-    /*disabledRules.addAll(
-        "final-newline",
-        "no-wildcard-imports",
-        "max-line-length",
-        "import-ordering",
-    )*/
     reporters {
         reporter(ReporterType.JSON)
         reporter(ReporterType.CHECKSTYLE)
