@@ -4,6 +4,7 @@ import build.BuildDimensions
 import build.BuildTypes
 import extensions.getLocalProperty
 import flavors.FlavorTypes
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 import signing.SigningTypes
 import test.TestBuildConfig
 
@@ -13,6 +14,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -99,7 +101,23 @@ android {
         }
     }
 }
-
+tasks.getByPath("preBuild").dependsOn("ktlintFormat")
+ktlint {
+    android = true
+    ignoreFailures = false
+    outputToConsole = true
+    outputColorName = "RED"
+    verbose = true
+    enableExperimentalRules = true
+    filter {
+        include("**/kotlin/**")
+        exclude("**/generated/**")
+    }
+    reporters {
+        reporter(ReporterType.JSON)
+        reporter(ReporterType.CHECKSTYLE)
+    }
+}
 dependencies {
     ksp(libs.koin.compiler)
     implementation(project(":core:ui"))
