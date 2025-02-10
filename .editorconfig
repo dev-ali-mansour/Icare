@@ -18,7 +18,6 @@ ij_wrap_on_typing = false
 
 ktlint_function_naming_ignore_when_annotated_with = Composable
 ktlint_standard_import-ordering = disabled
-ktlint_standard_comment-spacing=disabled
 ktlint_standard_binary-expression-wrapping = disabled
 
 # possible values: number (e.g. 120) (package name, imports & comments are ignored), "off"
