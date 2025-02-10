@@ -10,6 +10,3 @@ max_line_length = 500
 ktlint_function_naming_ignore_when_annotated_with = Composable
 ktlint_standard_import-ordering = disabled
 ktlint_standard_binary-expression-wrapping = disabled
-
-# possible values: number (e.g. 120) (package name, imports & comments are ignored), "off"
-# it's automatically set to 100 on `ktlint --android ...` (per Android Kotlin Style Guide)
