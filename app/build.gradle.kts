@@ -174,13 +174,12 @@ android {
         }
     }
 }
-tasks {
-    getByPath("preBuild").dependsOn("ktlintFormat").dependsOn("detekt")
-}
+
 detekt {
     source.setFrom("src/main/java", "src/main/kotlin")
     ignoredBuildTypes = listOf("release")
 }
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -205,4 +204,17 @@ dependencies {
 
     implementation(project(":core:domain"))
     implementation(project(":core:ui"))
+}
+
+tasks {
+    getByPath("preBuild").dependsOn("ktlintFormat").dependsOn("detekt")
+
+    getByName<Delete>("clean") {
+        delete.addAll(
+            listOf(
+                "${rootProject.projectDir}/build/reports/detekt",
+                "${rootProject.projectDir}/detekt/reports",
+            ),
+        )
+    }
 }
