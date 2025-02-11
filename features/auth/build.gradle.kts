@@ -120,6 +120,6 @@ ktlint {
 }
 dependencies {
     ksp(libs.koin.compiler)
-    implementation(project(":core:ui"))
     implementation(project(":core:domain"))
+    implementation(project(":core:ui"))
 }
