@@ -81,7 +81,7 @@ class AuthViewModel(
         viewModelScope.launch(dispatcher) {
             if (_registerResFlow.value !is Resource.Unspecified) {
                 _registerResFlow.value = Resource.Unspecified()
-                delay(100)
+                delay(timeMillis = 100)
             }
             register(
                 name = nameState.value,
@@ -100,7 +100,7 @@ class AuthViewModel(
         viewModelScope.launch(dispatcher) {
             if (_loginResFlow.value !is Resource.Unspecified) {
                 _loginResFlow.value = Resource.Unspecified()
-                delay(100)
+                delay(timeMillis = 100)
             }
             signInWithEmailAndPassword(emailState.value, passwordState.value).collectLatest {
                 _isLoading.value = it is Resource.Loading
@@ -113,7 +113,7 @@ class AuthViewModel(
         viewModelScope.launch(dispatcher) {
             if (_recoveryResFlow.value !is Resource.Unspecified) {
                 _recoveryResFlow.value = Resource.Unspecified()
-                delay(100)
+                delay(timeMillis = 100)
             }
             sendRecoveryMail(emailState.value).collect {
                 _isLoading.value = it is Resource.Loading
@@ -126,7 +126,7 @@ class AuthViewModel(
         viewModelScope.launch(dispatcher) {
             if (_logoutResFlow.value !is Resource.Unspecified) {
                 _logoutResFlow.value = Resource.Unspecified()
-                delay(100)
+                delay(timeMillis = 100)
             }
             signOut().distinctUntilChanged().collect {
                 _logoutResFlow.value = it
@@ -138,7 +138,7 @@ class AuthViewModel(
         viewModelScope.launch(dispatcher) {
             if (_deleteAccountResFlow.value !is Resource.Unspecified) {
                 _deleteAccountResFlow.value = Resource.Unspecified()
-                delay(100)
+                delay(timeMillis = 100)
             }
             deleteAccount().distinctUntilChanged().collect {
                 _deleteAccountResFlow.value = it
