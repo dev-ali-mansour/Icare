@@ -39,6 +39,7 @@ jose4j = "0.9.6"
 rootbeer = "0.1.0"
 workManager = "2.10.0"
 ktlint = "12.1.2"
+detekt="1.23.7"
 
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
@@ -127,3 +128,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
