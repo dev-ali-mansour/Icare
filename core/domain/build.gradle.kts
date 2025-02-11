@@ -1,8 +1,8 @@
+
 import build.Build
 import build.BuildConfig
 import build.BuildTypes
 import extensions.getLocalProperty
-import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 import signing.SigningTypes
 import test.TestBuildConfig
 
@@ -79,22 +79,12 @@ android {
         JavaVersion.VERSION_21
     }
 }
-tasks.getByPath("preBuild").dependsOn("ktlintFormat")
-ktlint {
-    android = true
-    ignoreFailures = false
-    outputToConsole = true
-    outputColorName = "RED"
-    verbose = true
-    enableExperimentalRules = true
-    filter {
-        include("**/kotlin/**")
-        exclude("**/generated/**")
-    }
-    reporters {
-        reporter(ReporterType.JSON)
-        reporter(ReporterType.CHECKSTYLE)
-    }
+tasks {
+    getByPath("preBuild").dependsOn("ktlintFormat").dependsOn("detekt")
+}
+detekt {
+    source.setFrom("src/main/java", "src/main/kotlin")
+    ignoredBuildTypes = listOf("release")
 }
 dependencies {
     api(libs.coroutine.core)

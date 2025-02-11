@@ -1,3 +1,4 @@
+
 import build.Build
 import build.BuildConfig
 import build.BuildDimensions
@@ -6,7 +7,6 @@ import build.BuildVariables
 import extensions.getLocalProperty
 import flavors.FlavorTypes
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
-import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 import release.ReleaseConfig
 import signing.SigningTypes
 import test.TestBuildConfig
@@ -174,22 +174,12 @@ android {
         }
     }
 }
-tasks.getByPath("preBuild").dependsOn("ktlintFormat")
-ktlint {
-    android = true
-    ignoreFailures = false
-    outputToConsole = true
-    outputColorName = "RED"
-    verbose = true
-    enableExperimentalRules = true
-    filter {
-        include("**/kotlin/**")
-        exclude("**/generated/**")
-    }
-    reporters {
-        reporter(ReporterType.JSON)
-        reporter(ReporterType.CHECKSTYLE)
-    }
+tasks {
+    getByPath("preBuild").dependsOn("ktlintFormat").dependsOn("detekt")
+}
+detekt {
+    source.setFrom("src/main/java", "src/main/kotlin")
+    ignoredBuildTypes = listOf("release")
 }
 dependencies {
 
@@ -212,12 +202,6 @@ dependencies {
     implementation(libs.timber)
 
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(project(":core:domain"))
     implementation(project(":core:ui"))
