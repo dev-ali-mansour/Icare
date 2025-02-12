@@ -67,6 +67,7 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
+                "proguard-kotlin-serialization.pro",
             )
             isMinifyEnabled = Build.Release.isMinifyEnabled
             enableUnitTestCoverage = Build.Release.enableUnitTestCoverage
