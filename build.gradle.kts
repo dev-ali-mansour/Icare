@@ -77,8 +77,6 @@ subprojects {
                 }
             }
             jvmTarget = JavaVersion.VERSION_21.toString()
-
-//            source.setFrom("src/main/java", "src/main/kotlin")
             parallel = false
             config.from("${rootProject.projectDir}/config/detekt/detekt.yml")
             buildUponDefaultConfig = false
@@ -86,7 +84,6 @@ subprojects {
             disableDefaultRuleSets = false
             debug = true
             ignoreFailures = false
-//            ignoredBuildTypes = listOf("release")
             basePath = projectDir.absolutePath
         }.configureEach {
             finalizedBy(reportMerge)
