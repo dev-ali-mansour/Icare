@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.ui.theme
+package eg.edu.cu.csds.icare.core.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

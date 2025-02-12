@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.ui.theme
+package eg.edu.cu.csds.icare.core.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
