@@ -205,6 +205,7 @@ dependencies {
 
     implementation(project(":core:domain"))
     implementation(project(":core:ui"))
+    implementation(project(":features:auth"))
 }
 
 tasks {
