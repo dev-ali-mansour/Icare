@@ -1,7 +1,7 @@
-package eg.edu.cu.csds.icare.domain.usecase.auth
+package eg.edu.cu.csds.icare.core.domain.usecase.auth
 
-import eg.edu.cu.csds.icare.domain.model.Resource
-import eg.edu.cu.csds.icare.domain.repository.AuthRepository
+import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 
 class Register(

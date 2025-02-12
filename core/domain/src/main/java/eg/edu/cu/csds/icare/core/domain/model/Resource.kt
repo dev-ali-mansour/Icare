@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.domain.model
+package eg.edu.cu.csds.icare.core.domain.model
 
 sealed class Resource<T>(
     val data: T? = null,

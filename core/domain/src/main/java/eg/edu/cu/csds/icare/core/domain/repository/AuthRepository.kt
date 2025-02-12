@@ -1,7 +1,7 @@
-package eg.edu.cu.csds.icare.domain.repository
+package eg.edu.cu.csds.icare.core.domain.repository
 
-import eg.edu.cu.csds.icare.domain.model.Resource
-import eg.edu.cu.csds.icare.domain.model.User
+import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {

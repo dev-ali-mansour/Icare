@@ -1,6 +1,6 @@
-package eg.edu.cu.csds.icare.domain.usecase.onboarding
+package eg.edu.cu.csds.icare.core.domain.usecase.onboarding
 
-import eg.edu.cu.csds.icare.domain.repository.AppRepository
+import eg.edu.cu.csds.icare.core.domain.repository.AppRepository
 
 class SaveOnBoarding(
     private val appRepository: AppRepository,

@@ -1,6 +1,6 @@
-package eg.edu.cu.csds.icare.domain.repository
+package eg.edu.cu.csds.icare.core.domain.repository
 
-import eg.edu.cu.csds.icare.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.model.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface AppRepository {
