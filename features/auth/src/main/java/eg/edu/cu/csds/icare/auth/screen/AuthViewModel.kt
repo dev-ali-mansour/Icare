@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.ui.screen.auth
+package eg.edu.cu.csds.icare.auth.screen
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf

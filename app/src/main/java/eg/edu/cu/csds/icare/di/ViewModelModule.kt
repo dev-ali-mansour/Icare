@@ -1,6 +1,6 @@
 package eg.edu.cu.csds.icare.di
 
-import eg.edu.cu.csds.icare.ui.screen.auth.AuthViewModel
+import eg.edu.cu.csds.icare.auth.screen.AuthViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
