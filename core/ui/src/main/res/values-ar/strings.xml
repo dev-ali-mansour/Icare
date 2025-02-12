@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Multilingual General resources-->
+    <string name="app_share">مشاركة التطبيق</string>
+    <string name="app_rate">تقييم التطبيق</string>
+    <string name="contact_us">الاتصال بنا</string>
+    <string name="report_us">الإبلاغ عن خلل</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="share">مشاركة</string>
+    <string name="our_apps">تطبيقاتنا اﻵخرى</string>
+    <string name="about_us">حول التطبيق</string>
+    <string name="choose_app_lang">اختر لغة التطبيق:</string>
+    <string name="no_email_client">عفواً لا يوجد لديك تطبيق مراسلة بريد إلكتروني.</string>
+    <string name="made_by">صنع بكل فخر بواسطة فريق من طلبة دبلوم علوم الحاسب بكلية الدراسات العليا للبحوث الإحصائية بجامعة القاهرة</string>
+    <string name="app_version">رقم الإصدار: </string>
+    <string name="android_version">"إصدار الأندرويد: "</string>
+    <string name="enter_your_phone">للتواصل بشكل أسرع برجاء إدخال رقم هاتفك هنا:</string>
+    <string name="input_error_details">يرجى إدخال تفاصيل الخطأ هنا:</string>
+    <string name="version">إصدار رقم:</string>
+    <string name="exit_dialog_title">تسجيل الخروج</string>
+    <string name="exit_dialog">هل تود تسجيل الخروج الآن؟</string>
+
+    <!--Multilingual Resources of Application-->
+    <string name="about">ICare هو تطبيق أندرويد لرعاية المرضى وإدارة العيادات الخاصة\n\n
+رسالتنا:\n
+توفير إمدادات عالية الجودة وموثوقة من المعلومات والأدوات التى تمكننا من  تحقيق الحوكمة المطلوبة داخل جميع قطاعات الشركة.\n\n
+رؤيتنا:\n
+مواكبة التطور التكنولوجي للارتقاء بمستوى أداء الخدمات الطبية المقدمة  وصولاً إلى التميز والريادة في السوق المصري.\n\n
+الأهداف:\n
+1-دقة وجودة المعلومات المقدمة لمساعدة متخذي القرار.\n
+    </string>
+    <string name="share_app_text">لقد قمت بتحميل تطبيق ICare للأندرويد ، ووجدته تطبيق مفيد جداً ويحتوي على العديد من المزايا والخدمات التي تساعدني في مجال الرعاية الطبية يمكنك اكتشافها بنفسك. ويمكنك تحميله من الرابط التالي:</string>
+    <string name="egp">جنيه</string>
+    <string name="ok">موافق</string>
+    <string name="cancel">إلغاء</string>
+    <string name="user_collision_error">هذا الحساب مسجل لدينا! يمكنك استخدام خاصية استعادة كلمة المرور.</string>
+    <string name="authorization_error">عفواً! ليس لديك صلاحية لتنفيذ هذه العملية</string>
+    <string name="network_error">فشل في الاتصال بالسيرفر!</string>
+    <string name="invalid_email_error">عفواً لم نعثر على بريدك الإلكتروني في بيانات النظام!</string>
+    <string name="email_verification_error">يرجى تأكيد البريد الإلكتروني الخاص بك أولاً! راجع رسالة التفعيل الجديدة المرسلة على بريدك الإلكتروني الآن</string>
+    <string name="credentials_error">البريد الإلكتروني أو كلمة المرور غير صحيحة!</string>
+    <string name="verification_email_error">فشل في إرسال رسالة تأكيد البريد الإلكتروني.</string>
+    <string name="national_id_error">يرجى إدخال الرقم القومي بشكل صحيح.</string>
+    <string name="proceed">متابعة</string>
+    <string name="undefined">غير محدد</string>
+    <string name="month">شهر</string>
+    <string name="year">سنة</string>
+    <string name="day_from">من يوم</string>
+    <string name="day_to">حتى يوم</string>
+    <string name="loading">جار التحميل</string>
+    <string name="value">القيمة</string>
+    <string name="count">العدد</string>
+    <string name="percentage">النسبة</string>
+    <string name="no_data">لا توجد بيانات!</string>
+    <string name="notes">ملاحظات</string>
+    <string name="employee_identity_error">فشل في التحقق من هويتك! تأكد من استكمال تسجيل بياناتك.</string>
+    <string name="date_range_error">يرجى إدخال تاريخ بداية الفترة وتاريخ النهاية بشكل صحيح!</string>
+    <string name="hide">إخفاء</string>
+    <string name="start_date">تاريخ البداية</string>
+    <string name="end_date">تاريخ النهاية</string>
+    <string name="select_period">حدد الفترة</string>
+    <string name="total">اﻹجمالي</string>
+
+    <string-array name="month_names">
+        <item>يناير</item>
+        <item>فبراير</item>
+        <item>مارس</item>
+        <item>أبريل</item>
+        <item>مايو</item>
+        <item>يونيو</item>
+        <item>يوليو</item>
+        <item>أغسطس</item>
+        <item>سبتمبر</item>
+        <item>أكتوبر</item>
+        <item>نوفمبر</item>
+        <item>ديسمبر</item>
+    </string-array>
+
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_notifications">الإشعارات</string>
+    <string name="nav_profile">حسابي</string>
+    <string name="nav_settings">إعدادات</string>
+</resources>

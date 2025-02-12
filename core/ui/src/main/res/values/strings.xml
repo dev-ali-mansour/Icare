@@ -1,0 +1,115 @@
+<resources>
+    <!--General Resources -->
+    <string name="radio_lang_english" translatable="false">English</string>
+    <string name="radio_lang_arabic" translatable="false">اللغة العربية</string>
+    <string name="toast_setup_lang_english" translatable="false">Please wait while we setup English language.</string>
+    <string name="toast_setup_lang_arabic" translatable="false">برجاء الانتظار لحين إعداد اللغة العربية للتطبيق.</string>
+    <string name="locale_lang" translatable="false">Locale Language</string>
+    <string name="website_url" translatable="false">http://issr.cu.edu.eg/</string>
+    <string name="facebook_url" translatable="false">https://www.facebook.com/@FGSSR.CU</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="support_email" translatable="false">dev.ali.mansour@gmail.com</string>
+    <string name="privacy_policy_url" translatable="false">https://sites.google.com/view/scedc-privacy-policy</string>
+    <string name="app_url" translatable="false">https://play.google.com/store/apps/details?id=</string>
+    <string name="app_market_url" translatable="false">market://details?id=</string>
+    <string name="our_apps_market_url" translatable="false">market://dev?id=6772948665272481116</string>
+    <string name="our_apps_url" translatable="false">https://play.google.com/store/apps/dev?id=6772948665272481116</string>
+    <string name="contact_us_url" translatable="false">https://scedc.gov.eg/ContactUs.aspx</string>
+
+    <!--Resources of Application-->
+    <string name="toggle_drawer" translatable="false">Toggle Drawer</string>
+    <string name="search_widget" translatable="false">Search Widget</string>
+    <string name="search_field" translatable="false">Search Field</string>
+
+    <!--Multilingual General resources-->
+    <string name="app_share">Share Application</string>
+    <string name="app_rate">Rate Application</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="report_us">Error Reporting</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="share">Share</string>
+    <string name="our_apps">Our Apps</string>
+    <string name="about_us">About</string>
+    <string name="choose_app_lang">Choose application language:</string>
+    <string name="no_email_client">Sorry There is no Email client.</string>
+    <string name="made_by">Made with pleasure by the development team of Issuance services, PrePaid, and Smart Meters department</string>
+    <string name="app_version">Version No: </string>
+    <string name="android_version">"Android : "</string>
+    <string name="enter_your_phone">Please enter your phone here:"</string>
+    <string name="input_error_details">Please enter error details here:</string>
+    <string name="version">"Version No:"</string>
+    <string name="exit_dialog_title">Exit</string>
+    <string name="exit_dialog">Are you sure you want to exit the application?</string>
+    <!--Multilingual Resources of Application-->
+    <string name="app_name" translatable="false">ICare</string>
+    <string name="about">
+ICare is an Android app for patient care and private practice management\n\n
+Our Mission
+To provide a high quality and reliable supply of information and tools that enable us to achieve the required governance within all sectors of the organisation.
+Our Vision
+Keeping pace with technological development to improve the level of performance of medical services provided to reach excellence and leadership in the Egyptian market.
+Objectives:\n
+1- Accuracy and quality of information provided to help decision makers.
+    </string>
+    <string name="share_app_text">I used [Hawkma] application on my android phone and found it very useful for getting a lot of information, and help me to get the job done . You can download it from the link below:</string>
+    <string name="egp">EGP</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="user_collision_error">This account has already been registered! You can use forget password.</string>
+    <string name="authorization_error">Sorry! You don\'t have permission to do this task</string>
+    <string name="network_error">Failed to connect to the server!</string>
+    <string name="invalid_email_error">We don\'t have your email address in our system!</string>
+    <string name="email_verification_error">Please verify your email first! Check the new verification message sent to your email.</string>
+    <string name="credentials_error">Username or password is invalid!</string>
+    <string name="verification_email_error">Failed to send verification email.</string>
+    <string name="national_id_error">Please enter a valid national id.</string>
+    <string name="proceed">Proceed</string>
+    <string name="undefined">Undefined</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="day_from">Day From</string>
+    <string name="day_to">Day To</string>
+    <string name="loading">Loading</string>
+    <string name="value">Value</string>
+    <string name="count">Count</string>
+    <string name="percentage">Percentage</string>
+    <string name="no_data">No Data!</string>
+    <string name="notes">Notes</string>
+    <string name="employee_identity_error">Failed to validate your employee identity!</string>
+    <string name="date_range_error">Please enter valid period dates!</string>
+    <string name="hide">Hide</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+    <string name="select_period">Pick a Period</string>
+    <string name="total">Total</string>
+
+    <string-array name="month_names">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+    <string-array name="price_levels">
+        <item>First Level</item>
+        <item>Second Level</item>
+        <item>Third Level</item>
+        <item>Fourth Level</item>
+        <item>Fifth Level</item>
+        <item>Sixth Level</item>
+        <item>Seventh Level</item>
+    </string-array>
+
+    <string name="nav_home">Home</string>
+    <string name="nav_notifications">Notifications</string>
+    <string name="nav_profile">Account</string>
+    <string name="nav_settings">Settings</string>
+</resources>
