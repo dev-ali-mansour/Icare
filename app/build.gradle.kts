@@ -1,4 +1,3 @@
-
 import build.Build
 import build.BuildConfig
 import build.BuildDimensions
@@ -181,7 +180,22 @@ detekt {
     ignoredBuildTypes = listOf("release")
 }
 
+tasks {
+    getByPath("preBuild").dependsOn("ktlintFormat").dependsOn("detekt")
+
+    getByName<Delete>("clean") {
+        delete.addAll(
+            listOf(
+                "${rootProject.projectDir}/build/reports/detekt",
+                "${rootProject.projectDir}/detekt/reports",
+            ),
+        )
+    }
+}
+
 dependencies {
+    implementation(project(":core:ui"))
+    implementation(project(":features:auth"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -200,23 +214,4 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
     implementation(libs.timber)
-
-    testImplementation(libs.junit)
-
-    implementation(project(":core:domain"))
-    implementation(project(":core:ui"))
-    implementation(project(":features:auth"))
-}
-
-tasks {
-    getByPath("preBuild").dependsOn("ktlintFormat").dependsOn("detekt")
-
-    getByName<Delete>("clean") {
-        delete.addAll(
-            listOf(
-                "${rootProject.projectDir}/build/reports/detekt",
-                "${rootProject.projectDir}/detekt/reports",
-            ),
-        )
-    }
 }
