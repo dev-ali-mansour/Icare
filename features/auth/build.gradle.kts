@@ -109,7 +109,9 @@ detekt {
     ignoredBuildTypes = listOf("release")
 }
 dependencies {
-    ksp(libs.koin.compiler)
-    implementation(project(":core:domain"))
     implementation(project(":core:ui"))
+
+    ksp(libs.koin.compiler)
+    testImplementation(libs.bundles.domain.test)
+    androidTestImplementation(libs.bundles.app.test)
 }
