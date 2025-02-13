@@ -25,4 +25,5 @@ rootProject.name = "Icare"
 include(":app")
 include(":core:domain")
 include(":core:ui")
+include(":data")
 include(":features:auth")
