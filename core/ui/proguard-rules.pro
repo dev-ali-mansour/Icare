@@ -19,10 +19,13 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-dontwarn java.lang.invoke.StringConcatFactory
 -keep class eg.edu.cu.csds.icare.core.ui.common.** { *; }
 -keep class eg.edu.cu.csds.icare.core.ui.navigation.** { *; }
 -keep class eg.edu.cu.csds.icare.core.ui.theme.** { *; }
--dontwarn java.lang.invoke.StringConcatFactory
+
+# Keep AuthViewModel for Koin DI
+-keep class * extends androidx.lifecycle.ViewModel { <init>(...); }
 
 # Firebase
 -keepattributes Signature
