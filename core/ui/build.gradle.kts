@@ -15,7 +15,7 @@ plugins {
 }
 
 android {
-    namespace = "eg.edu.cu.csds.icare.core.ui"
+    namespace = "${BuildConfig.APP_ID}.core.ui"
     compileSdk = BuildConfig.COMPILE_SDK_VERSION
 
     defaultConfig {
@@ -24,6 +24,7 @@ android {
         testInstrumentationRunner = TestBuildConfig.TEST_INSTRUMENTATION_RUNNER
         consumerProguardFiles("consumer-rules.pro")
     }
+
     signingConfigs {
         create(SigningTypes.RELEASE) {
             storeFile = file(project.getLocalProperty("release_key.store"))
@@ -50,6 +51,7 @@ android {
             enableV2Signing = true
         }
     }
+
     buildTypes {
         getByName(BuildTypes.RELEASE) {
             proguardFiles(
@@ -73,24 +75,30 @@ android {
             signingConfig = signingConfigs.getByName(BuildTypes.RELEASE_EXTERNAL_QA)
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+
     kotlinOptions {
         JavaVersion.VERSION_21
     }
+
     buildFeatures {
         compose = true
     }
 }
+
 tasks {
     getByPath("preBuild").dependsOn("ktlintFormat").dependsOn("detekt")
 }
+
 detekt {
     source.setFrom("src/main/java", "src/main/kotlin")
     ignoredBuildTypes = listOf("release")
 }
+
 dependencies {
     api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     api(libs.timber)
