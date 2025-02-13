@@ -1,6 +1,8 @@
 -dontwarn java.lang.invoke.StringConcatFactory
--dontwarn eg.edu.cu.csds.icare.core.domain.model.Resource$Unspecified
+-dontwarn eg.edu.cu.csds.icare.core.domain.usecase.onboarding.SaveOnBoarding
+-dontwarn eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoarding
 -dontwarn eg.edu.cu.csds.icare.core.domain.usecase.auth.DeleteAccount
+-dontwarn eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfo
 -dontwarn eg.edu.cu.csds.icare.core.domain.usecase.auth.Register
 -dontwarn eg.edu.cu.csds.icare.core.domain.usecase.auth.SendRecoveryMail
 -dontwarn eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithEmailAndPassword
