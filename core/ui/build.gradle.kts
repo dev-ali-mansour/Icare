@@ -110,5 +110,5 @@ dependencies {
     debugApi(libs.androidx.ui.tooling)
     debugApi(libs.androidx.ui.test.junit4)
 
-    implementation(project(":core:domain"))
+    api(project(":core:domain"))
 }
