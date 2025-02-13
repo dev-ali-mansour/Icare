@@ -194,6 +194,7 @@ tasks {
 }
 
 dependencies {
+    implementation(project(":data"))
     implementation(project(":core:ui"))
     implementation(project(":features:auth"))
 
