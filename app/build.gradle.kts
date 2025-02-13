@@ -207,8 +207,6 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.multidex)
-    implementation(platform(libs.koin.bom))
-    implementation(libs.bundles.koin)
     implementation(libs.splashScreen)
     implementation(libs.kotlinx.serialization.json)
     implementation(platform(libs.firebase.bom))
