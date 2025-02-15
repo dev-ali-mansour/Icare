@@ -7,3 +7,5 @@ class EmailVerificationException : Throwable()
 class AccessTokenExpiredException : Throwable()
 
 class UserNotAuthorizedException : Throwable()
+
+class InvalidUserIdentityException : Throwable()
