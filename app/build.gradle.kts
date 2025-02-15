@@ -2,8 +2,8 @@ import build.Build
 import build.BuildConfig
 import build.BuildDimensions
 import build.BuildTypes
-import build.BuildVariables
 import extensions.getLocalProperty
+import extensions.osFamily
 import flavors.FlavorTypes
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import release.ReleaseConfig
@@ -37,7 +37,7 @@ android {
     }
     signingConfigs {
         create(SigningTypes.RELEASE) {
-            storeFile = file(project.getLocalProperty("release_key.store"))
+            storeFile = file(project.getLocalProperty("release_key.store.${project.osFamily}"))
             storePassword = project.getLocalProperty("release_key.store_password")
             keyAlias = project.getLocalProperty("release_key.alias")
             keyPassword = project.getLocalProperty("release_key.key_password")
@@ -45,7 +45,7 @@ android {
             enableV2Signing = true
         }
         create(SigningTypes.RELEASE_EXTERNAL_QA) {
-            storeFile = file(project.getLocalProperty("qa_key.store"))
+            storeFile = file(project.getLocalProperty("qa_key.store.${project.osFamily}"))
             storePassword = project.getLocalProperty("qa_key.store_password")
             keyAlias = project.getLocalProperty("qa_key.alias")
             keyPassword = project.getLocalProperty("qa_key.key_password")
@@ -72,22 +72,6 @@ android {
             enableUnitTestCoverage = Build.Release.enableUnitTestCoverage
             isDebuggable = Build.Release.isDebuggable
             signingConfig = signingConfigs.getByName(BuildTypes.RELEASE)
-
-            buildConfigField(
-                "String",
-                BuildVariables.BASE_URL,
-                project.getLocalProperty("prod_endpoint"),
-            )
-            buildConfigField(
-                "boolean",
-                BuildVariables.CAN_CLEAR_CACHE,
-                project.getLocalProperty("dev.clear_cache"),
-            )
-            buildConfigField(
-                "int",
-                BuildVariables.DB_VERSION,
-                project.getLocalProperty("dev.db_version"),
-            )
         }
 
         getByName(BuildTypes.DEBUG) {
@@ -97,22 +81,6 @@ android {
             versionNameSuffix = Build.Debug.versionNameSuffix
             applicationIdSuffix = Build.Debug.applicationIdSuffix
             signingConfig = signingConfigs.getByName(BuildTypes.DEBUG)
-
-            buildConfigField(
-                "String",
-                BuildVariables.BASE_URL,
-                project.getLocalProperty("debug_endpoint"),
-            )
-            buildConfigField(
-                "boolean",
-                BuildVariables.CAN_CLEAR_CACHE,
-                project.getLocalProperty("dev.clear_cache"),
-            )
-            buildConfigField(
-                "int",
-                BuildVariables.DB_VERSION,
-                project.getLocalProperty("dev.db_version"),
-            )
         }
 
         create(BuildTypes.RELEASE_EXTERNAL_QA) {
@@ -122,22 +90,6 @@ android {
             versionNameSuffix = Build.ReleaseExternalQA.versionNameSuffix
             applicationIdSuffix = Build.ReleaseExternalQA.applicationIdSuffix
             signingConfig = signingConfigs.getByName(BuildTypes.RELEASE_EXTERNAL_QA)
-
-            buildConfigField(
-                "String",
-                BuildVariables.BASE_URL,
-                project.getLocalProperty("qa_endpoint"),
-            )
-            buildConfigField(
-                "boolean",
-                BuildVariables.CAN_CLEAR_CACHE,
-                project.getLocalProperty("debug_endpoint"),
-            )
-            buildConfigField(
-                "int",
-                BuildVariables.DB_VERSION,
-                project.getLocalProperty("dev.clear_cache"),
-            )
         }
     }
     flavorDimensions.add(BuildDimensions.APP)
