@@ -1,3 +1,4 @@
+-keep class eg.edu.cu.csds.icare.core.domain.model.** { *; }
 -dontwarn java.lang.invoke.StringConcatFactory
 -dontwarn eg.edu.cu.csds.icare.core.domain.usecase.onboarding.SaveOnBoarding
 -dontwarn eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoarding
@@ -7,3 +8,5 @@
 -dontwarn eg.edu.cu.csds.icare.core.domain.usecase.auth.SendRecoveryMail
 -dontwarn eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithEmailAndPassword
 -dontwarn eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOut
+-dontwarn eg.edu.cu.csds.icare.core.domain.repository.AppRepository
+-dontwarn eg.edu.cu.csds.icare.core.domain.repository.AuthRepository
