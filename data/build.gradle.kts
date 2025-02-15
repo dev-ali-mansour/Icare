@@ -1,7 +1,9 @@
 import build.Build
 import build.BuildConfig
 import build.BuildTypes
+import build.BuildVariables
 import extensions.getLocalProperty
+import extensions.osFamily
 import signing.SigningTypes
 import test.TestBuildConfig
 
@@ -30,7 +32,7 @@ android {
 
     signingConfigs {
         create(SigningTypes.RELEASE) {
-            storeFile = file(project.getLocalProperty("release_key.store"))
+            storeFile = file(project.getLocalProperty("release_key.store.${project.osFamily}"))
             storePassword = project.getLocalProperty("release_key.store_password")
             keyAlias = project.getLocalProperty("release_key.alias")
             keyPassword = project.getLocalProperty("release_key.key_password")
@@ -38,7 +40,7 @@ android {
             enableV2Signing = true
         }
         create(SigningTypes.RELEASE_EXTERNAL_QA) {
-            storeFile = file(project.getLocalProperty("qa_key.store"))
+            storeFile = file(project.getLocalProperty("qa_key.store.${project.osFamily}"))
             storePassword = project.getLocalProperty("qa_key.store_password")
             keyAlias = project.getLocalProperty("qa_key.alias")
             keyPassword = project.getLocalProperty("qa_key.key_password")
@@ -61,21 +63,84 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            isMinifyEnabled = Build.Release.isMinifyEnabled
+            isMinifyEnabled = Build.Release.isLibraryMinifyEnabled
             enableUnitTestCoverage = Build.Release.enableUnitTestCoverage
             signingConfig = signingConfigs.getByName(BuildTypes.RELEASE)
+
+            buildConfigField(
+                "String",
+                BuildVariables.BASE_URL,
+                project.getLocalProperty("prod_endpoint"),
+            )
+            buildConfigField(
+                "String",
+                BuildVariables.SERVICE_DOMAIN,
+                project.getLocalProperty("service_domain"),
+            )
+            buildConfigField(
+                "String",
+                BuildVariables.CERTIFICATE_HASH_1,
+                project.getLocalProperty("certificate_hash1"),
+            )
+            buildConfigField(
+                "String",
+                BuildVariables.CERTIFICATE_HASH_2,
+                project.getLocalProperty("certificate_hash2"),
+            )
         }
 
         getByName(BuildTypes.DEBUG) {
-            isMinifyEnabled = Build.Debug.isMinifyEnabled
+            isMinifyEnabled = Build.Debug.isLibraryMinifyEnabled
             enableUnitTestCoverage = Build.Debug.enableUnitTestCoverage
             signingConfig = signingConfigs.getByName(BuildTypes.DEBUG)
+
+            buildConfigField(
+                "String",
+                BuildVariables.BASE_URL,
+                project.getLocalProperty("debug_endpoint"),
+            )
+            buildConfigField(
+                "String",
+                BuildVariables.SERVICE_DOMAIN,
+                project.getLocalProperty("service_domain"),
+            )
+            buildConfigField(
+                "String",
+                BuildVariables.CERTIFICATE_HASH_1,
+                project.getLocalProperty("certificate_hash1"),
+            )
+            buildConfigField(
+                "String",
+                BuildVariables.CERTIFICATE_HASH_2,
+                project.getLocalProperty("certificate_hash2"),
+            )
         }
 
         create(BuildTypes.RELEASE_EXTERNAL_QA) {
-            isMinifyEnabled = Build.ReleaseExternalQA.isMinifyEnabled
+            isMinifyEnabled = Build.ReleaseExternalQA.isLibraryMinifyEnabled
             enableUnitTestCoverage = Build.ReleaseExternalQA.enableUnitTestCoverage
             signingConfig = signingConfigs.getByName(BuildTypes.RELEASE_EXTERNAL_QA)
+
+            buildConfigField(
+                "String",
+                BuildVariables.BASE_URL,
+                project.getLocalProperty("qa_endpoint"),
+            )
+            buildConfigField(
+                "String",
+                BuildVariables.SERVICE_DOMAIN,
+                project.getLocalProperty("service_domain"),
+            )
+            buildConfigField(
+                "String",
+                BuildVariables.CERTIFICATE_HASH_1,
+                project.getLocalProperty("certificate_hash1"),
+            )
+            buildConfigField(
+                "String",
+                BuildVariables.CERTIFICATE_HASH_2,
+                project.getLocalProperty("certificate_hash2"),
+            )
         }
     }
 
@@ -86,6 +151,20 @@ android {
 
     kotlinOptions {
         JavaVersion.VERSION_21
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    testOptions.unitTests {
+        isIncludeAndroidResources = true
+        isReturnDefaultValues = true
+    }
+    sourceSets {
+        getByName("test") {
+            resources.srcDir("src/test/resources")
+        }
     }
 }
 
@@ -100,20 +179,20 @@ detekt {
 
 dependencies {
 
-    api(project(":core:domain"))
+    implementation(project(":core:domain"))
 
     implementation(libs.androidx.core.ktx)
-    api(platform(libs.koin.bom))
-    api(libs.bundles.koin)
+    implementation(platform(libs.koin.bom))
+    implementation(libs.bundles.koin)
     ksp(libs.koin.compiler)
     api(libs.timber)
     api(platform(libs.firebase.bom))
     api(libs.bundles.firebase)
-    api(libs.bundles.retrofit)
-    api(libs.bundles.room)
+    implementation(libs.bundles.retrofit)
+    implementation(libs.bundles.room)
     ksp(libs.room.compiler)
 
     testImplementation(libs.bundles.data.test)
     testImplementation(libs.room.testing)
-    androidTestApi(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.junit)
 }
