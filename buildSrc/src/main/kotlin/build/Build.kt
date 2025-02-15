@@ -2,6 +2,7 @@ package build
 
 sealed class Build {
     open val isMinifyEnabled = false
+    open val isLibraryMinifyEnabled = false
     open val isDebuggable = false
     open val enableUnitTestCoverage = false
     open val applicationIdSuffix = ""
@@ -11,6 +12,7 @@ sealed class Build {
         override val versionNameSuffix = "-debug"
         override val applicationIdSuffix = ".debug"
         override val isMinifyEnabled = false
+        override val isLibraryMinifyEnabled = false
         override val isDebuggable = true
         override val enableUnitTestCoverage = true
     }
@@ -19,12 +21,14 @@ sealed class Build {
         override val versionNameSuffix = "-QA"
         override val applicationIdSuffix = ".releaseExternalQa"
         override val isMinifyEnabled = false
+        override val isLibraryMinifyEnabled = false
         override val isDebuggable = false
         override val enableUnitTestCoverage = true
     }
 
     object Release : Build() {
         override val isMinifyEnabled = true
+        override val isLibraryMinifyEnabled = false
         override val isDebuggable = false
         override val enableUnitTestCoverage = false
     }
