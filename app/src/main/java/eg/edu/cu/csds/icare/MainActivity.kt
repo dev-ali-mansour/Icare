@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
+import eg.edu.cu.csds.icare.data.BuildConfig
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,11 +47,11 @@ fun Greeting(
             modifier = modifier,
         )
         Text(
-            text = "DB Version: ${BuildConfig.DB_VERSION}",
+            text = "Hash 1: ${BuildConfig.CERTIFICATE_HASH_1}",
             modifier = modifier,
         )
         Text(
-            text = "Can Clear Cache: ${BuildConfig.CAN_CLEAR_CACHE}",
+            text = "Hash 2: ${BuildConfig.CERTIFICATE_HASH_2}",
             modifier = modifier,
         )
     }
