@@ -4,13 +4,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class User(
-    val id: Long = 0,
-    val roleId: Short = 0,
-    val phoneNumber: String = "",
-    val dateOfBirth: Long = System.currentTimeMillis(),
+    val roleId: Short = 100,
+    val job: String = "",
+    val nationalId: String = "",
+    val dateOfBirth: Long = 0,
     val gender: Char = 'M',
     val address: String = "",
-    val nationalId: String = "",
-    val photoPath: String = "",
+    val phoneNumber: String = "",
     val permissions: List<Short> = listOf(),
 )
