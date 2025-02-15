@@ -61,19 +61,19 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            isMinifyEnabled = Build.Release.isMinifyEnabled
+            isMinifyEnabled = Build.Release.isLibraryMinifyEnabled
             enableUnitTestCoverage = Build.Release.enableUnitTestCoverage
             signingConfig = signingConfigs.getByName(BuildTypes.RELEASE)
         }
 
         getByName(BuildTypes.DEBUG) {
-            isMinifyEnabled = Build.Debug.isMinifyEnabled
+            isMinifyEnabled = Build.Debug.isLibraryMinifyEnabled
             enableUnitTestCoverage = Build.Debug.enableUnitTestCoverage
             signingConfig = signingConfigs.getByName(BuildTypes.DEBUG)
         }
 
         create(BuildTypes.RELEASE_EXTERNAL_QA) {
-            isMinifyEnabled = Build.ReleaseExternalQA.isMinifyEnabled
+            isMinifyEnabled = Build.ReleaseExternalQA.isLibraryMinifyEnabled
             enableUnitTestCoverage = Build.ReleaseExternalQA.enableUnitTestCoverage
             signingConfig = signingConfigs.getByName(BuildTypes.RELEASE_EXTERNAL_QA)
         }

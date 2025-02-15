@@ -58,19 +58,19 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            isMinifyEnabled = Build.Release.isMinifyEnabled
+            isMinifyEnabled = Build.Release.isLibraryMinifyEnabled
             enableUnitTestCoverage = Build.Release.enableUnitTestCoverage
             signingConfig = signingConfigs.getByName(BuildTypes.RELEASE)
         }
 
         getByName(BuildTypes.DEBUG) {
-            isMinifyEnabled = Build.Debug.isMinifyEnabled
+            isMinifyEnabled = Build.Debug.isLibraryMinifyEnabled
             enableUnitTestCoverage = Build.Debug.enableUnitTestCoverage
             signingConfig = signingConfigs.getByName(BuildTypes.DEBUG)
         }
 
         create(BuildTypes.RELEASE_EXTERNAL_QA) {
-            isMinifyEnabled = Build.ReleaseExternalQA.isMinifyEnabled
+            isMinifyEnabled = Build.ReleaseExternalQA.isLibraryMinifyEnabled
             enableUnitTestCoverage = Build.ReleaseExternalQA.enableUnitTestCoverage
             signingConfig = signingConfigs.getByName(BuildTypes.RELEASE_EXTERNAL_QA)
         }
@@ -101,6 +101,8 @@ detekt {
 
 dependencies {
     api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    api(project(":core:domain"))
+
     api(libs.timber)
     api(platform(libs.androidx.compose.bom))
     api(libs.bundles.compose)
@@ -113,10 +115,8 @@ dependencies {
     implementation(libs.androidx.browser)
     implementation(libs.kotlinx.serialization.json)
 
-    testApi(libs.bundles.app.test)
-    androidTestApi(libs.androidx.ui.test.manifest)
-    debugApi(libs.androidx.ui.tooling)
-    debugApi(libs.androidx.ui.test.junit4)
-
-    api(project(":core:domain"))
+    testImplementation(libs.bundles.app.test)
+    androidTestImplementation(libs.androidx.ui.test.manifest)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.junit4)
 }
