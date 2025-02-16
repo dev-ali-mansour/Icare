@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.ui
+package eg.edu.cu.csds.icare
 
 import androidx.multidex.MultiDexApplication
 import eg.edu.cu.csds.icare.data.di.module.localDataSourceModules
