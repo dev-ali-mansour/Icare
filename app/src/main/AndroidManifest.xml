@@ -23,7 +23,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Icare">
+            android:theme="@style/Theme.App.MySplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
