@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoarding
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -32,9 +31,8 @@ class MainViewModel(
                     viewModelScope.launch(dispatcher) {
                         runCatching {
                             // Todo replace this delay with actual call of fetching use cases
-                            delay(timeMillis = 3000L)
-                            _resultFlow.value = Resource.Success(null)
-                            /*fetchDoctors().distinctUntilChanged().collect {
+
+                            /*fetchClinics().distinctUntilChanged().collect {
                                 _resultFlow.value = it
                             }*/
                         }.onFailure { _resultFlow.value = Resource.Error(it) }
