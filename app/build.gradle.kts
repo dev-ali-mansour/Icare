@@ -35,6 +35,7 @@ android {
 
         testInstrumentationRunner = TestBuildConfig.TEST_INSTRUMENTATION_RUNNER
     }
+
     signingConfigs {
         create(SigningTypes.RELEASE) {
             storeFile = file(project.getLocalProperty("release_key.store.$osFamily"))
@@ -44,6 +45,7 @@ android {
             enableV1Signing = true
             enableV2Signing = true
         }
+
         create(SigningTypes.RELEASE_EXTERNAL_QA) {
             storeFile = file(project.getLocalProperty("qa_key.store.$osFamily"))
             storePassword = project.getLocalProperty("qa_key.store_password")
@@ -52,6 +54,7 @@ android {
             enableV1Signing = true
             enableV2Signing = true
         }
+
         getByName(SigningTypes.DEBUG) {
             storeFile = File(project.rootProject.rootDir, "debug.keystore")
             storePassword = "android"
@@ -61,6 +64,7 @@ android {
             enableV2Signing = true
         }
     }
+
     buildTypes {
         getByName(BuildTypes.RELEASE) {
             proguardFiles(
@@ -92,6 +96,7 @@ android {
             signingConfig = signingConfigs.getByName(BuildTypes.RELEASE_EXTERNAL_QA)
         }
     }
+
     flavorDimensions.add(BuildDimensions.APP)
     productFlavors {
 
@@ -106,20 +111,25 @@ android {
             versionNameSuffix = "-$name"
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+
     kotlinOptions {
         JavaVersion.VERSION_21
     }
+
     buildFeatures {
         compose = true
         buildConfig = true
     }
+
     composeCompiler {
         featureFlags.set(setOf(ComposeFeatureFlag.StrongSkipping.disabled()))
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
