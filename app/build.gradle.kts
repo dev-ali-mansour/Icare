@@ -99,7 +99,6 @@ android {
 
     flavorDimensions.add(BuildDimensions.APP)
     productFlavors {
-
         create(FlavorTypes.PATIENT) {
             dimension = BuildDimensions.APP
             applicationIdSuffix = ".$name"
