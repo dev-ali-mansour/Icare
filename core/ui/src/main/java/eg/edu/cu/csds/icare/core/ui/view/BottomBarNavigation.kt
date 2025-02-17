@@ -89,7 +89,7 @@ fun BottomNavItemPreview() {
         listOf(
             BottomNavItem.Home,
             BottomNavItem.Notifications,
-            BottomNavItem.Account,
+            BottomNavItem.Profile,
             BottomNavItem.Settings,
         )
     BottomBarNavigation(navController = rememberNavController(), items = bottomNavItems)
