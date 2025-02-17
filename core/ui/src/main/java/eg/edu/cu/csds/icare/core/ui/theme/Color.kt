@@ -1,11 +1,95 @@
 package eg.edu.cu.csds.icare.core.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(color = 0xFFD0BCFF)
-val PurpleGrey80 = Color(color = 0xFFCCC2DC)
-val Pink80 = Color(color = 0xFFEFB8C8)
+val Blue10 = Color(color = 0xFFE8F5F7)
+val Blue200 = Color(color = 0xFF30AEC5)
+val Blue500 = Color(color = 0xFF056B8D)
+val Blue700 = Color(color = 0xFF082E5C)
+val Orange200 = Color(color = 0xFFF27024)
+val Yellow300 = Color(color = 0XFFFFD200)
+val Yellow500 = Color(color = 0xFFF9B40E)
+val Yellow700 = Color(color = 0xFFE3880C)
+val PaidColor = Color(color = 0xFF028A02)
+val UnPaidColor = Color(color = 0xFFAA0202)
+val MediumGray = Color(color = 0xFF9C9C9C)
 
-val Purple40 = Color(color = 0xFF6650a4)
-val PurpleGrey40 = Color(color = 0xFF625b71)
-val Pink40 = Color(color = 0xFF7D5260)
+val backgroundColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.DarkGray else Color.White
+
+val titleColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.LightGray else Color.DarkGray
+val selectedCategoryCardColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.Black else Blue200
+val unselectedCategoryCardColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.LightGray else Color.White
+val unSelectedTintColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.White else Color.Black
+
+val descriptionColor: Color
+    @Composable
+    get() =
+        if (isSystemInDarkTheme()) {
+            Color.LightGray.copy(alpha = 0.5f)
+        } else {
+            Color.DarkGray.copy(alpha = 0.5f)
+        }
+
+val activeIndicatorColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Blue700 else Blue500
+
+val inactiveIndicatorColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+
+val contentBackgroundColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.Gray else Blue200.copy(alpha = 0.1f)
+val itemBackgroundColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.Gray else Blue10
+
+val categoryBackgroundColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.Gray else Color.White
+
+val buttonBackgroundColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Blue700 else Blue500
+
+val contentColor: Color
+    @Composable
+    get() = Color.DarkGray
+
+val totalColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.5f) else Color.DarkGray
+
+val tintColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.Black else Blue200
+val dialogTint: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.White else Blue200
+val barBackgroundColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.Black else Blue500
+
+val textColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.White else Color.Black
+val dropDownTextColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.White else Blue200
+
+val trailIconColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.White else Blue500
