@@ -80,4 +80,6 @@
     <string name="nav_notifications">الإشعارات</string>
     <string name="nav_profile">حسابي</string>
     <string name="nav_settings">إعدادات</string>
+    <string name="processing">جاري المعالجة</string>
+    <string name="search_here">ابحث هنا</string>
 </resources>

@@ -112,4 +112,6 @@ Objectives:\n
     <string name="nav_notifications">Notifications</string>
     <string name="nav_profile">Account</string>
     <string name="nav_settings">Settings</string>
+    <string name="processing">Processing</string>
+    <string name="search_here">Search here</string>
 </resources>
