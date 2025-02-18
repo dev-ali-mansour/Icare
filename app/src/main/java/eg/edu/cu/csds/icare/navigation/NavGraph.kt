@@ -21,6 +21,7 @@ import eg.edu.cu.csds.icare.auth.screen.AuthViewModel
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
+import eg.edu.cu.csds.icare.core.ui.util.activity
 import eg.edu.cu.csds.icare.core.ui.util.getErrorMessage
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import kotlinx.coroutines.delay
@@ -94,8 +95,6 @@ fun SetupNavGraph(
             })
 
             authenticationRoute(
-                context = context,
-                intent = Intent(context, MainActivity::class.java),
                 firebaseAuth = firebaseAuth,
                 mainViewModel = mainViewModel,
                 authViewModel = authViewModel,
@@ -107,6 +106,10 @@ fun SetupNavGraph(
                             inclusive = true
                         }
                     }
+                },
+                onLoginSuccess = {
+                    context.activity.finish()
+                    context.startActivity(Intent(context, MainActivity::class.java))
                 },
                 onRecoveryCompleted = {
                     navController.navigate(Screen.Login) {
