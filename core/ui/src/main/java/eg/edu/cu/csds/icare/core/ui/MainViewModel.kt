@@ -26,8 +26,7 @@ class MainViewModel(
     private val _currentUserFlow: MutableStateFlow<Resource<User>> =
         MutableStateFlow(Resource.Unspecified())
     val currentUserFlow: StateFlow<Resource<User>> = _currentUserFlow
-    private val _resultFlow =
-        MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
+    private val _resultFlow = MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
     val resultFlow: StateFlow<Resource<Nothing?>> = _resultFlow
 
     init {
