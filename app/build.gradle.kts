@@ -16,6 +16,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
@@ -161,7 +162,7 @@ dependencies {
     implementation(project(":features:auth"))
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.bundles.lifecycle)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
