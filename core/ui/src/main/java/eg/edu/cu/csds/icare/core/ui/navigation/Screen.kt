@@ -8,7 +8,7 @@ sealed class Screen {
     data object Splash : Screen()
 
     @Serializable
-    data object Welcome : Screen()
+    data object OnBoarding : Screen()
 
     @Serializable
     data object Login : Screen()
