@@ -9,7 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,6 +23,7 @@ import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.util.activity
 import eg.edu.cu.csds.icare.core.ui.util.getErrorMessage
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
+import eg.edu.cu.csds.icare.onboarding.navigation.onBoardingRoute
 import kotlinx.coroutines.delay
 import kotlin.system.exitProcess
 
@@ -53,7 +53,7 @@ fun SetupNavGraph(
         val startScreen: Screen =
             when {
                 onBoardingCompleted -> Screen.Splash
-                else -> Screen.Welcome
+                else -> Screen.OnBoarding
             }
         NavHost(
             navController = navController,
@@ -88,7 +88,7 @@ fun SetupNavGraph(
                 )
             }
 
-            welcomeRoute(onCompleted = {
+            onBoardingRoute(onCompleted = {
                 navController.navigate(Screen.Login) {
                     popUpTo(navController.graph.id) { inclusive = true }
                 }
@@ -139,12 +139,6 @@ fun SetupNavGraph(
                 },
             )
         }
-    }
-}
-
-fun NavGraphBuilder.welcomeRoute(onCompleted: () -> Unit) {
-    composable<Screen.Welcome> {
-        onCompleted()
     }
 }
 
