@@ -1,25 +1,22 @@
 package eg.edu.cu.csds.icare
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
-import eg.edu.cu.csds.icare.data.BuildConfig
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
+    private val firebaseAuth: FirebaseAuth by inject()
     private val mainViewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,46 +29,18 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             IcareTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = getString(R.string.app_name),
-                        modifier = Modifier.padding(innerPadding),
-                    )
-                }
+                MainScreen(
+                    firebaseAuth,
+                    mainViewModel,
+                    showAppSettings = {
+                        val intent =
+                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                data = Uri.fromParts("package", packageName, null)
+                            }
+                        startActivity(intent)
+                    },
+                )
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(
-    name: String,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier = modifier) {
-        Text(
-            text = "Hello $name!",
-            modifier = modifier,
-        )
-        Text(
-            text = "Base URL: ${BuildConfig.BASE_URL}",
-            modifier = modifier,
-        )
-        Text(
-            text = "Hash 1: ${BuildConfig.CERTIFICATE_HASH_1}",
-            modifier = modifier,
-        )
-        Text(
-            text = "Hash 2: ${BuildConfig.CERTIFICATE_HASH_2}",
-            modifier = modifier,
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    IcareTheme {
-        Greeting("Android")
     }
 }
