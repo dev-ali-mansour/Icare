@@ -8,5 +8,5 @@ import org.koin.dsl.module
 val viewModelModule =
     module {
         viewModel { AuthViewModel(get(), get(), get(), get(), get(), get()) }
-        viewModel { MainViewModel(get(), get()) }
+        viewModel { MainViewModel(get(), get(), get()) }
     }
