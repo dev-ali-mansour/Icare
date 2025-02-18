@@ -3,15 +3,19 @@ package eg.edu.cu.csds.icare.core.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.model.User
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfo
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoarding
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val dispatcher: CoroutineDispatcher,
     private val readOnBoarding: ReadOnBoarding,
+    private val getUserInfo: GetUserInfo,
 ) : ViewModel() {
     private val _onBoardingCompleted: MutableStateFlow<Resource<Boolean>> =
         MutableStateFlow(
@@ -19,12 +23,18 @@ class MainViewModel(
                 .Unspecified(),
         )
     val onBoardingCompleted: StateFlow<Resource<Boolean>> = _onBoardingCompleted
+    private val _currentUserFlow: MutableStateFlow<Resource<User>> =
+        MutableStateFlow(Resource.Unspecified())
+    val currentUserFlow: StateFlow<Resource<User>> = _currentUserFlow
     private val _resultFlow =
         MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
     val resultFlow: StateFlow<Resource<Nothing?>> = _resultFlow
 
     init {
         viewModelScope.launch(dispatcher) {
+            getUserInfo(forceUpdate = false).distinctUntilChanged().collect {
+                _currentUserFlow.value = it
+            }
             readOnBoarding().collect { res ->
                 _onBoardingCompleted.value = res
                 if (res is Resource.Success && res.data == true) {
