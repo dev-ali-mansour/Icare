@@ -159,6 +159,7 @@ tasks {
 dependencies {
     implementation(project(":data"))
     implementation(project(":core:ui"))
+    implementation(project(":features:on_boarding"))
     implementation(project(":features:auth"))
 
     implementation(libs.androidx.core.ktx)
