@@ -7,9 +7,96 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:1018351559637:android:def922a65c3d8bd719935c",
+        "android_client_info": {
+          "package_name": "eg.edu.cu.csds.icare.doctor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWgJZ8gINjomuNso32UtB5dyB5kUSBon0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:1018351559637:android:16b9e0b1a0b4361c19935c",
         "android_client_info": {
           "package_name": "eg.edu.cu.csds.icare.doctor.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWgJZ8gINjomuNso32UtB5dyB5kUSBon0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018351559637:android:3e539c318be2398419935c",
+        "android_client_info": {
+          "package_name": "eg.edu.cu.csds.icare.patient"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWgJZ8gINjomuNso32UtB5dyB5kUSBon0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018351559637:android:8e525c647083386d19935c",
+        "android_client_info": {
+          "package_name": "eg.edu.cu.csds.icare.patient.debug"
         }
       },
       "oauth_client": [
