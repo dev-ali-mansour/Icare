@@ -50,6 +50,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.inactiveIndicatorColor
 import eg.edu.cu.csds.icare.core.ui.theme.titleColor
 import eg.edu.cu.csds.icare.core.ui.view.HorizontalPagerIndicator
 import eg.edu.cu.csds.icare.core.ui.view.VerticalPagerIndicator
+import eg.edu.cu.csds.icare.onboarding.OnBoardingViewModel
 import eg.edu.cu.csds.icare.onboarding.R
 import org.koin.androidx.compose.koinViewModel
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
