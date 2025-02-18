@@ -114,4 +114,5 @@ Objectives:\n
     <string name="nav_settings">Settings</string>
     <string name="processing">Processing</string>
     <string name="search_here">Search here</string>
+    <string name="Successful_operation">Successful Operation</string>
 </resources>

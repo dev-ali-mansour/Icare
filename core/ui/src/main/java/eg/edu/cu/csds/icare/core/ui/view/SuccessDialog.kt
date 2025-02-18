@@ -13,8 +13,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
+import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
 import eg.edu.cu.csds.icare.core.ui.theme.DIALOG_CARD_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
@@ -42,7 +44,7 @@ fun SuccessesDialog(onDismissRequest: () -> Unit) {
                             .fillMaxHeight(fraction = 0.7f),
                 )
                 Text(
-                    text = "عملية ناجحة",
+                    text = stringResource(R.string.Successful_operation),
                     modifier = Modifier,
                     fontSize = MaterialTheme.typography.headlineSmall.fontSize,
                     fontFamily = helveticaFamily,
