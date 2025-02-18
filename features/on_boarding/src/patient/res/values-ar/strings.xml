@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="first_page_title">مرحباً بك</string>في معرفة
+    <string name="first_page_description">هل تبحث عن خدمة رعاية طبية متميزة؟ لأنك إن كنت كذلك فنحن لدينا أخبار عظيمة من أجلك!</string>
+    <string name="second_page_title">اكتشف</string>
+    <string name="second_page_description">اعثر على العديد من خدماتنا الرائعة ، وتعرف على بعض الأشياء التي لم تكن على علم بها.</string>
+    <string name="third_page_title">قوة</string>
+    <string name="third_page_description">اكتشف قوة خدماتنا السريعة ، وكم هي مفيدة في الاستخدام على أجهزة الأندرويد الخاصة بك.</string>
+</resources>
