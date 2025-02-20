@@ -1,0 +1,30 @@
+<resources>
+    <string name="email">Email Address</string>
+    <string name="password">Password</string>
+    <string name="alpha_number">Alpha Number</string>
+    <string name="national_id">National Id</string>
+    <string name="generic_error">Something wrong happened. Please try again.</string>
+    <string name="name_error">Please enter a valid full name.</string>
+    <string name="email_error">Please enter a valid email.</string>
+    <string name="phone_error">Please enter a valid phone number.</string>
+    <string name="try_again">Try again</string>
+    <string name="login">Login</string>
+    <string name="login_details">Enter your login details</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="reset">Reset</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="recovery_email_sent">Check your inbox for the recovery email.</string>
+    <string name="empty_password_error">Password cannot be empty.</string>
+    <string name="do_not_have_account">Create an account?</string>
+    <string name="password_error">Your password should have at least 8 characters and include one digit, one lower case letter and one upper case letter.</string>
+    <string name="create_account">Create Account</string>
+    <string name="complete_registration">Complete Your Registration</string>
+    <string name="register">Register</string>
+    <string name="login_instead">Login Instead?</string>
+    <string name="sign_out">Sign out</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="register_message">Your account has been created successfully! Please check your email to activate it.</string>
+    <string name="complete_message">Your account registration has been completed successfully!</string>
+
+</resources>
