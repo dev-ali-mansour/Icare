@@ -116,4 +116,5 @@ Objectives:\n
     <string name="processing">Processing</string>
     <string name="search_here">Search here</string>
     <string name="Successful_operation">Successful Operation</string>
+    <string name="or">Or</string>
 </resources>

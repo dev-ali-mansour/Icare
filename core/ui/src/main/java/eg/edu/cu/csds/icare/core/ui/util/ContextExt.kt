@@ -20,10 +20,14 @@ import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
 import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.result.ActivityResult
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -32,6 +36,7 @@ import eg.edu.cu.csds.icare.core.domain.model.SettingsItem
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.ui.R
+import eg.edu.cu.csds.icare.data.BuildConfig
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -327,4 +332,28 @@ fun Context.openLink(url: String) {
     }.onFailure {
         Toast.makeText(this, it.localizedMessage, Toast.LENGTH_SHORT).show()
     }
+}
+
+fun Context.signInWithGoogle(launcher: ManagedActivityResultLauncher<Intent, ActivityResult>) {
+    val gso =
+        GoogleSignInOptions
+            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(BuildConfig.WEB_CLIENT_ID)
+            .requestEmail()
+            .build()
+    val googleSignInClient = GoogleSignIn.getClient(this, gso)
+    googleSignInClient.revokeAccess()
+    launcher.launch(googleSignInClient.signInIntent)
+}
+
+fun Context.linkGoogleAccount(launcher: ManagedActivityResultLauncher<Intent, ActivityResult>) {
+    val gso =
+        GoogleSignInOptions
+            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(BuildConfig.WEB_CLIENT_ID)
+            .requestEmail()
+            .build()
+    val googleSignInClient = GoogleSignIn.getClient(this, gso)
+    googleSignInClient.revokeAccess()
+    launcher.launch(googleSignInClient.signInIntent)
 }

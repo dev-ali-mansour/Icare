@@ -43,6 +43,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1018351559637-nu4l9v2d5o2cai47vq264mbf339limr7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "eg.edu.cu.csds.icare.doctor.debug",
+            "certificate_hash": "415c81898007c419a288bc9aacbf844ac1824723"
+          }
+        },
+        {
           "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
           "client_type": 3
         }
