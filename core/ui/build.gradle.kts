@@ -103,6 +103,7 @@ detekt {
 dependencies {
     api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     api(project(":core:domain"))
+    api(project(":data"))
 
     api(libs.timber)
     api(platform(libs.androidx.compose.bom))
