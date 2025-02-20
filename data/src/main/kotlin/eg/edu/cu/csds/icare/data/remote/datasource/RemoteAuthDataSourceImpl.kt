@@ -78,7 +78,7 @@ class RemoteAuthDataSourceImpl(
                     }
                 } ?: run { emit(Resource.Error(UserNotAuthenticatedException())) }
             }.onFailure {
-                Timber.e("getEmployeeData() Error ${it.javaClass.simpleName}: ${it.message}")
+                Timber.e("getUserInfo() Error ${it.javaClass.simpleName}: ${it.message}")
                 emit(Resource.Error(it))
             }
         }
@@ -91,43 +91,41 @@ class RemoteAuthDataSourceImpl(
         password: String,
     ): Flow<Resource<Nothing?>> =
         flow {
-            runCatching {
-                emit(Resource.Loading())
-                val result = auth.createUserWithEmailAndPassword(email, password).await()
-                result.user?.let { user ->
-                    val profileUpdates =
-                        UserProfileChangeRequest
-                            .Builder()
-                            .setDisplayName(name)
-                            .build()
-                    user.updateProfile(profileUpdates).await()
-                    val token =
-                        user
-                            .getIdToken(false)
-                            .await()
-                            .token
-                            .toString()
-                    registerOnDB(
-                        user.uid,
-                        user.displayName.toString(),
-                        user.email.toString(),
-                        phone,
-                        address,
-                        token,
-                    ).collect { resource ->
-                        if (resource is Resource.Error) {
-                            user.delete().await()
-                        } else {
-                            user.sendEmailVerification().await()
-                        }
-                        emit(resource)
+            emit(Resource.Loading())
+            val result = auth.createUserWithEmailAndPassword(email, password).await()
+            result.user?.let { user ->
+                val profileUpdates =
+                    UserProfileChangeRequest
+                        .Builder()
+                        .setDisplayName(name)
+                        .build()
+                user.updateProfile(profileUpdates).await()
+                val token =
+                    user
+                        .getIdToken(false)
+                        .await()
+                        .token
+                        .toString()
+                registerOnDB(
+                    user.uid,
+                    user.displayName.toString(),
+                    user.email.toString(),
+                    phone,
+                    address,
+                    token,
+                ).collect { resource ->
+                    if (resource is Resource.Error) {
+                        user.delete().await()
+                    } else {
+                        user.sendEmailVerification().await()
                     }
+                    emit(resource)
                 }
-            }.onFailure {
-                Timber.e("getEmployeeData() Error ${it.javaClass.simpleName}: ${it.message}")
-                deleteAccount()
-                emit(Resource.Error(it))
             }
+        }.catch {
+            Timber.e("register() Error ${it.javaClass.simpleName}: ${it.message}")
+            deleteAccount()
+            emit(Resource.Error(it))
         }
 
     override fun signInWithEmailAndPassword(
@@ -135,29 +133,27 @@ class RemoteAuthDataSourceImpl(
         password: String,
     ): Flow<Resource<Boolean>> =
         flow {
-            runCatching {
-                emit(Resource.Loading())
-                val result = auth.signInWithEmailAndPassword(email, password).await()
-                result.user?.let {
-                    it.reload()
-                    if (it.isEmailVerified) {
-                        getUserInfo().collect { res ->
-                            when (res) {
-                                is Resource.Unspecified -> emit(Resource.Unspecified())
-                                is Resource.Loading -> emit(Resource.Loading())
-                                is Resource.Success -> emit(Resource.Success(res.data != null))
-                                is Resource.Error -> emit(Resource.Error(res.error))
-                            }
+            emit(Resource.Loading())
+            val result = auth.signInWithEmailAndPassword(email, password).await()
+            result.user?.let {
+                it.reload()
+                if (it.isEmailVerified) {
+                    getUserInfo().collect { res ->
+                        when (res) {
+                            is Resource.Unspecified -> emit(Resource.Unspecified())
+                            is Resource.Loading -> emit(Resource.Loading())
+                            is Resource.Success -> emit(Resource.Success(res.data != null))
+                            is Resource.Error -> emit(Resource.Error(res.error))
                         }
-                    } else {
-                        it.sendEmailVerification().await()
-                        emit(Resource.Error(EmailVerificationException()))
                     }
+                } else {
+                    it.sendEmailVerification().await()
+                    emit(Resource.Error(EmailVerificationException()))
                 }
-            }.onFailure {
-                Timber.e("signInWithEmailAndPassword() Error ${it.javaClass.simpleName}: ${it.message}")
-                emit(Resource.Error(it))
             }
+        }.catch {
+            Timber.e("signInWithEmailAndPassword() Error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
         }
 
     override fun signInWithToken(
@@ -201,7 +197,12 @@ class RemoteAuthDataSourceImpl(
                     else -> emit(Resource.Error(ConnectException(response.code().toString())))
                 }
             }
-        }.catch { emit(Resource.Error(it)) }
+        }.catch {
+            Timber.e("signInWithToken() Error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Success(true))
+            // Todo add error handling for other status codes
+//            emit(Resource.Error(it))
+        }
 
     override fun sendRecoveryEmail(email: String): Flow<Resource<Nothing?>> =
         flow {
