@@ -13,9 +13,9 @@ object Constants {
     const val ABOUT_CODE = 9
     const val SHORT_DELAY: Long = 30
     const val IMAGE_QUALITY = 100
-    const val ERROR_CODE_OK: String = "0"
-    const val ERROR_CODE_EXPIRED_TOKEN: String = "1"
-    const val ERROR_CODE_USER_COLLISION: String = "2"
-    const val ERROR_CODE_INVALID_EMPLOYEE_IDENTITY: String = "3"
-    const val ERROR_CODE_SERVER_ERROR: String = "5"
+    const val ERROR_CODE_OK: Short = 0
+    const val ERROR_CODE_EXPIRED_TOKEN: Short = 1
+    const val ERROR_CODE_USER_COLLISION: Short = 2
+    const val ERROR_CODE_INVALID_EMPLOYEE_IDENTITY: Short = 3
+    const val ERROR_CODE_SERVER_ERROR: Short = 5
 }
