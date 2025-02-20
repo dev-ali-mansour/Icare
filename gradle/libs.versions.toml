@@ -26,6 +26,8 @@ splashScreen = "1.0.1"
 coroutine = "1.10.1"
 ktxSerialization = "1.8.0"
 firebaseBom = "33.9.0"
+googleAuth = "21.3.0"
+facebookSdk = "18.0.2"
 timber = "5.0.1"
 retrofit = "2.11.0"
 ktxSerConverter = "1.0.0"
@@ -80,6 +82,8 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
 firebase-auth = { module = "com.google.firebase:firebase-auth-ktx" }
+google-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "googleAuth" }
+facebook-sdk = { module = "com.facebook.android:facebook-android-sdk", version.ref = "facebookSdk" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 work-manager = { module = "androidx.work:work-runtime-ktx", version.ref = "workManager" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
@@ -114,7 +118,7 @@ appcompat = ["appcompat", "appcompat-resources"]
 compose = ["androidx-activity-compose", "androidx-compose-foundation", "androidx-ui", "androidx-ui-tooling", "androidx-ui-tooling-preview", "androidx-ui-graphics", "compose-runtime", "compose-animation", "androidx-material3", "androidx-constraintlayout", "androidx-navigation"]
 koin = ["koin-annotations", "koin-compiler", "koin-androidx-workmanager", "koin-androidx-compose", "koin-androidx-compose-navigation"]
 coil = ["coil-compose", "coil-gif"]
-firebase = ["firebase-crashlytics", "firebase-messaging", "firebase-auth"]
+firebase = ["firebase-crashlytics", "firebase-messaging", "firebase-auth","google-auth", "facebook-sdk"]
 lifecycle = ["androidx-lifecycle-runtime-ktx", "androidx-lifecycle-process"]
 retrofit = ["retrofit", "retrofit-converter", "retrofit-interceptor"]
 room = ["room", "room-ktx", "sqlcipher", "security-crypto-ktx"]
