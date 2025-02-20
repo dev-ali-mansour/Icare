@@ -4,8 +4,10 @@ import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,6 +39,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -44,7 +47,6 @@ import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.auth.R
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL3_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL4_PADDING
@@ -57,6 +59,8 @@ import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
+import eg.edu.cu.csds.icare.core.ui.view.SocialSignInButton
+import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun LoginContent(
@@ -69,6 +73,8 @@ internal fun LoginContent(
     onPasswordVisibilityChanged: () -> Unit,
     onRecoveryClicked: () -> Unit,
     onLoginButtonClicked: () -> Unit,
+    onGoogleButtonClicked: () -> Unit,
+    onFacebookButtonClicked: () -> Unit,
     onCreateAnAccountClicked: () -> Unit,
 ) {
     ConstraintLayout(
@@ -244,7 +250,37 @@ internal fun LoginContent(
                             .padding(horizontal = XL_PADDING)
                             .clickable { onRecoveryClicked() },
                 )
-                Spacer(modifier = Modifier.height(M_PADDING))
+
+                Spacer(modifier = Modifier.height(S_PADDING))
+
+                Text(
+                    text = stringResource(id = CoreR.string.or),
+                    fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                    fontFamily = helveticaFamily,
+                    textAlign = TextAlign.Center,
+                    color = textColor,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = XL_PADDING),
+                )
+
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(fraction = 0.8f)
+                            .padding(vertical = S_PADDING),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    SocialSignInButton(iconId = CoreR.drawable.ic_social_google) {
+                        onGoogleButtonClicked()
+                    }
+
+                    SocialSignInButton(iconId = CoreR.drawable.ic_social_facebook) {
+                        onFacebookButtonClicked()
+                    }
+                }
+                Spacer(modifier = Modifier.height(S_PADDING))
                 AnimatedButton(
                     modifier = Modifier.fillMaxWidth(fraction = 0.6f),
                     text = stringResource(id = R.string.login),
@@ -295,6 +331,8 @@ internal fun LoginContentPreview() {
             onPasswordVisibilityChanged = {},
             onRecoveryClicked = {},
             onLoginButtonClicked = {},
+            onGoogleButtonClicked = {},
+            onFacebookButtonClicked = {},
             onCreateAnAccountClicked = {},
         )
     }
