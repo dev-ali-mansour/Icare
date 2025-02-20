@@ -36,6 +36,15 @@ class AuthRepositoryImpl(
             res
         }
 
+    override fun signInWithToken(
+        providerId: String,
+        token: String,
+    ): Flow<Resource<Boolean>> =
+        remoteAuthDataSource.signInWithToken(providerId, token).map { res ->
+            if (res is Resource.Error) signOut()
+            res
+        }
+
     override fun sendRecoveryEmail(email: String): Flow<Resource<Nothing?>> = remoteAuthDataSource.sendRecoveryEmail(email)
 
     override fun getUserInfo(forceUpdate: Boolean): Flow<Resource<User>> =
@@ -74,6 +83,16 @@ class AuthRepositoryImpl(
                 )
             }.onFailure { emit(Resource.Error(it)) }
         }
+
+    override fun linkEmailAccount(
+        email: String,
+        password: String,
+    ): Flow<Resource<Nothing?>> = remoteAuthDataSource.linkEmailAccount(email, password)
+
+    override fun linkTokenAccount(
+        providerId: String,
+        token: String,
+    ): Flow<Resource<Nothing?>> = remoteAuthDataSource.linkTokenAccount(providerId, token)
 
     override fun deleteAccount(): Flow<Resource<Nothing?>> = remoteAuthDataSource.deleteAccount()
 
