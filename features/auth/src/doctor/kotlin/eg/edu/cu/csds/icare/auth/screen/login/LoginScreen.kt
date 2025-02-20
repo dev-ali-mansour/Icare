@@ -1,6 +1,8 @@
 package eg.edu.cu.csds.icare.auth.screen.login
 
 import android.content.Context
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +25,7 @@ import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.util.isValidEmail
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.util.getErrorMessage
+import eg.edu.cu.csds.icare.core.ui.util.signInWithGoogle
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -44,6 +47,10 @@ internal fun LoginScreen(
     val scope: CoroutineScope = rememberCoroutineScope()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
+    val launcher =
+        rememberLauncherForActivityResult(StartActivityForResult()) {
+            authViewModel.signInWithGoogle(it.data)
+        }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -86,6 +93,8 @@ internal fun LoginScreen(
                         }
                     }
                 },
+                onGoogleButtonClicked = { context.signInWithGoogle(launcher = launcher) },
+                onFacebookButtonClicked = { },
                 onCreateAnAccountClicked = { onCreateAnAccountClicked() },
             )
 

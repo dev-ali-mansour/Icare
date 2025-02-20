@@ -1,14 +1,20 @@
 package eg.edu.cu.csds.icare.auth.screen
 
+import android.content.Intent
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.DeleteAccount
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkTokenAccount
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.Register
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SendRecoveryMail
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithEmailAndPassword
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithToken
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOut
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
@@ -22,7 +28,9 @@ class AuthViewModel(
     private val dispatcher: CoroutineDispatcher,
     private val register: Register,
     private val signInWithEmailAndPassword: SignInWithEmailAndPassword,
+    private val signInWithToken: SignInWithToken,
     private val sendRecoveryMail: SendRecoveryMail,
+    private val linkTokenAccount: LinkTokenAccount,
     private val signOut: SignOut,
     private val deleteAccount: DeleteAccount,
 ) : ViewModel() {
@@ -35,6 +43,8 @@ class AuthViewModel(
     private val _recoveryResFlow =
         MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
     val recoveryResFlow: StateFlow<Resource<Nothing?>> = _recoveryResFlow
+    private val _linkResFlow = MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
+    val linkResFlow: StateFlow<Resource<Nothing?>> = _linkResFlow
     private val _logoutResFlow =
         MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
     val logoutResFlow: StateFlow<Resource<Nothing?>> = _logoutResFlow
@@ -107,6 +117,36 @@ class AuthViewModel(
                 _loginResFlow.value = it
             }
         }
+    }
+
+    fun signInWithGoogle(data: Intent?) {
+        runCatching {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            val account = task.getResult(ApiException::class.java)
+            viewModelScope.launch(dispatcher) {
+                account.idToken?.let { token ->
+                    signInWithToken(GoogleAuthProvider.PROVIDER_ID, token).collectLatest {
+                        _isLoading.value = it is Resource.Loading
+                        _loginResFlow.value = it
+                    }
+                }
+            }
+        }.onFailure { _loginResFlow.value = Resource.Error(it) }
+    }
+
+    fun linkGoogleAccount(data: Intent?) {
+        runCatching {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            val account = task.getResult(ApiException::class.java)
+            viewModelScope.launch(dispatcher) {
+                account.idToken?.let { token ->
+                    linkTokenAccount(GoogleAuthProvider.PROVIDER_ID, token).collectLatest {
+                        _isLoading.value = it is Resource.Loading
+                        _linkResFlow.value = it
+                    }
+                }
+            }
+        }.onFailure { _linkResFlow.value = Resource.Error(it) }
     }
 
     fun onResetPasswordClicked() {
