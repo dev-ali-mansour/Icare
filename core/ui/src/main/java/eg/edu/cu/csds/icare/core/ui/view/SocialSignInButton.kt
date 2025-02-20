@@ -1,0 +1,68 @@
+package eg.edu.cu.csds.icare.core.ui.view
+
+import android.content.res.Configuration
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import eg.edu.cu.csds.icare.core.ui.R
+import eg.edu.cu.csds.icare.core.ui.theme.BUTTON_HEIGHT
+import eg.edu.cu.csds.icare.core.ui.theme.MEDIUM_ICON_SIZE
+import eg.edu.cu.csds.icare.core.ui.theme.SOCIAL_BUTTON_WIDTH
+import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
+
+@Composable
+private fun SocialSignInButton(
+    modifier: Modifier,
+    @DrawableRes iconId: Int,
+    onClick: () -> Unit,
+) {
+    Surface(
+        modifier =
+            modifier
+                .size(SOCIAL_BUTTON_WIDTH, BUTTON_HEIGHT)
+                .clickable { onClick() },
+        color = contentBackgroundColor,
+        shape =
+            RoundedCornerShape(
+                topStart = XS_PADDING,
+                topEnd = XS_PADDING,
+                bottomStart = XS_PADDING,
+                bottomEnd = XS_PADDING,
+            ),
+    ) {
+        Column(
+            modifier = Modifier.padding(XS_PADDING),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Icon(
+                modifier = Modifier.size(MEDIUM_ICON_SIZE),
+                painter = painterResource(iconId),
+                contentDescription = null,
+                tint = Color.Unspecified,
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "ar")
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@Composable
+internal fun SocialSignInButtonPreview() {
+    SocialSignInButton(modifier = Modifier, iconId = R.drawable.ic_social_google) { }
+}
