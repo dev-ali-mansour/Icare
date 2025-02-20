@@ -18,9 +18,24 @@ interface AuthRepository {
         password: String,
     ): Flow<Resource<Boolean>>
 
+    fun signInWithToken(
+        providerId: String,
+        token: String,
+    ): Flow<Resource<Boolean>>
+
     fun sendRecoveryEmail(email: String): Flow<Resource<Nothing?>>
 
     fun getUserInfo(forceUpdate: Boolean): Flow<Resource<User>>
+
+    fun linkEmailAccount(
+        email: String,
+        password: String,
+    ): Flow<Resource<Nothing?>>
+
+    fun linkTokenAccount(
+        providerId: String,
+        token: String,
+    ): Flow<Resource<Nothing?>>
 
     fun signOut(): Flow<Resource<Nothing?>>
 
