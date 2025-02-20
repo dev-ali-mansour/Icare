@@ -87,6 +87,11 @@ android {
                 BuildVariables.CERTIFICATE_HASH_2,
                 project.getLocalProperty("certificate_hash2"),
             )
+            buildConfigField(
+                "String",
+                BuildVariables.WEB_CLIENT_ID,
+                project.getLocalProperty("web_client_id"),
+            )
         }
 
         getByName(BuildTypes.DEBUG) {
@@ -114,6 +119,11 @@ android {
                 BuildVariables.CERTIFICATE_HASH_2,
                 project.getLocalProperty("certificate_hash2"),
             )
+            buildConfigField(
+                "String",
+                BuildVariables.WEB_CLIENT_ID,
+                project.getLocalProperty("web_client_id"),
+            )
         }
 
         create(BuildTypes.RELEASE_EXTERNAL_QA) {
@@ -140,6 +150,11 @@ android {
                 "String",
                 BuildVariables.CERTIFICATE_HASH_2,
                 project.getLocalProperty("certificate_hash2"),
+            )
+            buildConfigField(
+                "String",
+                BuildVariables.WEB_CLIENT_ID,
+                project.getLocalProperty("web_client_id"),
             )
         }
     }
