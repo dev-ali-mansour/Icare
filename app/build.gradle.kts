@@ -35,6 +35,10 @@ android {
         versionName = ReleaseConfig.VERSION_NAME
 
         testInstrumentationRunner = TestBuildConfig.TEST_INSTRUMENTATION_RUNNER
+
+        ksp {
+            arg("KOIN_CONFIG_CHECK", "true")
+        }
     }
 
     signingConfigs {
