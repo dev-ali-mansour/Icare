@@ -1,3 +1,4 @@
+
 import build.Build
 import build.BuildConfig
 import build.BuildDimensions
@@ -5,7 +6,6 @@ import build.BuildTypes
 import extensions.getLocalProperty
 import extensions.osFamily
 import flavors.FlavorTypes
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import signing.SigningTypes
 import test.TestBuildConfig
 
@@ -101,10 +101,6 @@ android {
 
     buildFeatures {
         compose = true
-    }
-
-    composeCompiler {
-        featureFlags.set(setOf(ComposeFeatureFlag.StrongSkipping.disabled()))
     }
 
     packaging {
