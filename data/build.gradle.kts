@@ -26,6 +26,7 @@ android {
         consumerProguardFiles("consumer-rules.pro")
 
         ksp {
+            arg("KOIN_CONFIG_CHECK", "true")
             arg("room.schemaLocation", "$projectDir/schemas")
         }
     }
