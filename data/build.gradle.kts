@@ -198,13 +198,12 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(platform(libs.koin.bom))
-    implementation(libs.bundles.koin)
-    ksp(libs.koin.compiler)
     api(libs.timber)
     api(platform(libs.firebase.bom))
     api(libs.bundles.firebase)
     implementation(libs.bundles.retrofit)
     implementation(libs.bundles.room)
+    ksp(libs.koin.ksp.compiler)
     ksp(libs.room.compiler)
 
     testImplementation(libs.bundles.data.test)

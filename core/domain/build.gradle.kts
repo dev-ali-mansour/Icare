@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -95,7 +96,12 @@ detekt {
 }
 
 dependencies {
+    api(platform(libs.koin.bom))
+    api(libs.koin.core)
+    api(libs.koin.annotations)
     api(libs.coroutine.core)
     api(libs.kotlinx.serialization.json)
+    ksp(libs.koin.ksp.compiler)
+
     testApi(libs.bundles.domain.test)
 }
