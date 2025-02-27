@@ -122,7 +122,7 @@ detekt {
 dependencies {
     implementation(project(":core:ui"))
 
-    ksp(libs.koin.compiler)
+    ksp(libs.koin.ksp.compiler)
     testImplementation(libs.bundles.domain.test)
     androidTestImplementation(libs.bundles.app.test)
 }
