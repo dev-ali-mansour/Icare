@@ -22,10 +22,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="eg.edu.cu.csds.icare.patient.debug" />
+                  <option name="mobileSdkAppId" value="1:1018351559637:android:8e525c647083386d19935c" />
+                  <option name="projectId" value="icare-51be3" />
+                  <option name="projectNumber" value="1018351559637" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
