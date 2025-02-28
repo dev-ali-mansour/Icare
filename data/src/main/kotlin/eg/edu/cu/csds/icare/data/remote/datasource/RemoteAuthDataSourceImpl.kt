@@ -22,12 +22,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import org.koin.core.annotation.Single
 import timber.log.Timber
 import java.net.ConnectException
 import java.net.HttpURLConnection
 import java.net.HttpURLConnection.HTTP_OK
 import java.net.HttpURLConnection.HTTP_UNAUTHORIZED
 
+@Single
 class RemoteAuthDataSourceImpl(
     private val auth: FirebaseAuth,
     private val service: ApiService,
@@ -132,7 +134,7 @@ class RemoteAuthDataSourceImpl(
         email: String,
         password: String,
     ): Flow<Resource<Boolean>> =
-        flow {
+        flow<Resource<Boolean>> {
             emit(Resource.Loading())
             val result = auth.signInWithEmailAndPassword(email, password).await()
             result.user?.let {
