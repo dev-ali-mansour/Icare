@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.androidx.room)
     alias(libs.plugins.ktlint)
 }
 
@@ -25,9 +26,8 @@ android {
         testInstrumentationRunner = TestBuildConfig.TEST_INSTRUMENTATION_RUNNER
         consumerProguardFiles("consumer-rules.pro")
 
-        ksp {
-            arg("KOIN_CONFIG_CHECK", "true")
-            arg("room.schemaLocation", "$projectDir/schemas")
+        room {
+            schemaDirectory("$projectDir/schemas")
         }
     }
 
@@ -191,6 +191,10 @@ tasks {
 detekt {
     source.setFrom("src/main/java", "src/main/kotlin")
     ignoredBuildTypes = listOf("release")
+}
+
+ksp {
+    arg("KOIN_CONFIG_CHECK", "true")
 }
 
 dependencies {

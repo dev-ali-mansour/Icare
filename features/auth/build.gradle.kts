@@ -26,10 +26,6 @@ android {
 
         testInstrumentationRunner = TestBuildConfig.TEST_INSTRUMENTATION_RUNNER
         consumerProguardFiles("consumer-rules.pro")
-
-        ksp {
-            arg("KOIN_CONFIG_CHECK", "true")
-        }
     }
 
     signingConfigs {
@@ -120,6 +116,10 @@ tasks {
 detekt {
     source.setFrom("src/main/java", "src/main/kotlin")
     ignoredBuildTypes = listOf("release")
+}
+
+ksp {
+    arg("KOIN_CONFIG_CHECK", "true")
 }
 
 dependencies {
