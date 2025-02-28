@@ -3,7 +3,9 @@ package eg.edu.cu.csds.icare.data.local.datasource
 import eg.edu.cu.csds.icare.data.local.db.dao.UserDao
 import eg.edu.cu.csds.icare.data.local.db.entity.PermissionEntity
 import eg.edu.cu.csds.icare.data.local.db.entity.UserEntity
+import org.koin.core.annotation.Single
 
+@Single
 class LocalAuthDataSourceImpl(
     private val userDao: UserDao,
 ) : LocalAuthDataSource {

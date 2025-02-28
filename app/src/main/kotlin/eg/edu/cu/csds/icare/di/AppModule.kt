@@ -1,12 +1,9 @@
 package eg.edu.cu.csds.icare.di
 
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.Dispatchers
-import org.koin.dsl.module
+import eg.edu.cu.csds.icare.core.ui.di.CoreUiModule
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 
-val appModule =
-    module {
-        single { Dispatchers.IO }
-        single { Firebase.auth }
-    }
+@Module(includes = [CoreUiModule::class])
+@ComponentScan("eg.edu.cu.csds.icare")
+class AppModule
