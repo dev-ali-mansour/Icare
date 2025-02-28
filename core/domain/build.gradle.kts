@@ -11,7 +11,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ktlint)
-    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -23,10 +22,6 @@ android {
 
         testInstrumentationRunner = TestBuildConfig.TEST_INSTRUMENTATION_RUNNER
         consumerProguardFiles("consumer-rules.pro")
-
-        ksp {
-            arg("KOIN_CONFIG_CHECK", "true")
-        }
     }
 
     signingConfigs {
@@ -105,7 +100,6 @@ dependencies {
     api(libs.koin.annotations)
     api(libs.coroutine.core)
     api(libs.kotlinx.serialization.json)
-    ksp(libs.koin.ksp.compiler)
 
     testApi(libs.bundles.domain.test)
 }

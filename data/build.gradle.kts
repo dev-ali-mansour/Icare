@@ -193,6 +193,10 @@ detekt {
     ignoredBuildTypes = listOf("release")
 }
 
+ksp {
+    arg("KOIN_CONFIG_CHECK", "true")
+}
+
 dependencies {
 
     implementation(project(":core:domain"))
@@ -210,8 +214,4 @@ dependencies {
     testImplementation(libs.bundles.data.test)
     testImplementation(libs.room.testing)
     androidTestImplementation(libs.androidx.junit)
-}
-
-ksp {
-    arg("KOIN_CONFIG_CHECK", "true")
 }
