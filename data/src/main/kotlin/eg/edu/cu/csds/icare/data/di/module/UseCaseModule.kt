@@ -1,5 +1,7 @@
 package eg.edu.cu.csds.icare.data.di.module
 
+import eg.edu.cu.csds.icare.core.domain.repository.AppRepository
+import eg.edu.cu.csds.icare.core.domain.repository.AuthRepository
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.DeleteAccount
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfo
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkTokenAccount
@@ -10,19 +12,38 @@ import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithToken
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOut
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoarding
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.SaveOnBoarding
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.module
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
 
-val useCaseModule =
-    module {
-        singleOf(::SaveOnBoarding)
-        singleOf(::ReadOnBoarding)
-        singleOf(::SignInWithEmailAndPassword)
-        singleOf(::SignInWithToken)
-        singleOf(::SignOut)
-        singleOf(::Register)
-        singleOf(::SendRecoveryMail)
-        singleOf(::GetUserInfo)
-        singleOf(::LinkTokenAccount)
-        singleOf(::DeleteAccount)
-    }
+@Module(includes = [RepositoryModule::class])
+class UseCaseModule {
+    @Single
+    fun provideReadOnBoarding(appRepository: AppRepository) = ReadOnBoarding(appRepository)
+
+    @Single
+    fun provideSaveOnBoarding(appRepository: AppRepository) = SaveOnBoarding(appRepository)
+
+    @Single
+    fun provideRegister(repository: AuthRepository) = Register(repository)
+
+    @Single
+    fun provideSendRecoveryMail(repository: AuthRepository) = SendRecoveryMail(repository)
+
+    @Single
+    fun provideDeleteAccount(repository: AuthRepository) = DeleteAccount(repository)
+
+    @Single
+    fun provideGetUserInfo(repository: AuthRepository) = GetUserInfo(repository)
+
+    @Single
+    fun provideSignInWithEmailAndPassword(repository: AuthRepository) = SignInWithEmailAndPassword(repository)
+
+    @Single
+    fun provideSignInWithToken(repository: AuthRepository) = SignInWithToken(repository)
+
+    @Single
+    fun provideSignOut(repository: AuthRepository) = SignOut(repository)
+
+    @Single
+    fun provideLinkTokenAccount(repository: AuthRepository) = LinkTokenAccount(repository)
+}
