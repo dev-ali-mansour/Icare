@@ -3,9 +3,11 @@ package eg.edu.cu.csds.icare.data.local.db
 import android.content.Context
 import androidx.security.crypto.EncryptedFile
 import androidx.security.crypto.MasterKey
+import org.koin.core.annotation.Single
 import java.io.File
 import java.security.SecureRandom
 
+@Single
 class DbPassPhrase(
     private val context: Context,
 ) {
