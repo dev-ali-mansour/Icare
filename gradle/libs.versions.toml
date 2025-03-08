@@ -12,9 +12,9 @@ mockWebServer = "5.0.0-alpha.14"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
-activityCompose = "1.10.0"
-constrainLayout = "1.1.0"
-navigationCompose = "2.8.7"
+activityCompose = "1.10.1"
+constrainLayout = "1.1.1"
+navigationCompose = "2.8.8"
 composeBom = "2025.02.00"
 coilCompose = "2.7.0"
 appUpdates = "2.1.0"
@@ -75,7 +75,7 @@ koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose" }
 koin-androidx-compose-navigation = { module = "io.insert-koin:koin-androidx-compose-navigation" }
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koinAnnotations" }
 koin-androidx-workmanager = { module = "io.insert-koin:koin-androidx-workmanager" }
-koin-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koinAnnotations" }
+koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koinAnnotations" }
 splashScreen = { module = "androidx.core:core-splashscreen", version.ref = "splashScreen" }
 coroutine-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutine" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "ktxSerialization" }
@@ -117,7 +117,7 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 [bundles]
 appcompat = ["appcompat", "appcompat-resources"]
 compose = ["androidx-activity-compose", "androidx-compose-foundation", "androidx-ui", "androidx-ui-tooling", "androidx-ui-tooling-preview", "androidx-ui-graphics", "compose-runtime", "compose-animation", "androidx-material3", "androidx-constraintlayout", "androidx-navigation"]
-koin = ["koin-annotations", "koin-compiler", "koin-androidx-workmanager", "koin-androidx-compose", "koin-androidx-compose-navigation"]
+koin-android = ["koin-androidx-compose", "koin-androidx-compose-navigation", "koin-androidx-workmanager"]
 coil = ["coil-compose", "coil-gif"]
 firebase = ["firebase-crashlytics", "firebase-messaging", "firebase-auth","google-auth", "facebook-sdk"]
 lifecycle = ["androidx-lifecycle-runtime-ktx", "androidx-lifecycle-process"]
@@ -137,5 +137,6 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsPlugin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+androidx-room = { id = "androidx.room", version.ref = "room" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

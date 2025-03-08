@@ -8,44 +8,43 @@ import eg.edu.cu.csds.icare.data.local.db.DbPassPhrase
 import eg.edu.cu.csds.icare.data.local.db.dao.SettingsDao
 import eg.edu.cu.csds.icare.data.local.db.dao.UserDao
 import net.sqlcipher.database.SupportFactory
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
 
-val roomModule =
-    module {
-        single { provideDbPassPhrase(get()) }
-        single { provideSupportFactory(get()) }
-        single { provideAppDatabase(get(), get()) }
-        single { provideSettingsDao(get()) }
-        single { provideUserDao(get()) }
-    }
+@Module
+@ComponentScan
+class RoomModule {
+    @Single
+    fun provideSupportFactory(passphrase: DbPassPhrase): SupportFactory = SupportFactory(passphrase.getPassphrase())
 
-fun provideDbPassPhrase(context: Context): DbPassPhrase = DbPassPhrase(context)
+    @Single
+    fun provideAppDatabase(
+        context: Context,
+        supportFactory: SupportFactory,
+    ): AppDatabase =
+        when {
+            BuildConfig.DEBUG ->
+                Room
+                    .databaseBuilder(
+                        context,
+                        AppDatabase::class.java,
+                        "ICare",
+                    ).build()
 
-fun provideSupportFactory(passphrase: DbPassPhrase): SupportFactory = SupportFactory(passphrase.getPassphrase())
+            else ->
+                Room
+                    .databaseBuilder(
+                        context,
+                        AppDatabase::class.java,
+                        "ICare",
+                    ).openHelperFactory(supportFactory)
+                    .build()
+        }
 
-fun provideAppDatabase(
-    context: Context,
-    supportFactory: SupportFactory,
-): AppDatabase =
-    when {
-        BuildConfig.DEBUG ->
-            Room
-                .databaseBuilder(
-                    context,
-                    AppDatabase::class.java,
-                    "ICare",
-                ).build()
+    @Single
+    fun provideSettingsDao(db: AppDatabase): SettingsDao = db.settingsDao()
 
-        else ->
-            Room
-                .databaseBuilder(
-                    context,
-                    AppDatabase::class.java,
-                    "ICare",
-                ).openHelperFactory(supportFactory)
-                .build()
-    }
-
-fun provideSettingsDao(db: AppDatabase): SettingsDao = db.settingsDao()
-
-fun provideUserDao(db: AppDatabase): UserDao = db.userDao()
+    @Single
+    fun provideUserDao(db: AppDatabase): UserDao = db.userDao()
+}

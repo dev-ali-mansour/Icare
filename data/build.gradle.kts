@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.androidx.room)
     alias(libs.plugins.ktlint)
 }
 
@@ -25,8 +26,8 @@ android {
         testInstrumentationRunner = TestBuildConfig.TEST_INSTRUMENTATION_RUNNER
         consumerProguardFiles("consumer-rules.pro")
 
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
+        room {
+            schemaDirectory("$projectDir/schemas")
         }
     }
 
@@ -192,19 +193,22 @@ detekt {
     ignoredBuildTypes = listOf("release")
 }
 
+ksp {
+    arg("KOIN_CONFIG_CHECK", "true")
+}
+
 dependencies {
 
     implementation(project(":core:domain"))
 
     implementation(libs.androidx.core.ktx)
     implementation(platform(libs.koin.bom))
-    implementation(libs.bundles.koin)
-    ksp(libs.koin.compiler)
     api(libs.timber)
     api(platform(libs.firebase.bom))
     api(libs.bundles.firebase)
     implementation(libs.bundles.retrofit)
     implementation(libs.bundles.room)
+    ksp(libs.koin.ksp.compiler)
     ksp(libs.room.compiler)
 
     testImplementation(libs.bundles.data.test)

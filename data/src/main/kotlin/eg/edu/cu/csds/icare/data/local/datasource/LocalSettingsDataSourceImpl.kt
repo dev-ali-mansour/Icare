@@ -5,7 +5,9 @@ import eg.edu.cu.csds.icare.data.local.db.dao.SettingsDao
 import eg.edu.cu.csds.icare.data.local.db.entity.SettingsEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.koin.core.annotation.Single
 
+@Single
 class LocalSettingsDataSourceImpl(
     private val settingsDao: SettingsDao,
 ) : LocalSettingsDataSource {
