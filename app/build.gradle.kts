@@ -151,6 +151,10 @@ tasks {
     }
 }
 
+ksp {
+    arg("KOIN_CONFIG_CHECK", "true")
+}
+
 dependencies {
     implementation(project(":core:ui"))
     implementation(project(":features:on_boarding"))
@@ -171,6 +175,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
     implementation(libs.timber)
+    ksp(libs.koin.ksp.compiler)
 
     testImplementation(libs.bundles.app.test)
     debugImplementation(libs.androidx.ui.tooling)

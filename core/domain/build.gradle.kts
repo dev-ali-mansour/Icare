@@ -95,7 +95,11 @@ detekt {
 }
 
 dependencies {
+    api(platform(libs.koin.bom))
+    api(libs.koin.core)
+    api(libs.koin.annotations)
     api(libs.coroutine.core)
     api(libs.kotlinx.serialization.json)
+
     testApi(libs.bundles.domain.test)
 }

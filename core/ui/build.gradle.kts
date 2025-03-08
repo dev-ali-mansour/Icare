@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.ktlint)
 }
 
@@ -100,6 +101,10 @@ detekt {
     ignoredBuildTypes = listOf("release")
 }
 
+ksp {
+    arg("KOIN_CONFIG_CHECK", "true")
+}
+
 dependencies {
     api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     api(project(":core:domain"))
@@ -111,11 +116,12 @@ dependencies {
     api(libs.bundles.coil)
     api(libs.bundles.appcompat)
     api(platform(libs.koin.bom))
-    api(libs.bundles.koin)
+    api(libs.bundles.koin.android)
     api(platform(libs.firebase.bom))
     api(libs.firebase.auth)
     implementation(libs.androidx.browser)
     implementation(libs.kotlinx.serialization.json)
+    ksp(libs.koin.ksp.compiler)
 
     testImplementation(libs.bundles.app.test)
     androidTestImplementation(libs.androidx.ui.test.manifest)

@@ -1,4 +1,3 @@
-
 import build.Build
 import build.BuildConfig
 import build.BuildDimensions
@@ -119,10 +118,14 @@ detekt {
     ignoredBuildTypes = listOf("release")
 }
 
+ksp {
+    arg("KOIN_CONFIG_CHECK", "true")
+}
+
 dependencies {
     implementation(project(":core:ui"))
+    ksp(libs.koin.ksp.compiler)
 
-    ksp(libs.koin.compiler)
     testImplementation(libs.bundles.domain.test)
     androidTestImplementation(libs.bundles.app.test)
 }
