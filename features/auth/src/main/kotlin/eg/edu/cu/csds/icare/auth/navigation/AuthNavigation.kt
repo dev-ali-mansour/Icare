@@ -24,8 +24,8 @@ fun NavGraphBuilder.authenticationRoute(
     composable<Screen.Login> {
         LoginScreen(
             onRecoveryClicked = { onRecoveryClicked() },
-            onCreateAnAccountClicked = { onCreateAccountClicked() },
             onLoginSuccess = { onLoginSuccess() },
+            onCreateAnAccountClicked = { onCreateAccountClicked() },
             authViewModel = authViewModel,
         )
     }
