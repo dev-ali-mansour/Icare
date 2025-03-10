@@ -74,8 +74,6 @@ internal fun LoginContent(
     onRecoveryClicked: () -> Unit,
     onLoginButtonClicked: () -> Unit,
     onGoogleButtonClicked: () -> Unit,
-    onFacebookButtonClicked: () -> Unit,
-    onCreateAnAccountClicked: () -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize(),
@@ -89,13 +87,19 @@ internal fun LoginContent(
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    }.fillMaxWidth()
+                    }
+                    .fillMaxWidth()
                     .height(300.dp)
                     .background(
                         brush =
                             Brush.verticalGradient(
                                 startY = 0.0f,
-                                colors = listOf(barBackgroundColor, barBackgroundColor, Color.White),
+                                colors =
+                                    listOf(
+                                        barBackgroundColor,
+                                        barBackgroundColor,
+                                        Color.White,
+                                    ),
                             ),
                     ),
         ) {
@@ -139,7 +143,8 @@ internal fun LoginContent(
                         end.linkTo(parent.end)
                         top.linkTo(parent.top, margin = 230.dp)
                         height = Dimension.fillToConstraints
-                    }.clip(
+                    }
+                    .clip(
                         RoundedCornerShape(
                             topStart = XL4_PADDING,
                             topEnd = XL4_PADDING,
@@ -253,6 +258,15 @@ internal fun LoginContent(
 
                 Spacer(modifier = Modifier.height(S_PADDING))
 
+                AnimatedButton(
+                    modifier = Modifier.fillMaxWidth(fraction = 0.6f),
+                    text = stringResource(id = R.string.login),
+                    color = buttonBackgroundColor,
+                    onClick = { onLoginButtonClicked() },
+                )
+
+                Spacer(modifier = Modifier.height(S_PADDING))
+
                 Text(
                     text = stringResource(id = CoreR.string.or),
                     fontSize = MaterialTheme.typography.titleSmall.fontSize,
@@ -270,33 +284,16 @@ internal fun LoginContent(
                         Modifier
                             .fillMaxWidth(fraction = 0.8f)
                             .padding(vertical = S_PADDING),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.Center,
                 ) {
-                    SocialSignInButton(iconId = CoreR.drawable.ic_social_google) {
+                    SocialSignInButton(
+                        modifier = Modifier.fillMaxWidth(fraction = 0.8f),
+                        iconId = CoreR.drawable.ic_social_google,
+                    ) {
                         onGoogleButtonClicked()
-                    }
-
-                    SocialSignInButton(iconId = CoreR.drawable.ic_social_facebook) {
-                        onFacebookButtonClicked()
                     }
                 }
                 Spacer(modifier = Modifier.height(S_PADDING))
-                AnimatedButton(
-                    modifier = Modifier.fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(id = R.string.login),
-                    color = buttonBackgroundColor,
-                    onClick = { onLoginButtonClicked() },
-                )
-                Text(
-                    text = stringResource(id = R.string.do_not_have_account),
-                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                    fontFamily = helveticaFamily,
-                    color = textColor,
-                    modifier =
-                        Modifier
-                            .padding(L_PADDING)
-                            .clickable { onCreateAnAccountClicked() },
-                )
             }
         }
 
@@ -332,8 +329,6 @@ internal fun LoginContentPreview() {
             onRecoveryClicked = {},
             onLoginButtonClicked = {},
             onGoogleButtonClicked = {},
-            onFacebookButtonClicked = {},
-            onCreateAnAccountClicked = {},
         )
     }
 }
