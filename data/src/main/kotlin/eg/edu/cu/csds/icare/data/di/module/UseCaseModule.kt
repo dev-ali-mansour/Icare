@@ -8,7 +8,7 @@ import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkTokenAccount
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.Register
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SendRecoveryMail
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithEmailAndPassword
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithToken
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithGoogle
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOut
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoarding
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.SaveOnBoarding
@@ -39,7 +39,7 @@ class UseCaseModule {
     fun provideSignInWithEmailAndPassword(repository: AuthRepository) = SignInWithEmailAndPassword(repository)
 
     @Single
-    fun provideSignInWithToken(repository: AuthRepository) = SignInWithToken(repository)
+    fun provideSignInWithGoogle(repository: AuthRepository) = SignInWithGoogle(repository)
 
     @Single
     fun provideSignOut(repository: AuthRepository) = SignOut(repository)
