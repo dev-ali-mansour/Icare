@@ -158,22 +158,10 @@ class RemoteAuthDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun signInWithToken(
-        providerId: String,
-        token: String,
-    ): Flow<Resource<Boolean>> =
+    override fun signInWithGoogle(token: String): Flow<Resource<Boolean>> =
         flow<Resource<Boolean>> {
             emit(Resource.Loading())
-            val credential =
-                when (providerId) {
-                    GoogleAuthProvider.PROVIDER_ID ->
-                        GoogleAuthProvider.getCredential(token, null)
-
-                    FacebookAuthProvider.PROVIDER_ID ->
-                        FacebookAuthProvider.getCredential(token)
-
-                    else -> throw FirebaseAuthException("17016", "No such provider error")
-                }
+            val credential = GoogleAuthProvider.getCredential(token, null)
             val result = Firebase.auth.signInWithCredential(credential).await()
             result.user?.let { user ->
                 val userToken =
