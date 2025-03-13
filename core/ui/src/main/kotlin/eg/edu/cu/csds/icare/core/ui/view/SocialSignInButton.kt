@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -17,9 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import eg.edu.cu.csds.icare.core.ui.R
-import eg.edu.cu.csds.icare.core.ui.theme.BUTTON_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.MEDIUM_ICON_SIZE
-import eg.edu.cu.csds.icare.core.ui.theme.SOCIAL_BUTTON_WIDTH
+import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 
@@ -32,16 +32,10 @@ fun SocialSignInButton(
     Surface(
         modifier =
             modifier
-                .size(SOCIAL_BUTTON_WIDTH, BUTTON_HEIGHT)
+                .size(ButtonDefaults.MinWidth, ButtonDefaults.MinHeight)
                 .clickable { onClick() },
         color = contentBackgroundColor,
-        shape =
-            RoundedCornerShape(
-                topStart = XS_PADDING,
-                topEnd = XS_PADDING,
-                bottomStart = XS_PADDING,
-                bottomEnd = XS_PADDING,
-            ),
+        shape = RoundedCornerShape(topEnd = S_PADDING, bottomStart = S_PADDING),
     ) {
         Column(
             modifier = Modifier.padding(XS_PADDING),
