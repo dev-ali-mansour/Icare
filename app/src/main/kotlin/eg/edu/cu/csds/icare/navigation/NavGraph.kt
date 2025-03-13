@@ -27,7 +27,7 @@ import eg.edu.cu.csds.icare.onboarding.navigation.onBoardingRoute
 import kotlinx.coroutines.delay
 import kotlin.system.exitProcess
 
-@Suppress("LongMethod", "UnusedParameter")
+@Suppress("UnusedParameter")
 @Composable
 fun SetupNavGraph(
     firebaseAuth: FirebaseAuth,
