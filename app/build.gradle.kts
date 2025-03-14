@@ -105,7 +105,7 @@ android {
             applicationIdSuffix = ".$name"
             versionNameSuffix = "-$name"
         }
-        create(FlavorTypes.DOCTOR) {
+        create(FlavorTypes.STAFF) {
             dimension = BuildDimensions.APP
             applicationIdSuffix = ".$name"
             versionNameSuffix = "-$name"
