@@ -202,8 +202,8 @@ internal fun PagerScreen(onBoardingPage: OnBoardingPage) {
         Image(
             modifier =
                 Modifier
-                    .fillMaxWidth(fraction = 0.5f)
-                    .fillMaxHeight(fraction = 0.5f),
+                    .fillMaxWidth(fraction = 0.75f)
+                    .fillMaxHeight(fraction = 0.55f),
             painter = painterResource(id = onBoardingPage.image),
             contentDescription = null,
         )
