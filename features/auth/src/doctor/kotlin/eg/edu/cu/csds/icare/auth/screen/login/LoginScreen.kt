@@ -35,8 +35,8 @@ import kotlinx.coroutines.launch
 internal fun LoginScreen(
     authViewModel: AuthViewModel,
     onRecoveryClicked: () -> Unit,
-    onCreateAnAccountClicked: () -> Unit,
     onLoginSuccess: () -> Unit,
+    onCreateAnAccountClicked: () -> Unit = {},
     context: Context = LocalContext.current,
 ) {
     val email by authViewModel.emailState
@@ -94,8 +94,6 @@ internal fun LoginScreen(
                     }
                 },
                 onGoogleButtonClicked = { context.signInWithGoogle(launcher = launcher) },
-                onFacebookButtonClicked = { },
-                onCreateAnAccountClicked = { onCreateAnAccountClicked() },
             )
 
             LaunchedEffect(key1 = loginRes) {

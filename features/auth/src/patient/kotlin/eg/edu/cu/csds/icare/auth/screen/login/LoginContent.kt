@@ -74,7 +74,6 @@ internal fun LoginContent(
     onRecoveryClicked: () -> Unit,
     onLoginButtonClicked: () -> Unit,
     onGoogleButtonClicked: () -> Unit,
-    onFacebookButtonClicked: () -> Unit,
     onCreateAnAccountClicked: () -> Unit,
 ) {
     ConstraintLayout(
@@ -95,7 +94,12 @@ internal fun LoginContent(
                         brush =
                             Brush.verticalGradient(
                                 startY = 0.0f,
-                                colors = listOf(barBackgroundColor, barBackgroundColor, Color.White),
+                                colors =
+                                    listOf(
+                                        barBackgroundColor,
+                                        barBackgroundColor,
+                                        Color.White,
+                                    ),
                             ),
                     ),
         ) {
@@ -139,12 +143,7 @@ internal fun LoginContent(
                         end.linkTo(parent.end)
                         top.linkTo(parent.top, margin = 230.dp)
                         height = Dimension.fillToConstraints
-                    }.clip(
-                        RoundedCornerShape(
-                            topStart = XL4_PADDING,
-                            topEnd = XL4_PADDING,
-                        ),
-                    ),
+                    }.clip(RoundedCornerShape(topStart = XL4_PADDING, topEnd = XL4_PADDING)),
         ) {
             Column(
                 modifier =
@@ -238,7 +237,9 @@ internal fun LoginContent(
                         )
                     }
                 }
+
                 Spacer(modifier = Modifier.height(S_PADDING))
+
                 Text(
                     text = stringResource(id = R.string.forgot_your_password),
                     fontSize = MaterialTheme.typography.bodyMedium.fontSize,
@@ -253,40 +254,13 @@ internal fun LoginContent(
 
                 Spacer(modifier = Modifier.height(S_PADDING))
 
-                Text(
-                    text = stringResource(id = CoreR.string.or),
-                    fontSize = MaterialTheme.typography.titleSmall.fontSize,
-                    fontFamily = helveticaFamily,
-                    textAlign = TextAlign.Center,
-                    color = textColor,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = XL_PADDING),
-                )
-
-                Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(fraction = 0.8f)
-                            .padding(vertical = S_PADDING),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    SocialSignInButton(iconId = CoreR.drawable.ic_social_google) {
-                        onGoogleButtonClicked()
-                    }
-
-                    SocialSignInButton(iconId = CoreR.drawable.ic_social_facebook) {
-                        onFacebookButtonClicked()
-                    }
-                }
-                Spacer(modifier = Modifier.height(S_PADDING))
                 AnimatedButton(
                     modifier = Modifier.fillMaxWidth(fraction = 0.6f),
                     text = stringResource(id = R.string.login),
                     color = buttonBackgroundColor,
                     onClick = { onLoginButtonClicked() },
                 )
+
                 Text(
                     text = stringResource(id = R.string.do_not_have_account),
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
@@ -297,6 +271,35 @@ internal fun LoginContent(
                             .padding(L_PADDING)
                             .clickable { onCreateAnAccountClicked() },
                 )
+
+                Spacer(modifier = Modifier.height(S_PADDING))
+
+                Text(
+                    text = stringResource(id = CoreR.string.or),
+                    fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                    fontFamily = helveticaFamily,
+                    textAlign = TextAlign.Center,
+                    color = textColor,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = L_PADDING),
+                )
+
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(fraction = 0.8f)
+                            .padding(vertical = S_PADDING),
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    SocialSignInButton(
+                        modifier = Modifier.fillMaxWidth(fraction = 0.8f),
+                        iconId = CoreR.drawable.ic_social_google,
+                    ) {
+                        onGoogleButtonClicked()
+                    }
+                }
             }
         }
 
@@ -332,7 +335,6 @@ internal fun LoginContentPreview() {
             onRecoveryClicked = {},
             onLoginButtonClicked = {},
             onGoogleButtonClicked = {},
-            onFacebookButtonClicked = {},
             onCreateAnAccountClicked = {},
         )
     }
