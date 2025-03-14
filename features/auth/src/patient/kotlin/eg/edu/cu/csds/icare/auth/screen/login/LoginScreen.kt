@@ -94,7 +94,6 @@ internal fun LoginScreen(
                     }
                 },
                 onGoogleButtonClicked = { context.signInWithGoogle(launcher = launcher) },
-                onFacebookButtonClicked = { },
                 onCreateAnAccountClicked = { onCreateAnAccountClicked() },
             )
 

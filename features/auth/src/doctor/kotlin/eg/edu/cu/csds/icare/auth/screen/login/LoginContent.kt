@@ -87,8 +87,7 @@ internal fun LoginContent(
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    }
-                    .fillMaxWidth()
+                    }.fillMaxWidth()
                     .height(300.dp)
                     .background(
                         brush =
@@ -143,13 +142,7 @@ internal fun LoginContent(
                         end.linkTo(parent.end)
                         top.linkTo(parent.top, margin = 230.dp)
                         height = Dimension.fillToConstraints
-                    }
-                    .clip(
-                        RoundedCornerShape(
-                            topStart = XL4_PADDING,
-                            topEnd = XL4_PADDING,
-                        ),
-                    ),
+                    }.clip(RoundedCornerShape(topStart = XL4_PADDING, topEnd = XL4_PADDING)),
         ) {
             Column(
                 modifier =
@@ -243,7 +236,9 @@ internal fun LoginContent(
                         )
                     }
                 }
+
                 Spacer(modifier = Modifier.height(S_PADDING))
+
                 Text(
                     text = stringResource(id = R.string.forgot_your_password),
                     fontSize = MaterialTheme.typography.bodyMedium.fontSize,
