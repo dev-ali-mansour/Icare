@@ -7,78 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1018351559637:android:def922a65c3d8bd719935c",
-        "android_client_info": {
-          "package_name": "eg.edu.cu.csds.icare.doctor"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCWgJZ8gINjomuNso32UtB5dyB5kUSBon0"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1018351559637:android:16b9e0b1a0b4361c19935c",
-        "android_client_info": {
-          "package_name": "eg.edu.cu.csds.icare.doctor.debug"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1018351559637-nu4l9v2d5o2cai47vq264mbf339limr7.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "eg.edu.cu.csds.icare.doctor.debug",
-            "certificate_hash": "415c81898007c419a288bc9aacbf844ac1824723"
-          }
-        },
-        {
-          "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCWgJZ8gINjomuNso32UtB5dyB5kUSBon0"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:1018351559637:android:3e539c318be2398419935c",
         "android_client_info": {
           "package_name": "eg.edu.cu.csds.icare.patient"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1018351559637-ls2n3l6arj3gturuusegrh4b6f7iuliq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "eg.edu.cu.csds.icare.patient",
+            "certificate_hash": "f574f7369fe378f9790b173b6f97c2a85e53f953"
+          }
+        },
         {
           "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
           "client_type": 3
@@ -108,6 +50,88 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1018351559637-mg36vnikciug333cv25e3t14uqfe7qh3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "eg.edu.cu.csds.icare.patient.debug",
+            "certificate_hash": "415c81898007c419a288bc9aacbf844ac1824723"
+          }
+        },
+        {
+          "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWgJZ8gINjomuNso32UtB5dyB5kUSBon0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018351559637:android:4445887fc162c72319935c",
+        "android_client_info": {
+          "package_name": "eg.edu.cu.csds.icare.staff"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1018351559637-95qnipgvr4kktoo5rb8glbqp4ihqh852.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "eg.edu.cu.csds.icare.staff",
+            "certificate_hash": "f574f7369fe378f9790b173b6f97c2a85e53f953"
+          }
+        },
+        {
+          "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWgJZ8gINjomuNso32UtB5dyB5kUSBon0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018351559637:android:1d6116ec3a3b9f1019935c",
+        "android_client_info": {
+          "package_name": "eg.edu.cu.csds.icare.staff.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1018351559637-9b0vinlvafg592bqetm5n20ikbmb1652.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "eg.edu.cu.csds.icare.staff.debug",
+            "certificate_hash": "415c81898007c419a288bc9aacbf844ac1824723"
+          }
+        },
         {
           "client_id": "1018351559637-vrc44783rcbieherb8up1k5v714bdsbc.apps.googleusercontent.com",
           "client_type": 3
