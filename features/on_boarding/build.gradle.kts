@@ -84,7 +84,7 @@ android {
         create(FlavorTypes.PATIENT) {
             dimension = BuildDimensions.APP
         }
-        create(FlavorTypes.DOCTOR) {
+        create(FlavorTypes.STAFF) {
             dimension = BuildDimensions.APP
         }
     }
