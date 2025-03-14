@@ -4,11 +4,8 @@ import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 
-class SignInWithToken(
+class SignInWithGoogle(
     private val repository: AuthRepository,
 ) {
-    operator fun invoke(
-        providerId: String,
-        token: String,
-    ): Flow<Resource<Boolean>> = repository.signInWithToken(providerId, token)
+    operator fun invoke(token: String): Flow<Resource<Boolean>> = repository.signInWithGoogle(token)
 }

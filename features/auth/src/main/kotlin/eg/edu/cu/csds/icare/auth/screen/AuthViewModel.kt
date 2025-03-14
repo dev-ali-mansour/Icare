@@ -14,7 +14,7 @@ import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkTokenAccount
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.Register
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SendRecoveryMail
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithEmailAndPassword
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithToken
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithGoogle
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOut
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
@@ -30,7 +30,7 @@ class AuthViewModel(
     private val dispatcher: CoroutineDispatcher,
     private val register: Register,
     private val signInWithEmailAndPassword: SignInWithEmailAndPassword,
-    private val signInWithToken: SignInWithToken,
+    private val signInWithGoogle: SignInWithGoogle,
     private val sendRecoveryMail: SendRecoveryMail,
     private val linkTokenAccount: LinkTokenAccount,
     private val signOut: SignOut,
@@ -127,7 +127,7 @@ class AuthViewModel(
             val account = task.getResult(ApiException::class.java)
             viewModelScope.launch(dispatcher) {
                 account.idToken?.let { token ->
-                    signInWithToken(GoogleAuthProvider.PROVIDER_ID, token).collectLatest {
+                    signInWithGoogle(token).collectLatest {
                         _isLoading.value = it is Resource.Loading
                         _loginResFlow.value = it
                     }

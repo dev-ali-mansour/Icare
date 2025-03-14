@@ -38,11 +38,8 @@ class AuthRepositoryImpl(
             res
         }
 
-    override fun signInWithToken(
-        providerId: String,
-        token: String,
-    ): Flow<Resource<Boolean>> =
-        remoteAuthDataSource.signInWithToken(providerId, token).map { res ->
+    override fun signInWithGoogle(token: String): Flow<Resource<Boolean>> =
+        remoteAuthDataSource.signInWithGoogle(token).map { res ->
             if (res is Resource.Error) signOut()
             res
         }
