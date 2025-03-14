@@ -20,10 +20,7 @@ class MainViewModel(
     private val getUserInfo: GetUserInfo,
 ) : ViewModel() {
     private val _onBoardingCompleted: MutableStateFlow<Resource<Boolean>> =
-        MutableStateFlow(
-            Resource
-                .Unspecified(),
-        )
+        MutableStateFlow(Resource.Unspecified())
     val onBoardingCompleted: StateFlow<Resource<Boolean>> = _onBoardingCompleted
     private val _currentUserFlow: MutableStateFlow<Resource<User>> =
         MutableStateFlow(Resource.Unspecified())

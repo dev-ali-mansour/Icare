@@ -30,7 +30,7 @@ class AuthViewModel(
     private val dispatcher: CoroutineDispatcher,
     private val register: Register,
     private val signInWithEmailAndPassword: SignInWithEmailAndPassword,
-    private val signInWithFacebook: SignInWithGoogle,
+    private val signInWithGoogle: SignInWithGoogle,
     private val sendRecoveryMail: SendRecoveryMail,
     private val linkTokenAccount: LinkTokenAccount,
     private val signOut: SignOut,
@@ -127,7 +127,7 @@ class AuthViewModel(
             val account = task.getResult(ApiException::class.java)
             viewModelScope.launch(dispatcher) {
                 account.idToken?.let { token ->
-                    signInWithFacebook(token).collectLatest {
+                    signInWithGoogle(token).collectLatest {
                         _isLoading.value = it is Resource.Loading
                         _loginResFlow.value = it
                     }

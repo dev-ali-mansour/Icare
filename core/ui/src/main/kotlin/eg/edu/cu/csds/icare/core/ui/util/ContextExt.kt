@@ -85,14 +85,13 @@ fun Context.getSettingsItems(): ArrayList<SettingsItem> =
 
 fun Context.getErrorMessage(error: Throwable?): String =
     when (error) {
-        is SocketTimeoutException, is ConnectException, is UnknownHostException ->
+        is SocketTimeoutException, is ConnectException, is UnknownHostException, is FirebaseNetworkException ->
             getString(R.string.network_error)
 
         is UserNotAuthorizedException, is AccessTokenExpiredException ->
             getString(R.string.authorization_error)
 
         is FirebaseAuthUserCollisionException -> getString(R.string.user_collision_error)
-        is FirebaseNetworkException -> getString(R.string.network_error)
         is FirebaseAuthInvalidUserException -> getString(R.string.invalid_email_error)
 //        is CustomerNotFoundException -> getString(R.string.customer_error)
 
