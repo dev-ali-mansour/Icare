@@ -52,7 +52,7 @@ internal fun SplashScreen(
                     animation =
                         tween(
                             durationMillis = 1000,
-                            delayMillis = 20,
+                            delayMillis = 750,
                         ),
                     repeatMode = RepeatMode.Restart,
                 ),
