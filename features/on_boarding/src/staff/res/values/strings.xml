@@ -1,8 +1,8 @@
 <resources>
-    <string name="first_page_title">Greetings</string>
-    <string name="first_page_description">Are you a doctor? Because if you are, Then we have great news for you!</string>
-    <string name="second_page_title">Explore</string>
-    <string name="second_page_description">Find some great services provided to our doctors and health care staff, and some of the things that you didn\'t hear about.</string>
-    <string name="third_page_title">Power</string>
-    <string name="third_page_description">Check out the power of our useful instant services.</string>
+    <string name="first_page_title">Welcome to ICare</string>
+    <string name="first_page_description">Welcome! Empowering healthcare professionals.</string>
+    <string name="second_page_title">Efficient Patient Management</string>
+    <string name="second_page_description">Manage patient data efficiently and seamlessly.</string>
+    <string name="third_page_title">Smart Communication &amp; Workflow</string>
+    <string name="third_page_description">Stay connected with real-time updates and tools.</string>
 </resources>
