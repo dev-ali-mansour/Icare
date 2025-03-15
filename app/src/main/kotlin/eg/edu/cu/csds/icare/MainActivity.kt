@@ -12,12 +12,14 @@ import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
+import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
-    private val firebaseAuth: FirebaseAuth by inject()
     private val mainViewModel: MainViewModel by viewModel()
+    private val firebaseAuth: FirebaseAuth by inject()
+    private val mediaHelper: MediaHelper by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +32,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             IcareTheme {
                 MainScreen(
-                    firebaseAuth,
-                    mainViewModel,
+                    firebaseAuth = firebaseAuth,
+                    mainViewModel = mainViewModel,
+                    mediaHelper = mediaHelper,
                     showAppSettings = {
                         val intent =
                             Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {

@@ -43,3 +43,9 @@ val helveticaFamily =
         Font(R.font.helveticaneuelt_w20_55_roman, FontWeight.Normal),
         Font(R.font.helveticaneuelt_w20_75_bold, FontWeight.Bold),
     )
+
+val kufamFamily =
+    FontFamily(
+        Font(R.font.kufam_regular, FontWeight.Normal),
+        Font(R.font.kufam_bold, FontWeight.Bold),
+    )

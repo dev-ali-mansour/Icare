@@ -159,6 +159,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":features:on_boarding"))
     implementation(project(":features:auth"))
+    implementation(project(":features:home"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.lifecycle)
