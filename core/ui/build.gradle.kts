@@ -1,9 +1,11 @@
 
 import build.Build
 import build.BuildConfig
+import build.BuildDimensions
 import build.BuildTypes
 import extensions.getLocalProperty
 import extensions.osFamily
+import flavors.FlavorTypes
 import signing.SigningTypes
 import test.TestBuildConfig
 
@@ -76,6 +78,16 @@ android {
             isMinifyEnabled = Build.ReleaseExternalQA.isLibraryMinifyEnabled
             enableUnitTestCoverage = Build.ReleaseExternalQA.enableUnitTestCoverage
             signingConfig = signingConfigs.getByName(BuildTypes.RELEASE_EXTERNAL_QA)
+        }
+    }
+
+    flavorDimensions.add(BuildDimensions.APP)
+    productFlavors {
+        create(FlavorTypes.PATIENT) {
+            dimension = BuildDimensions.APP
+        }
+        create(FlavorTypes.STAFF) {
+            dimension = BuildDimensions.APP
         }
     }
 
