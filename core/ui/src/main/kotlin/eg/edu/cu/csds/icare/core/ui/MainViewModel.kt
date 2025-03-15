@@ -7,6 +7,7 @@ import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfo
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoarding
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -39,7 +40,9 @@ class MainViewModel(
                     viewModelScope.launch(dispatcher) {
                         runCatching {
                             // Todo replace this delay with actual call of fetching use cases
-
+                            _resultFlow.value = Resource.Loading()
+                            delay(timeMillis = 1000)
+                            _resultFlow.value = Resource.Success(null)
                             /*fetchClinics().distinctUntilChanged().collect {
                                 _resultFlow.value = it
                             }*/
