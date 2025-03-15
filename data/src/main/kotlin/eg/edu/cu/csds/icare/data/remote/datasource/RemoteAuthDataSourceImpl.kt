@@ -27,7 +27,6 @@ import timber.log.Timber
 import java.net.ConnectException
 import java.net.HttpURLConnection
 import java.net.HttpURLConnection.HTTP_OK
-import java.net.HttpURLConnection.HTTP_UNAUTHORIZED
 
 @Single
 class RemoteAuthDataSourceImpl(
@@ -141,14 +140,7 @@ class RemoteAuthDataSourceImpl(
             result.user?.let {
                 it.reload()
                 if (it.isEmailVerified) {
-                    getUserInfo().collect { res ->
-                        when (res) {
-                            is Resource.Unspecified -> emit(Resource.Unspecified())
-                            is Resource.Loading -> emit(Resource.Loading())
-                            is Resource.Success -> emit(Resource.Success(res.data != null))
-                            is Resource.Error -> emit(Resource.Error(res.error))
-                        }
-                    }
+                    emit(Resource.Success(true))
                 } else {
                     it.sendEmailVerification().await()
                     emit(Resource.Error(EmailVerificationException()))
@@ -164,35 +156,15 @@ class RemoteAuthDataSourceImpl(
             emit(Resource.Loading())
             val credential = GoogleAuthProvider.getCredential(token, null)
             val result = Firebase.auth.signInWithCredential(credential).await()
-            result.user?.let { user ->
-                val userToken =
-                    user
-                        .getIdToken(true)
-                        .await()
-                        .token
-                        .toString()
-                val map = HashMap<String, String>()
-                map["uid"] = user.uid
-                map["token"] = userToken
-                val response = service.isRegistered(map)
-                when (response.code()) {
-                    HTTP_OK ->
-                        response.body()?.let { res ->
-                            when (res.statusCode) {
-                                Constants.ERROR_CODE_OK -> emit(Resource.Success(res.isRegistered))
-                                else -> emit(Resource.Error(ConnectException()))
-                            }
-                        } ?: run { emit(Resource.Error(ConnectException())) }
-
-                    HTTP_UNAUTHORIZED -> emit(Resource.Error(UserNotAuthorizedException()))
-                    else -> emit(Resource.Error(ConnectException(response.code().toString())))
-                }
+            result.user
+                ?.let {
+                    emit(Resource.Success(true))
+                } ?: run {
+                emit(Resource.Error(UserNotAuthorizedException()))
             }
         }.catch {
             Timber.e("signInWithToken() Error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Resource.Success(true))
-            // Todo add error handling for other status codes
-//            emit(Resource.Error(it))
+            emit(Resource.Error(it))
         }
 
     override fun sendRecoveryEmail(email: String): Flow<Resource<Nothing?>> =
