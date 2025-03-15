@@ -34,13 +34,25 @@ class AuthRepositoryImpl(
         password: String,
     ): Flow<Resource<Boolean>> =
         remoteAuthDataSource.signInWithEmailAndPassword(email, password).map { res ->
-            if (res is Resource.Error) signOut()
+            when {
+                res is Resource.Success && res.data == true ->
+                    getUserInfo(true)
+
+                res is Resource.Error ->
+                    signOut()
+            }
             res
         }
 
     override fun signInWithGoogle(token: String): Flow<Resource<Boolean>> =
         remoteAuthDataSource.signInWithGoogle(token).map { res ->
-            if (res is Resource.Error) signOut()
+            when {
+                res is Resource.Success && res.data == true ->
+                    getUserInfo(true)
+
+                res is Resource.Error ->
+                    signOut()
+            }
             res
         }
 
@@ -76,7 +88,9 @@ class AuthRepositoryImpl(
                                 Resource.Success(data = user)
                             } ?: res
                         } else {
-                            res
+                            // Todo Pass resource error to the view model to handle it
+//                            res
+                            Resource.Success(User())
                         }
                     },
                 )
