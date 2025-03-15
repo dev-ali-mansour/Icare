@@ -8,4 +8,5 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class HomeViewModel : ViewModel() {
     val openDialog: MutableState<Boolean> = mutableStateOf(false)
+    val isPlayed: MutableState<Boolean> = mutableStateOf(false)
 }
