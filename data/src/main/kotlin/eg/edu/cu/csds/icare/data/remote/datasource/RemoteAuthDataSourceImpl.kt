@@ -50,7 +50,7 @@ class RemoteAuthDataSourceImpl(
                     map["token"] = token
                     val response = service.getLoginInfo(map)
                     when (response.code()) {
-                        HttpURLConnection.HTTP_OK ->
+                        HTTP_OK -> {
                             response.body()?.let { res ->
                                 when (res.errorCode) {
                                     Constants.ERROR_CODE_OK ->
@@ -75,6 +75,7 @@ class RemoteAuthDataSourceImpl(
                                     else -> emit(Resource.Error(UserNotAuthorizedException()))
                                 }
                             }
+                        }
 
                         else -> emit(Resource.Error(UserNotAuthorizedException()))
                     }
@@ -271,7 +272,7 @@ class RemoteAuthDataSourceImpl(
             map["token"] = token
             val response = service.register(map)
             when (response.code()) {
-                HttpURLConnection.HTTP_OK ->
+                HTTP_OK ->
                     response.body()?.let { res ->
                         when (res.errorCode) {
                             Constants.ERROR_CODE_OK -> emit(Resource.Success(null))
