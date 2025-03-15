@@ -1,0 +1,5 @@
+<resources>
+    <string name="exit_dialog_title">Exit</string>
+    <string name="exit_dialog">Are you sure you want to exit the application?</string>
+    <!--Multilingual Resources of Application-->
+</resources>
