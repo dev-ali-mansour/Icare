@@ -64,6 +64,7 @@ internal fun HomeScreen(
             .getPackageInfo(context.packageName, 0)
             .versionName ?: ""
     var openDialog by homeViewModel.openDialog
+    var isPlayed by homeViewModel.isPlayed
     val userResource by mainViewModel.currentUserFlow.collectAsStateWithLifecycle()
 
     BackHandler {
@@ -71,8 +72,11 @@ internal fun HomeScreen(
     }
 
     userResource.data?.let {
-        LaunchedEffect(key1 = Unit) {
-            mediaHelper.play(R.raw.welcome)
+        LaunchedEffect(key1 = isPlayed) {
+            if (!isPlayed) {
+                mediaHelper.play(R.raw.welcome)
+                isPlayed = true
+            }
         }
     }
 
