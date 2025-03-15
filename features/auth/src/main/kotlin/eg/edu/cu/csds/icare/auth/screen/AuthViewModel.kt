@@ -55,7 +55,6 @@ class AuthViewModel(
     val deleteAccountResFlow: StateFlow<Resource<Nothing?>> = _deleteAccountResFlow
     private val _isLoading = mutableStateOf(false)
     var isLoading: State<Boolean> = _isLoading
-    var branchesExpanded = mutableStateOf(false)
 
     var nameState = mutableStateOf("")
         private set
