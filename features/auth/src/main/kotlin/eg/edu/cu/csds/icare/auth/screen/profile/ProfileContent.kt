@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.auth.screen.account
+package eg.edu.cu.csds.icare.auth.screen.profile
 
 import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
