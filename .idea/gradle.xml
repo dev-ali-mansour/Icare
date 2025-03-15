@@ -31,6 +31,7 @@
             <option value="$PROJECT_DIR$/features/auth" />
             <option value="$PROJECT_DIR$/features/home" />
             <option value="$PROJECT_DIR$/features/on_boarding" />
+            <option value="$PROJECT_DIR$/features/settings" />
           </set>
         </option>
       </GradleProjectSettings>
