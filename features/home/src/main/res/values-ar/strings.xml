@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Multilingual General resources-->
+    <string name="exit_dialog_title">تسجيل الخروج</string>
+    <string name="exit_dialog">هل تود تسجيل الخروج الآن؟</string>
+
+    <!--Multilingual Resources of Application-->
+</resources>
