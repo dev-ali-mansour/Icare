@@ -14,6 +14,7 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.androidx.room)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
 }
 
 android {
