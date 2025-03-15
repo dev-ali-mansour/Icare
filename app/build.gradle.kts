@@ -5,7 +5,6 @@ import build.BuildTypes
 import extensions.getLocalProperty
 import extensions.osFamily
 import flavors.FlavorTypes
-import release.ReleaseConfig
 import signing.SigningTypes
 import test.TestBuildConfig
 
@@ -31,8 +30,8 @@ android {
         targetSdk = BuildConfig.TARGET_SDK_VERSION
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
-        versionCode = ReleaseConfig.VERSION_CODE
-        versionName = ReleaseConfig.VERSION_NAME
+        versionCode = 1
+        versionName = "1.0.0"
 
         testInstrumentationRunner = TestBuildConfig.TEST_INSTRUMENTATION_RUNNER
     }
