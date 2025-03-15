@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.theme.SPLASH_LOGO_SIZE
+import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun SplashScreen(
@@ -107,7 +108,7 @@ internal fun Splash(degrees: Float) {
                 Modifier
                     .size(SPLASH_LOGO_SIZE)
                     .rotate(degrees = degrees),
-            painter = painterResource(id = R.drawable.logo),
+            painter = painterResource(id = CoreR.drawable.logo),
             contentScale = ContentScale.Fit,
             contentDescription = null,
         )

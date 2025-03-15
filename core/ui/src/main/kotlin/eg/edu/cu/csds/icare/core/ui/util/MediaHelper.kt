@@ -7,8 +7,10 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Build
 import androidx.core.content.ContextCompat
+import org.koin.core.annotation.Single
 import timber.log.Timber
 
+@Single
 class MediaHelper(
     private val context: Context,
 ) {

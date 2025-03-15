@@ -1,7 +1,6 @@
 package eg.edu.cu.csds.icare.navigation
 
 import android.content.Context
-import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -13,16 +12,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.firebase.auth.FirebaseAuth
-import eg.edu.cu.csds.icare.MainActivity
 import eg.edu.cu.csds.icare.SplashScreen
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
 import eg.edu.cu.csds.icare.auth.screen.AuthViewModel
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
-import eg.edu.cu.csds.icare.core.ui.util.activity
+import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
 import eg.edu.cu.csds.icare.core.ui.util.getErrorMessage
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
+import eg.edu.cu.csds.icare.home.HomeViewModel
+import eg.edu.cu.csds.icare.home.navigation.homeRoute
 import eg.edu.cu.csds.icare.onboarding.navigation.onBoardingRoute
 import kotlinx.coroutines.delay
 import kotlin.system.exitProcess
@@ -31,9 +31,11 @@ import kotlin.system.exitProcess
 @Composable
 fun SetupNavGraph(
     firebaseAuth: FirebaseAuth,
+    mediaHelper: MediaHelper,
     navController: NavHostController,
     mainViewModel: MainViewModel,
     authViewModel: AuthViewModel,
+    homeViewModel: HomeViewModel,
     showAppSettings: () -> Unit,
     context: Context = LocalContext.current,
 ) {
@@ -108,8 +110,11 @@ fun SetupNavGraph(
                     }
                 },
                 onLoginSuccess = {
-                    context.activity.finish()
-                    context.startActivity(Intent(context, MainActivity::class.java))
+                    navController.navigate(Screen.Home) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
                 },
                 onRecoveryCompleted = {
                     navController.navigate(Screen.Login) {
@@ -125,6 +130,26 @@ fun SetupNavGraph(
                         }
                     }
                 },
+                onError = { error ->
+                    exitApp.value = false
+                    handleError(
+                        error,
+                        exitApp,
+                        context,
+                        authViewModel,
+                        navController,
+                        alertMessage,
+                        showAlert,
+                    )
+                },
+            )
+
+            homeRoute(
+                firebaseAuth = firebaseAuth,
+                mediaHelper = mediaHelper,
+                mainViewModel = mainViewModel,
+                homeViewModel = homeViewModel,
+                navigateToScreen = { screen -> navController.navigate(screen) },
                 onError = { error ->
                     exitApp.value = false
                     handleError(
