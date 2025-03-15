@@ -24,6 +24,7 @@ import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.home.HomeViewModel
 import eg.edu.cu.csds.icare.home.navigation.homeRoute
 import eg.edu.cu.csds.icare.onboarding.navigation.onBoardingRoute
+import eg.edu.cu.csds.icare.settings.navigation.settingsRoute
 import kotlinx.coroutines.delay
 import kotlin.system.exitProcess
 
@@ -163,11 +164,17 @@ fun SetupNavGraph(
                     )
                 },
             )
+
+            settingsRoute(
+                navigateToAbout = { navController.navigate(Screen.About) },
+                onNavigationIconClicked = {
+                    navController.navigateUpSafely()
+                },
+            )
         }
     }
 }
 
-@Suppress("UnusedPrivateMember")
 private fun NavHostController.navigateUpSafely() {
     if (previousBackStackEntry == null) {
         navigate(Screen.Home)
