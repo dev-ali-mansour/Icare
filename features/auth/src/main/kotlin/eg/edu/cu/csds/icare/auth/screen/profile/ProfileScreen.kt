@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.auth.screen.account
+package eg.edu.cu.csds.icare.auth.screen.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
