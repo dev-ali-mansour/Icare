@@ -1,3 +1,4 @@
 <resources>
+    <string name="internet_connection_error">Please connect to the internet to check app version!</string>
 
 </resources>
