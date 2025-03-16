@@ -163,13 +163,6 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.lifecycle)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.constraintlayout)
     implementation(libs.multidex)
     implementation(libs.splashScreen)
     implementation(libs.kotlinx.serialization.json)
