@@ -165,6 +165,7 @@ dependencies {
     implementation(libs.bundles.lifecycle)
     implementation(libs.multidex)
     implementation(libs.splashScreen)
+    implementation(libs.app.update)
     implementation(libs.kotlinx.serialization.json)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
