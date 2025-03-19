@@ -1,7 +1,7 @@
 <resources>
     <string name="email">Email Address</string>
     <string name="password">Password</string>
-    <string name="alpha_number">Alpha Number</string>
+    <string name="last_name">Last Name</string>
     <string name="national_id">National Id</string>
     <string name="generic_error">Something wrong happened. Please try again.</string>
     <string name="name_error">Please enter a valid full name.</string>
@@ -22,7 +22,7 @@
     <string name="register">Register</string>
     <string name="login_instead">Login Instead?</string>
     <string name="sign_out">Sign out</string>
-    <string name="full_name">Full Name</string>
+    <string name="first_name">First Name</string>
     <string name="phone_number">Phone Number</string>
     <string name="register_message">Your account has been created successfully! Please check your email to activate it.</string>
     <string name="complete_message">Your account registration has been completed successfully!</string>

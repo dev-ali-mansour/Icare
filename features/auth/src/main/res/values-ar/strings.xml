@@ -2,7 +2,7 @@
 <resources>
     <string name="email">البريد الإلكتروني</string>
     <string name="password">كلمة المرور</string>
-    <string name="alpha_number">الرقم الأبجدي</string>
+    <string name="last_name">الاسم الأخير</string>
     <string name="national_id">الرقم القومي</string>
     <string name="generic_error">لقد حدث خطأ ما. برجاء إعادة المحاولة.</string>
     <string name="name_error">يرجى إدخال اسمك الكامل بشكل صحيح.</string>
@@ -23,7 +23,7 @@
     <string name="complete_registration">استكمال التسجيل</string>
     <string name="register">تسجيل</string>
     <string name="login_instead">لديك حساب بالفعل؟</string>
-    <string name="full_name">الاسم الكامل</string>
+    <string name="first_name">الاسم الأول</string>
     <string name="phone_number">رقم الموبايل</string>
     <string name="register_message">تم إنشاء حسابك بنجاح! برجاء مراجعة بريدك الإلكتروني لتأكيده وتفعيل حسابك.</string>
     <string name="complete_message">تم استكمال بيانات تسجيل حسابك بنجاح!</string>
