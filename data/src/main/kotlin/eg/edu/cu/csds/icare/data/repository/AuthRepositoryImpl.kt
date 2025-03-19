@@ -22,12 +22,31 @@ class AuthRepositoryImpl(
     private val localAuthDataSource: LocalAuthDataSource,
 ) : AuthRepository {
     override fun register(
-        name: String,
+        firstName: String,
+        lastName: String,
         email: String,
-        nationalId: String,
-        phone: String,
         password: String,
-    ): Flow<Resource<Nothing?>> = remoteAuthDataSource.register(name, email, nationalId, phone, password)
+        birthDate: String,
+        gender: String,
+        chronicDiseases: String,
+        currentMedications: String,
+        allergies: String,
+        pastSurgeries: String,
+        weight: Double,
+    ): Flow<Resource<Nothing?>> =
+        remoteAuthDataSource.register(
+            firstName,
+            lastName,
+            email,
+            password,
+            birthDate,
+            gender,
+            chronicDiseases,
+            currentMedications,
+            allergies,
+            pastSurgeries,
+            weight,
+        )
 
     override fun signInWithEmailAndPassword(
         email: String,
