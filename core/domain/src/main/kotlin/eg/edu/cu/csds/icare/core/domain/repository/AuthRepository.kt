@@ -6,11 +6,17 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
     fun register(
-        name: String,
+        firstName: String,
+        lastName: String,
         email: String,
-        nationalId: String,
-        phone: String,
         password: String,
+        birthDate: String,
+        gender: String,
+        chronicDiseases: String,
+        currentMedications: String,
+        allergies: String,
+        pastSurgeries: String,
+        weight: Double,
     ): Flow<Resource<Nothing?>>
 
     fun signInWithEmailAndPassword(
