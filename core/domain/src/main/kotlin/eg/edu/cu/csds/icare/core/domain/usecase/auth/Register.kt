@@ -8,10 +8,29 @@ class Register(
     private val repository: AuthRepository,
 ) {
     operator fun invoke(
-        name: String,
+        firstName: String,
+        lastName: String,
         email: String,
-        nationalId: String,
-        phone: String,
         password: String,
-    ): Flow<Resource<Nothing?>> = repository.register(name, email, nationalId, phone, password)
+        birthDate: String,
+        gender: String,
+        chronicDiseases: String,
+        currentMedications: String,
+        allergies: String,
+        pastSurgeries: String,
+        weight: Double,
+    ): Flow<Resource<Nothing?>> =
+        repository.register(
+            firstName,
+            lastName,
+            email,
+            password,
+            birthDate,
+            gender,
+            chronicDiseases,
+            currentMedications,
+            allergies,
+            pastSurgeries,
+            weight,
+        )
 }
