@@ -56,20 +56,84 @@ class AuthViewModel(
     private val _isLoading = mutableStateOf(false)
     var isLoading: State<Boolean> = _isLoading
 
-    var nameState = mutableStateOf("")
+    var firstNameState = mutableStateOf("")
+        private set
+    var lastNameState = mutableStateOf("")
+        private set
+    var birthDateState = mutableStateOf("")
+        private set
+    var genderState = mutableStateOf("")
+        private set
+    var chronicDiseasesState = mutableStateOf("")
+        private set
+    var currentMedicationsState = mutableStateOf("")
+        private set
+    var allergiesState = mutableStateOf("")
+        private set
+    var pastSurgeriesState = mutableStateOf("")
+        private set
+    var weightState = mutableStateOf(0.0)
         private set
     var emailState = mutableStateOf("")
         private set
     var nationalIdState = mutableStateOf("")
         private set
-    var phoneState = mutableStateOf("")
+    var addressState = mutableStateOf("")
+        private set
+    var phone1State = mutableStateOf("")
+        private set
+    var phone2State = mutableStateOf("")
         private set
     var passwordState = mutableStateOf("")
         private set
     var passwordVisibility = mutableStateOf(false)
 
-    fun onNameChanged(newValue: String) {
-        nameState.value = newValue
+    fun onFirstNameChanged(newValue: String) {
+        firstNameState.value = newValue
+    }
+
+    fun onLastNameChanged(newValue: String) {
+        lastNameState.value = newValue
+    }
+
+    fun onBirthDateChanged(newValue: String) {
+        birthDateState.value = newValue
+    }
+
+    fun onGenderChanged(newValue: String) {
+        genderState.value = newValue
+    }
+
+    fun onChronicDiseasesChanged(newValue: String) {
+        chronicDiseasesState.value = newValue
+    }
+
+    fun onCurrentMedicationsChanged(newValue: String) {
+        currentMedicationsState.value = newValue
+    }
+
+    fun onAllergiesChanged(newValue: String) {
+        allergiesState.value = newValue
+    }
+
+    fun onPastSurgeriesChanged(newValue: String) {
+        pastSurgeriesState.value = newValue
+    }
+
+    fun onWeightChanged(newValue: Double) {
+        weightState.value = newValue
+    }
+
+    fun onAddressChanged(newValue: String) {
+        addressState.value = newValue
+    }
+
+    fun onPhone1Changed(newValue: String) {
+        phone1State.value = newValue
+    }
+
+    fun onPhone2Changed(newValue: String) {
+        phone2State.value = newValue
     }
 
     fun onEmailChanged(newValue: String) {
@@ -78,10 +142,6 @@ class AuthViewModel(
 
     fun onNationalIdChanged(newValue: String) {
         nationalIdState.value = newValue
-    }
-
-    fun onPhoneChanged(newValue: String) {
-        phoneState.value = newValue
     }
 
     fun onPasswordChanged(newValue: String) {
@@ -95,11 +155,19 @@ class AuthViewModel(
                 delay(timeMillis = 100)
             }
             register(
-                name = nameState.value,
+                firstName = firstNameState.value,
+                lastName = lastNameState.value,
                 email = emailState.value,
-                nationalId = nationalIdState.value,
-                phone = phoneState.value,
                 password = passwordState.value,
+                birthDate = birthDateState.value,
+                gender = genderState.value,
+                chronicDiseases = chronicDiseasesState.value,
+                currentMedications = currentMedicationsState.value,
+                allergies = allergiesState.value,
+                pastSurgeries = pastSurgeriesState.value,
+                weight = weightState.value,
+//                nationalId = nationalIdState.value,
+//                phone1 = phone1State.value,
             ).collectLatest {
                 _isLoading.value = it is Resource.Loading
                 _registerResFlow.value = it
