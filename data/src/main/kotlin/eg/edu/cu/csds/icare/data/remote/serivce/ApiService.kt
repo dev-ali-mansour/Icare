@@ -12,7 +12,7 @@ interface ApiService {
         @Body body: HashMap<String, String>,
     ): Response<RegisteredResponse>
 
-    @POST("userReg")
+    @POST("patient_register")
     suspend fun register(
         @Body body: HashMap<String, String>,
     ): Response<LoginInfoResponse>

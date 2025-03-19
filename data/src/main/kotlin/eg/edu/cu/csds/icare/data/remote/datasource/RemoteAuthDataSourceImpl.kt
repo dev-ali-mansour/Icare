@@ -86,11 +86,17 @@ class RemoteAuthDataSourceImpl(
         }
 
     override fun register(
-        name: String,
+        firstName: String,
+        lastName: String,
         email: String,
-        address: String,
-        phone: String,
         password: String,
+        birthDate: String,
+        gender: String,
+        chronicDiseases: String,
+        currentMedications: String,
+        allergies: String,
+        pastSurgeries: String,
+        weight: Double,
     ): Flow<Resource<Nothing?>> =
         flow {
             emit(Resource.Loading())
@@ -99,7 +105,7 @@ class RemoteAuthDataSourceImpl(
                 val profileUpdates =
                     UserProfileChangeRequest
                         .Builder()
-                        .setDisplayName(name)
+                        .setDisplayName("$firstName $lastName")
                         .build()
                 user.updateProfile(profileUpdates).await()
                 val token =
@@ -109,11 +115,16 @@ class RemoteAuthDataSourceImpl(
                         .token
                         .toString()
                 registerOnDB(
-                    user.uid,
-                    user.displayName.toString(),
-                    user.email.toString(),
-                    phone,
-                    address,
+                    firstName,
+                    lastName,
+                    email,
+                    birthDate,
+                    gender,
+                    chronicDiseases,
+                    currentMedications,
+                    allergies,
+                    pastSurgeries,
+                    weight,
                     token,
                 ).collect { resource ->
                     if (resource is Resource.Error) {
@@ -227,20 +238,30 @@ class RemoteAuthDataSourceImpl(
         }
 
     private fun registerOnDB(
-        uid: String,
-        displayName: String,
+        firstName: String,
+        lastName: String,
         email: String,
-        phone: String,
-        address: String,
+        birthDate: String,
+        gender: String,
+        chronicDiseases: String,
+        currentMedications: String,
+        allergies: String,
+        pastSurgeries: String,
+        weight: Double,
         token: String,
     ): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
             val map = HashMap<String, String>()
-            map["uid"] = uid
-            map["username"] = displayName
+            map["fName"] = firstName
+            map["lName"] = lastName
             map["email"] = email
-            map["address"] = address
-            map["mobile"] = phone
+            map["birthDate"] = birthDate
+            map["gender"] = gender.toString()
+            map["chronicDiseases"] = chronicDiseases
+            map["currentMedications"] = currentMedications
+            map["allergies"] = allergies
+            map["pastSurgeries"] = pastSurgeries
+            map["weight"] = weight.toString()
             map["token"] = token
             val response = service.register(map)
             when (response.code()) {

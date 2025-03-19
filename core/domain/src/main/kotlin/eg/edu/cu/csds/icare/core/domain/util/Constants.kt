@@ -18,4 +18,6 @@ object Constants {
     const val ERROR_CODE_USER_COLLISION: Short = 2
     const val ERROR_CODE_INVALID_EMPLOYEE_IDENTITY: Short = 3
     const val ERROR_CODE_SERVER_ERROR: Short = 5
+    const val NATIONAL_ID_LENGTH: Int = 14
+    const val PHONE_LENGTH: Int = 11
 }
