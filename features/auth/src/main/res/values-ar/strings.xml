@@ -36,7 +36,7 @@
     <string name="current_medications_hint">الأدوية الحالية: إذا لم تكن تتناول أدوية حالية اكتب لا يوجد</string>
     <string name="allergies_hint">الحساسية: إذا لم تكن لديك أي نوع حساسية اكتب لا يوجد</string>
     <string name="past_surgeries_hint">العمليات الجراحية: إذا لم تكن قد خضعت لأي عمليات جراحية اكتب لا يوجد</string>
-    <string name="weight">ادخل وزنك</string>
+    <string name="weight">الوزن</string>
     <string name="chronic_diseases">الأمراض المزمنة</string>
     <string name="current_medications">الأدوية الحالية</string>
     <string name="allergies">الحساسية</string>
