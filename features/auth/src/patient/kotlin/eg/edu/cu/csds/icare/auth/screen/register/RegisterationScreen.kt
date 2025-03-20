@@ -124,7 +124,14 @@ internal fun RegistrationScreen(
                     scope.launch {
                         when {
                             firstName.isBlank() -> {
-                                alertMessage = context.getString(R.string.name_error)
+                                alertMessage = context.getString(R.string.first_name_error)
+                                showAlert = true
+                                delay(timeMillis = 3000)
+                                showAlert = false
+                            }
+
+                            lastName.isBlank() -> {
+                                alertMessage = context.getString(R.string.last_name_error)
                                 showAlert = true
                                 delay(timeMillis = 3000)
                                 showAlert = false
@@ -132,6 +139,13 @@ internal fun RegistrationScreen(
 
                             !email.isValidEmail -> {
                                 alertMessage = context.getString(R.string.email_error)
+                                showAlert = true
+                                delay(timeMillis = 3000)
+                                showAlert = false
+                            }
+
+                            selectedGender == 0.toShort() -> {
+                                alertMessage = context.getString(R.string.gender_error)
                                 showAlert = true
                                 delay(timeMillis = 3000)
                                 showAlert = false
