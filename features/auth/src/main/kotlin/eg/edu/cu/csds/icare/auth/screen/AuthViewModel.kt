@@ -1,7 +1,9 @@
 package eg.edu.cu.csds.icare.auth.screen
 
 import android.content.Intent
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -55,6 +57,9 @@ class AuthViewModel(
     val deleteAccountResFlow: StateFlow<Resource<Nothing?>> = _deleteAccountResFlow
     private val _isLoading = mutableStateOf(false)
     var isLoading: State<Boolean> = _isLoading
+    private val _selectedGenderState: MutableState<Short> = mutableStateOf(0)
+    var selectedGenderState: State<Short> = _selectedGenderState
+    var gendersExpanded = mutableStateOf(false)
 
     var firstNameState = mutableStateOf("")
         private set
@@ -72,7 +77,7 @@ class AuthViewModel(
         private set
     var pastSurgeriesState = mutableStateOf("")
         private set
-    var weightState = mutableStateOf(0.0)
+    var weightState = mutableDoubleStateOf(0.0)
         private set
     var emailState = mutableStateOf("")
         private set
@@ -100,8 +105,9 @@ class AuthViewModel(
         birthDateState.value = newValue
     }
 
-    fun onGenderChanged(newValue: String) {
-        genderState.value = newValue
+    fun onGenderSelected(newValue: Short) {
+        _selectedGenderState.value = newValue
+        genderState.value = if (newValue.toInt() == 1) "M" else "F"
     }
 
     fun onChronicDiseasesChanged(newValue: String) {
