@@ -82,7 +82,7 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun RegisterContent(
+internal fun RegistrationContent(
     firstName: String,
     lastName: String,
     email: String,
@@ -810,9 +810,9 @@ internal fun RegisterContent(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
 @Composable
-internal fun RegisterContentPreview() {
+internal fun RegistrationContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
-        RegisterContent(
+        RegistrationContent(
             firstName = "",
             lastName = "",
             email = "",
