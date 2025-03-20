@@ -5,8 +5,10 @@
     <string name="last_name">الاسم الأخير</string>
     <string name="national_id">الرقم القومي</string>
     <string name="generic_error">لقد حدث خطأ ما. برجاء إعادة المحاولة.</string>
-    <string name="name_error">يرجى إدخال اسمك الكامل بشكل صحيح.</string>
+    <string name="first_name_error">يرجى إدخال اسمك الأول بشكل صحيح.</string>
+    <string name="last_name_error">يرجى إدخال اسمك الأخير بشكل صحيح.</string>
     <string name="email_error">يرجى إدخال بريدك الإلكتروني بشكل صحيح.</string>
+    <string name="gender_error">يرجى تحديد النوع بشكل صحيح.</string>
     <string name="phone_error">يرجى إدخال رقم الهاتف صحيح.</string>
     <string name="try_again">إعادة المحاولة</string>
     <string name="login">تسجيل الدخول</string>
