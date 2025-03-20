@@ -27,4 +27,9 @@
     <string name="phone_number">رقم الموبايل</string>
     <string name="register_message">تم إنشاء حسابك بنجاح! برجاء مراجعة بريدك الإلكتروني لتأكيده وتفعيل حسابك.</string>
     <string name="complete_message">تم استكمال بيانات تسجيل حسابك بنجاح!</string>
+    <string name="male">ذكر</string>
+    <string name="female">أنثى</string>
+    <string name="gender">النوع</string>
+    <string name="choose_gender">اختر النوع</string>
+    <string name="birth_date">تاريخ الميلاد</string>
 </resources>

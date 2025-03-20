@@ -26,5 +26,10 @@
     <string name="phone_number">Phone Number</string>
     <string name="register_message">Your account has been created successfully! Please check your email to activate it.</string>
     <string name="complete_message">Your account registration has been completed successfully!</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="gender">Gender</string>
+    <string name="choose_gender">Choose your gender</string>
+    <string name="birth_date">Birth Date</string>
 
 </resources>
