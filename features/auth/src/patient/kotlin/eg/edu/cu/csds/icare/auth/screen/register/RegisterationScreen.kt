@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
-internal fun RegisterScreen(
+internal fun RegistrationScreen(
     firebaseAuth: FirebaseAuth,
     authViewModel: AuthViewModel,
     onLoginClicked: () -> Unit,
@@ -90,7 +90,7 @@ internal fun RegisterScreen(
                     .padding(paddingValues),
             contentAlignment = Alignment.BottomCenter,
         ) {
-            RegisterContent(
+            RegistrationContent(
                 firstName = firstName,
                 lastName = lastName,
                 email = email,
