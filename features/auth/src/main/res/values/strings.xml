@@ -7,6 +7,11 @@
     <string name="name_error">Please enter a valid full name.</string>
     <string name="email_error">Please enter a valid email.</string>
     <string name="phone_error">Please enter a valid phone number.</string>
+    <string name="chronic_diseases_hint">Chronic Diseases:If there is no chronic diseases please enter "None"</string>
+    <string name="current_medications_hint">Current Medications: If there is no current medications please enter "None"</string>
+    <string name="allergies_hint">Allergies: If there is no allergies please enter "None"</string>
+    <string name="past_surgeries_hint">Past Surgeries: If there is no past surgeries please enter "None"</string>
+    <string name="weight">Please enter your weight</string>
     <string name="try_again">Try again</string>
     <string name="login">Login</string>
     <string name="login_details">Enter your login details</string>
@@ -31,5 +36,13 @@
     <string name="gender">Gender</string>
     <string name="choose_gender">Choose your gender</string>
     <string name="birth_date">Birth Date</string>
+    <string name="current_medications">Current Medications</string>
+    <string name="allergies">Allergies</string>
+    <string name="past_surgeries">Past Surgeries</string>
+    <string name="chronic_diseases">Chronic Diseases</string>
+    <string name="chronic_diseases_error">Please enter chronic diseases or type \"None\" if not exist.</string>
+    <string name="current_medications_error">Please enter current medications or type \"None\" if not exist.</string>
+    <string name="allergies_error">Please enter your allergies or type \"None\" if not exist.</string>
+    <string name="past_surgeries_error">Please enter your past surgeries or type \"None\" if not exist.</string>
 
 </resources>
