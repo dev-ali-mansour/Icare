@@ -38,16 +38,7 @@ class RemoteAuthDataSourceImpl(
             runCatching {
                 emit(Resource.Loading())
                 auth.currentUser?.let { user ->
-                    val token =
-                        user
-                            .getIdToken(false)
-                            .await()
-                            .token
-                            .toString()
-                    val map = HashMap<String, String>()
-                    map["uid"] = user.uid
-                    map["token"] = token
-                    val response = service.getLoginInfo(map)
+                    val response = service.getLoginInfo()
                     when (response.code()) {
                         HTTP_OK -> {
                             response.body()?.let { res ->
