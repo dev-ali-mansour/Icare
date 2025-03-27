@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Patterns
 import java.math.RoundingMode
+import java.security.MessageDigest
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
@@ -29,6 +30,11 @@ fun String.toBitmap(): Bitmap? =
         val decodedBytes: ByteArray = Base64.decode(this, Base64.DEFAULT)
         BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
     }.getOrNull()
+
+fun String.hash(): String {
+    val bytes = MessageDigest.getInstance("SHA-256").digest(this.toByteArray())
+    return bytes.joinToString(":") { "%02X".format(it) }
+}
 
 fun Short.toFormattedString(): String = DecimalFormat("#,###", DecimalFormatSymbols(Locale.ENGLISH)).format(this)
 
