@@ -18,7 +18,5 @@ interface ApiService {
     ): Response<LoginInfoResponse>
 
     @POST("loginInfo")
-    suspend fun getLoginInfo(
-        @Body body: HashMap<String, String>,
-    ): Response<LoginInfoResponse>
+    suspend fun getLoginInfo(): Response<LoginInfoResponse>
 }
