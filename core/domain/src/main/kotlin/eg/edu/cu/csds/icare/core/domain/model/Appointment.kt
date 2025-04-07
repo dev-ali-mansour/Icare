@@ -2,15 +2,19 @@ package eg.edu.cu.csds.icare.core.domain.model
 
 
 import kotlinx.serialization.Serializable
-import java.util.Date
+import kotlinx.serialization.Transient
+
 
 @Serializable
 data class Appointment (
-    val appointmentId: Short,
+    val appointmentId: Long,
     val doctorName: String,
     val doctorSpecialty: String,
-    val doctorImage: Int,// Resource ID for the image
-    val time: String,
-    val date: String,
-    val status: AppointmentStatus
+    val doctorImage: String,
+    val dateTime: Long,
+    val patientName: String,
+    val patientImage: String,
+    val statusId: Short,
+    @Transient
+    val status: String = ""
     )
