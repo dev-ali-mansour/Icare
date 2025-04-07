@@ -103,8 +103,7 @@ internal fun AboutContent(
                         top.linkTo(made.bottom, margin = S_PADDING)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    }
-                    .clickable {
+                    }.clickable {
                         context.openLink(context.getString(CoreR.string.website_url))
                     },
             painter = painterResource(id = CoreR.drawable.logo),
@@ -128,8 +127,7 @@ internal fun AboutContent(
                         .constrainAs(facebook) {
                             top.linkTo(logo.bottom, margin = S_PADDING)
                             start.linkTo(parent.start)
-                        }
-                        .clickable {
+                        }.clickable {
                             context.openLink(context.getString(CoreR.string.facebook_url))
                         },
                 painter = painterResource(id = CoreR.drawable.ic_social_facebook),
@@ -144,8 +142,7 @@ internal fun AboutContent(
                         .constrainAs(twitter) {
                             top.linkTo(facebook.top)
                             start.linkTo(facebook.end)
-                        }
-                        .clickable {
+                        }.clickable {
                             // context.openLink(context.getString(AppText.twitter_url))
                         },
                 painter = painterResource(id = CoreR.drawable.ic_social_twitter),
@@ -160,8 +157,7 @@ internal fun AboutContent(
                         .constrainAs(linkedIn) {
                             top.linkTo(facebook.top)
                             start.linkTo(twitter.end)
-                        }
-                        .clickable {
+                        }.clickable {
                             // context.openLink(context.getString(AppText.linkedin_url))
                         },
                 painter = painterResource(id = CoreR.drawable.ic_social_linkedin),
@@ -175,8 +171,7 @@ internal fun AboutContent(
                             top.linkTo(facebook.top)
                             start.linkTo(linkedIn.end)
                             end.linkTo(parent.end)
-                        }
-                        .size(SOCIAL_ICON_SIZE)
+                        }.size(SOCIAL_ICON_SIZE)
                         .clickable {
                             // context.openLink(context.getString(AppText.youtube_channel_url))
                         },

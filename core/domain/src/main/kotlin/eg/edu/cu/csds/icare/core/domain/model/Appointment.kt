@@ -1,12 +1,10 @@
 package eg.edu.cu.csds.icare.core.domain.model
 
-
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
-
 @Serializable
-data class Appointment (
+data class Appointment(
     val appointmentId: Long,
     val doctorName: String,
     val doctorSpecialty: String,
@@ -16,5 +14,5 @@ data class Appointment (
     val patientImage: String,
     val statusId: Short,
     @Transient
-    val status: String = ""
-    )
+    val status: String = "",
+)
