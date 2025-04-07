@@ -1,22 +1,24 @@
 package eg.edu.cu.csds.icare.core.domain.repository
 
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
+import eg.edu.cu.csds.icare.core.domain.model.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface BookingRepository {
 
-    fun getAppointments(patientId: String): Flow<List<Appointment>>
+    fun getPatientAppointments(): Flow<List<Appointment>>
 
-    suspend fun bookAppointment(appointment: Appointment): Result<Unit>
+    fun getAppointments(): Flow<List<Appointment>>
 
-    suspend fun cancelAppointment(appointmentId: String): Result<Unit>
+    fun getAppointments(statusId: Short): Flow<List<Appointment>>
 
-    suspend fun rescheduleAppointment(
-        appointmentId: String,
-        newDate: String,
-        newTime: String
-    ): Result<Unit>
+    fun bookAppointment(doctorId: Int, dateTime: Long): Flow<Resource<Nothing?>>
 
+    fun updateAppointmentStatus(appointmentId: Long, statusId: Short): Flow<Resource<Nothing?>>
 
+    fun rescheduleAppointment(
+        appointmentId: Long,
+        dateTime: Long
+    ): Flow<Resource<Nothing?>>
 
 }
