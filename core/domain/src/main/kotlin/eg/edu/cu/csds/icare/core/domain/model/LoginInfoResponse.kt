@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LoginInfoResponse(
-    val errorCode: Short,
+    val statusCode: Short,
     val role: UserRole?,
     val job: String = "",
 )
