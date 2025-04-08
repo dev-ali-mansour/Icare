@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
-internal fun RegisterScreen(
+internal fun RegistrationScreen(
     firebaseAuth: FirebaseAuth,
     authViewModel: AuthViewModel,
     onLoginClicked: () -> Unit,
@@ -90,7 +90,7 @@ internal fun RegisterScreen(
                     .padding(paddingValues),
             contentAlignment = Alignment.BottomCenter,
         ) {
-            RegisterContent(
+            RegistrationContent(
                 firstName = firstName,
                 lastName = lastName,
                 email = email,
@@ -124,7 +124,14 @@ internal fun RegisterScreen(
                     scope.launch {
                         when {
                             firstName.isBlank() -> {
-                                alertMessage = context.getString(R.string.name_error)
+                                alertMessage = context.getString(R.string.first_name_error)
+                                showAlert = true
+                                delay(timeMillis = 3000)
+                                showAlert = false
+                            }
+
+                            lastName.isBlank() -> {
+                                alertMessage = context.getString(R.string.last_name_error)
                                 showAlert = true
                                 delay(timeMillis = 3000)
                                 showAlert = false
@@ -132,6 +139,13 @@ internal fun RegisterScreen(
 
                             !email.isValidEmail -> {
                                 alertMessage = context.getString(R.string.email_error)
+                                showAlert = true
+                                delay(timeMillis = 3000)
+                                showAlert = false
+                            }
+
+                            selectedGender == 0.toShort() -> {
+                                alertMessage = context.getString(R.string.gender_error)
                                 showAlert = true
                                 delay(timeMillis = 3000)
                                 showAlert = false

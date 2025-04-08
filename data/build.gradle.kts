@@ -1,9 +1,11 @@
 import build.Build
 import build.BuildConfig
+import build.BuildDimensions
 import build.BuildTypes
 import build.BuildVariables
 import extensions.getLocalProperty
 import extensions.osFamily
+import flavors.FlavorTypes
 import signing.SigningTypes
 import test.TestBuildConfig
 
@@ -158,6 +160,16 @@ android {
                 BuildVariables.WEB_CLIENT_ID,
                 project.getLocalProperty("web_client_id"),
             )
+        }
+    }
+
+    flavorDimensions.add(BuildDimensions.APP)
+    productFlavors {
+        create(FlavorTypes.PATIENT) {
+            dimension = BuildDimensions.APP
+        }
+        create(FlavorTypes.STAFF) {
+            dimension = BuildDimensions.APP
         }
     }
 
