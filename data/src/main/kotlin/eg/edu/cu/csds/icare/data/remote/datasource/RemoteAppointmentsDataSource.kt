@@ -5,11 +5,11 @@ import eg.edu.cu.csds.icare.core.domain.model.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface RemoteAppointmentsDataSource {
-    fun getPatientAppointments(): Flow<List<Appointment>>
+    fun getPatientAppointments(): Flow<Resource<List<Appointment>>>
 
-    fun getAppointments(): Flow<List<Appointment>>
+    fun getAppointments(): Flow<Resource<List<Appointment>>>
 
-    fun getAppointments(statusId: Short): Flow<List<Appointment>>
+    fun getAppointments(statusId: Short): Flow<Resource<List<Appointment>>>
 
     fun bookAppointment(
         doctorId: Int,
