@@ -2,7 +2,7 @@ package eg.edu.cu.csds.icare.data.di.module
 
 import eg.edu.cu.csds.icare.core.domain.repository.AppRepository
 import eg.edu.cu.csds.icare.core.domain.repository.AuthRepository
-import eg.edu.cu.csds.icare.core.domain.repository.BookingRepository
+import eg.edu.cu.csds.icare.core.domain.repository.AppointmentsRepository
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.DeleteAccount
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfo
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkTokenAccount
@@ -54,20 +54,20 @@ class UseCaseModule {
     fun provideLinkTokenAccount(repository: AuthRepository) = LinkTokenAccount(repository)
 
     @Single
-    fun provideBookAppointment(repository: BookingRepository) = BookAppointment(repository)
+    fun provideBookAppointment(repository: AppointmentsRepository) = BookAppointment(repository)
 
     @Single
-    fun provideGetAppointments(repository: BookingRepository) = GetAppointments(repository)
+    fun provideGetAppointments(repository: AppointmentsRepository) = GetAppointments(repository)
 
     @Single
-    fun provideGetAppointmentsByStatus(repository: BookingRepository) = GetAppointmentsByStatus(repository)
+    fun provideGetAppointmentsByStatus(repository: AppointmentsRepository) = GetAppointmentsByStatus(repository)
 
     @Single
-    fun provideGetPatientAppointments(repository: BookingRepository) = GetAppointmentsByStatus(repository)
+    fun provideGetPatientAppointments(repository: AppointmentsRepository) = GetAppointmentsByStatus(repository)
 
     @Single
-    fun provideRescheduleAppointment(repository: BookingRepository) = RescheduleAppointment(repository)
+    fun provideRescheduleAppointment(repository: AppointmentsRepository) = RescheduleAppointment(repository)
 
     @Single
-    fun provideUpdateAppointmentStatus(repository: BookingRepository): UpdateAppointmentStatus = UpdateAppointmentStatus(repository)
+    fun provideUpdateAppointmentStatus(repository: AppointmentsRepository): UpdateAppointmentStatus = UpdateAppointmentStatus(repository)
 }

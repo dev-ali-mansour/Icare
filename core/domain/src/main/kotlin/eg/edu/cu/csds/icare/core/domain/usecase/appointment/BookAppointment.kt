@@ -1,10 +1,10 @@
 package eg.edu.cu.csds.icare.core.domain.usecase.appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.domain.repository.BookingRepository
+import eg.edu.cu.csds.icare.core.domain.repository.AppointmentsRepository
 import kotlinx.coroutines.flow.Flow
 
 class BookAppointment(
-    private val repository: BookingRepository,
+    private val repository: AppointmentsRepository,
 ) {
     operator fun invoke(
         doctorId: Int,

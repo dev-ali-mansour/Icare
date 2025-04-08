@@ -4,7 +4,7 @@ import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import kotlinx.coroutines.flow.Flow
 
-interface BookingRepository {
+interface AppointmentsRepository {
     fun getPatientAppointments(): Flow<List<Appointment>>
 
     fun getAppointments(): Flow<List<Appointment>>
