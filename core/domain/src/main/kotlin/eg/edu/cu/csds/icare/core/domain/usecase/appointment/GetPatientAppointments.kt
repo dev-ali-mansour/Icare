@@ -1,11 +1,11 @@
-package eg.edu.cu.csds.icare.core.domain.usecase.booking
+package eg.edu.cu.csds.icare.core.domain.usecase.appointment
 
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.repository.BookingRepository
 import kotlinx.coroutines.flow.Flow
 
-class GetAppointmentsByStatus(
+class GetPatientAppointments(
     private val repository: BookingRepository,
 ) {
-    operator fun invoke(statusId: Short): Flow<List<Appointment>> = repository.getAppointments(statusId)
+    operator fun invoke(): Flow<List<Appointment>> = repository.getPatientAppointments()
 }
