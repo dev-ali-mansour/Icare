@@ -263,7 +263,7 @@ class RemoteAuthDataSourceImpl(
                             Constants.ERROR_CODE_USER_COLLISION ->
                                 emit(Resource.Error(FirebaseAuthUserCollisionException("", "")))
 
-                            Constants.ERROR_CODE_INVALID_EMPLOYEE_IDENTITY ->
+                            Constants.ERROR_CODE_INVALID_USER_IDENTITY ->
                                 emit(Resource.Error(InvalidUserIdentityException()))
 
                             Constants.ERROR_CODE_EXPIRED_TOKEN ->
