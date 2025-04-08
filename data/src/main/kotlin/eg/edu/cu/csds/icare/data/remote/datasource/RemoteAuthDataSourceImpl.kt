@@ -42,7 +42,7 @@ class RemoteAuthDataSourceImpl(
                     when (response.code()) {
                         HTTP_OK -> {
                             response.body()?.let { res ->
-                                when (res.errorCode) {
+                                when (res.statusCode) {
                                     Constants.ERROR_CODE_OK ->
                                         res.role?.let { role ->
                                             val employee =
@@ -258,7 +258,7 @@ class RemoteAuthDataSourceImpl(
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
-                        when (res.errorCode) {
+                        when (res.statusCode) {
                             Constants.ERROR_CODE_OK -> emit(Resource.Success(null))
                             Constants.ERROR_CODE_USER_COLLISION ->
                                 emit(Resource.Error(FirebaseAuthUserCollisionException("", "")))
