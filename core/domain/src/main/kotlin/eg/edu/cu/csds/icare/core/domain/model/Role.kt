@@ -6,4 +6,5 @@ import kotlinx.serialization.Serializable
 data class Role(
     val id: Short = 0,
     val name: String = "",
+    val permissions: List<Short> = listOf(),
 )
