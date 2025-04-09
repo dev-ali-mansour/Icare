@@ -35,6 +35,8 @@ class RemoteAppointmentsDataSourceImpl(
                                 }
                             }
                         }
+
+                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
                     }
                 }
             }.onFailure {
@@ -61,6 +63,8 @@ class RemoteAppointmentsDataSourceImpl(
                                 }
                             }
                         }
+
+                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
                     }
                 }
             }.onFailure {
@@ -89,6 +93,8 @@ class RemoteAppointmentsDataSourceImpl(
                                 }
                             }
                         }
+
+                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
                     }
                 }
             }.onFailure {
@@ -121,6 +127,8 @@ class RemoteAppointmentsDataSourceImpl(
                                 }
                             }
                         }
+
+                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
                     }
                 }
             }.onFailure {
@@ -153,6 +161,8 @@ class RemoteAppointmentsDataSourceImpl(
                                 }
                             }
                         }
+
+                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
                     }
                 }
             }.onFailure {
@@ -185,6 +195,8 @@ class RemoteAppointmentsDataSourceImpl(
                                 }
                             }
                         }
+
+                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
                     }
                 }
             }.onFailure {
