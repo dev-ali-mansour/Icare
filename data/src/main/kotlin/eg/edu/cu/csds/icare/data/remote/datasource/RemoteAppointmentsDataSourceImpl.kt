@@ -2,6 +2,7 @@ package eg.edu.cu.csds.icare.data.remote.datasource
 
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
+import eg.edu.cu.csds.icare.core.domain.model.BookingMethod
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.data.remote.serivce.ApiService
@@ -17,6 +18,34 @@ class RemoteAppointmentsDataSourceImpl(
     private val auth: FirebaseAuth,
     private val service: ApiService,
 ) : RemoteAppointmentsDataSource {
+    override fun fetchBookingMethods(): Flow<Resource<List<BookingMethod>>> =
+        flow {
+            runCatching {
+                emit(Resource.Loading())
+                auth.currentUser?.let {
+                    val response = service.fetchBookingMethods()
+                    when (response.code()) {
+                        HTTP_OK -> {
+                            response.body()?.let { res ->
+                                when (res.statusCode) {
+                                    Constants.ERROR_CODE_OK ->
+                                        emit(Resource.Success(res.methods))
+
+                                    Constants.ERROR_CODE_SERVER_ERROR ->
+                                        emit(Resource.Error(ConnectException()))
+                                }
+                            }
+                        }
+
+                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
+                    }
+                }
+            }.onFailure {
+                Timber.e("getPatientAppointments() error ${it.javaClass.simpleName}: ${it.message}")
+                emit(Resource.Error(it))
+            }
+        }
+
     override fun getPatientAppointments(): Flow<Resource<List<Appointment>>> =
         flow {
             runCatching {
