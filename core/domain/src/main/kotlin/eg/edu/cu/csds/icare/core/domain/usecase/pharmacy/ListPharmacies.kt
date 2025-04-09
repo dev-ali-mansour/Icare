@@ -8,6 +8,5 @@ import kotlinx.coroutines.flow.Flow
 class ListPharmacies(
     private val repository: PharmaciesRepository,
 ) {
-    operator fun invoke(forceUpdate: Boolean = false): Flow<Resource<List<Pharmacy>>>
-    = repository.listPharmacies(forceUpdate)
+    operator fun invoke(forceUpdate: Boolean = false): Flow<Resource<List<Pharmacy>>> = repository.listPharmacies(forceUpdate)
 }
