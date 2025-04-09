@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.core.domain.usecase.appointment
+package eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment
 
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
