@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CenterStaffResponse(
     val statusCode: Short,
-    val centerStaff: List<CenterStaff>,
+    val staffList: List<CenterStaff>,
 )
