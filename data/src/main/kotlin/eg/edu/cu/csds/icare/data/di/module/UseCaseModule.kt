@@ -11,11 +11,11 @@ import eg.edu.cu.csds.icare.core.domain.usecase.auth.SendRecoveryMail
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithEmailAndPassword
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithGoogle
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOut
-import eg.edu.cu.csds.icare.core.domain.usecase.appointment.BookAppointment
-import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointments
-import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointmentsByStatus
-import eg.edu.cu.csds.icare.core.domain.usecase.appointment.RescheduleAppointment
-import eg.edu.cu.csds.icare.core.domain.usecase.appointment.UpdateAppointmentStatus
+import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.BookAppointment
+import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetAppointments
+import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetAppointmentsByStatus
+import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.RescheduleAppointment
+import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.UpdateAppointmentStatus
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoarding
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.SaveOnBoarding
 import org.koin.core.annotation.Module
