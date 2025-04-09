@@ -3,7 +3,7 @@ package eg.edu.cu.csds.icare.core.domain.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AppointmentStatusesResponse(
+data class ReferralStatusesResponse(
     val statusCode: Short,
-    val statuses: List<AppointmentStatus>,
+    val statuses: List<ReferralStatus>,
 )
