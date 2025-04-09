@@ -5,7 +5,7 @@ import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.repository.ClinicsRepository
 import kotlinx.coroutines.flow.Flow
 
-class ListClinicsStaff(
+class ListAllClinicsStaff(
     private val repository: ClinicsRepository,
 ) {
     operator fun invoke(forceUpdate: Boolean = false): Flow<Resource<List<ClinicStaff>>> = repository.listClinicsStaff(forceUpdate)
