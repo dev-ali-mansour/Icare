@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Role(
-    val id: Short,
-    val name: String,
+    val id: Short = 0,
+    val name: String = "",
 )
