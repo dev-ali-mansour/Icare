@@ -21,8 +21,6 @@ interface ClinicsRepository {
 
     fun updateDoctor(doctor: Doctor): Flow<Resource<Nothing?>>
 
-    fun listClinicsStaff(forceUpdate: Boolean): Flow<Resource<List<ClinicStaff>>>
-
     fun listClinicStaff(clinicId: Long): Flow<Resource<List<ClinicStaff>>>
 
     fun addNewClinicStaff(staff: ClinicStaff): Flow<Resource<Nothing?>>
