@@ -1,15 +1,15 @@
-package eg.edu.cu.csds.icare.core.domain.repository
+package eg.edu.cu.csds.icare.data.remote.datasource
 
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import kotlinx.coroutines.flow.Flow
 
-interface BookingRepository {
-    fun getPatientAppointments(): Flow<List<Appointment>>
+interface RemoteAppointmentsDataSource {
+    fun getPatientAppointments(): Flow<Resource<List<Appointment>>>
 
-    fun getAppointments(): Flow<List<Appointment>>
+    fun getAppointments(): Flow<Resource<List<Appointment>>>
 
-    fun getAppointments(statusId: Short): Flow<List<Appointment>>
+    fun getAppointments(statusId: Short): Flow<Resource<List<Appointment>>>
 
     fun bookAppointment(
         doctorId: Int,

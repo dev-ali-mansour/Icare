@@ -42,7 +42,7 @@ class RemoteAuthDataSourceImpl(
                     when (response.code()) {
                         HTTP_OK -> {
                             response.body()?.let { res ->
-                                when (res.errorCode) {
+                                when (res.statusCode) {
                                     Constants.ERROR_CODE_OK ->
                                         res.role?.let { role ->
                                             val employee =
@@ -258,12 +258,12 @@ class RemoteAuthDataSourceImpl(
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
-                        when (res.errorCode) {
+                        when (res.statusCode) {
                             Constants.ERROR_CODE_OK -> emit(Resource.Success(null))
                             Constants.ERROR_CODE_USER_COLLISION ->
                                 emit(Resource.Error(FirebaseAuthUserCollisionException("", "")))
 
-                            Constants.ERROR_CODE_INVALID_EMPLOYEE_IDENTITY ->
+                            Constants.ERROR_CODE_INVALID_USER_IDENTITY ->
                                 emit(Resource.Error(InvalidUserIdentityException()))
 
                             Constants.ERROR_CODE_EXPIRED_TOKEN ->
