@@ -1,5 +1,7 @@
 package eg.edu.cu.csds.icare.data.remote.serivce
 
+import eg.edu.cu.csds.icare.core.domain.model.ActionResultResponse
+import eg.edu.cu.csds.icare.core.domain.model.AppointmentsResponse
 import eg.edu.cu.csds.icare.core.domain.model.LoginInfoResponse
 import eg.edu.cu.csds.icare.core.domain.model.RegisteredResponse
 import retrofit2.Response
@@ -19,4 +21,30 @@ interface ApiService {
 
     @POST("loginInfo")
     suspend fun getLoginInfo(): Response<LoginInfoResponse>
+
+    @POST("patientAppointments")
+    suspend fun getPatientAppointments(): Response<AppointmentsResponse>
+
+    @POST("allAppointments")
+    suspend fun getAppointments(): Response<AppointmentsResponse>
+
+    @POST("appointmentsByStatus")
+    suspend fun getAppointmentsByStatus(
+        @Body body: HashMap<String, String>,
+    ): Response<AppointmentsResponse>
+
+    @POST("bookAppointment")
+    suspend fun bookAppointment(
+        @Body body: HashMap<String, String>,
+    ): Response<ActionResultResponse>
+
+    @POST("updateAppointmentStatus")
+    suspend fun updateAppointmentStatus(
+        @Body body: HashMap<String, String>,
+    ): Response<ActionResultResponse>
+
+    @POST("rescheduleAppointment")
+    suspend fun rescheduleAppointment(
+        @Body body: HashMap<String, String>,
+    ): Response<ActionResultResponse>
 }
