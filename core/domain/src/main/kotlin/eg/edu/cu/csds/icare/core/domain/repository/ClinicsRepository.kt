@@ -7,13 +7,13 @@ import eg.edu.cu.csds.icare.core.domain.model.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface ClinicsRepository {
-    fun listClinics(forceUpdate: Boolean): Flow<Resource<List<Clinic>>>
+    fun listClinics(forceRefresh: Boolean): Flow<Resource<List<Clinic>>>
 
     fun addNewClinic(clinic: Clinic): Flow<Resource<Nothing?>>
 
     fun updateClinic(clinic: Clinic): Flow<Resource<Nothing?>>
 
-    fun listDoctors(forceUpdate: Boolean): Flow<Resource<List<Doctor>>>
+    fun listDoctors(forceRefresh: Boolean): Flow<Resource<List<Doctor>>>
 
     fun listClinicDoctors(clinicId: Long): Flow<Resource<List<Doctor>>>
 
