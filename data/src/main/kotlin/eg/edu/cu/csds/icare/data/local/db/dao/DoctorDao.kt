@@ -8,7 +8,7 @@ import eg.edu.cu.csds.icare.data.local.db.entity.DoctorEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface DoctorsDao {
+interface DoctorDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun persistDoctors(doctors: List<DoctorEntity>)
 
