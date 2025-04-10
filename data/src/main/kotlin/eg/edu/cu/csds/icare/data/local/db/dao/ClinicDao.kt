@@ -4,14 +4,14 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import eg.edu.cu.csds.icare.data.local.db.entity.PharmacyEntity
+import eg.edu.cu.csds.icare.data.local.db.entity.ClinicEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface PharmaciesDao {
+interface ClinicDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun persistClinics(pharmacies: List<PharmacyEntity>)
+    fun persistClinics(clinics: List<ClinicEntity>)
 
-    @Query("SELECT * FROM pharmacies")
-    fun listPharmacies(): Flow<List<PharmacyEntity>>
+    @Query("SELECT * FROM clinics")
+    fun listClinics(): Flow<List<ClinicEntity>>
 }

@@ -8,7 +8,7 @@ import eg.edu.cu.csds.icare.data.local.db.entity.CenterEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface CentersDao {
+interface CenterDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun persistCenters(centers: List<CenterEntity>)
 
