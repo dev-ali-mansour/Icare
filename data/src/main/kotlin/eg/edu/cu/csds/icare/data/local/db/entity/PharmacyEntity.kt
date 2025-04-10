@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 
-@Entity(tableName = "clinics")
+@Entity(tableName = "pharmacies")
 data class PharmacyEntity(
     @PrimaryKey val id: Long,
     val name: String,
