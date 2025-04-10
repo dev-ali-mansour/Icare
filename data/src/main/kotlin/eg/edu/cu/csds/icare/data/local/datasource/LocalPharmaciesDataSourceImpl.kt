@@ -6,10 +6,10 @@ import kotlinx.coroutines.flow.Flow
 import org.koin.core.annotation.Single
 
 @Single
-class LocalPharmacyDataSourceImpl(
+class LocalPharmaciesDataSourceImpl(
     private val pharmacyDao: PharmacyDao,
-) : LocalPharmacyDataSource {
-    override fun persistClinics(pharmacies: List<PharmacyEntity>) {
+) : LocalPharmaciesDataSource {
+    override fun persistPharmacies(pharmacies: List<PharmacyEntity>) {
         pharmacyDao.persistClinics(pharmacies)
     }
 
