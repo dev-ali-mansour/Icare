@@ -41,7 +41,7 @@ class RemoteAppointmentsDataSourceImpl(
                     }
                 }
             }.onFailure {
-                Timber.e("getPatientAppointments() error ${it.javaClass.simpleName}: ${it.message}")
+                Timber.e("fetchBookingMethods() error ${it.javaClass.simpleName}: ${it.message}")
                 emit(Resource.Error(it))
             }
         }
