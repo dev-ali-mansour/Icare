@@ -3,11 +3,20 @@ package eg.edu.cu.csds.icare.data.remote.serivce
 import eg.edu.cu.csds.icare.core.domain.model.ActionResultResponse
 import eg.edu.cu.csds.icare.core.domain.model.AppointmentsResponse
 import eg.edu.cu.csds.icare.core.domain.model.BookingMethodsResponse
+import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
+import eg.edu.cu.csds.icare.core.domain.model.CenterStaffResponse
 import eg.edu.cu.csds.icare.core.domain.model.CentersResponse
+import eg.edu.cu.csds.icare.core.domain.model.Clinic
+import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
+import eg.edu.cu.csds.icare.core.domain.model.ClinicStaffResponse
 import eg.edu.cu.csds.icare.core.domain.model.ClinicsResponse
+import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.DoctorsResponse
+import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.domain.model.LoginInfoResponse
 import eg.edu.cu.csds.icare.core.domain.model.PharmaciesResponse
+import eg.edu.cu.csds.icare.core.domain.model.Pharmacist
+import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 import eg.edu.cu.csds.icare.core.domain.model.RegisteredResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -66,5 +75,90 @@ interface ApiService {
     @POST("rescheduleAppointment")
     suspend fun rescheduleAppointment(
         @Body body: HashMap<String, String>,
+    ): Response<ActionResultResponse>
+
+    @POST("addNewClinic")
+    suspend fun addNewClinic(
+        @Body body: Clinic,
+    ): Response<ActionResultResponse>
+
+    @POST("updateClinic")
+    suspend fun updateClinic(
+        @Body body: Clinic,
+    ): Response<ActionResultResponse>
+
+    @POST("addNewDoctor")
+    suspend fun addNewDoctor(
+        @Body body: Doctor,
+    ): Response<ActionResultResponse>
+
+    @POST("updateDoctor")
+    suspend fun updateDoctor(
+        @Body body: Doctor,
+    ): Response<ActionResultResponse>
+
+    @POST("listClinicStaff")
+    suspend fun listClinicStaff(
+        @Body body: HashMap<String, String>,
+    ): Response<ClinicStaffResponse>
+
+    @POST("addNewClinicStaff")
+    suspend fun addNewClinicStaff(
+        @Body body: ClinicStaff,
+    ): Response<ActionResultResponse>
+
+    @POST("updateClinicStaff")
+    suspend fun updateClinicStaff(
+        @Body body: ClinicStaff,
+    ): Response<ActionResultResponse>
+
+    @POST("addNewPharmacy")
+    suspend fun addNewPharmacy(
+        @Body body: Pharmacy,
+    ): Response<ActionResultResponse>
+
+    @POST("updatePharmacy")
+    suspend fun updatePharmacy(
+        @Body body: Pharmacy,
+    ): Response<ActionResultResponse>
+
+    @POST("listPharmacists")
+    suspend fun listPharmacists(
+        @Body body: HashMap<String, String>,
+    ): Response<ClinicStaffResponse>
+
+    @POST("addNewPharmacist")
+    suspend fun addNewPharmacist(
+        @Body body: Pharmacist,
+    ): Response<ActionResultResponse>
+
+    @POST("updatePharmacist")
+    suspend fun updatePharmacist(
+        @Body body: Pharmacist,
+    ): Response<ActionResultResponse>
+
+    @POST("addNewCenter")
+    suspend fun addNewCenter(
+        @Body body: LabImagingCenter,
+    ): Response<ActionResultResponse>
+
+    @POST("updateCenter")
+    suspend fun updateCenter(
+        @Body body: LabImagingCenter,
+    ): Response<ActionResultResponse>
+
+    @POST("listCenterStaff")
+    suspend fun listCenterStaff(
+        @Body body: HashMap<String, String>,
+    ): Response<CenterStaffResponse>
+
+    @POST("addNewCenterStaff")
+    suspend fun addNewCenterStaff(
+        @Body body: CenterStaff,
+    ): Response<ActionResultResponse>
+
+    @POST("updateCenterStaff")
+    suspend fun updateCenterStaff(
+        @Body body: CenterStaff,
     ): Response<ActionResultResponse>
 }
