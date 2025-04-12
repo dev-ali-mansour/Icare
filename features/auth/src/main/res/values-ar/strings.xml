@@ -34,10 +34,10 @@
     <string name="gender">النوع</string>
     <string name="choose_gender">اختر النوع</string>
     <string name="birth_date">تاريخ الميلاد</string>
-    <string name="chronic_diseases_hint">الأمراض المزمنة: إذا لم يكن لديك أمراض مزمنة مثل السكري أو الضغط برجاء كتابة لا يوجد</string>
-    <string name="current_medications_hint">الأدوية الحالية: إذا لم تكن تتناول أدوية حالية اكتب لا يوجد</string>
-    <string name="allergies_hint">الحساسية: إذا لم تكن لديك أي نوع حساسية اكتب لا يوجد</string>
-    <string name="past_surgeries_hint">العمليات الجراحية: إذا لم تكن قد خضعت لأي عمليات جراحية اكتب لا يوجد</string>
+    <string name="chronic_diseases_hint">ملحوظة: إذا لم يكن لديك أمراض مزمنة مثل السكري أو الضغط برجاء كتابة لا يوجد</string>
+    <string name="current_medications_hint">ملحوظة: إذا لم تكن تتناول أدوية حالية اكتب لا يوجد</string>
+    <string name="allergies_hint">ملحوظة: إذا لم تكن لديك أي نوع حساسية اكتب لا يوجد</string>
+    <string name="past_surgeries_hint">ملحوظة: إذا لم تكن قد خضعت لأي عمليات جراحية اكتب لا يوجد</string>
     <string name="weight">الوزن</string>
     <string name="chronic_diseases">الأمراض المزمنة</string>
     <string name="current_medications">الأدوية الحالية</string>
