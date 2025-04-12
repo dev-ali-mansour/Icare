@@ -47,7 +47,7 @@ class RemoteAuthDataSourceImpl(
                                         res.role?.let { role ->
                                             val employee =
                                                 User(
-                                                    roleId = role.roleId,
+                                                    roleId = role.id,
                                                     job = res.job,
                                                     permissions = role.permissions,
                                                 )
