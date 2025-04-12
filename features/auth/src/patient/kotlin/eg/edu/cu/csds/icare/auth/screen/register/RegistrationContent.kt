@@ -45,7 +45,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -128,10 +127,6 @@ internal fun RegistrationContent(
     val scope = rememberCoroutineScope()
     var showDatePicker by remember { mutableStateOf(false) }
     val openDatePicker = { showDatePicker = true }
-    var chronicDiseasesFocused by remember { mutableStateOf(false) }
-    var currentMedicationsFocused by remember { mutableStateOf(false) }
-    var allergiesFocused by remember { mutableStateOf(false) }
-    var pastSurgeriesFocused by remember { mutableStateOf(false) }
 
     if (showDatePicker) {
         val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
@@ -555,25 +550,18 @@ internal fun RegistrationContent(
                     onValueChange = { onChronicDiseasesChange(it) },
                     label = {
                         Text(
-                            text =
-                                if (chronicDiseasesFocused) {
-                                    stringResource(R.string.chronic_diseases)
-                                } else {
-                                    stringResource(R.string.chronic_diseases_hint)
-                                },
+                            text = stringResource(R.string.chronic_diseases),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
                     },
+                    placeholder = { Text(text = stringResource(R.string.chronic_diseases_hint)) },
                     singleLine = false,
                     maxLines = 3,
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.8f)
-                            .padding(top = L_PADDING)
-                            .onFocusChanged { focusState ->
-                                chronicDiseasesFocused = focusState.isFocused
-                            },
+                            .padding(top = L_PADDING),
                     colors =
                         TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
@@ -596,25 +584,18 @@ internal fun RegistrationContent(
                     onValueChange = { onCurrentMedicationsChange(it) },
                     label = {
                         Text(
-                            text =
-                                if (currentMedicationsFocused) {
-                                    stringResource(R.string.current_medications)
-                                } else {
-                                    stringResource(R.string.current_medications_hint)
-                                },
+                            text = stringResource(R.string.current_medications),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
                     },
+                    placeholder = { Text(text = stringResource(R.string.current_medications_hint)) },
                     singleLine = false,
                     maxLines = 3,
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.8f)
-                            .padding(top = L_PADDING)
-                            .onFocusChanged { focusState ->
-                                currentMedicationsFocused = focusState.isFocused
-                            },
+                            .padding(top = L_PADDING),
                     colors =
                         TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
@@ -638,25 +619,18 @@ internal fun RegistrationContent(
                     onValueChange = { onAllergiesChange(it) },
                     label = {
                         Text(
-                            text =
-                                if (allergiesFocused) {
-                                    stringResource(R.string.allergies)
-                                } else {
-                                    stringResource(R.string.allergies_hint)
-                                },
+                            text = stringResource(R.string.allergies),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
                     },
+                    placeholder = { Text(text = stringResource(R.string.allergies_hint)) },
                     singleLine = false,
                     maxLines = 3,
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.8f)
-                            .padding(top = L_PADDING)
-                            .onFocusChanged { focusState ->
-                                allergiesFocused = focusState.isFocused
-                            },
+                            .padding(top = L_PADDING),
                     colors =
                         TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
@@ -680,25 +654,18 @@ internal fun RegistrationContent(
                     onValueChange = { onPastSurgeriesChange(it) },
                     label = {
                         Text(
-                            text =
-                                if (pastSurgeriesFocused) {
-                                    stringResource(R.string.past_surgeries)
-                                } else {
-                                    stringResource(R.string.past_surgeries_hint)
-                                },
+                            text = stringResource(R.string.past_surgeries),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
                     },
+                    placeholder = { Text(text = stringResource(R.string.past_surgeries_hint)) },
                     singleLine = false,
                     maxLines = 3,
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.8f)
-                            .padding(top = L_PADDING)
-                            .onFocusChanged { focusState ->
-                                pastSurgeriesFocused = focusState.isFocused
-                            },
+                            .padding(top = L_PADDING),
                     colors =
                         TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
