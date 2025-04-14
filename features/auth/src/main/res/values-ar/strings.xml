@@ -47,4 +47,5 @@
     <string name="current_medications_error">يرجى إدخال الأدوية الحالية أو اكتب \"لايوجد\".</string>
     <string name="allergies_error">يرجى إدخال الحساسية أو اكتب \"لايوجد\".</string>
     <string name="past_surgeries_error">يرجى إدخال العمليات السابقة أو اكتب \"لايوجد\".</string>
+    <string name="address">العنوان</string>
 </resources>
