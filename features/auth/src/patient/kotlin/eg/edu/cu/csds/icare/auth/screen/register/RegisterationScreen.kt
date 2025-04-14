@@ -43,8 +43,9 @@ internal fun RegistrationScreen(
     val firstName by authViewModel.firstNameState
     val lastName by authViewModel.lastNameState
     val email by authViewModel.emailState
-    val phone1 by authViewModel.phone1State
+    val phone by authViewModel.phoneState
     val nationalId by authViewModel.nationalIdState
+    val address by authViewModel.addressState
     val password by authViewModel.passwordState
     val chronicDiseases by authViewModel.chronicDiseasesState
     val currentMedications by authViewModel.currentMedicationsState
@@ -71,6 +72,7 @@ internal fun RegistrationScreen(
                 delay(timeMillis = 3000)
                 firebaseAuth.signOut()
                 showAlert = false
+                authViewModel.onLogOutClick()
                 onRegisterCompleted()
             } else if (resource is Resource.Error) {
                 scope.launch {
@@ -97,7 +99,8 @@ internal fun RegistrationScreen(
                 selectedGender = selectedGender,
                 genderExpanded = gendersExpanded,
                 nationalId = nationalId,
-                phone = phone1,
+                phone = phone,
+                address = address,
                 password = password,
                 chronicDiseases = chronicDiseases,
                 currentMedications = currentMedications,
@@ -116,7 +119,8 @@ internal fun RegistrationScreen(
                     authViewModel.onGenderSelected(it)
                     gendersExpanded = false
                 },
-                onPhoneChange = { authViewModel.onPhone1Changed(it) },
+                onPhoneChange = { authViewModel.onPhoneChanged(it) },
+                onAddressChange = { authViewModel.onAddressChanged(it) },
                 onNationalIdChange = { authViewModel.onNationalIdChanged(it) },
                 onPasswordChange = { authViewModel.onPasswordChanged(it) },
                 onPasswordVisibilityChange = { passwordVisibility = !passwordVisibility },
@@ -158,7 +162,7 @@ internal fun RegistrationScreen(
                                 showAlert = false
                             }
 
-                            phone1.isBlank() || phone1.length < Constants.PHONE_LENGTH -> {
+                            phone.isBlank() || phone.length < Constants.PHONE_LENGTH -> {
                                 alertMessage = context.getString(R.string.phone_error)
                                 showAlert = true
                                 delay(timeMillis = 3000)
