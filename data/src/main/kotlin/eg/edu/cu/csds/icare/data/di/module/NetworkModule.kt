@@ -8,7 +8,6 @@ import eg.edu.cu.csds.icare.data.remote.serivce.ApiService
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlinx.serialization.json.Json
-import okhttp3.CertificatePinner
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -52,15 +51,15 @@ class NetworkModule {
 
     @Single
     fun provideHttpClient(authInterceptor: Interceptor): OkHttpClient {
-        val certificatePinner =
+        /*val certificatePinner =
             CertificatePinner
                 .Builder()
                 .add(BuildConfig.SERVICE_DOMAIN, BuildConfig.CERTIFICATE_HASH_1)
                 .add(BuildConfig.SERVICE_DOMAIN, BuildConfig.CERTIFICATE_HASH_2)
-                .build()
+                .build()*/
         return OkHttpClient
             .Builder()
-            .certificatePinner(certificatePinner)
+//            .certificatePinner(certificatePinner)
             .readTimeout(timeout = 5, TimeUnit.MINUTES)
             .connectTimeout(timeout = 5, TimeUnit.MINUTES)
             .addInterceptor(authInterceptor)
