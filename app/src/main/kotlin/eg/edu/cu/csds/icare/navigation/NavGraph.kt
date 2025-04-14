@@ -125,7 +125,7 @@ fun SetupNavGraph(
                     }
                 },
                 onRegisterCompleted = {
-                    navController.navigate(Screen.Home) {
+                    navController.navigate(Screen.Login) {
                         popUpTo(navController.graph.id) {
                             inclusive = true
                         }
