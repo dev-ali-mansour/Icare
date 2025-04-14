@@ -1,5 +1,6 @@
 package eg.edu.cu.csds.icare.auth.screen.register
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -89,6 +91,7 @@ internal fun RegistrationContent(
     genderExpanded: Boolean,
     nationalId: String,
     phone: String,
+    address: String,
     password: String,
     chronicDiseases: String,
     currentMedications: String,
@@ -106,6 +109,7 @@ internal fun RegistrationContent(
     onGenderClicked: (Short) -> Unit,
     onNationalIdChange: (String) -> Unit,
     onPhoneChange: (String) -> Unit,
+    onAddressChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onChronicDiseasesChange: (String) -> Unit,
     onCurrentMedicationsChange: (String) -> Unit,
@@ -115,6 +119,7 @@ internal fun RegistrationContent(
     onPasswordVisibilityChange: () -> Unit,
     onRegisterButtonClicked: () -> Unit,
     onLoginClicked: () -> Unit,
+    context: Context = LocalContext.current,
 ) {
     val genders =
         listOf(
@@ -138,6 +143,7 @@ internal fun RegistrationContent(
                         datePickerState.selectedDateMillis?.let {
                             selectedBirthDate = it
                             selectedBirthDateFormatted = it.getFormattedDate()
+                            onBirthDateChanged(it.getFormattedDate("yyyy-MM-dd"))
                         }
                         showDatePicker = false
                     },
@@ -299,7 +305,7 @@ internal fun RegistrationContent(
                     keyboardOptions =
                         KeyboardOptions.Default.copy(
                             autoCorrectEnabled = false,
-                            keyboardType = KeyboardType.Number,
+                            keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next,
                         ),
                 )
@@ -338,7 +344,7 @@ internal fun RegistrationContent(
 
                 TextField(
                     value = selectedBirthDateFormatted,
-                    onValueChange = { onBirthDateChanged(it) },
+                    onValueChange = {},
                     readOnly = true,
                     label = {
                         Text(
@@ -472,7 +478,7 @@ internal fun RegistrationContent(
                     keyboardOptions =
                         KeyboardOptions.Default.copy(
                             autoCorrectEnabled = false,
-                            keyboardType = KeyboardType.Phone,
+                            keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Next,
                         ),
                 )
@@ -504,6 +510,38 @@ internal fun RegistrationContent(
                         KeyboardOptions.Default.copy(
                             autoCorrectEnabled = false,
                             keyboardType = KeyboardType.Phone,
+                            imeAction = ImeAction.Next,
+                        ),
+                )
+
+                TextField(
+                    value = address,
+                    onValueChange = { onAddressChange(it) },
+                    label = {
+                        Text(
+                            text = stringResource(R.string.address),
+                            fontFamily = helveticaFamily,
+                            color = textColor,
+                        )
+                    },
+                    singleLine = true,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(fraction = 0.8f),
+                    colors =
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            cursorColor = contentColor,
+                            focusedTextColor = textColor,
+                            focusedIndicatorColor = Yellow500,
+                            unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                        ),
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            autoCorrectEnabled = false,
+                            keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next,
                         ),
                 )
@@ -579,6 +617,7 @@ internal fun RegistrationContent(
                             imeAction = ImeAction.Next,
                         ),
                 )
+
                 TextField(
                     value = currentMedications,
                     onValueChange = { onCurrentMedicationsChange(it) },
@@ -787,6 +826,7 @@ internal fun RegistrationContentPreview() {
             selectedGender = 1,
             genderExpanded = false,
             phone = "",
+            address = "",
             password = "",
             chronicDiseases = "",
             currentMedications = "",
@@ -804,6 +844,7 @@ internal fun RegistrationContentPreview() {
             onNationalIdChange = {},
             onLastNameChanged = {},
             onPhoneChange = {},
+            onAddressChange = {},
             onPasswordChange = {},
             onChronicDiseasesChange = {},
             onCurrentMedicationsChange = {},
