@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ActionResultResponse(
-    @SerialName("code")
-    val statusCode: String = "",
+    @SerialName("status")
+    val statusCode: Short,
     @SerialName("message")
-    val message: String = "",
+    val message: String,
 )
