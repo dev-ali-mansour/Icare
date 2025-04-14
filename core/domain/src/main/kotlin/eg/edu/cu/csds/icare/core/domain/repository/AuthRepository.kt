@@ -9,14 +9,17 @@ interface AuthRepository {
         firstName: String,
         lastName: String,
         email: String,
-        password: String,
         birthDate: String,
         gender: String,
+        nationalId: String,
+        phone: String,
+        address: String,
+        weight: Double,
         chronicDiseases: String,
         currentMedications: String,
         allergies: String,
         pastSurgeries: String,
-        weight: Double,
+        password: String,
     ): Flow<Resource<Nothing?>>
 
     fun signInWithEmailAndPassword(
