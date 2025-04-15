@@ -46,7 +46,7 @@ interface ApiService {
     @POST("patient_register")
     suspend fun register(
         @Body body: HashMap<String, String>,
-    ): Response<LoginInfoResponse>
+    ): Response<ActionResultResponse>
 
     @POST("loginInfo")
     suspend fun getLoginInfo(): Response<LoginInfoResponse>
