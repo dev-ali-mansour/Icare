@@ -7,6 +7,7 @@ import kotlinx.serialization.Transient
 data class LabImagingCenter(
     val id: Long = 0,
     val name: String = "",
+    val type: Short = 0,
     val phone: String = "",
     val address: String = "",
     val longitude: Double = 0.0,
