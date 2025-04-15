@@ -80,14 +80,17 @@ class RemoteAuthDataSourceImpl(
         firstName: String,
         lastName: String,
         email: String,
-        password: String,
         birthDate: String,
         gender: String,
+        nationalId: String,
+        phone: String,
+        address: String,
+        weight: Double,
         chronicDiseases: String,
         currentMedications: String,
         allergies: String,
         pastSurgeries: String,
-        weight: Double,
+        password: String,
     ): Flow<Resource<Nothing?>> =
         flow {
             emit(Resource.Loading())
@@ -111,11 +114,14 @@ class RemoteAuthDataSourceImpl(
                     email,
                     birthDate,
                     gender,
+                    nationalId,
+                    phone,
+                    address,
+                    weight,
                     chronicDiseases,
                     currentMedications,
                     allergies,
                     pastSurgeries,
-                    weight,
                     token,
                 ).collect { resource ->
                     if (resource is Resource.Error) {
@@ -234,11 +240,14 @@ class RemoteAuthDataSourceImpl(
         email: String,
         birthDate: String,
         gender: String,
+        nationalId: String,
+        phone: String,
+        address: String,
+        weight: Double,
         chronicDiseases: String,
         currentMedications: String,
         allergies: String,
         pastSurgeries: String,
-        weight: Double,
         token: String,
     ): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
@@ -248,6 +257,9 @@ class RemoteAuthDataSourceImpl(
             map["email"] = email
             map["birthDate"] = birthDate
             map["gender"] = gender.toString()
+            map["nationalId"] = nationalId.toString()
+            map["phone"] = phone
+            map["address"] = address
             map["chronicDiseases"] = chronicDiseases
             map["currentMedications"] = currentMedications
             map["allergies"] = allergies
