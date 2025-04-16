@@ -62,90 +62,25 @@ class AuthViewModel(
     var gendersExpanded = mutableStateOf(false)
 
     var firstNameState = mutableStateOf("")
-        private set
     var lastNameState = mutableStateOf("")
-        private set
     var emailState = mutableStateOf("")
-        private set
     var birthDateState = mutableStateOf("")
-        private set
     var genderState = mutableStateOf("")
         private set
     var nationalIdState = mutableStateOf("")
-        private set
     var phoneState = mutableStateOf("")
-        private set
     var addressState = mutableStateOf("")
-        private set
     var weightState = mutableDoubleStateOf(0.0)
-        private set
     var chronicDiseasesState = mutableStateOf("")
-        private set
     var currentMedicationsState = mutableStateOf("")
-        private set
     var allergiesState = mutableStateOf("")
-        private set
     var pastSurgeriesState = mutableStateOf("")
-        private set
     var passwordState = mutableStateOf("")
-        private set
     var passwordVisibility = mutableStateOf(false)
-
-    fun onFirstNameChanged(newValue: String) {
-        firstNameState.value = newValue
-    }
-
-    fun onLastNameChanged(newValue: String) {
-        lastNameState.value = newValue
-    }
-
-    fun onEmailChanged(newValue: String) {
-        emailState.value = newValue
-    }
-
-    fun onBirthDateChanged(newValue: String) {
-        birthDateState.value = newValue
-    }
 
     fun onGenderSelected(newValue: Short) {
         _selectedGenderState.value = newValue
         genderState.value = if (newValue.toInt() == 1) "M" else "F"
-    }
-
-    fun onNationalIdChanged(newValue: String) {
-        nationalIdState.value = newValue
-    }
-
-    fun onPhoneChanged(newValue: String) {
-        phoneState.value = newValue
-    }
-
-    fun onAddressChanged(newValue: String) {
-        addressState.value = newValue
-    }
-
-    fun onWeightChanged(newValue: Double) {
-        weightState.doubleValue = newValue
-    }
-
-    fun onChronicDiseasesChanged(newValue: String) {
-        chronicDiseasesState.value = newValue
-    }
-
-    fun onCurrentMedicationsChanged(newValue: String) {
-        currentMedicationsState.value = newValue
-    }
-
-    fun onAllergiesChanged(newValue: String) {
-        allergiesState.value = newValue
-    }
-
-    fun onPastSurgeriesChanged(newValue: String) {
-        pastSurgeriesState.value = newValue
-    }
-
-    fun onPasswordChanged(newValue: String) {
-        passwordState.value = newValue
     }
 
     fun onRegisterClicked() {
@@ -260,19 +195,19 @@ class AuthViewModel(
     }
 
     fun clearData() {
-        onFirstNameChanged("")
-        onLastNameChanged("")
-        onEmailChanged("")
-        onBirthDateChanged("")
+        firstNameState.value = ""
+        lastNameState.value = ""
+        emailState.value = ""
+        birthDateState.value = ""
         onGenderSelected(0)
-        onNationalIdChanged("")
-        onPhoneChanged("")
-        onAddressChanged("")
-        onWeightChanged(0.0)
-        onChronicDiseasesChanged("")
-        onCurrentMedicationsChanged("")
-        onAllergiesChanged("")
-        onPastSurgeriesChanged("")
-        onPasswordChanged("")
+        nationalIdState.value = ""
+        phoneState.value = ""
+        addressState.value = ""
+        weightState.doubleValue = 0.0
+        chronicDiseasesState.value = ""
+        currentMedicationsState.value = ""
+        allergiesState.value = ""
+        pastSurgeriesState.value = ""
+        passwordState.value = ""
     }
 }
