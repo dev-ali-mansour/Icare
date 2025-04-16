@@ -71,29 +71,29 @@ class DoctorViewModel(
                 _actionResFlow.value = result
             }
         }
+    }
 
-        fun updateDoctor() {
-            viewModelScope.launch(dispatcher) {
-                if (_actionResFlow.value !is Resource.Unspecified) {
-                    _actionResFlow.value = Resource.Unspecified()
-                    delay(timeMillis = 100)
-                }
-                updateDoctorUseCase(
-                    Doctor(
-                        id = idState.longValue,
-                        firstName = firstNameState.value,
-                        lastName = lastNameState.value,
-                        clinicId = clinicIdState.longValue,
-                        email = emailState.value,
-                        phone = phoneState.value,
-                        specialty = specialityState.value,
-                        fromTime = fromTimeState.longValue,
-                        toTime = toTimeState.longValue,
-                        profilePicture = "",
-                    ),
-                ).collect { result ->
-                    _actionResFlow.value = result
-                }
+    fun updateDoctor() {
+        viewModelScope.launch(dispatcher) {
+            if (_actionResFlow.value !is Resource.Unspecified) {
+                _actionResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            updateDoctorUseCase(
+                Doctor(
+                    id = idState.longValue,
+                    firstName = firstNameState.value,
+                    lastName = lastNameState.value,
+                    clinicId = clinicIdState.longValue,
+                    email = emailState.value,
+                    phone = phoneState.value,
+                    specialty = specialityState.value,
+                    fromTime = fromTimeState.longValue,
+                    toTime = toTimeState.longValue,
+                    profilePicture = "",
+                ),
+            ).collect { result ->
+                _actionResFlow.value = result
             }
         }
     }
