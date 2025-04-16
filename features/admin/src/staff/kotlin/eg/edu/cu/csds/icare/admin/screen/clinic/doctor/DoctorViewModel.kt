@@ -31,65 +31,15 @@ class DoctorViewModel(
     val doctorsResFlow: StateFlow<Resource<List<Doctor>>> = _doctorsResFlow
 
     var idState = mutableLongStateOf(0)
-        private set
     var firstNameState = mutableStateOf("")
-        private set
     var lastNameState = mutableStateOf("")
-        private set
     var clinicIdState = mutableLongStateOf(0)
-        private set
     var emailState = mutableStateOf("")
-        private set
     var phoneState = mutableStateOf("")
-        private set
     var specialityState = mutableStateOf("")
-        private set
     var fromTimeState = mutableLongStateOf(0)
-        private set
     var toTimeState = mutableLongStateOf(0)
-        private set
     var profilePictureState = mutableStateOf("")
-        private set
-
-    fun onIdChanged(newValue: Long) {
-        idState.longValue = newValue
-    }
-
-    fun onFirstNameChanged(newValue: String) {
-        firstNameState.value = newValue
-    }
-
-    fun onLastNameChanged(newValue: String) {
-        lastNameState.value = newValue
-    }
-
-    fun onClinicIdChanged(newValue: Long) {
-        clinicIdState.longValue = newValue
-    }
-
-    fun onEmailChanged(newValue: String) {
-        emailState.value = newValue
-    }
-
-    fun onPhoneChanged(newValue: String) {
-        phoneState.value = newValue
-    }
-
-    fun onSpecialityChanged(newValue: String) {
-        specialityState.value = newValue
-    }
-
-    fun onFromTimeChanged(newValue: Long) {
-        fromTimeState.longValue = newValue
-    }
-
-    fun onToTimeChanged(newValue: Long) {
-        toTimeState.longValue = newValue
-    }
-
-    fun onProfilePictureChanged(newValue: String) {
-        profilePictureState.value = newValue
-    }
 
     fun addNewDoctor() {
         viewModelScope.launch(dispatcher) {
