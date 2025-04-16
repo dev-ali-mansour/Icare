@@ -65,26 +65,26 @@ class PharmacyViewModel(
                 _actionResFlow.value = result
             }
         }
+    }
 
-        fun updatePharmacy() {
-            viewModelScope.launch(dispatcher) {
-                if (_actionResFlow.value !is Resource.Unspecified) {
-                    _actionResFlow.value = Resource.Unspecified()
-                    delay(timeMillis = 100)
-                }
-                updatePharmacyUseCase(
-                    Pharmacy(
-                        id = idState.longValue,
-                        name = nameState.value,
-                        phone = phoneState.value,
-                        address = addressState.value,
-                        longitude = longitudeState.doubleValue,
-                        latitude = latitudeState.doubleValue,
-                        contractStatusId = contractStatusIdState.value,
-                    ),
-                ).collect { result ->
-                    _actionResFlow.value = result
-                }
+    fun updatePharmacy() {
+        viewModelScope.launch(dispatcher) {
+            if (_actionResFlow.value !is Resource.Unspecified) {
+                _actionResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            updatePharmacyUseCase(
+                Pharmacy(
+                    id = idState.longValue,
+                    name = nameState.value,
+                    phone = phoneState.value,
+                    address = addressState.value,
+                    longitude = longitudeState.doubleValue,
+                    latitude = latitudeState.doubleValue,
+                    contractStatusId = contractStatusIdState.value,
+                ),
+            ).collect { result ->
+                _actionResFlow.value = result
             }
         }
     }

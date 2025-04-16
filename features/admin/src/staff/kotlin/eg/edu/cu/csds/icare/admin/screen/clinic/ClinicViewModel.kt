@@ -68,27 +68,27 @@ class ClinicViewModel(
                 _actionResFlow.value = result
             }
         }
+    }
 
-        fun updateClinic() {
-            viewModelScope.launch(dispatcher) {
-                if (_actionResFlow.value !is Resource.Unspecified) {
-                    _actionResFlow.value = Resource.Unspecified()
-                    delay(timeMillis = 100)
-                }
-                updateClinicUseCase(
-                    Clinic(
-                        id = idState.longValue,
-                        name = nameState.value,
-                        type = typeState.value,
-                        address = addressState.value,
-                        phone = phoneState.value,
-                        longitude = longitudeState.doubleValue,
-                        latitude = latitudeState.doubleValue,
-                        isOpen = isOpenState.value,
-                    ),
-                ).collect { result ->
-                    _actionResFlow.value = result
-                }
+    fun updateClinic() {
+        viewModelScope.launch(dispatcher) {
+            if (_actionResFlow.value !is Resource.Unspecified) {
+                _actionResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            updateClinicUseCase(
+                Clinic(
+                    id = idState.longValue,
+                    name = nameState.value,
+                    type = typeState.value,
+                    address = addressState.value,
+                    phone = phoneState.value,
+                    longitude = longitudeState.doubleValue,
+                    latitude = latitudeState.doubleValue,
+                    isOpen = isOpenState.value,
+                ),
+            ).collect { result ->
+                _actionResFlow.value = result
             }
         }
     }
