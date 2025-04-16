@@ -7,10 +7,10 @@ import eg.edu.cu.csds.icare.auth.screen.AuthViewModel
 import eg.edu.cu.csds.icare.auth.screen.login.LoginScreen
 import eg.edu.cu.csds.icare.auth.screen.profile.ProfileScreen
 import eg.edu.cu.csds.icare.auth.screen.recovery.PasswordRecoveryScreen
-import eg.edu.cu.csds.icare.auth.screen.register.RegistrationScreen
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 
+@Suppress("UnusedParameter")
 fun NavGraphBuilder.authenticationRoute(
     firebaseAuth: FirebaseAuth,
     mainViewModel: MainViewModel,
@@ -36,14 +36,6 @@ fun NavGraphBuilder.authenticationRoute(
             onLoginClicked = { onLoginClicked() },
             onRecoveryCompleted = { onRecoveryCompleted() },
             onError = { onError(it) },
-            authViewModel = authViewModel,
-        )
-    }
-    composable<Screen.Register> {
-        RegistrationScreen(
-            firebaseAuth = firebaseAuth,
-            onLoginClicked = { onLoginClicked() },
-            onRegisterCompleted = { onRegisterCompleted() },
             authViewModel = authViewModel,
         )
     }
