@@ -34,7 +34,7 @@ internal fun PasswordRecoveryScreen(
     authViewModel: AuthViewModel,
     context: Context = LocalContext.current,
 ) {
-    val email by authViewModel.emailState
+    var email by authViewModel.emailState
     val isLoading by authViewModel.isLoading
     val resource by authViewModel.recoveryResFlow.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
@@ -68,7 +68,7 @@ internal fun PasswordRecoveryScreen(
             PasswordRecoveryContent(
                 email = email,
                 isLoading = isLoading,
-                onEmailChanged = { authViewModel.onEmailChanged(it) },
+                onEmailChanged = { email = it },
                 onResetButtonClicked = {
                     when {
                         !email.isValidEmail ->
