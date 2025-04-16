@@ -40,18 +40,19 @@ internal fun RegistrationScreen(
     onRegisterCompleted: () -> Unit,
     context: Context = LocalContext.current,
 ) {
-    val firstName by authViewModel.firstNameState
-    val lastName by authViewModel.lastNameState
-    val email by authViewModel.emailState
-    val phone by authViewModel.phoneState
-    val nationalId by authViewModel.nationalIdState
-    val address by authViewModel.addressState
-    val password by authViewModel.passwordState
-    val chronicDiseases by authViewModel.chronicDiseasesState
-    val currentMedications by authViewModel.currentMedicationsState
-    val allergies by authViewModel.allergiesState
-    val pastSurgeries by authViewModel.pastSurgeriesState
-    val weight by authViewModel.weightState
+    var firstName by authViewModel.firstNameState
+    var lastName by authViewModel.lastNameState
+    var email by authViewModel.emailState
+    var birthDate by authViewModel.birthDateState
+    var phone by authViewModel.phoneState
+    var nationalId by authViewModel.nationalIdState
+    var address by authViewModel.addressState
+    var password by authViewModel.passwordState
+    var chronicDiseases by authViewModel.chronicDiseasesState
+    var currentMedications by authViewModel.currentMedicationsState
+    var allergies by authViewModel.allergiesState
+    var pastSurgeries by authViewModel.pastSurgeriesState
+    var weight by authViewModel.weightState
     var passwordVisibility by authViewModel.passwordVisibility
     val isLoading by authViewModel.isLoading
     val resource by authViewModel.registerResFlow.collectAsStateWithLifecycle()
@@ -109,20 +110,20 @@ internal fun RegistrationScreen(
                 weight = weight,
                 passwordVisibility = passwordVisibility,
                 isLoading = isLoading,
-                onFirstNameChange = { authViewModel.onFirstNameChanged(it) },
-                onLastNameChanged = { authViewModel.onLastNameChanged(it) },
-                onEmailChange = { authViewModel.onEmailChanged(it) },
-                onBirthDateChanged = { authViewModel.onBirthDateChanged(it) },
+                onFirstNameChange = { firstName = it },
+                onLastNameChanged = { lastName = it },
+                onEmailChange = { email = it },
+                onBirthDateChanged = { birthDate = it },
                 onGendersExpandedChange = { gendersExpanded = !gendersExpanded },
                 onGendersDismissRequest = { gendersExpanded = false },
                 onGenderClicked = {
                     authViewModel.onGenderSelected(it)
                     gendersExpanded = false
                 },
-                onPhoneChange = { authViewModel.onPhoneChanged(it) },
-                onAddressChange = { authViewModel.onAddressChanged(it) },
-                onNationalIdChange = { authViewModel.onNationalIdChanged(it) },
-                onPasswordChange = { authViewModel.onPasswordChanged(it) },
+                onPhoneChange = { phone = it },
+                onAddressChange = { address = it },
+                onNationalIdChange = { nationalId = it },
+                onPasswordChange = { password = it },
                 onPasswordVisibilityChange = { passwordVisibility = !passwordVisibility },
                 onRegisterButtonClicked = {
                     scope.launch {
@@ -209,11 +210,11 @@ internal fun RegistrationScreen(
                     }
                 },
                 onLoginClicked = { onLoginClicked() },
-                onChronicDiseasesChange = { authViewModel.onChronicDiseasesChanged(it) },
-                onCurrentMedicationsChange = { authViewModel.onCurrentMedicationsChanged(it) },
-                onAllergiesChange = { authViewModel.onAllergiesChanged(it) },
-                onPastSurgeriesChange = { authViewModel.onPastSurgeriesChanged(it) },
-                onWeightChange = { authViewModel.onWeightChanged(it) },
+                onChronicDiseasesChange = { chronicDiseases = it },
+                onCurrentMedicationsChange = { currentMedications = it },
+                onAllergiesChange = { allergies = it },
+                onPastSurgeriesChange = { pastSurgeries = it },
+                onWeightChange = { weight = it },
             )
 
             if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }

@@ -20,4 +20,5 @@ object Constants {
     const val ERROR_CODE_SERVER_ERROR: Short = 5
     const val NATIONAL_ID_LENGTH: Int = 14
     const val PHONE_LENGTH: Int = 11
+    const val MINUTES_TO_MILLIS = 60000
 }
