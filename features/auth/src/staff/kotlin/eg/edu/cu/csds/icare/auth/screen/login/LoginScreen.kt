@@ -39,8 +39,8 @@ internal fun LoginScreen(
     onCreateAnAccountClicked: () -> Unit = {},
     context: Context = LocalContext.current,
 ) {
-    val email by authViewModel.emailState
-    val password by authViewModel.passwordState
+    var email by authViewModel.emailState
+    var password by authViewModel.passwordState
     var passwordVisibility by authViewModel.passwordVisibility
     val isLoading by authViewModel.isLoading
     val loginRes by authViewModel.loginResFlow.collectAsStateWithLifecycle()
@@ -68,8 +68,8 @@ internal fun LoginScreen(
                 password = password,
                 passwordVisibility = passwordVisibility,
                 isLoading = isLoading,
-                onEmailChanged = { authViewModel.onEmailChanged(it) },
-                onPasswordChanged = { authViewModel.onPasswordChanged(it) },
+                onEmailChanged = { email = it },
+                onPasswordChanged = { password = it },
                 onPasswordVisibilityChanged = { passwordVisibility = !passwordVisibility },
                 onRecoveryClicked = { onRecoveryClicked() },
                 onLoginButtonClicked = {
