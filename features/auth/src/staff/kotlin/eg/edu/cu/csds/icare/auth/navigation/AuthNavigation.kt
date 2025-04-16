@@ -31,6 +31,7 @@ fun NavGraphBuilder.authenticationRoute(
             authViewModel = authViewModel,
         )
     }
+
     composable<Screen.PasswordRecovery> {
         PasswordRecoveryScreen(
             onLoginClicked = { onLoginClicked() },
