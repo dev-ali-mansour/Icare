@@ -24,30 +24,28 @@ class RemotePharmaciesDataSourceImpl(
 ) : RemotePharmaciesDataSource {
     override fun fetchPharmacies(): Flow<Resource<List<Pharmacy>>> =
         flow {
-            runCatching {
-                emit(Resource.Loading())
-                auth.currentUser?.let {
-                    val response = service.fetchPharmacies()
-                    when (response.code()) {
-                        HTTP_OK -> {
-                            response.body()?.let { res ->
-                                when (res.statusCode) {
-                                    Constants.ERROR_CODE_OK ->
-                                        emit(Resource.Success(res.pharmacies))
+            emit(Resource.Loading())
+            auth.currentUser?.let {
+                val response = service.fetchPharmacies()
+                when (response.code()) {
+                    HTTP_OK -> {
+                        response.body()?.let { res ->
+                            when (res.statusCode) {
+                                Constants.ERROR_CODE_OK ->
+                                    emit(Resource.Success(res.pharmacies))
 
-                                    Constants.ERROR_CODE_SERVER_ERROR ->
-                                        emit(Resource.Error(ConnectException()))
-                                }
+                                Constants.ERROR_CODE_SERVER_ERROR ->
+                                    emit(Resource.Error(ConnectException()))
                             }
                         }
-
-                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
                     }
+
+                    else -> emit(Resource.Error(ConnectException(response.code().toString())))
                 }
-            }.onFailure {
-                Timber.e("fetchPharmacies() error ${it.javaClass.simpleName}: ${it.message}")
-                emit(Resource.Error(it))
             }
+        }.catch {
+            Timber.e("fetchPharmacies() error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
         }
 
     override fun addNewPharmacy(pharmacy: Pharmacy): Flow<Resource<Nothing?>> =
@@ -104,32 +102,30 @@ class RemotePharmaciesDataSourceImpl(
 
     override fun listPharmacists(pharmacyId: Long): Flow<Resource<List<Pharmacist>>> =
         flow {
-            runCatching {
-                emit(Resource.Loading())
-                auth.currentUser?.let {
-                    val map = HashMap<String, String>()
-                    map["pharmacyId"] = pharmacyId.toString()
-                    val response = service.listPharmacists(map)
-                    when (response.code()) {
-                        HTTP_OK -> {
-                            response.body()?.let { res ->
-                                when (res.statusCode) {
-                                    Constants.ERROR_CODE_OK ->
-                                        emit(Resource.Success(res.pharmacists))
+            emit(Resource.Loading())
+            auth.currentUser?.let {
+                val map = HashMap<String, String>()
+                map["pharmacyId"] = pharmacyId.toString()
+                val response = service.listPharmacists(map)
+                when (response.code()) {
+                    HTTP_OK -> {
+                        response.body()?.let { res ->
+                            when (res.statusCode) {
+                                Constants.ERROR_CODE_OK ->
+                                    emit(Resource.Success(res.pharmacists))
 
-                                    Constants.ERROR_CODE_SERVER_ERROR ->
-                                        emit(Resource.Error(ConnectException()))
-                                }
+                                Constants.ERROR_CODE_SERVER_ERROR ->
+                                    emit(Resource.Error(ConnectException()))
                             }
                         }
-
-                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
                     }
+
+                    else -> emit(Resource.Error(ConnectException(response.code().toString())))
                 }
-            }.onFailure {
-                Timber.e("listPharmacists() error ${it.javaClass.simpleName}: ${it.message}")
-                emit(Resource.Error(it))
             }
+        }.catch {
+            Timber.e("listPharmacists() error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
         }
 
     override fun addNewPharmacist(pharmacist: Pharmacist): Flow<Resource<Nothing?>> =
