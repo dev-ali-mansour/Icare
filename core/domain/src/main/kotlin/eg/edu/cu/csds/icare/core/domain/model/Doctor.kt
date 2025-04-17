@@ -16,8 +16,8 @@ data class Doctor(
     val email: String = "",
     val phone: String = "",
     val specialty: String = "",
-    val fromTime: Long,
-    val toTime: Long,
+    val fromTime: Long = System.currentTimeMillis(),
+    val toTime: Long = fromTime.plus(other = 5 * 60 * 60 * 1000),
     @Transient
     val availability: String = "${fromTime.getFormattedTime()} - ${toTime.getFormattedTime()}",
     @Transient
