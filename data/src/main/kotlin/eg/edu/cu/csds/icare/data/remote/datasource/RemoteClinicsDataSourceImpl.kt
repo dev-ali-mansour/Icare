@@ -43,7 +43,11 @@ class RemoteClinicsDataSourceImpl(
                     }
                 }
 
-                else -> emit(Resource.Error(ConnectException(response.code().toString())))
+                else -> {
+                    // Todo Pass ConnectException While failing to connect to the server
+                    emit(Resource.Success(listOf()))
+//                    emit(Resource.Error(ConnectException(response.code().toString())))
+                }
             }
         }.catch {
             Timber.e("fetchClinics() error ${it.javaClass.simpleName}: ${it.message}")
@@ -120,7 +124,11 @@ class RemoteClinicsDataSourceImpl(
                         }
                     }
 
-                    else -> emit(Resource.Error(ConnectException(response.code().toString())))
+                    else -> {
+                        // Todo Pass ConnectException While failing to connect to the server
+                        emit(Resource.Success(listOf()))
+//                    emit(Resource.Error(ConnectException(response.code().toString())))
+                    }
                 }
             }
         }.catch {
