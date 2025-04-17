@@ -24,30 +24,28 @@ class RemoteCentersDataSourceImpl(
 ) : RemoteCentersDataSource {
     override fun fetchCenters(): Flow<Resource<List<LabImagingCenter>>> =
         flow {
-            runCatching {
-                emit(Resource.Loading())
-                auth.currentUser?.let {
-                    val response = service.fetchCenters()
-                    when (response.code()) {
-                        HTTP_OK -> {
-                            response.body()?.let { res ->
-                                when (res.statusCode) {
-                                    Constants.ERROR_CODE_OK ->
-                                        emit(Resource.Success(res.centers))
+            emit(Resource.Loading())
+            auth.currentUser?.let {
+                val response = service.fetchCenters()
+                when (response.code()) {
+                    HTTP_OK -> {
+                        response.body()?.let { res ->
+                            when (res.statusCode) {
+                                Constants.ERROR_CODE_OK ->
+                                    emit(Resource.Success(res.centers))
 
-                                    Constants.ERROR_CODE_SERVER_ERROR ->
-                                        emit(Resource.Error(ConnectException()))
-                                }
+                                Constants.ERROR_CODE_SERVER_ERROR ->
+                                    emit(Resource.Error(ConnectException()))
                             }
                         }
-
-                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
                     }
+
+                    else -> emit(Resource.Error(ConnectException(response.code().toString())))
                 }
-            }.onFailure {
-                Timber.e("fetchCenters() error ${it.javaClass.simpleName}: ${it.message}")
-                emit(Resource.Error(it))
             }
+        }.catch {
+            Timber.e("fetchCenters() error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
         }
 
     override fun addNewCenter(center: LabImagingCenter): Flow<Resource<Nothing?>> =
@@ -104,32 +102,30 @@ class RemoteCentersDataSourceImpl(
 
     override fun listCenterStaff(centerId: Long): Flow<Resource<List<CenterStaff>>> =
         flow {
-            runCatching {
-                emit(Resource.Loading())
-                auth.currentUser?.let {
-                    val map = HashMap<String, String>()
-                    map["centerId"] = centerId.toString()
-                    val response = service.listCenterStaff(map)
-                    when (response.code()) {
-                        HTTP_OK -> {
-                            response.body()?.let { res ->
-                                when (res.statusCode) {
-                                    Constants.ERROR_CODE_OK ->
-                                        emit(Resource.Success(res.staffList))
+            emit(Resource.Loading())
+            auth.currentUser?.let {
+                val map = HashMap<String, String>()
+                map["centerId"] = centerId.toString()
+                val response = service.listCenterStaff(map)
+                when (response.code()) {
+                    HTTP_OK -> {
+                        response.body()?.let { res ->
+                            when (res.statusCode) {
+                                Constants.ERROR_CODE_OK ->
+                                    emit(Resource.Success(res.staffList))
 
-                                    Constants.ERROR_CODE_SERVER_ERROR ->
-                                        emit(Resource.Error(ConnectException()))
-                                }
+                                Constants.ERROR_CODE_SERVER_ERROR ->
+                                    emit(Resource.Error(ConnectException()))
                             }
                         }
-
-                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
                     }
+
+                    else -> emit(Resource.Error(ConnectException(response.code().toString())))
                 }
-            }.onFailure {
-                Timber.e("listCenterStaff() error ${it.javaClass.simpleName}: ${it.message}")
-                emit(Resource.Error(it))
             }
+        }.catch {
+            Timber.e("listCenterStaff() error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
         }
 
     override fun addNewCenterStaff(staff: CenterStaff): Flow<Resource<Nothing?>> =
