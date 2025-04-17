@@ -35,45 +35,43 @@ class RemoteAuthDataSourceImpl(
 ) : RemoteAuthDataSource {
     override fun getUserInfo(): Flow<Resource<User>> =
         flow {
-            runCatching {
-                emit(Resource.Loading())
-                auth.currentUser?.let { user ->
-                    val response = service.getLoginInfo()
-                    when (response.code()) {
-                        HTTP_OK -> {
-                            response.body()?.let { res ->
-                                when (res.statusCode) {
-                                    Constants.ERROR_CODE_OK ->
-                                        res.role?.let { role ->
-                                            val employee =
-                                                User(
-                                                    roleId = role.id,
-                                                    job = res.job,
-                                                    permissions = role.permissions,
-                                                )
-                                            emit(Resource.Success(data = employee))
-                                        } ?: emit(Resource.Error(UserNotAuthorizedException()))
+            emit(Resource.Loading())
+            auth.currentUser?.let { user ->
+                val response = service.getLoginInfo()
+                when (response.code()) {
+                    HTTP_OK -> {
+                        response.body()?.let { res ->
+                            when (res.statusCode) {
+                                Constants.ERROR_CODE_OK ->
+                                    res.role?.let { role ->
+                                        val employee =
+                                            User(
+                                                roleId = role.id,
+                                                job = res.job,
+                                                permissions = role.permissions,
+                                            )
+                                        emit(Resource.Success(data = employee))
+                                    } ?: emit(Resource.Error(UserNotAuthorizedException()))
 
-                                    Constants.ERROR_CODE_USER_COLLISION -> {
-                                        user.delete()
-                                        emit(Resource.Error(UserNotAuthorizedException()))
-                                    }
-
-                                    Constants.ERROR_CODE_SERVER_ERROR ->
-                                        emit(Resource.Error(ConnectException()))
-
-                                    else -> emit(Resource.Error(UserNotAuthorizedException()))
+                                Constants.ERROR_CODE_USER_COLLISION -> {
+                                    user.delete()
+                                    emit(Resource.Error(UserNotAuthorizedException()))
                                 }
+
+                                Constants.ERROR_CODE_SERVER_ERROR ->
+                                    emit(Resource.Error(ConnectException()))
+
+                                else -> emit(Resource.Error(UserNotAuthorizedException()))
                             }
                         }
-
-                        else -> emit(Resource.Error(UserNotAuthorizedException()))
                     }
-                } ?: run { emit(Resource.Error(UserNotAuthenticatedException())) }
-            }.onFailure {
-                Timber.e("getUserInfo() Error ${it.javaClass.simpleName}: ${it.message}")
-                emit(Resource.Error(it))
-            }
+
+                    else -> emit(Resource.Error(UserNotAuthorizedException()))
+                }
+            } ?: run { emit(Resource.Error(UserNotAuthenticatedException())) }
+        }.catch {
+            Timber.e("getUserInfo() Error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
         }
 
     override fun register(
