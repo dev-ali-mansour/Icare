@@ -51,7 +51,9 @@ class RemoteClinicsDataSourceImpl(
             }
         }.catch {
             Timber.e("fetchClinics() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Resource.Error(it))
+            // Todo Pass ConnectException While failing to connect to the server
+            emit(Resource.Success(listOf()))
+//            emit(Resource.Error(it))
         }
 
     override fun addNewClinic(clinic: Clinic): Flow<Resource<Nothing?>> =
@@ -133,7 +135,9 @@ class RemoteClinicsDataSourceImpl(
             }
         }.catch {
             Timber.e("fetchDoctors() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Resource.Error(it))
+            // Todo Pass ConnectException While failing to connect to the server
+            emit(Resource.Success(listOf()))
+//            emit(Resource.Error(it))}
         }
 
     override fun addNewDoctor(doctor: Doctor): Flow<Resource<Nothing?>> =
