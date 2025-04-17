@@ -31,13 +31,13 @@ import org.koin.java.KoinJavaComponent.inject
 
 @Composable
 fun MainScreen(
+    mainViewModel: MainViewModel,
     mediaHelper: MediaHelper,
     showAppSettings: () -> Unit,
 ) {
     val layoutDirection = LocalLayoutDirection.current
     val navController = rememberNavController()
     val firebaseAuth: FirebaseAuth by inject(FirebaseAuth::class.java)
-    val mainViewModel: MainViewModel = koinViewModel()
     val authViewModel: AuthViewModel = koinViewModel()
     val homeViewModel: HomeViewModel = koinViewModel()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
