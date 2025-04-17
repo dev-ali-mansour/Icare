@@ -25,33 +25,29 @@ class RemoteClinicsDataSourceImpl(
 ) : RemoteClinicsDataSource {
     override fun fetchClinics(): Flow<Resource<List<Clinic>>> =
         flow {
-            runCatching {
-                emit(Resource.Loading())
-                auth.currentUser?.let {
-                    val response = service.fetchClinics()
-                    when (response.code()) {
-                        HTTP_OK -> {
-                            response.body()?.let { res ->
-                                when (res.statusCode) {
-                                    Constants.ERROR_CODE_OK ->
-                                        emit(Resource.Success(res.clinics))
+            emit(Resource.Loading())
+            val response = service.fetchClinics()
+            when (response.code()) {
+                HTTP_OK -> {
+                    response.body()?.let { res ->
+                        when (res.statusCode) {
+                            Constants.ERROR_CODE_OK ->
+                                emit(Resource.Success(res.clinics))
 
-                                    Constants.ERROR_CODE_EXPIRED_TOKEN ->
-                                        emit(Resource.Error(UserNotAuthenticatedException()))
+                            Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                emit(Resource.Error(UserNotAuthenticatedException()))
 
-                                    Constants.ERROR_CODE_SERVER_ERROR ->
-                                        emit(Resource.Error(ConnectException()))
-                                }
-                            }
+                            Constants.ERROR_CODE_SERVER_ERROR ->
+                                emit(Resource.Error(ConnectException()))
                         }
-
-                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
                     }
                 }
-            }.onFailure {
-                Timber.e("fetchClinics() error ${it.javaClass.simpleName}: ${it.message}")
-                emit(Resource.Error(it))
+
+                else -> emit(Resource.Error(ConnectException(response.code().toString())))
             }
+        }.catch {
+            Timber.e("fetchClinics() error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
         }
 
     override fun addNewClinic(clinic: Clinic): Flow<Resource<Nothing?>> =
@@ -108,30 +104,28 @@ class RemoteClinicsDataSourceImpl(
 
     override fun fetchDoctors(): Flow<Resource<List<Doctor>>> =
         flow {
-            runCatching {
-                emit(Resource.Loading())
-                auth.currentUser?.let {
-                    val response = service.fetchDoctors()
-                    when (response.code()) {
-                        HTTP_OK -> {
-                            response.body()?.let { res ->
-                                when (res.statusCode) {
-                                    Constants.ERROR_CODE_OK ->
-                                        emit(Resource.Success(res.doctors))
+            emit(Resource.Loading())
+            auth.currentUser?.let {
+                val response = service.fetchDoctors()
+                when (response.code()) {
+                    HTTP_OK -> {
+                        response.body()?.let { res ->
+                            when (res.statusCode) {
+                                Constants.ERROR_CODE_OK ->
+                                    emit(Resource.Success(res.doctors))
 
-                                    Constants.ERROR_CODE_SERVER_ERROR ->
-                                        emit(Resource.Error(ConnectException()))
-                                }
+                                Constants.ERROR_CODE_SERVER_ERROR ->
+                                    emit(Resource.Error(ConnectException()))
                             }
                         }
-
-                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
                     }
+
+                    else -> emit(Resource.Error(ConnectException(response.code().toString())))
                 }
-            }.onFailure {
-                Timber.e("fetchDoctors() error ${it.javaClass.simpleName}: ${it.message}")
-                emit(Resource.Error(it))
             }
+        }.catch {
+            Timber.e("fetchDoctors() error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
         }
 
     override fun addNewDoctor(doctor: Doctor): Flow<Resource<Nothing?>> =
