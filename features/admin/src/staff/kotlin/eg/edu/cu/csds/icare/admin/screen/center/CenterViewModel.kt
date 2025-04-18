@@ -18,7 +18,10 @@ import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.UpdateCenterStaff
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -34,12 +37,15 @@ class CenterViewModel(
 ) : ViewModel() {
     private val _actionResFlow =
         MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
-    val actionResFlow: StateFlow<Resource<Nothing?>> = _actionResFlow
-    private val _centersResFlow =
-        MutableStateFlow<Resource<List<LabImagingCenter>>>(Resource.Unspecified())
+    val actionResFlow: SharedFlow<Resource<Nothing?>> =
+        _actionResFlow.shareIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+            replay = 0,
+        )
+    private val _centersResFlow = MutableStateFlow<Resource<List<LabImagingCenter>>>(Resource.Unspecified())
     val centersResFlow: StateFlow<Resource<List<LabImagingCenter>>> = _centersResFlow
-    private val _centerStaffsResFlow =
-        MutableStateFlow<Resource<List<CenterStaff>>>(Resource.Unspecified())
+    private val _centerStaffsResFlow = MutableStateFlow<Resource<List<CenterStaff>>>(Resource.Unspecified())
     val centerStaffsResFlow: StateFlow<Resource<List<CenterStaff>>> = _centerStaffsResFlow
     var selectedCenterState: MutableState<LabImagingCenter?> = mutableStateOf(null)
     var selectedCenterStaffState: MutableState<CenterStaff?> = mutableStateOf(null)

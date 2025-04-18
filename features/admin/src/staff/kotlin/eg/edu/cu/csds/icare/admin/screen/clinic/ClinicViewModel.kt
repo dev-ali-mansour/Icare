@@ -22,7 +22,10 @@ import eg.edu.cu.csds.icare.core.domain.usecase.doctor.UpdateDoctor
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -41,15 +44,17 @@ class ClinicViewModel(
 ) : ViewModel() {
     private val _actionResFlow =
         MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
-    val actionResFlow: StateFlow<Resource<Nothing?>> = _actionResFlow
-    private val _clinicsResFlow =
-        MutableStateFlow<Resource<List<Clinic>>>(Resource.Unspecified())
+    val actionResFlow: SharedFlow<Resource<Nothing?>> =
+        _actionResFlow.shareIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+            replay = 0,
+        )
+    private val _clinicsResFlow = MutableStateFlow<Resource<List<Clinic>>>(Resource.Unspecified())
     val clinicsResFlow: StateFlow<Resource<List<Clinic>>> = _clinicsResFlow
-    private val _doctorsResFlow =
-        MutableStateFlow<Resource<List<Doctor>>>(Resource.Unspecified())
+    private val _doctorsResFlow = MutableStateFlow<Resource<List<Doctor>>>(Resource.Unspecified())
     val doctorsResFlow: StateFlow<Resource<List<Doctor>>> = _doctorsResFlow
-    private val _clinicStaffsResFlow =
-        MutableStateFlow<Resource<List<ClinicStaff>>>(Resource.Unspecified())
+    private val _clinicStaffsResFlow = MutableStateFlow<Resource<List<ClinicStaff>>>(Resource.Unspecified())
     val clinicStaffsResFlow: StateFlow<Resource<List<ClinicStaff>>> = _clinicStaffsResFlow
     var selectedClinicState: MutableState<Clinic?> = mutableStateOf(null)
     var selectedDoctorState: MutableState<Doctor?> = mutableStateOf(null)
@@ -63,6 +68,7 @@ class ClinicViewModel(
     var addressState = mutableStateOf("")
     var longitudeState = mutableDoubleStateOf(0.0)
     var latitudeState = mutableDoubleStateOf(0.0)
+    var isOpenState = mutableStateOf(false)
     var firstNameState = mutableStateOf("")
     var lastNameState = mutableStateOf("")
     var clinicIdState = mutableLongStateOf(0)
@@ -71,7 +77,6 @@ class ClinicViewModel(
     var fromTimeState = mutableLongStateOf(0)
     var toTimeState = mutableLongStateOf(0)
     var profilePictureState = mutableStateOf("")
-    var isOpenState = mutableStateOf(false)
     var expandedFab = mutableStateOf(true)
 
     fun addNewClinic() {
@@ -208,7 +213,7 @@ class ClinicViewModel(
                     profilePicture = profilePictureState.value,
                 ),
             ).collect { result ->
-                _actionResFlow.value = result
+                _actionResFlow.emit(result)
             }
         }
     }
@@ -230,7 +235,7 @@ class ClinicViewModel(
                     profilePicture = profilePictureState.value,
                 ),
             ).collect { result ->
-                _actionResFlow.value = result
+                _actionResFlow.emit(result)
             }
         }
     }
