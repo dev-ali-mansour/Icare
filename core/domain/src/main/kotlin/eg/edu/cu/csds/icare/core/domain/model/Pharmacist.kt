@@ -13,5 +13,5 @@ data class Pharmacist(
     val pharmacyId: Long = 0,
     val email: String = "",
     val phone: String = "",
-    val profilePictureUrl: String? = null,
+    val profilePicture: String = "",
 )
