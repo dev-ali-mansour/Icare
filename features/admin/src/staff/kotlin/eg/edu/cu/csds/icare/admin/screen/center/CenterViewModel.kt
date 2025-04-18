@@ -82,7 +82,7 @@ class CenterViewModel(
                     contractStatusId = contractStatusIdState.value,
                 ),
             ).collect { result ->
-                _actionResFlow.value = result
+                _actionResFlow.emit(result)
             }
         }
     }
@@ -93,19 +93,10 @@ class CenterViewModel(
                 _actionResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            updateCenterUseCase(
-                LabImagingCenter(
-                    id = idState.longValue,
-                    name = nameState.value,
-                    type = typeState.value,
-                    phone = phoneState.value,
-                    address = addressState.value,
-                    longitude = longitudeState.doubleValue,
-                    latitude = latitudeState.doubleValue,
-                    contractStatusId = contractStatusIdState.value,
-                ),
-            ).collect { result ->
-                _actionResFlow.value = result
+            selectedCenterState.value?.let {
+                updateCenterUseCase(it).collect { result ->
+                    _actionResFlow.emit(result)
+                }
             }
         }
     }
@@ -138,7 +129,7 @@ class CenterViewModel(
                     profilePicture = profilePictureState.value,
                 ),
             ).collect { result ->
-                _actionResFlow.value = result
+                _actionResFlow.emit(result)
             }
         }
     }
@@ -149,19 +140,10 @@ class CenterViewModel(
                 _actionResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-
-            updateCenterStaffUseCase(
-                CenterStaff(
-                    id = idState.longValue,
-                    firstName = firstNameState.value,
-                    lastName = lastNameState.value,
-                    centerId = centerIdState.longValue,
-                    email = emailState.value,
-                    phone = phoneState.value,
-                    profilePicture = profilePictureState.value,
-                ),
-            ).collect { result ->
-                _actionResFlow.value = result
+            selectedCenterStaffState.value?.let {
+                updateCenterStaffUseCase(it).collect { result ->
+                    _actionResFlow.emit(result)
+                }
             }
         }
     }
