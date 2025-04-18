@@ -39,17 +39,16 @@ import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacist
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.util.hasPermission
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AdminScreen(
+    mainViewModel: MainViewModel,
     clinicViewModel: ClinicViewModel,
     pharmacyViewModel: PharmacyViewModel,
     centerViewModel: CenterViewModel,
@@ -65,7 +64,6 @@ internal fun AdminScreen(
     onCenterClicked: (LabImagingCenter) -> Unit,
     onCenterStaffClicked: (CenterStaff) -> Unit,
     onError: suspend (Throwable?) -> Unit,
-    mainViewModel: MainViewModel,
 ) {
     val categories = mainViewModel.adminCategories
     val currentUserRes by mainViewModel.currentUserFlow.collectAsStateWithLifecycle()
@@ -108,31 +106,24 @@ internal fun AdminScreen(
             )
         },
         floatingActionButton = {
-            currentUserRes.data?.let { employee ->
-                val route = Screen.NewClinic
-                when {
-                    hasPermission(employee.permissions, route) -> {
-                        ExtendedFloatingActionButton(
-                            text = {
-                                Text(
-                                    text = stringResource(CoreR.string.add),
-                                    color = Color.White,
-                                )
-                            },
-                            icon = {
-                                Icon(
-                                    imageVector = Icons.Filled.Add,
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                )
-                            },
-                            onClick = { onFabClicked() },
-                            containerColor = barBackgroundColor,
-                            expanded = expandedFab,
-                        )
-                    }
-                }
-            }
+            ExtendedFloatingActionButton(
+                text = {
+                    Text(
+                        text = stringResource(CoreR.string.add),
+                        color = Color.White,
+                    )
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = null,
+                        tint = Color.White,
+                    )
+                },
+                onClick = { onFabClicked() },
+                containerColor = barBackgroundColor,
+                expanded = expandedFab,
+            )
         },
     ) { paddingValues ->
         Surface(
