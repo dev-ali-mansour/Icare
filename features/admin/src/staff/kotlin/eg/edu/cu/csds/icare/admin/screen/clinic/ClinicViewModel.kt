@@ -54,14 +54,14 @@ class ClinicViewModel(
     val clinicsResFlow: StateFlow<Resource<List<Clinic>>> = _clinicsResFlow
     private val _doctorsResFlow = MutableStateFlow<Resource<List<Doctor>>>(Resource.Unspecified())
     val doctorsResFlow: StateFlow<Resource<List<Doctor>>> = _doctorsResFlow
-    private val _clinicStaffsResFlow = MutableStateFlow<Resource<List<ClinicStaff>>>(Resource.Unspecified())
+    private val _clinicStaffsResFlow =
+        MutableStateFlow<Resource<List<ClinicStaff>>>(Resource.Unspecified())
     val clinicStaffsResFlow: StateFlow<Resource<List<ClinicStaff>>> = _clinicStaffsResFlow
     var selectedClinicState: MutableState<Clinic?> = mutableStateOf(null)
     var selectedDoctorState: MutableState<Doctor?> = mutableStateOf(null)
     var selectedClinicStaffState: MutableState<ClinicStaff?> = mutableStateOf(null)
 
     var selectedClinicIdState = mutableLongStateOf(0)
-    var idState = mutableLongStateOf(0)
     var nameState = mutableStateOf("")
     var typeState = mutableStateOf("")
     var phoneState = mutableStateOf("")
@@ -96,7 +96,7 @@ class ClinicViewModel(
                     isOpen = isOpenState.value,
                 ),
             ).collect { result ->
-                _actionResFlow.value = result
+                _actionResFlow.emit(result)
             }
         }
     }
@@ -107,19 +107,12 @@ class ClinicViewModel(
                 _actionResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            updateClinicUseCase(
-                Clinic(
-                    id = idState.longValue,
-                    name = nameState.value,
-                    type = typeState.value,
-                    address = addressState.value,
-                    phone = phoneState.value,
-                    longitude = longitudeState.doubleValue,
-                    latitude = latitudeState.doubleValue,
-                    isOpen = isOpenState.value,
-                ),
-            ).collect { result ->
-                _actionResFlow.value = result
+            selectedClinicState.value?.let {
+                updateClinicUseCase(it).collect { result ->
+                    _actionResFlow.emit(result)
+                }
+            } ?: run {
+                _actionResFlow.emit(Resource.Error(Error("No clinic selected!")))
             }
         }
     }
@@ -131,7 +124,7 @@ class ClinicViewModel(
                 delay(timeMillis = 100)
             }
             listClinicsUseCase().collect { result ->
-                _clinicsResFlow.value = result
+                _clinicsResFlow.emit(result)
             }
         }
     }
@@ -155,7 +148,7 @@ class ClinicViewModel(
                     profilePicture = profilePictureState.value,
                 ),
             ).collect { result ->
-                _actionResFlow.value = result
+                _actionResFlow.emit(result)
             }
         }
     }
@@ -166,21 +159,12 @@ class ClinicViewModel(
                 _actionResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            updateDoctorUseCase(
-                Doctor(
-                    id = idState.longValue,
-                    firstName = firstNameState.value,
-                    lastName = lastNameState.value,
-                    clinicId = clinicIdState.longValue,
-                    email = emailState.value,
-                    phone = phoneState.value,
-                    specialty = specialityState.value,
-                    fromTime = fromTimeState.longValue,
-                    toTime = toTimeState.longValue,
-                    profilePicture = profilePictureState.value,
-                ),
-            ).collect { result ->
-                _actionResFlow.value = result
+            selectedDoctorState.value?.let {
+                updateDoctorUseCase(it).collect { result ->
+                    _actionResFlow.value = result
+                }
+            } ?: run {
+                _actionResFlow.emit(Resource.Error(Error("No doctor selected!")))
             }
         }
     }
@@ -224,18 +208,12 @@ class ClinicViewModel(
                 _actionResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            updateClinicStaffUseCase(
-                ClinicStaff(
-                    id = idState.longValue,
-                    firstName = firstNameState.value,
-                    lastName = lastNameState.value,
-                    clinicId = clinicIdState.longValue,
-                    email = emailState.value,
-                    phone = phoneState.value,
-                    profilePicture = profilePictureState.value,
-                ),
-            ).collect { result ->
-                _actionResFlow.emit(result)
+            selectedClinicStaffState.value?.let {
+                updateClinicStaffUseCase(it).collect { result ->
+                    _actionResFlow.emit(result)
+                }
+            } ?: run {
+                _actionResFlow.emit(Resource.Error(Error("No clinic staff selected!")))
             }
         }
     }
