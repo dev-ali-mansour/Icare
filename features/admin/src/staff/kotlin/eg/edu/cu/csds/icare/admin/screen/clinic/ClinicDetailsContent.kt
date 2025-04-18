@@ -52,7 +52,7 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun NewClinicContent(
+internal fun ClinicDetailsContent(
     name: String,
     type: String,
     phone: String,
@@ -368,9 +368,9 @@ internal fun NewClinicContent(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
 @Composable
-internal fun NewClinicContentPreview() {
+internal fun ClinicDetailsContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
-        NewClinicContent(
+        ClinicDetailsContent(
             name = "",
             type = "",
             phone = "",

@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -42,7 +41,8 @@ internal fun NewClinicScreen(
     onSuccess: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
 ) {
-    val actionResource by clinicViewModel.actionResFlow.collectAsStateWithLifecycle(initialValue = Resource.Unspecified())
+    val actionResource by clinicViewModel.actionResFlow
+        .collectAsStateWithLifecycle(initialValue = Resource.Unspecified())
     var name by clinicViewModel.nameState
     var type by clinicViewModel.typeState
     var phone by clinicViewModel.phoneState
@@ -50,10 +50,6 @@ internal fun NewClinicScreen(
     var longitude by clinicViewModel.longitudeState
     var latitude by clinicViewModel.latitudeState
     var isOpen by clinicViewModel.isOpenState
-
-    LaunchedEffect(key1 = Unit) {
-        clinicViewModel.listClinics()
-    }
 
     Scaffold(
         topBar = {
@@ -103,7 +99,7 @@ internal fun NewClinicScreen(
                             .height(XS_PADDING),
                 )
 
-                NewClinicContent(
+                ClinicDetailsContent(
                     modifier =
                         Modifier.constrainAs(content) {
                             top.linkTo(line.bottom)
