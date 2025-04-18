@@ -51,7 +51,6 @@ class CenterViewModel(
     var selectedCenterStaffState: MutableState<CenterStaff?> = mutableStateOf(null)
 
     var selectedCenterIdState = mutableLongStateOf(0)
-    var idState = mutableLongStateOf(0)
     var nameState = mutableStateOf("")
     var typeState = mutableStateOf(0.toShort())
     var phoneState = mutableStateOf("")
