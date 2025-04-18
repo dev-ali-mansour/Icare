@@ -29,7 +29,7 @@ import eg.edu.cu.csds.icare.data.local.db.entity.UserEntity
         BookingMethodEntity::class, ClinicEntity::class, CenterEntity::class, DoctorEntity::class,
         PharmacyEntity::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -66,8 +66,15 @@ abstract class AppDatabase : RoomDatabase() {
     )
     class AutoMigrationSpec5 : AutoMigrationSpec {
         @Override
-        override fun onPostMigrate(db: SupportSQLiteDatabase) {
-            // Invoked once auto migration is done
-        }
+        override fun onPostMigrate(db: SupportSQLiteDatabase) = Unit
+    }
+
+    @DeleteColumn.Entries(
+        DeleteColumn(tableName = "clinics", columnName = "longitude"),
+        DeleteColumn(tableName = "clinics", columnName = "latitude"),
+    )
+    class AutoMigrationSpec6 : AutoMigrationSpec {
+        @Override
+        override fun onPostMigrate(db: SupportSQLiteDatabase) = Unit
     }
 }
