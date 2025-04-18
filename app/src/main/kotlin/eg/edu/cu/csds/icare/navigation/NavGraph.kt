@@ -203,7 +203,7 @@ private suspend fun handleError(
         else -> {
             alertMessage.value = context.getErrorMessage(error)
             showAlert.value = true
-            delay(timeMillis = 3000)
+            delay(timeMillis = 5000)
             showAlert.value = false
             if (exitApp.value) exitProcess(0)
         }

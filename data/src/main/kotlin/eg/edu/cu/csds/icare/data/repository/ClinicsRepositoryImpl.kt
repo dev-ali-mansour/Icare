@@ -13,7 +13,6 @@ import eg.edu.cu.csds.icare.data.remote.datasource.RemoteClinicsDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
 
 @Single
@@ -33,7 +32,7 @@ class ClinicsRepositoryImpl(
                     }
                 return@flow
             }
-            remoteClinicsDataSource.fetchClinics().map { res ->
+            remoteClinicsDataSource.fetchClinics().collect { res ->
                 when (res) {
                     is Resource.Unspecified -> emit(Resource.Unspecified())
 
@@ -71,7 +70,7 @@ class ClinicsRepositoryImpl(
                     }
                 return@flow
             }
-            remoteClinicsDataSource.fetchClinics().map { res ->
+            remoteClinicsDataSource.fetchDoctors().collect { res ->
                 when (res) {
                     is Resource.Unspecified -> emit(Resource.Unspecified())
 
@@ -79,7 +78,7 @@ class ClinicsRepositoryImpl(
 
                     is Resource.Success -> {
                         res.data?.let { doctors ->
-                            localClinicsDataSource.persistClinics(doctors.map { it.toEntity() })
+                            localDoctorDataSource.persistDoctors(doctors.map { it.toEntity() })
                         }
                         localDoctorDataSource
                             .listDoctors()

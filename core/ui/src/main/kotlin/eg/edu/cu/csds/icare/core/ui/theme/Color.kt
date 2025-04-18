@@ -86,6 +86,7 @@ val barBackgroundColor: Color
 val textColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.White else Color.Black
+
 val dropDownTextColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.White else Blue200
