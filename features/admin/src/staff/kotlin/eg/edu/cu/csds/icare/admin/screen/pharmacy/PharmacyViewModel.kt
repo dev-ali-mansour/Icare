@@ -18,7 +18,10 @@ import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.UpdatePharmacy
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -34,12 +37,15 @@ class PharmacyViewModel(
 ) : ViewModel() {
     private val _actionResFlow =
         MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
-    val actionResFlow: StateFlow<Resource<Nothing?>> = _actionResFlow
-    private val _pharmaciesResFlow =
-        MutableStateFlow<Resource<List<Pharmacy>>>(Resource.Unspecified())
+    val actionResFlow: SharedFlow<Resource<Nothing?>> =
+        _actionResFlow.shareIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+            replay = 0,
+        )
+    private val _pharmaciesResFlow = MutableStateFlow<Resource<List<Pharmacy>>>(Resource.Unspecified())
     val pharmaciesResFlow: StateFlow<Resource<List<Pharmacy>>> = _pharmaciesResFlow
-    private val _pharmacistsResFlow =
-        MutableStateFlow<Resource<List<Pharmacist>>>(Resource.Unspecified())
+    private val _pharmacistsResFlow = MutableStateFlow<Resource<List<Pharmacist>>>(Resource.Unspecified())
     val pharmacistsResFlow: StateFlow<Resource<List<Pharmacist>>> = _pharmacistsResFlow
     var selectedPharmacyState: MutableState<Pharmacy?> = mutableStateOf(null)
     var selectedPharmacistState: MutableState<Pharmacist?> = mutableStateOf(null)
