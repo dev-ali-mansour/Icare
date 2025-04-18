@@ -1,7 +1,6 @@
 package eg.edu.cu.csds.icare.admin.screen.clinic
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -66,8 +65,6 @@ class ClinicViewModel(
     var typeState = mutableStateOf("")
     var phoneState = mutableStateOf("")
     var addressState = mutableStateOf("")
-    var longitudeState = mutableDoubleStateOf(0.0)
-    var latitudeState = mutableDoubleStateOf(0.0)
     var isOpenState = mutableStateOf(false)
     var firstNameState = mutableStateOf("")
     var lastNameState = mutableStateOf("")
@@ -91,8 +88,6 @@ class ClinicViewModel(
                     type = typeState.value,
                     address = addressState.value,
                     phone = phoneState.value,
-                    longitude = longitudeState.doubleValue,
-                    latitude = latitudeState.doubleValue,
                     isOpen = isOpenState.value,
                 ),
             ).collect { result ->
