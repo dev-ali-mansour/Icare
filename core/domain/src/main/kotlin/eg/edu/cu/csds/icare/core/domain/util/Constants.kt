@@ -11,6 +11,7 @@ object Constants {
     const val APPS_CODE = 7
     const val POLICY_CODE = 8
     const val ABOUT_CODE = 9
+    const val ADMIN_CODE = 10
     const val SHORT_DELAY: Long = 30
     const val IMAGE_QUALITY = 100
     const val ERROR_CODE_OK: Short = 0
