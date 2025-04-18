@@ -16,6 +16,7 @@ import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.domain.model.LoginInfoResponse
 import eg.edu.cu.csds.icare.core.domain.model.PharmaciesResponse
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacist
+import eg.edu.cu.csds.icare.core.domain.model.PharmacistsResponse
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 import eg.edu.cu.csds.icare.core.domain.model.RegisteredResponse
 import retrofit2.Response
@@ -125,7 +126,7 @@ interface ApiService {
     @POST("listPharmacists")
     suspend fun listPharmacists(
         @Body body: HashMap<String, String>,
-    ): Response<ClinicStaffResponse>
+    ): Response<PharmacistsResponse>
 
     @POST("addNewPharmacist")
     suspend fun addNewPharmacist(

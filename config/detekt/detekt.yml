@@ -176,7 +176,7 @@ complexity:
     ignoreDeprecated: false
     ignorePrivate: false
     ignoreOverridden: false
-    ignoreAnnotatedFunctions: [ ]
+    ignoreAnnotatedFunctions: [ 'Single' ]
 
 coroutines:
   active: true

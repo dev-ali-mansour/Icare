@@ -19,40 +19,39 @@ fun NavGraphBuilder.authenticationRoute(
     onRegisterCompleted: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
 ) {
-    composable<Screen.Register> {
-        composable<Screen.Login> {
-            LoginScreen(
-                onRecoveryClicked = { onRecoveryClicked() },
-                onLoginSuccess = { onLoginSuccess() },
-                onCreateAnAccountClicked = { onCreateAccountClicked() },
-                authViewModel = authViewModel,
-            )
-        }
-        composable<Screen.PasswordRecovery> {
-            PasswordRecoveryScreen(
-                onLoginClicked = { onLoginClicked() },
-                onRecoveryCompleted = { onRecoveryCompleted() },
-                onError = { onError(it) },
-                authViewModel = authViewModel,
-            )
-        }
+    composable<Screen.Login> {
+        LoginScreen(
+            onRecoveryClicked = { onRecoveryClicked() },
+            onLoginSuccess = { onLoginSuccess() },
+            onCreateAnAccountClicked = { onCreateAccountClicked() },
+            authViewModel = authViewModel,
+        )
+    }
 
-        composable<Screen.Profile> {
-            ProfileScreen(
-                firebaseAuth = firebaseAuth,
-                mainViewModel = mainViewModel,
-                authViewModel = authViewModel,
-                onError = { onError(it) },
-            )
-        }
+    composable<Screen.PasswordRecovery> {
+        PasswordRecoveryScreen(
+            onLoginClicked = { onLoginClicked() },
+            onRecoveryCompleted = { onRecoveryCompleted() },
+            onError = { onError(it) },
+            authViewModel = authViewModel,
+        )
+    }
 
-        composable<Screen.Registration> {
-            RegistrationScreen(
-                firebaseAuth = firebaseAuth,
-                onLoginClicked = { onLoginClicked() },
-                onRegisterCompleted = { onRegisterCompleted() },
-                authViewModel = authViewModel,
-            )
-        }
+    composable<Screen.Profile> {
+        ProfileScreen(
+            firebaseAuth = firebaseAuth,
+            mainViewModel = mainViewModel,
+            authViewModel = authViewModel,
+            onError = { onError(it) },
+        )
+    }
+
+    composable<Screen.Registration> {
+        RegistrationScreen(
+            firebaseAuth = firebaseAuth,
+            onLoginClicked = { onLoginClicked() },
+            onRegisterCompleted = { onRegisterCompleted() },
+            authViewModel = authViewModel,
+        )
     }
 }

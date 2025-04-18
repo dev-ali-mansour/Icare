@@ -32,21 +32,13 @@ class CenterViewModel(
     val centersResFlow: StateFlow<Resource<List<LabImagingCenter>>> = _centersResFlow
 
     var idState = mutableLongStateOf(0)
-        private set
     var nameState = mutableStateOf("")
-        private set
     var typeState = mutableStateOf(0.toShort())
-        private set
     var phoneState = mutableStateOf("")
-        private set
     var addressState = mutableStateOf("")
-        private set
     var longitudeState = mutableDoubleStateOf(0.0)
-        private set
     var latitudeState = mutableDoubleStateOf(0.0)
-        private set
     var contractStatusIdState = mutableStateOf(0.toShort())
-        private set
 
     fun addNewCenter() {
         viewModelScope.launch(dispatcher) {

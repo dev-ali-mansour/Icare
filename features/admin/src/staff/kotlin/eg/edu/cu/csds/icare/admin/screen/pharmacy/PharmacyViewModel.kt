@@ -32,19 +32,12 @@ class PharmacyViewModel(
     val pharmaciesResFlow: StateFlow<Resource<List<Pharmacy>>> = _pharmaciesResFlow
 
     var idState = mutableLongStateOf(0)
-        private set
     var nameState = mutableStateOf("")
-        private set
     var phoneState = mutableStateOf("")
-        private set
     var addressState = mutableStateOf("")
-        private set
     var longitudeState = mutableDoubleStateOf(0.0)
-        private set
     var latitudeState = mutableDoubleStateOf(0.0)
-        private set
     var contractStatusIdState = mutableStateOf(0.toShort())
-        private set
 
     fun addNewPharmacy() {
         viewModelScope.launch(dispatcher) {
