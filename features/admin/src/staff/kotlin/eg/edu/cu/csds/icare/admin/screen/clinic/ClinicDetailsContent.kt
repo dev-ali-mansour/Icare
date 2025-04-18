@@ -57,16 +57,12 @@ internal fun ClinicDetailsContent(
     type: String,
     phone: String,
     address: String,
-    longitude: Double,
-    latitude: Double,
     isOpen: Boolean,
     actionResource: Resource<Nothing?>,
     onNameChanged: (String) -> Unit,
     onTypeChanged: (String) -> Unit,
     onPhoneChanged: (String) -> Unit,
     onAddressChanged: (String) -> Unit,
-    onLongitudeChanged: (Double) -> Unit,
-    onLatitudeChanged: (Double) -> Unit,
     onIsOpenChanged: (Boolean) -> Unit,
     onProceedButtonClicked: () -> Unit,
     onSuccess: () -> Unit,
@@ -228,70 +224,6 @@ internal fun ClinicDetailsContent(
                         ),
                 )
 
-                TextField(
-                    value = longitude.toString(),
-                    onValueChange = { onLongitudeChanged(it.toDouble()) },
-                    label = {
-                        Text(
-                            text = stringResource(R.string.longitude),
-                            fontFamily = helveticaFamily,
-                            color = textColor,
-                        )
-                    },
-                    singleLine = true,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(fraction = 0.8f),
-                    colors =
-                        TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            cursorColor = contentColor,
-                            focusedTextColor = textColor,
-                            focusedIndicatorColor = Yellow500,
-                            unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                        ),
-                    keyboardOptions =
-                        KeyboardOptions.Default.copy(
-                            autoCorrectEnabled = false,
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next,
-                        ),
-                )
-
-                TextField(
-                    value = latitude.toString(),
-                    onValueChange = { onLatitudeChanged(it.toDouble()) },
-                    label = {
-                        Text(
-                            text = stringResource(R.string.latitude),
-                            fontFamily = helveticaFamily,
-                            color = textColor,
-                        )
-                    },
-                    singleLine = true,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(fraction = 0.8f),
-                    colors =
-                        TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            cursorColor = contentColor,
-                            focusedTextColor = textColor,
-                            focusedIndicatorColor = Yellow500,
-                            unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                        ),
-                    keyboardOptions =
-                        KeyboardOptions.Default.copy(
-                            autoCorrectEnabled = false,
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done,
-                        ),
-                )
-
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = XL_PADDING),
                     verticalAlignment = Alignment.CenterVertically,
@@ -375,16 +307,12 @@ internal fun ClinicDetailsContentPreview() {
             type = "",
             phone = "",
             address = "",
-            longitude = 0.0,
-            latitude = 0.0,
             isOpen = false,
             actionResource = Resource.Success(null),
             onNameChanged = {},
             onTypeChanged = {},
             onPhoneChanged = {},
             onAddressChanged = {},
-            onLongitudeChanged = {},
-            onLatitudeChanged = {},
             onIsOpenChanged = {},
             onProceedButtonClicked = {},
             onSuccess = {},
