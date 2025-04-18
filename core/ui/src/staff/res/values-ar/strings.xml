@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sections_admin">إدارة الأقسام</string>
+    <string name="clinics">العيادات</string>
+    <string name="pharmacies">الصيدليات</string>
+    <string name="centers">مراكز الأشعة والتحاليل</string>
+    <string name="doctors">الأطباء</string>
+    <string name="clinic_staffs">الأطقم الطبية</string>
+    <string name="center_staffs">أطقم المراكز</string>
+    <string name="pharmacists">الصيادلة</string>
+    <string name="add">إضافة</string>
+    <string name="no_clinics_data">لا توجد بيانات عيادات</string>
+    <string name="no_doctors_data">لا توجد بيانات أطباء</string>
+    <string name="no_clinic_staff_data">لا توجد بيانات أطقم طبية</string>
+    <string name="no_pharmacies_data">لا توجد بيانات صيدليات</string>
+    <string name="no_pharmacists_data">لا توجد بيانات صيادلة</string>
+    <string name="no_centers_data">لا توجد بيانات مراكز</string>
+    <string name="no_center_staff_data">لا توجد بيانات أطقم مراكز</string>
+</resources>
