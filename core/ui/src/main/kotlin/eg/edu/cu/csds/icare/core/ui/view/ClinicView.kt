@@ -13,10 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -59,12 +57,6 @@ fun ClinicView(
                     .fillMaxWidth()
                     .background(contentBackgroundColor),
         ) {
-            val (
-                txtName, txtNameValue, txtHeader, txtCount, txtValue, txtPercentage,
-                txtCollectionTime, txtBills, txtBillsCount, txtBillsValue, txtValuePercentage,
-                txtCollection, txtCollectionCount, txtCollectionValue, txtCountPercentage,
-                txtCollectionTimeValue,
-            ) = createRefs()
             Column(
                 modifier =
                     Modifier
@@ -79,7 +71,7 @@ fun ClinicView(
                 Spacer(modifier = Modifier.height(S_PADDING))
 
                 Text(
-                    text = "Type: ${clinic.type}",
+                    text = clinic.type,
                     style = MaterialTheme.typography.bodyLarge,
                 )
 
@@ -102,21 +94,11 @@ fun ClinicView(
                 Spacer(modifier = Modifier.height(S_PADDING))
 
                 Text(
-                    text = if (clinic.isOpen) "Status: Open" else "Status: Closed",
+                    text = if (clinic.isOpen) "Open" else "Closed",
                     color = if (clinic.isOpen) PaidColor else UnPaidColor,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium,
                 )
-
-                Spacer(modifier = Modifier.height(S_PADDING))
-
-                Button(onClick = {
-                    // Example: navigate to map or call
-                }) {
-                    Icon(Icons.Default.LocationOn, contentDescription = null)
-                    Spacer(modifier = Modifier.width(S_PADDING))
-                    Text("View on Map")
-                }
             }
         }
     }
@@ -142,8 +124,6 @@ fun ClinicViewPreview() {
                     type = "Type 1",
                     address = "Address 1",
                     phone = "123456789",
-                    longitude = 0.0,
-                    latitude = 0.0,
                     isOpen = true,
                 ),
         )
@@ -158,8 +138,6 @@ fun ClinicViewPreview() {
                     type = "Type 2",
                     address = "Address 2",
                     phone = "987654321",
-                    longitude = 0.0,
-                    latitude = 0.0,
                     isOpen = false,
                 ),
         )
