@@ -5,6 +5,7 @@ import androidx.navigation.compose.composable
 import eg.edu.cu.csds.icare.admin.screen.AdminScreen
 import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
+import eg.edu.cu.csds.icare.admin.screen.clinic.NewClinicScreen
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
@@ -24,7 +25,7 @@ fun NavGraphBuilder.adminRoute(
             clinicViewModel = clinicViewModel,
             pharmacyViewModel = pharmacyViewModel,
             centerViewModel = centerViewModel,
-            onNavigationIconClicked = onNavigationIconClicked,
+            onNavigationIconClicked = { onNavigationIconClicked() },
             onFabClicked = {
                 when (mainViewModel.selectedCategoryTabIndex.intValue) {
                     0 ->
@@ -105,11 +106,21 @@ fun NavGraphBuilder.adminRoute(
                 centerViewModel.selectedCenterStaffState.value = staff
                 navigateToScreen(Screen.EditCenterStaff)
             },
-            onError = onError,
+            onError = { onError(it) },
         )
     }
 
     composable<Screen.NewClinic> {
+        NewClinicScreen(
+            clinicViewModel = clinicViewModel,
+            onNavigationIconClicked = { onNavigationIconClicked() },
+            onProceedButtonClicked = { clinicViewModel.addNewClinic() },
+            onSuccess = {
+//                clinicViewModel.listClinics()
+                onNavigationIconClicked
+            },
+            onError = { onError(it) },
+        )
     }
 
     composable<Screen.EditClinic> {
