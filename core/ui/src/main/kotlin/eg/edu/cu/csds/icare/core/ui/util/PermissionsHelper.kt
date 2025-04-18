@@ -9,20 +9,6 @@ fun hasPermission(
 ): Boolean =
     when (route) {
         Screen.Admin,
-        Screen.NewClinic,
-        Screen.EditClinic,
-        Screen.NewPharmacy,
-        Screen.EditPharmacy,
-        Screen.NewCenter,
-        Screen.EditCenter,
-        Screen.NewDoctor,
-        Screen.EditDoctor,
-        Screen.NewClinicStaff,
-        Screen.EditClinicStaff,
-        Screen.NewPharmacist,
-        Screen.EditPharmacist,
-        Screen.NewCenterStaff,
-        Screen.EditCenterStaff,
         Screen.ViewMedicalHistory,
         -> permissions.contains(Permission.AdminPermission.code)
 
