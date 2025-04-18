@@ -29,13 +29,15 @@ import eg.edu.cu.csds.icare.data.local.db.entity.UserEntity
         BookingMethodEntity::class, ClinicEntity::class, CenterEntity::class, DoctorEntity::class,
         PharmacyEntity::class,
     ],
-    version = 6,
+    version = 7,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
         AutoMigration(from = 3, to = 4),
         AutoMigration(from = 4, to = 5, spec = AppDatabase.AutoMigrationSpec5::class),
+        AutoMigration(from = 5, to = 6, spec = AppDatabase.AutoMigrationSpec6::class),
+        AutoMigration(from = 6, to = 7, spec = AppDatabase.AutoMigrationSpec7::class),
     ],
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -74,6 +76,19 @@ abstract class AppDatabase : RoomDatabase() {
         DeleteColumn(tableName = "clinics", columnName = "latitude"),
     )
     class AutoMigrationSpec6 : AutoMigrationSpec {
+        @Override
+        override fun onPostMigrate(db: SupportSQLiteDatabase) = Unit
+    }
+
+    @DeleteColumn.Entries(
+        DeleteColumn(tableName = "pharmacies", columnName = "longitude"),
+        DeleteColumn(tableName = "pharmacies", columnName = "latitude"),
+        DeleteColumn(tableName = "pharmacies", columnName = "contractStatusId"),
+        DeleteColumn(tableName = "lab_imaging_centers", columnName = "longitude"),
+        DeleteColumn(tableName = "lab_imaging_centers", columnName = "latitude"),
+        DeleteColumn(tableName = "lab_imaging_centers", columnName = "contractStatusId"),
+    )
+    class AutoMigrationSpec7 : AutoMigrationSpec {
         @Override
         override fun onPostMigrate(db: SupportSQLiteDatabase) = Unit
     }

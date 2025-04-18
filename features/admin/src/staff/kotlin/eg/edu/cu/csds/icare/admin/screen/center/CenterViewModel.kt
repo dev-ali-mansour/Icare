@@ -1,7 +1,6 @@
 package eg.edu.cu.csds.icare.admin.screen.center
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -55,9 +54,6 @@ class CenterViewModel(
     var typeState = mutableStateOf(0.toShort())
     var phoneState = mutableStateOf("")
     var addressState = mutableStateOf("")
-    var longitudeState = mutableDoubleStateOf(0.0)
-    var latitudeState = mutableDoubleStateOf(0.0)
-    var contractStatusIdState = mutableStateOf(0.toShort())
     var firstNameState = mutableStateOf("")
     var lastNameState = mutableStateOf("")
     var centerIdState = mutableLongStateOf(0)
@@ -76,9 +72,6 @@ class CenterViewModel(
                     type = typeState.value,
                     phone = phoneState.value,
                     address = addressState.value,
-                    longitude = longitudeState.doubleValue,
-                    latitude = latitudeState.doubleValue,
-                    contractStatusId = contractStatusIdState.value,
                 ),
             ).collect { result ->
                 _actionResFlow.emit(result)
