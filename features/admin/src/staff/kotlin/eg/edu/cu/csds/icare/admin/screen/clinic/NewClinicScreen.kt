@@ -47,8 +47,6 @@ internal fun NewClinicScreen(
     var type by clinicViewModel.typeState
     var phone by clinicViewModel.phoneState
     var address by clinicViewModel.addressState
-    var longitude by clinicViewModel.longitudeState
-    var latitude by clinicViewModel.latitudeState
     var isOpen by clinicViewModel.isOpenState
 
     Scaffold(
@@ -113,16 +111,12 @@ internal fun NewClinicScreen(
                     type = type,
                     phone = phone,
                     address = address,
-                    longitude = longitude,
-                    latitude = latitude,
                     isOpen = isOpen,
                     actionResource = actionResource,
                     onNameChanged = { name = it },
                     onTypeChanged = { type = it },
                     onPhoneChanged = { phone = it },
                     onAddressChanged = { address = it },
-                    onLongitudeChanged = { longitude = it },
-                    onLatitudeChanged = { latitude = it },
                     onIsOpenChanged = { isOpen = it },
                     onProceedButtonClicked = { onProceedButtonClicked() },
                     onSuccess = { onSuccess },
