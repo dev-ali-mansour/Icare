@@ -9,7 +9,5 @@ data class Clinic(
     val type: String = "",
     val phone: String = "",
     val address: String = "",
-    val longitude: Double = 0.0,
-    val latitude: Double = 0.0,
     val isOpen: Boolean = false,
 )
