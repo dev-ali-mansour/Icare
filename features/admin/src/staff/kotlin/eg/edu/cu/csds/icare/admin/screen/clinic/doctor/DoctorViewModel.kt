@@ -31,23 +31,15 @@ class DoctorViewModel(
     val doctorsResFlow: StateFlow<Resource<List<Doctor>>> = _doctorsResFlow
 
     var idState = mutableLongStateOf(0)
-        private set
     var firstNameState = mutableStateOf("")
-        private set
     var lastNameState = mutableStateOf("")
-        private set
     var clinicIdState = mutableLongStateOf(0)
-        private set
     var emailState = mutableStateOf("")
-        private set
     var phoneState = mutableStateOf("")
-        private set
     var specialityState = mutableStateOf("")
-        private set
     var fromTimeState = mutableLongStateOf(0)
-        private set
     var toTimeState = mutableLongStateOf(0)
-        private set
+    var profilePictureState = mutableStateOf("")
 
     fun addNewDoctor() {
         viewModelScope.launch(dispatcher) {
@@ -65,7 +57,7 @@ class DoctorViewModel(
                     specialty = specialityState.value,
                     fromTime = fromTimeState.longValue,
                     toTime = toTimeState.longValue,
-                    profilePicture = "",
+                    profilePicture = profilePictureState.value,
                 ),
             ).collect { result ->
                 _actionResFlow.value = result
@@ -90,7 +82,7 @@ class DoctorViewModel(
                     specialty = specialityState.value,
                     fromTime = fromTimeState.longValue,
                     toTime = toTimeState.longValue,
-                    profilePicture = "",
+                    profilePicture = profilePictureState.value,
                 ),
             ).collect { result ->
                 _actionResFlow.value = result

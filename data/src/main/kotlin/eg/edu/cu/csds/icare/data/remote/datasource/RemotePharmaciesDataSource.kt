@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface RemotePharmaciesDataSource {
     fun fetchPharmacies(): Flow<Resource<List<Pharmacy>>>
 
-    fun addNewPharmacy(center: Pharmacy): Flow<Resource<Nothing?>>
+    fun addNewPharmacy(pharmacy: Pharmacy): Flow<Resource<Nothing?>>
 
     fun updatePharmacy(pharmacy: Pharmacy): Flow<Resource<Nothing?>>
 

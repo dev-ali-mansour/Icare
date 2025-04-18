@@ -11,7 +11,6 @@ import eg.edu.cu.csds.icare.data.remote.datasource.RemotePharmaciesDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
 
 @Single
@@ -30,7 +29,7 @@ class PharmaciesRepositoryImpl(
                     }
                 return@flow
             }
-            remotePharmaciesDataSource.fetchPharmacies().map { res ->
+            remotePharmaciesDataSource.fetchPharmacies().collect { res ->
                 when (res) {
                     is Resource.Unspecified -> emit(Resource.Unspecified())
 

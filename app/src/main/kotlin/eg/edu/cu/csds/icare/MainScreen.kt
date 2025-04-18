@@ -27,16 +27,17 @@ import eg.edu.cu.csds.icare.core.ui.view.BottomBarNavigation
 import eg.edu.cu.csds.icare.home.HomeViewModel
 import eg.edu.cu.csds.icare.navigation.SetupNavGraph
 import org.koin.androidx.compose.koinViewModel
+import org.koin.java.KoinJavaComponent.inject
 
 @Composable
 fun MainScreen(
-    firebaseAuth: FirebaseAuth,
-    mediaHelper: MediaHelper,
     mainViewModel: MainViewModel,
+    mediaHelper: MediaHelper,
     showAppSettings: () -> Unit,
 ) {
     val layoutDirection = LocalLayoutDirection.current
     val navController = rememberNavController()
+    val firebaseAuth: FirebaseAuth by inject(FirebaseAuth::class.java)
     val authViewModel: AuthViewModel = koinViewModel()
     val homeViewModel: HomeViewModel = koinViewModel()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
