@@ -38,6 +38,7 @@ import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacist
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
+import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
@@ -66,7 +67,6 @@ internal fun AdminScreen(
     onError: suspend (Throwable?) -> Unit,
 ) {
     val categories = mainViewModel.adminCategories
-    val currentUserRes by mainViewModel.currentUserFlow.collectAsStateWithLifecycle()
     val clinicsResource by clinicViewModel.clinicsResFlow.collectAsStateWithLifecycle()
     val doctorsResource by clinicViewModel.doctorsResFlow.collectAsStateWithLifecycle()
     val clinicStaffsResource by clinicViewModel.clinicStaffsResFlow.collectAsStateWithLifecycle()
@@ -74,7 +74,7 @@ internal fun AdminScreen(
     val pharmacistsResource by pharmacyViewModel.pharmacistsResFlow.collectAsStateWithLifecycle()
     val centersResource by centerViewModel.centersResFlow.collectAsStateWithLifecycle()
     val centerStaffsResource by centerViewModel.centerStaffsResFlow.collectAsStateWithLifecycle()
-    val actionResource by clinicViewModel.actionResFlow.collectAsStateWithLifecycle()
+    val actionResource by clinicViewModel.actionResFlow.collectAsStateWithLifecycle(initialValue = Resource.Unspecified())
     var selectedCategoryTabIndex by mainViewModel.selectedCategoryTabIndex
     var selectedSectionTabIndex by mainViewModel.selectedSectionTabIndex
     var expandedFab by clinicViewModel.expandedFab
