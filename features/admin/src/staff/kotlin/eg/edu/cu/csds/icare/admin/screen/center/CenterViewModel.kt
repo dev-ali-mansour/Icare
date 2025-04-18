@@ -97,6 +97,8 @@ class CenterViewModel(
                 updateCenterUseCase(it).collect { result ->
                     _actionResFlow.emit(result)
                 }
+            } ?: run {
+                _actionResFlow.emit(Resource.Error(Error("No center selected!")))
             }
         }
     }
@@ -144,6 +146,8 @@ class CenterViewModel(
                 updateCenterStaffUseCase(it).collect { result ->
                     _actionResFlow.emit(result)
                 }
+            } ?: run {
+                _actionResFlow.emit(Resource.Error(Error("No clinic staff selected!")))
             }
         }
     }
