@@ -94,7 +94,8 @@ internal fun HomeContent(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         width = Dimension.fillToConstraints
-                    }.fillMaxWidth()
+                    }
+                    .fillMaxWidth()
                     .height(XS_PADDING)
                     .background(Yellow500),
         )
@@ -130,7 +131,8 @@ internal fun HomeContent(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         bottom.linkTo(parent.bottom)
-                    }.fillMaxWidth(fraction = 0.9f)
+                    }
+                    .fillMaxWidth(fraction = 0.9f)
                     .basicMarquee(iterations = Int.MAX_VALUE),
             color = Orange200,
             fontSize = MaterialTheme.typography.titleMedium.fontSize,
@@ -164,7 +166,8 @@ private fun TitleView(
                     .constrainAs(logo) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
-                    }.size(HEADER_ICON_SIZE),
+                    }
+                    .size(HEADER_ICON_SIZE),
             painter = painterResource(CoreR.drawable.logo),
             contentDescription = null,
             contentScale = ContentScale.Fit,
@@ -191,7 +194,8 @@ private fun TitleView(
                     .constrainAs(card) {
                         top.linkTo(logo.top, S_PADDING)
                         end.linkTo(parent.end, S_PADDING)
-                    }.clickable { onUserClicked() },
+                    }
+                    .clickable { onUserClicked() },
             color = contentBackgroundColor,
             shape = RoundedCornerShape(S_PADDING),
         ) {
@@ -291,8 +295,8 @@ internal fun HomeContentPreview() {
                     User(
                         permissions =
                             listOf(
+                                Permission.AdminPermission.code,
                                 Permission.CreatePrescriptionPermission.code,
-                                Permission.ViewMedicalHistoryPermission.code,
                             ),
                     ),
                 ),
