@@ -163,8 +163,6 @@ internal fun ClinicsContentPreview() {
                                 type = "مخ وأعصاب",
                                 address = "مبنى العيادات الخارجية - الدور الأول",
                                 phone = "0123456789",
-                                longitude = 0.0,
-                                latitude = 0.0,
                                 isOpen = true,
                             ),
                             Clinic(
@@ -173,8 +171,6 @@ internal fun ClinicsContentPreview() {
                                 type = "باطنة",
                                 address = "مبنى العيادات الخارجية - الدور الثالث",
                                 phone = "987654321",
-                                longitude = 0.0,
-                                latitude = 0.0,
                                 isOpen = false,
                             ),
                         ),
