@@ -51,7 +51,6 @@ class PharmacyViewModel(
     var selectedPharmacistState: MutableState<Pharmacist?> = mutableStateOf(null)
 
     var selectedPharmacyIdState = mutableLongStateOf(0)
-    var idState = mutableLongStateOf(0)
     var nameState = mutableStateOf("")
     var phoneState = mutableStateOf("")
     var addressState = mutableStateOf("")
@@ -80,7 +79,7 @@ class PharmacyViewModel(
                     contractStatusId = contractStatusIdState.value,
                 ),
             ).collect { result ->
-                _actionResFlow.value = result
+                _actionResFlow.emit(result)
             }
         }
     }
@@ -91,18 +90,12 @@ class PharmacyViewModel(
                 _actionResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            updatePharmacyUseCase(
-                Pharmacy(
-                    id = idState.longValue,
-                    name = nameState.value,
-                    phone = phoneState.value,
-                    address = addressState.value,
-                    longitude = longitudeState.doubleValue,
-                    latitude = latitudeState.doubleValue,
-                    contractStatusId = contractStatusIdState.value,
-                ),
-            ).collect { result ->
-                _actionResFlow.value = result
+            selectedPharmacyState.value?.let {
+                updatePharmacyUseCase(it).collect { result ->
+                    _actionResFlow.emit(result)
+                }
+            } ?: run {
+                _actionResFlow.emit(Resource.Error(Error("No Pharmacy selected!")))
             }
         }
     }
@@ -135,7 +128,7 @@ class PharmacyViewModel(
                     profilePicture = profilePictureState.value,
                 ),
             ).collect { result ->
-                _actionResFlow.value = result
+                _actionResFlow.emit(result)
             }
         }
     }
@@ -146,18 +139,12 @@ class PharmacyViewModel(
                 _actionResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            updatePharmacistUseCase(
-                Pharmacist(
-                    id = idState.longValue,
-                    firstName = firstNameState.value,
-                    lastName = lastNameState.value,
-                    pharmacyId = pharmacyIdState.longValue,
-                    email = emailState.value,
-                    phone = phoneState.value,
-                    profilePicture = profilePictureState.value,
-                ),
-            ).collect { result ->
-                _actionResFlow.value = result
+            selectedPharmacistState.value?.let {
+                updatePharmacistUseCase(it).collect { result ->
+                    _actionResFlow.emit(result)
+                }
+            } ?: run {
+                _actionResFlow.emit(Resource.Error(Error("No pharmacist selected!")))
             }
         }
     }
