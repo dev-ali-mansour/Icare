@@ -60,8 +60,8 @@ class NetworkModule {
         return OkHttpClient
             .Builder()
 //            .certificatePinner(certificatePinner)
-            .readTimeout(timeout = 5, TimeUnit.MINUTES)
-            .connectTimeout(timeout = 5, TimeUnit.MINUTES)
+            .readTimeout(timeout = 1, TimeUnit.MINUTES)
+            .connectTimeout(timeout = 1, TimeUnit.MINUTES)
             .addInterceptor(authInterceptor)
             .addInterceptor(
                 interceptor =
