@@ -7,6 +7,8 @@ import kotlinx.serialization.Transient
 
 @Serializable
 data class Doctor(
+    @Transient
+    val token: String = "",
     val id: Long = 0,
     val firstName: String = "",
     val lastName: String = "",
