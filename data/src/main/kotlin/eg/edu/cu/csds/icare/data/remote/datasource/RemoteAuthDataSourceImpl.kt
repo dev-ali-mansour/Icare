@@ -21,6 +21,7 @@ import eg.edu.cu.csds.icare.data.remote.serivce.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.koin.core.annotation.Single
 import timber.log.Timber
@@ -37,7 +38,17 @@ class RemoteAuthDataSourceImpl(
         flow {
             emit(Resource.Loading())
             auth.currentUser?.let { user ->
-                val response = service.getLoginInfo()
+                val token =
+                    runBlocking {
+                        auth.currentUser
+                            ?.getIdToken(false)
+                            ?.await()
+                            ?.token
+                            .toString()
+                    }
+                val map = HashMap<String, String>()
+                map["token"] = token
+                val response = service.getLoginInfo(map)
                 when (response.code()) {
                     HTTP_OK -> {
                         response.body()?.let { res ->

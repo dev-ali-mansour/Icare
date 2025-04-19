@@ -11,6 +11,8 @@ import eg.edu.cu.csds.icare.data.remote.serivce.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.koin.core.annotation.Single
 import timber.log.Timber
 import java.net.ConnectException
@@ -25,38 +27,48 @@ class RemotePharmaciesDataSourceImpl(
     override fun fetchPharmacies(): Flow<Resource<List<Pharmacy>>> =
         flow {
             emit(Resource.Loading())
-            auth.currentUser?.let {
-                val response = service.fetchPharmacies()
-                when (response.code()) {
-                    HTTP_OK -> {
-                        response.body()?.let { res ->
-                            when (res.statusCode) {
-                                Constants.ERROR_CODE_OK ->
-                                    emit(Resource.Success(res.pharmacies))
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val map = HashMap<String, String>()
+            map["token"] = token
+            val response = service.fetchPharmacies(map)
+            when (response.code()) {
+                HTTP_OK -> {
+                    response.body()?.let { res ->
+                        when (res.statusCode) {
+                            Constants.ERROR_CODE_OK ->
+                                emit(Resource.Success(res.pharmacies))
 
-                                Constants.ERROR_CODE_SERVER_ERROR ->
-                                    emit(Resource.Error(ConnectException()))
-                            }
+                            Constants.ERROR_CODE_SERVER_ERROR ->
+                                emit(Resource.Error(ConnectException()))
                         }
                     }
-
-                    else -> {
-                        // Todo Pass ConnectException While failing to connect to the server
-                        emit(Resource.Success(listOf()))
-                        emit(Resource.Error(ConnectException(response.code().toString())))
-                    }
                 }
+
+                else -> emit(Resource.Error(ConnectException(response.code().toString())))
             }
         }.catch {
             Timber.e("fetchPharmacies() error ${it.javaClass.simpleName}: ${it.message}")
-            // Todo Pass ConnectException While failing to connect to the server
-            emit(Resource.Success(listOf()))
-//            emit(Resource.Error(it))
+            emit(Resource.Error(it))
         }
 
     override fun addNewPharmacy(pharmacy: Pharmacy): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
-            val response = service.addNewPharmacy(pharmacy)
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.addNewPharmacy(pharmacy.copy(token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -82,7 +94,15 @@ class RemotePharmaciesDataSourceImpl(
 
     override fun updatePharmacy(pharmacy: Pharmacy): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
-            val response = service.updatePharmacy(pharmacy)
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.updatePharmacy(pharmacy.copy(token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -136,7 +156,15 @@ class RemotePharmaciesDataSourceImpl(
 
     override fun addNewPharmacist(pharmacist: Pharmacist): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
-            val response = service.addNewPharmacist(pharmacist)
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.addNewPharmacist(pharmacist.copy(token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -162,7 +190,15 @@ class RemotePharmaciesDataSourceImpl(
 
     override fun updatePharmacist(pharmacist: Pharmacist): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
-            val response = service.updatePharmacist(pharmacist)
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.updatePharmacist(pharmacist.copy(token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
