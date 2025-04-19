@@ -59,6 +59,7 @@ class CenterViewModel(
     var centerIdState = mutableLongStateOf(0)
     var emailState = mutableStateOf("")
     var profilePictureState = mutableStateOf("")
+    var typesExpandedState = mutableStateOf(false)
     var centersExpandedState = mutableStateOf(false)
 
     fun addNewCenter() {
