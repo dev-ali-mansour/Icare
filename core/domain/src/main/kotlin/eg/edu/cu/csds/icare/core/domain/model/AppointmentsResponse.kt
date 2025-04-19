@@ -7,5 +7,6 @@ import kotlinx.serialization.Serializable
 data class AppointmentsResponse(
     @SerialName("status")
     val statusCode: Short,
+    @SerialName("data")
     val appointments: List<Appointment>,
 )

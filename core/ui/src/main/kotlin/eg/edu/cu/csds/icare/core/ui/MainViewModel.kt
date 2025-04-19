@@ -1,5 +1,6 @@
 package eg.edu.cu.csds.icare.core.ui
 
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eg.edu.cu.csds.icare.core.domain.model.Resource
@@ -9,6 +10,8 @@ import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCenters
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinics
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoarding
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.ListPharmacies
+import eg.edu.cu.csds.icare.core.ui.common.SectionCategory
+import eg.edu.cu.csds.icare.core.ui.common.SectionItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +22,7 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class MainViewModel(
-    private val dispatcher: CoroutineDispatcher,
+    dispatcher: CoroutineDispatcher,
     private val readOnBoarding: ReadOnBoarding,
     private val getUserInfo: GetUserInfo,
     private val listClinics: ListClinics,
@@ -34,6 +37,59 @@ class MainViewModel(
     val currentUserFlow: StateFlow<Resource<User>> = _currentUserFlow
     private val _resultFlow = MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
     val resultFlow: StateFlow<Resource<Nothing?>> = _resultFlow
+
+    var selectedCategoryTabIndex = mutableIntStateOf(0)
+    var selectedSectionTabIndex = mutableIntStateOf(0)
+
+    val adminCategories =
+        listOf(
+            SectionCategory(
+                titleResId = R.string.clinics,
+                sections =
+                    listOf(
+                        SectionItem(
+                            iconResId = R.drawable.ic_clinic,
+                            titleResId = R.string.clinics,
+                        ),
+                        SectionItem(
+                            iconResId = R.drawable.ic_doctor,
+                            titleResId = R.string.doctors,
+                        ),
+                        SectionItem(
+                            iconResId = R.drawable.ic_staff,
+                            titleResId = R.string.clinic_staffs,
+                        ),
+                    ),
+            ),
+            SectionCategory(
+                titleResId = R.string.pharmacies,
+                sections =
+                    listOf(
+                        SectionItem(
+                            iconResId = R.drawable.ic_pharmacy,
+                            titleResId = R.string.pharmacies,
+                        ),
+                        SectionItem(
+                            iconResId = R.drawable.ic_pharmacist,
+                            titleResId = R.string.pharmacists,
+                        ),
+                    ),
+            ),
+            SectionCategory(
+                titleResId = R.string.centers,
+                sections =
+                    listOf(
+                        SectionItem(
+                            iconResId = R.drawable.ic_lab,
+                            titleResId = R.string.centers,
+                        ),
+                        SectionItem(
+                            iconResId = R.drawable.ic_staff2,
+                            titleResId = R.string.center_staffs,
+                        ),
+                    ),
+            ),
+        )
 
     init {
         viewModelScope.launch(dispatcher) {

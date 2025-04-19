@@ -52,9 +52,45 @@ class CentersRepositoryImpl(
             }
         }
 
-    override fun addNewCenter(center: LabImagingCenter): Flow<Resource<Nothing?>> = remoteCentersDataSource.addNewCenter(center)
+    override fun addNewCenter(center: LabImagingCenter): Flow<Resource<Nothing?>> =
+        flow {
+            emit(Resource.Loading())
+            remoteCentersDataSource.addNewCenter(center).collect { res ->
+                when (res) {
+                    is Resource.Unspecified<*> -> emit(Resource.Unspecified())
+                    is Resource.Loading<*> -> emit(Resource.Loading())
+                    is Resource.Success ->
+                        listCenters(true).collect { refreshResult ->
+                            when (refreshResult) {
+                                is Resource.Success -> emit(Resource.Success(null))
+                                is Resource.Error -> emit(Resource.Error(refreshResult.error))
+                                else -> {}
+                            }
+                        }
+                    is Resource.Error -> emit(Resource.Error(res.error))
+                }
+            }
+        }
 
-    override fun updateCenter(center: LabImagingCenter): Flow<Resource<Nothing?>> = remoteCentersDataSource.updateCenter(center)
+    override fun updateCenter(center: LabImagingCenter): Flow<Resource<Nothing?>> =
+        flow {
+            emit(Resource.Loading())
+            remoteCentersDataSource.updateCenter(center).collect { res ->
+                when (res) {
+                    is Resource.Unspecified<*> -> emit(Resource.Unspecified())
+                    is Resource.Loading<*> -> emit(Resource.Loading())
+                    is Resource.Success ->
+                        listCenters(true).collect { refreshResult ->
+                            when (refreshResult) {
+                                is Resource.Success -> emit(Resource.Success(null))
+                                is Resource.Error -> emit(Resource.Error(refreshResult.error))
+                                else -> {}
+                            }
+                        }
+                    is Resource.Error -> emit(Resource.Error(res.error))
+                }
+            }
+        }
 
     override fun listCenterStaff(centerId: Long): Flow<Resource<List<CenterStaff>>> = remoteCentersDataSource.listCenterStaff(centerId)
 

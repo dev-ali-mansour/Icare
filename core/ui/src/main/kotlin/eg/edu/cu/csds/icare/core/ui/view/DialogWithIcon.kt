@@ -44,7 +44,6 @@ fun DialogWithIcon(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .background(backgroundColor)
                     .height(SMALL_SPINNER_WIDTH),
             shape = RoundedCornerShape(M_PADDING),
         ) {

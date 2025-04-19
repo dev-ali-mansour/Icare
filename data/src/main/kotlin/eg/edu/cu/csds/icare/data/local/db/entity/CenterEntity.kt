@@ -13,9 +13,6 @@ data class CenterEntity(
     val type: Short,
     val phone: String,
     val address: String,
-    val longitude: Double,
-    val latitude: Double,
-    val contractStatusId: Short,
 )
 
 fun CenterEntity.toModel() =
@@ -25,9 +22,6 @@ fun CenterEntity.toModel() =
         type = type,
         phone = phone,
         address = address,
-        longitude = longitude,
-        latitude = latitude,
-        contractStatusId = contractStatusId,
     )
 
 fun LabImagingCenter.toEntity() =
@@ -37,7 +31,4 @@ fun LabImagingCenter.toEntity() =
         type = type,
         phone = phone,
         address = address,
-        longitude = longitude,
-        latitude = latitude,
-        contractStatusId = contractStatusId,
     )

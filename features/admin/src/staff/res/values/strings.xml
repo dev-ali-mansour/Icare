@@ -1,0 +1,45 @@
+<resources>
+    <string name="longitude" translatable="false">Longitude</string>
+    <string name="latitude" translatable="false">Latitude</string>
+    <string name="email">Email Address</string>
+    <string name="password">Password</string>
+    <string name="last_name">Last Name</string>
+    <string name="national_id">National Id</string>
+    <string name="first_name_error">Please enter a valid first name.</string>
+    <string name="last_name_error">Please enter a valid last name.</string>
+    <string name="email_error">Please enter a valid email.</string>
+    <string name="gender_error">Please choose your gender.</string>
+    <string name="phone_error">Please enter a valid phone number.</string>
+    <string name="try_again">Try again</string>
+    <string name="first_name">First Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="birth_date">Birth Date</string>
+    <string name="address">Address</string>
+    <string name="name">Name</string>
+    <string name="type">Type</string>
+    <string name="open" >Open</string>
+    <string name="closed" >Closed</string>
+    <string name="clinic" >Clinic</string>
+    <string name="pharmacy" >Pharmacy</string>
+    <string name="center" >Center</string>
+    <string name="new_clinic" >New Clinic</string>
+    <string name="edit_clinic" >Edit Clinic</string>
+    <string name="new_doctor" >New Doctor</string>
+    <string name="edit_doctor" >Edit Doctor</string>
+    <string name="new_clinic_staff" >New Clinic Staff</string>
+    <string name="edit_clinic_staff" >Edit Clinic Staff</string>
+    <string name="new_pharmacy" >New Pharmacy</string>
+    <string name="edit_pharmacy" >Edit Pharmacy</string>
+    <string name="new_pharmacist" >New Pharmacist</string>
+    <string name="edit_pharmacist" >Edit Pharmacist</string>
+    <string name="new_center" >New Center</string>
+    <string name="edit_center" >Edit Center</string>
+    <string name="new_center_staff" >New Center Staff</string>
+    <string name="edit_center_staff" >Edit Center Staff</string>
+    <string name="speciality" >Speciality</string>
+    <string name="from_time" >From Time</string>
+    <string name="to_time" >To Time</string>
+    <string name="lab_center" >Lab Center</string>
+    <string name="imaging_center" >Imaging Center</string>
+
+</resources>

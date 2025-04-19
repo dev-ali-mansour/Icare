@@ -8,19 +8,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.SettingsItem
 import eg.edu.cu.csds.icare.core.domain.util.Constants
+import eg.edu.cu.csds.icare.core.ui.MainViewModel
+import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.util.appRate
 import eg.edu.cu.csds.icare.core.ui.util.appShare
 import eg.edu.cu.csds.icare.core.ui.util.changeLanguage
 import eg.edu.cu.csds.icare.core.ui.util.contactUs
 import eg.edu.cu.csds.icare.core.ui.util.currentLanguage
+import eg.edu.cu.csds.icare.core.ui.util.hasPermission
 import eg.edu.cu.csds.icare.core.ui.util.reportError
 import eg.edu.cu.csds.icare.core.ui.util.showOurApps
 import eg.edu.cu.csds.icare.core.ui.util.showPrivacyPolicy
@@ -30,16 +33,25 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun SettingsScreen(
-    navigateToAbout: () -> Unit,
+    mainViewModel: MainViewModel,
+    navigateToScreen: (Screen) -> Unit,
     context: Context = LocalContext.current,
     settingsViewModel: SettingsViewModel = koinViewModel(),
 ) {
+    val currentUserRes by mainViewModel.currentUserFlow.collectAsStateWithLifecycle()
     val settings by settingsViewModel.settingsFlow.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
 
     SideEffect {
         scope.launch {
             settingsViewModel.getSettingsItems(context)
+            currentUserRes.data?.let { employee ->
+                when {
+                    hasPermission(employee.permissions, Screen.Admin) -> {
+                        settingsViewModel.addAdminSection(context)
+                    }
+                }
+            }
         }
     }
 
@@ -58,7 +70,7 @@ internal fun SettingsScreen(
                 onItemClicked(
                     settingsItem,
                     context,
-                    navigateToAbout = { navigateToAbout() },
+                    navigateToScreen = { navigateToScreen(it) },
                 )
             }
         }
@@ -68,15 +80,16 @@ internal fun SettingsScreen(
 private fun onItemClicked(
     settingsItem: SettingsItem,
     context: Context,
-    navigateToAbout: () -> Unit,
+    navigateToScreen: (Screen) -> Unit,
 ) {
     when (settingsItem.id) {
+        Constants.ADMIN_CODE -> navigateToScreen(Screen.Admin)
         Constants.SHARE_CODE -> context.appShare()
         Constants.RATE_CODE -> context.appRate()
         Constants.CONTACT_CODE -> context.contactUs()
         Constants.ERROR_REPORTING_CODE -> context.reportError()
         Constants.APPS_CODE -> context.showOurApps()
         Constants.POLICY_CODE -> context.showPrivacyPolicy()
-        Constants.ABOUT_CODE -> navigateToAbout()
+        Constants.ABOUT_CODE -> navigateToScreen(Screen.About)
     }
 }
