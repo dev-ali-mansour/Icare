@@ -27,17 +27,25 @@ interface ApiService {
     @POST("bookingMethods")
     suspend fun fetchBookingMethods(): Response<BookingMethodsResponse>
 
-    @POST("clinics")
-    suspend fun fetchClinics(): Response<ClinicsResponse>
+    @POST("clinicApi/getclinics")
+    suspend fun fetchClinics(
+        @Body body: HashMap<String, String>,
+    ): Response<ClinicsResponse>
 
-    @POST("doctors")
-    suspend fun fetchDoctors(): Response<DoctorsResponse>
+    @POST("userApi/getdoctors")
+    suspend fun fetchDoctors(
+        @Body body: HashMap<String, String>,
+    ): Response<DoctorsResponse>
 
     @POST("centers")
-    suspend fun fetchCenters(): Response<CentersResponse>
+    suspend fun fetchCenters(
+        @Body body: HashMap<String, String>,
+    ): Response<CentersResponse>
 
-    @POST("pharmacies")
-    suspend fun fetchPharmacies(): Response<PharmaciesResponse>
+    @POST("pharmacyApi/getPharmacy")
+    suspend fun fetchPharmacies(
+        @Body body: HashMap<String, String>,
+    ): Response<PharmaciesResponse>
 
     @POST("isRegistered")
     suspend fun isRegistered(
@@ -50,7 +58,9 @@ interface ApiService {
     ): Response<ActionResultResponse>
 
     @POST("loginInfo")
-    suspend fun getLoginInfo(): Response<LoginInfoResponse>
+    suspend fun getLoginInfo(
+        @Body body: HashMap<String, String>,
+    ): Response<LoginInfoResponse>
 
     @POST("patientAppointments")
     suspend fun getPatientAppointments(): Response<AppointmentsResponse>
@@ -78,12 +88,12 @@ interface ApiService {
         @Body body: HashMap<String, String>,
     ): Response<ActionResultResponse>
 
-    @POST("addNewClinic")
+    @POST("clinicApi/add_clinic")
     suspend fun addNewClinic(
         @Body body: Clinic,
     ): Response<ActionResultResponse>
 
-    @POST("updateClinic")
+    @POST("clinicApi/add_clinic")
     suspend fun updateClinic(
         @Body body: Clinic,
     ): Response<ActionResultResponse>
