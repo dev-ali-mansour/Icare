@@ -50,7 +50,7 @@ internal fun NewDoctorScreen(
     var clinicId by clinicViewModel.clinicIdState
     var email by clinicViewModel.emailState
     var phone by clinicViewModel.phoneState
-    var speciality by clinicViewModel.specialityState
+    var specialty by clinicViewModel.specialityState
     var fromTime by clinicViewModel.fromTimeState
     var toTime by clinicViewModel.toTimeState
     var profilePicture by clinicViewModel.profilePictureState
@@ -119,7 +119,7 @@ internal fun NewDoctorScreen(
                     clinicId = clinicId,
                     email = email,
                     phone = phone,
-                    speciality = speciality,
+                    speciality = specialty,
                     fromTime = fromTime,
                     toTime = toTime,
                     profilePicture = profilePicture,
@@ -136,7 +136,7 @@ internal fun NewDoctorScreen(
                     },
                     onEmailChanged = { email = it },
                     onPhoneChanged = { phone = it },
-                    onSpecialityChanged = { speciality = it },
+                    onSpecialityChanged = { specialty = it },
                     onFromTimeChanged = { fromTime = it },
                     onToTimeChanged = { toTime = it },
                     onProfilePictureChanged = { profilePicture = it },
