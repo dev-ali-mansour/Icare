@@ -79,11 +79,12 @@ internal fun ClinicDetailsContent(
         Surface(
             modifier =
                 Modifier
-                    .fillMaxWidth()
                     .constrainAs(card) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom)
+                        width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
                     },
         ) {
