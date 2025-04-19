@@ -130,7 +130,7 @@ fun NavGraphBuilder.adminRoute(
             onProceedButtonClicked = { clinicViewModel.addNewClinic() },
             onSuccess = {
 //                clinicViewModel.listClinics()
-                onNavigationIconClicked
+                onNavigationIconClicked()
             },
             onError = { onError(it) },
         )
@@ -143,7 +143,7 @@ fun NavGraphBuilder.adminRoute(
             onProceedButtonClicked = { clinicViewModel.updateClinic() },
             onSuccess = {
                 clinicViewModel.listClinics()
-                onNavigationIconClicked
+                onNavigationIconClicked()
             },
             onError = { onError(it) },
         )
@@ -154,7 +154,7 @@ fun NavGraphBuilder.adminRoute(
             centerViewModel = centerViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { centerViewModel.addNewCenter() },
-            onSuccess = { onNavigationIconClicked },
+            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }
@@ -164,7 +164,7 @@ fun NavGraphBuilder.adminRoute(
             centerViewModel = centerViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { centerViewModel.updateCenter() },
-            onSuccess = { onNavigationIconClicked },
+            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }
@@ -174,7 +174,7 @@ fun NavGraphBuilder.adminRoute(
             pharmacyViewModel = pharmacyViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { pharmacyViewModel.addNewPharmacy() },
-            onSuccess = { onNavigationIconClicked },
+            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }
@@ -184,7 +184,7 @@ fun NavGraphBuilder.adminRoute(
             pharmacyViewModel = pharmacyViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { pharmacyViewModel.updatePharmacy() },
-            onSuccess = { onNavigationIconClicked },
+            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }
@@ -193,7 +193,7 @@ fun NavGraphBuilder.adminRoute(
             clinicViewModel = clinicViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { clinicViewModel.addNewDoctor() },
-            onSuccess = { onNavigationIconClicked },
+            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }
@@ -203,7 +203,7 @@ fun NavGraphBuilder.adminRoute(
             clinicViewModel = clinicViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { clinicViewModel.updateDoctor() },
-            onSuccess = { onNavigationIconClicked },
+            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }
@@ -213,7 +213,7 @@ fun NavGraphBuilder.adminRoute(
             clinicViewModel = clinicViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { clinicViewModel.addNewStaff() },
-            onSuccess = { onNavigationIconClicked },
+            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }
@@ -223,7 +223,7 @@ fun NavGraphBuilder.adminRoute(
             clinicViewModel = clinicViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { clinicViewModel.updateStaff() },
-            onSuccess = { onNavigationIconClicked },
+            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }
@@ -233,7 +233,7 @@ fun NavGraphBuilder.adminRoute(
             pharmacyViewModel = pharmacyViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { pharmacyViewModel.addNewPharmacist() },
-            onSuccess = { onNavigationIconClicked },
+            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }
@@ -243,7 +243,7 @@ fun NavGraphBuilder.adminRoute(
             pharmacyViewModel = pharmacyViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { pharmacyViewModel.updatePharmacist() },
-            onSuccess = { onNavigationIconClicked },
+            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }
@@ -253,7 +253,7 @@ fun NavGraphBuilder.adminRoute(
             centerViewModel = centerViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { centerViewModel.addNewStaff() },
-            onSuccess = { onNavigationIconClicked },
+            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }
@@ -263,7 +263,7 @@ fun NavGraphBuilder.adminRoute(
             centerViewModel = centerViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { centerViewModel.updateStaff() },
-            onSuccess = { onNavigationIconClicked },
+            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }
