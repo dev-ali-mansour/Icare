@@ -39,5 +39,7 @@
     <string name="speciality" >Speciality</string>
     <string name="from_time" >From Time</string>
     <string name="to_time" >To Time</string>
+    <string name="lab_center" >Lab Center</string>
+    <string name="imaging_center" >Imaging Center</string>
 
 </resources>
