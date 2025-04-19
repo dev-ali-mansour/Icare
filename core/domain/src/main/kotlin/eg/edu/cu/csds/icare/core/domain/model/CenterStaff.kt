@@ -5,6 +5,8 @@ import kotlinx.serialization.Transient
 
 @Serializable
 data class CenterStaff(
+    @Transient
+    val token: String = "",
     val id: Long = 0,
     val firstName: String = "",
     val lastName: String = "",
