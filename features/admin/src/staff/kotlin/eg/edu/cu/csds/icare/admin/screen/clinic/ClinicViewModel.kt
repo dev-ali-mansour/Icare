@@ -74,6 +74,8 @@ class ClinicViewModel(
     var fromTimeState = mutableLongStateOf(0)
     var toTimeState = mutableLongStateOf(0)
     var profilePictureState = mutableStateOf("")
+    var clinicsExpandedState = mutableStateOf(false)
+    var centersExpandedState = mutableStateOf(false)
     var expandedFab = mutableStateOf(true)
 
     fun addNewClinic() {
