@@ -1,5 +1,6 @@
 package eg.edu.cu.csds.icare.core.domain.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
@@ -7,13 +8,14 @@ import kotlinx.serialization.Transient
 data class ClinicStaff(
     @Transient
     val token: String = "",
-    val id: Long = 0,
+    val id: String = "",
     val firstName: String = "",
     val lastName: String = "",
     @Transient
     val name: String = "$firstName $lastName",
     val clinicId: Long = 0,
     val email: String = "",
+    @SerialName("phoneNumber")
     val phone: String = "",
     val profilePicture: String = "",
 )
