@@ -13,6 +13,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.SplashScreen
+import eg.edu.cu.csds.icare.admin.navigation.adminRoute
+import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
+import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
 import eg.edu.cu.csds.icare.auth.screen.AuthViewModel
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
@@ -26,6 +30,7 @@ import eg.edu.cu.csds.icare.home.navigation.homeRoute
 import eg.edu.cu.csds.icare.onboarding.navigation.onBoardingRoute
 import eg.edu.cu.csds.icare.settings.navigation.settingsRoute
 import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 import kotlin.system.exitProcess
 
 @Suppress("UnusedParameter")
@@ -41,6 +46,9 @@ fun SetupNavGraph(
     context: Context = LocalContext.current,
 ) {
     val onBoardingRes by mainViewModel.onBoardingCompleted.collectAsStateWithLifecycle()
+    val clinicViewModel: ClinicViewModel = koinViewModel()
+    val pharmacyViewModel: PharmacyViewModel = koinViewModel()
+    val centerViewModel: CenterViewModel = koinViewModel()
     val alertMessage = remember { mutableStateOf("") }
     val showAlert = remember { mutableStateOf(false) }
     val exitApp = remember { mutableStateOf(false) }
@@ -125,7 +133,7 @@ fun SetupNavGraph(
                     }
                 },
                 onRegisterCompleted = {
-                    navController.navigate(Screen.Home) {
+                    navController.navigate(Screen.Login) {
                         popUpTo(navController.graph.id) {
                             inclusive = true
                         }
@@ -165,8 +173,32 @@ fun SetupNavGraph(
                 },
             )
 
+            adminRoute(
+                mainViewModel = mainViewModel,
+                clinicViewModel = clinicViewModel,
+                pharmacyViewModel = pharmacyViewModel,
+                centerViewModel = centerViewModel,
+                onNavigationIconClicked = {
+                    navController.navigateUpSafely()
+                },
+                navigateToScreen = { screen -> navController.navigate(screen) },
+                onError = { error ->
+                    exitApp.value = false
+                    handleError(
+                        error,
+                        exitApp,
+                        context,
+                        authViewModel,
+                        navController,
+                        alertMessage,
+                        showAlert,
+                    )
+                },
+            )
+
             settingsRoute(
-                navigateToAbout = { navController.navigate(Screen.About) },
+                mainViewModel = mainViewModel,
+                navigateToScreen = { navController.navigate(it) },
                 onNavigationIconClicked = {
                     navController.navigateUpSafely()
                 },
@@ -203,7 +235,7 @@ private suspend fun handleError(
         else -> {
             alertMessage.value = context.getErrorMessage(error)
             showAlert.value = true
-            delay(timeMillis = 3000)
+            delay(timeMillis = 5000)
             showAlert.value = false
             if (exitApp.value) exitProcess(0)
         }

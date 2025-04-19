@@ -13,7 +13,6 @@ import eg.edu.cu.csds.icare.data.remote.datasource.RemoteClinicsDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
 
 @Single
@@ -33,7 +32,7 @@ class ClinicsRepositoryImpl(
                     }
                 return@flow
             }
-            remoteClinicsDataSource.fetchClinics().map { res ->
+            remoteClinicsDataSource.fetchClinics().collect { res ->
                 when (res) {
                     is Resource.Unspecified -> emit(Resource.Unspecified())
 
@@ -56,9 +55,45 @@ class ClinicsRepositoryImpl(
             }
         }
 
-    override fun addNewClinic(clinic: Clinic): Flow<Resource<Nothing?>> = remoteClinicsDataSource.addNewClinic(clinic)
+    override fun addNewClinic(clinic: Clinic): Flow<Resource<Nothing?>> =
+        flow {
+            emit(Resource.Loading())
+            remoteClinicsDataSource.addNewClinic(clinic).collect { res ->
+                when (res) {
+                    is Resource.Unspecified<*> -> emit(Resource.Unspecified())
+                    is Resource.Loading<*> -> emit(Resource.Loading())
+                    is Resource.Success ->
+                        listClinics(true).collect { refreshResult ->
+                            when (refreshResult) {
+                                is Resource.Success -> emit(Resource.Success(null))
+                                is Resource.Error -> emit(Resource.Error(refreshResult.error))
+                                else -> {}
+                            }
+                        }
+                    is Resource.Error -> emit(Resource.Error(res.error))
+                }
+            }
+        }
 
-    override fun updateClinic(clinic: Clinic): Flow<Resource<Nothing?>> = remoteClinicsDataSource.updateClinic(clinic)
+    override fun updateClinic(clinic: Clinic): Flow<Resource<Nothing?>> =
+        flow {
+            emit(Resource.Loading())
+            remoteClinicsDataSource.updateClinic(clinic).collect { res ->
+                when (res) {
+                    is Resource.Unspecified<*> -> emit(Resource.Unspecified())
+                    is Resource.Loading<*> -> emit(Resource.Loading())
+                    is Resource.Success ->
+                        listClinics(true).collect { refreshResult ->
+                            when (refreshResult) {
+                                is Resource.Success -> emit(Resource.Success(null))
+                                is Resource.Error -> emit(Resource.Error(refreshResult.error))
+                                else -> {}
+                            }
+                        }
+                    is Resource.Error -> emit(Resource.Error(res.error))
+                }
+            }
+        }
 
     override fun listDoctors(forceRefresh: Boolean): Flow<Resource<List<Doctor>>> =
         flow {
@@ -71,7 +106,7 @@ class ClinicsRepositoryImpl(
                     }
                 return@flow
             }
-            remoteClinicsDataSource.fetchClinics().map { res ->
+            remoteClinicsDataSource.fetchDoctors().collect { res ->
                 when (res) {
                     is Resource.Unspecified -> emit(Resource.Unspecified())
 
@@ -79,7 +114,7 @@ class ClinicsRepositoryImpl(
 
                     is Resource.Success -> {
                         res.data?.let { doctors ->
-                            localClinicsDataSource.persistClinics(doctors.map { it.toEntity() })
+                            localDoctorDataSource.persistDoctors(doctors.map { it.toEntity() })
                         }
                         localDoctorDataSource
                             .listDoctors()
@@ -104,9 +139,45 @@ class ClinicsRepositoryImpl(
                 }
         }
 
-    override fun addNewDoctor(doctor: Doctor): Flow<Resource<Nothing?>> = remoteClinicsDataSource.addNewDoctor(doctor)
+    override fun addNewDoctor(doctor: Doctor): Flow<Resource<Nothing?>> =
+        flow {
+            emit(Resource.Loading())
+            remoteClinicsDataSource.addNewDoctor(doctor).collect { res ->
+                when (res) {
+                    is Resource.Unspecified<*> -> emit(Resource.Unspecified())
+                    is Resource.Loading<*> -> emit(Resource.Loading())
+                    is Resource.Success ->
+                        listDoctors(true).collect { refreshResult ->
+                            when (refreshResult) {
+                                is Resource.Success -> emit(Resource.Success(null))
+                                is Resource.Error -> emit(Resource.Error(refreshResult.error))
+                                else -> {}
+                            }
+                        }
+                    is Resource.Error -> emit(Resource.Error(res.error))
+                }
+            }
+        }
 
-    override fun updateDoctor(doctor: Doctor): Flow<Resource<Nothing?>> = remoteClinicsDataSource.updateDoctor(doctor)
+    override fun updateDoctor(doctor: Doctor): Flow<Resource<Nothing?>> =
+        flow {
+            emit(Resource.Loading())
+            remoteClinicsDataSource.updateDoctor(doctor).collect { res ->
+                when (res) {
+                    is Resource.Unspecified<*> -> emit(Resource.Unspecified())
+                    is Resource.Loading<*> -> emit(Resource.Loading())
+                    is Resource.Success ->
+                        listDoctors(true).collect { refreshResult ->
+                            when (refreshResult) {
+                                is Resource.Success -> emit(Resource.Success(null))
+                                is Resource.Error -> emit(Resource.Error(refreshResult.error))
+                                else -> {}
+                            }
+                        }
+                    is Resource.Error -> emit(Resource.Error(res.error))
+                }
+            }
+        }
 
     override fun listClinicStaff(clinicId: Long): Flow<Resource<List<ClinicStaff>>> = remoteClinicsDataSource.listClinicStaff(clinicId)
 

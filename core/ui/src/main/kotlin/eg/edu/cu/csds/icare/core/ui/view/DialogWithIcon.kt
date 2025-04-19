@@ -27,11 +27,11 @@ import androidx.compose.ui.window.Dialog
 import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.SMALL_SPINNER_WIDTH
-import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow700
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
-import eg.edu.cu.csds.icare.core.ui.theme.tintColor
 
 @Composable
 fun DialogWithIcon(
@@ -63,7 +63,7 @@ fun DialogWithIcon(
                 )
                 Text(
                     text = text,
-                    color = tintColor,
+                    color = dropDownTextColor,
                     fontSize = MaterialTheme.typography.titleMedium.fontSize,
                     fontFamily = helveticaFamily,
                     maxLines = 2,
@@ -83,7 +83,7 @@ fun DialogWithIconPreview() {
     Box(
         modifier =
             Modifier
-                .padding(S_PADDING)
+                .padding(XL_PADDING)
                 .background(color = backgroundColor),
     ) {
         DialogWithIcon(

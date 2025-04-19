@@ -1,6 +1,7 @@
 package eg.edu.cu.csds.icare.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
+import eg.edu.cu.csds.icare.core.domain.model.Permission
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.domain.repository.AuthRepository
@@ -25,27 +26,33 @@ class AuthRepositoryImpl(
         firstName: String,
         lastName: String,
         email: String,
-        password: String,
         birthDate: String,
         gender: String,
+        nationalId: String,
+        phone: String,
+        address: String,
+        weight: Double,
         chronicDiseases: String,
         currentMedications: String,
         allergies: String,
         pastSurgeries: String,
-        weight: Double,
+        password: String,
     ): Flow<Resource<Nothing?>> =
         remoteAuthDataSource.register(
             firstName,
             lastName,
             email,
-            password,
             birthDate,
             gender,
+            nationalId,
+            phone,
+            address,
+            weight,
             chronicDiseases,
             currentMedications,
             allergies,
             pastSurgeries,
-            weight,
+            password,
         )
 
     override fun signInWithEmailAndPassword(
@@ -109,7 +116,15 @@ class AuthRepositoryImpl(
                         } else {
                             // Todo Pass resource error to the view model to handle it
 //                            res
-                            Resource.Success(User())
+                            Resource.Success(
+                                User(
+                                    permissions =
+                                        listOf(
+                                            Permission.AdminPermission.code,
+                                            Permission.CreatePrescriptionPermission.code,
+                                        ),
+                                ),
+                            )
                         }
                     },
                 )

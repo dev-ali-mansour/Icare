@@ -5,13 +5,19 @@ import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
+import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.data.remote.serivce.ApiService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.koin.core.annotation.Single
 import timber.log.Timber
 import java.net.ConnectException
+import java.net.HttpURLConnection
 import java.net.HttpURLConnection.HTTP_OK
 
 @Single
@@ -21,52 +27,254 @@ class RemoteClinicsDataSourceImpl(
 ) : RemoteClinicsDataSource {
     override fun fetchClinics(): Flow<Resource<List<Clinic>>> =
         flow {
-            runCatching {
-                emit(Resource.Loading())
-                auth.currentUser?.let {
-                    val response = service.fetchClinics()
-                    when (response.code()) {
-                        HTTP_OK -> {
-                            response.body()?.let { res ->
-                                when (res.statusCode) {
-                                    Constants.ERROR_CODE_OK ->
-                                        emit(Resource.Success(res.clinics))
+            emit(Resource.Loading())
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val map = HashMap<String, String>()
+            map["token"] = token
+            val response = service.fetchClinics(map)
+            when (response.code()) {
+                HTTP_OK -> {
+                    response.body()?.let { res ->
+                        when (res.statusCode) {
+                            Constants.ERROR_CODE_OK ->
+                                emit(Resource.Success(res.clinics))
 
-                                    Constants.ERROR_CODE_SERVER_ERROR ->
-                                        emit(Resource.Error(ConnectException()))
-                                }
-                            }
+                            Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                emit(Resource.Error(UserNotAuthenticatedException()))
+
+                            Constants.ERROR_CODE_SERVER_ERROR ->
+                                emit(Resource.Error(ConnectException()))
                         }
-
-                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
                     }
                 }
-            }.onFailure {
-                Timber.e("fetchClinics() error ${it.javaClass.simpleName}: ${it.message}")
-                emit(Resource.Error(it))
+
+                else -> {
+                    emit(Resource.Error(ConnectException(response.code().toString())))
+                }
             }
+        }.catch {
+            Timber.e("fetchClinics() error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
         }
 
-    override fun addNewClinic(clinic: Clinic): Flow<Resource<Nothing?>> {
-        TODO("Not yet implemented")
-    }
+    override fun addNewClinic(clinic: Clinic): Flow<Resource<Nothing?>> =
+        flow<Resource<Nothing?>> {
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.addNewClinic(clinic.copy(token = token))
+            when (response.code()) {
+                HTTP_OK ->
+                    response.body()?.let { res ->
+                        when (res.statusCode) {
+                            Constants.ERROR_CODE_OK -> {
+                                fetchClinics().collect {
+                                    when (it) {
+                                        is Resource.Unspecified<*> -> emit(Resource.Unspecified())
+                                        is Resource.Loading<*> -> emit(Resource.Loading())
+                                        is Resource.Success ->
+                                            it.data?.let { clinics ->
+                                                emit(Resource.Success(null))
+                                            }
+                                        is Resource.Error -> emit(Resource.Error(it.error))
+                                    }
+                                }
+                            }
 
-    override fun updateClinic(clinic: Clinic): Flow<Resource<Nothing?>> {
-        TODO("Not yet implemented")
-    }
+                            Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                emit(Resource.Error(UserNotAuthenticatedException()))
+
+                            else -> emit(Resource.Error(ConnectException()))
+                        }
+                    } ?: run { emit(Resource.Error(ConnectException())) }
+
+                HttpURLConnection.HTTP_UNAUTHORIZED ->
+                    emit(Resource.Error(UserNotAuthorizedException()))
+
+                else -> emit(Resource.Error(ConnectException(response.code().toString())))
+            }
+        }.catch {
+            Timber.e("addNewClinic() error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
+        }
+
+    override fun updateClinic(clinic: Clinic): Flow<Resource<Nothing?>> =
+        flow<Resource<Nothing?>> {
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.updateClinic(clinic.copy(token = token))
+            when (response.code()) {
+                HTTP_OK ->
+                    response.body()?.let { res ->
+                        when (res.statusCode) {
+                            Constants.ERROR_CODE_OK -> emit(Resource.Success(null))
+
+                            Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                emit(Resource.Error(UserNotAuthenticatedException()))
+
+                            else -> emit(Resource.Error(ConnectException()))
+                        }
+                    } ?: run { emit(Resource.Error(ConnectException())) }
+
+                HttpURLConnection.HTTP_UNAUTHORIZED ->
+                    emit(Resource.Error(UserNotAuthorizedException()))
+
+                else -> emit(Resource.Error(ConnectException(response.code().toString())))
+            }
+        }.catch {
+            Timber.e("updateClinic() error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
+        }
 
     override fun fetchDoctors(): Flow<Resource<List<Doctor>>> =
+        flow {
+            emit(Resource.Loading())
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val map = HashMap<String, String>()
+            map["token"] = token
+            val response = service.fetchDoctors(map)
+            when (response.code()) {
+                HTTP_OK -> {
+                    response.body()?.let { res ->
+                        when (res.statusCode) {
+                            Constants.ERROR_CODE_OK ->
+                                emit(Resource.Success(res.doctors))
+
+                            Constants.ERROR_CODE_SERVER_ERROR ->
+                                emit(Resource.Error(ConnectException()))
+                        }
+                    }
+                }
+
+                else -> {
+                    // Todo Pass ConnectException While failing to connect to the server
+                    emit(Resource.Success(listOf()))
+//                    emit(Resource.Error(ConnectException(response.code().toString())))
+                }
+            }
+        }.catch {
+            Timber.e("fetchDoctors() error ${it.javaClass.simpleName}: ${it.message}")
+            // Todo Pass ConnectException While failing to connect to the server
+            emit(Resource.Success(listOf()))
+//            emit(Resource.Error(it))}
+        }
+
+    override fun addNewDoctor(doctor: Doctor): Flow<Resource<Nothing?>> =
+        flow<Resource<Nothing?>> {
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.addNewDoctor(doctor.copy(token))
+            when (response.code()) {
+                HTTP_OK ->
+                    response.body()?.let { res ->
+                        when (res.statusCode) {
+                            Constants.ERROR_CODE_OK -> emit(Resource.Success(null))
+
+                            Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                emit(Resource.Error(UserNotAuthenticatedException()))
+
+                            else -> emit(Resource.Error(ConnectException()))
+                        }
+                    } ?: run { emit(Resource.Error(ConnectException())) }
+
+                HttpURLConnection.HTTP_UNAUTHORIZED ->
+                    emit(Resource.Error(UserNotAuthorizedException()))
+
+                else -> emit(Resource.Error(ConnectException(response.code().toString())))
+            }
+        }.catch {
+            Timber.e("addNewDoctor() error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
+        }
+
+    override fun updateDoctor(doctor: Doctor): Flow<Resource<Nothing?>> =
+        flow<Resource<Nothing?>> {
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.updateDoctor(doctor.copy(token))
+            when (response.code()) {
+                HTTP_OK ->
+                    response.body()?.let { res ->
+                        when (res.statusCode) {
+                            Constants.ERROR_CODE_OK -> emit(Resource.Success(null))
+
+                            Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                emit(Resource.Error(UserNotAuthenticatedException()))
+
+                            else -> emit(Resource.Error(ConnectException()))
+                        }
+                    } ?: run { emit(Resource.Error(ConnectException())) }
+
+                HttpURLConnection.HTTP_UNAUTHORIZED ->
+                    emit(Resource.Error(UserNotAuthorizedException()))
+
+                else -> emit(Resource.Error(ConnectException(response.code().toString())))
+            }
+        }.catch {
+            Timber.e("updateDoctor() error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
+        }
+
+    override fun listClinicStaff(clinicId: Long): Flow<Resource<List<ClinicStaff>>> =
         flow {
             runCatching {
                 emit(Resource.Loading())
                 auth.currentUser?.let {
-                    val response = service.fetchDoctors()
+                    val token =
+                        runBlocking {
+                            auth.currentUser
+                                ?.getIdToken(false)
+                                ?.await()
+                                ?.token
+                                .toString()
+                        }
+                    val map = HashMap<String, String>()
+                    map["clinicId"] = clinicId.toString()
+                    map["token"] = token
+                    val response = service.listClinicStaff(map)
                     when (response.code()) {
                         HTTP_OK -> {
                             response.body()?.let { res ->
                                 when (res.statusCode) {
                                     Constants.ERROR_CODE_OK ->
-                                        emit(Resource.Success(res.doctors))
+                                        emit(Resource.Success(res.staffList))
 
                                     Constants.ERROR_CODE_SERVER_ERROR ->
                                         emit(Resource.Error(ConnectException()))
@@ -78,28 +286,76 @@ class RemoteClinicsDataSourceImpl(
                     }
                 }
             }.onFailure {
-                Timber.e("fetchDoctors() error ${it.javaClass.simpleName}: ${it.message}")
+                Timber.e("listClinicStaff() error ${it.javaClass.simpleName}: ${it.message}")
                 emit(Resource.Error(it))
             }
         }
 
-    override fun addNewDoctor(doctor: Doctor): Flow<Resource<Nothing?>> {
-        TODO("Not yet implemented")
-    }
+    override fun addNewClinicStaff(staff: ClinicStaff): Flow<Resource<Nothing?>> =
+        flow<Resource<Nothing?>> {
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.addNewClinicStaff(staff.copy(token))
+            when (response.code()) {
+                HTTP_OK ->
+                    response.body()?.let { res ->
+                        when (res.statusCode) {
+                            Constants.ERROR_CODE_OK -> emit(Resource.Success(null))
 
-    override fun updateDoctor(doctor: Doctor): Flow<Resource<Nothing?>> {
-        TODO("Not yet implemented")
-    }
+                            Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                emit(Resource.Error(UserNotAuthenticatedException()))
 
-    override fun listClinicStaff(clinicId: Long): Flow<Resource<List<ClinicStaff>>> {
-        TODO("Not yet implemented")
-    }
+                            else -> emit(Resource.Error(ConnectException()))
+                        }
+                    } ?: run { emit(Resource.Error(ConnectException())) }
 
-    override fun addNewClinicStaff(staff: ClinicStaff): Flow<Resource<Nothing?>> {
-        TODO("Not yet implemented")
-    }
+                HttpURLConnection.HTTP_UNAUTHORIZED ->
+                    emit(Resource.Error(UserNotAuthorizedException()))
 
-    override fun updateClinicStaff(staff: ClinicStaff): Flow<Resource<Nothing?>> {
-        TODO("Not yet implemented")
-    }
+                else -> emit(Resource.Error(ConnectException(response.code().toString())))
+            }
+        }.catch {
+            Timber.e("addNewClinicStaff() error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
+        }
+
+    override fun updateClinicStaff(staff: ClinicStaff): Flow<Resource<Nothing?>> =
+        flow<Resource<Nothing?>> {
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.updateClinicStaff(staff.copy(token))
+            when (response.code()) {
+                HTTP_OK ->
+                    response.body()?.let { res ->
+                        when (res.statusCode) {
+                            Constants.ERROR_CODE_OK -> emit(Resource.Success(null))
+
+                            Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                emit(Resource.Error(UserNotAuthenticatedException()))
+
+                            else -> emit(Resource.Error(ConnectException()))
+                        }
+                    } ?: run { emit(Resource.Error(ConnectException())) }
+
+                HttpURLConnection.HTTP_UNAUTHORIZED ->
+                    emit(Resource.Error(UserNotAuthorizedException()))
+
+                else -> emit(Resource.Error(ConnectException(response.code().toString())))
+            }
+        }.catch {
+            Timber.e("updateClinicStaff() error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
+        }
 }
