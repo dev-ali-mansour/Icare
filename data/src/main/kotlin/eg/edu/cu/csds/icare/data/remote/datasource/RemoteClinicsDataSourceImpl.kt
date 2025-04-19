@@ -12,6 +12,8 @@ import eg.edu.cu.csds.icare.data.remote.serivce.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.koin.core.annotation.Single
 import timber.log.Timber
 import java.net.ConnectException
@@ -26,7 +28,17 @@ class RemoteClinicsDataSourceImpl(
     override fun fetchClinics(): Flow<Resource<List<Clinic>>> =
         flow {
             emit(Resource.Loading())
-            val response = service.fetchClinics()
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val map = HashMap<String, String>()
+            map["token"] = token
+            val response = service.fetchClinics(map)
             when (response.code()) {
                 HTTP_OK -> {
                     response.body()?.let { res ->
@@ -44,26 +56,42 @@ class RemoteClinicsDataSourceImpl(
                 }
 
                 else -> {
-                    // Todo Pass ConnectException While failing to connect to the server
-                    emit(Resource.Success(listOf()))
-//                    emit(Resource.Error(ConnectException(response.code().toString())))
+                    emit(Resource.Error(ConnectException(response.code().toString())))
                 }
             }
         }.catch {
             Timber.e("fetchClinics() error ${it.javaClass.simpleName}: ${it.message}")
-            // Todo Pass ConnectException While failing to connect to the server
-            emit(Resource.Success(listOf()))
-//            emit(Resource.Error(it))
+            emit(Resource.Error(it))
         }
 
     override fun addNewClinic(clinic: Clinic): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
-            val response = service.addNewClinic(clinic)
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.addNewClinic(clinic.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
                         when (res.statusCode) {
-                            Constants.ERROR_CODE_OK -> emit(Resource.Success(null))
+                            Constants.ERROR_CODE_OK -> {
+                                fetchClinics().collect {
+                                    when (it) {
+                                        is Resource.Unspecified<*> -> emit(Resource.Unspecified())
+                                        is Resource.Loading<*> -> emit(Resource.Loading())
+                                        is Resource.Success ->
+                                            it.data?.let { clinics ->
+                                                emit(Resource.Success(null))
+                                            }
+                                        is Resource.Error -> emit(Resource.Error(it.error))
+                                    }
+                                }
+                            }
 
                             Constants.ERROR_CODE_EXPIRED_TOKEN ->
                                 emit(Resource.Error(UserNotAuthenticatedException()))
@@ -84,7 +112,15 @@ class RemoteClinicsDataSourceImpl(
 
     override fun updateClinic(clinic: Clinic): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
-            val response = service.updateClinic(clinic)
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.updateClinic(clinic.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -111,26 +147,34 @@ class RemoteClinicsDataSourceImpl(
     override fun fetchDoctors(): Flow<Resource<List<Doctor>>> =
         flow {
             emit(Resource.Loading())
-            auth.currentUser?.let {
-                val response = service.fetchDoctors()
-                when (response.code()) {
-                    HTTP_OK -> {
-                        response.body()?.let { res ->
-                            when (res.statusCode) {
-                                Constants.ERROR_CODE_OK ->
-                                    emit(Resource.Success(res.doctors))
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val map = HashMap<String, String>()
+            map["token"] = token
+            val response = service.fetchDoctors(map)
+            when (response.code()) {
+                HTTP_OK -> {
+                    response.body()?.let { res ->
+                        when (res.statusCode) {
+                            Constants.ERROR_CODE_OK ->
+                                emit(Resource.Success(res.doctors))
 
-                                Constants.ERROR_CODE_SERVER_ERROR ->
-                                    emit(Resource.Error(ConnectException()))
-                            }
+                            Constants.ERROR_CODE_SERVER_ERROR ->
+                                emit(Resource.Error(ConnectException()))
                         }
                     }
+                }
 
-                    else -> {
-                        // Todo Pass ConnectException While failing to connect to the server
-                        emit(Resource.Success(listOf()))
+                else -> {
+                    // Todo Pass ConnectException While failing to connect to the server
+                    emit(Resource.Success(listOf()))
 //                    emit(Resource.Error(ConnectException(response.code().toString())))
-                    }
                 }
             }
         }.catch {
@@ -142,7 +186,15 @@ class RemoteClinicsDataSourceImpl(
 
     override fun addNewDoctor(doctor: Doctor): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
-            val response = service.addNewDoctor(doctor)
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.addNewDoctor(doctor.copy(token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -168,7 +220,15 @@ class RemoteClinicsDataSourceImpl(
 
     override fun updateDoctor(doctor: Doctor): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
-            val response = service.updateDoctor(doctor)
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.updateDoctor(doctor.copy(token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -197,8 +257,17 @@ class RemoteClinicsDataSourceImpl(
             runCatching {
                 emit(Resource.Loading())
                 auth.currentUser?.let {
+                    val token =
+                        runBlocking {
+                            auth.currentUser
+                                ?.getIdToken(false)
+                                ?.await()
+                                ?.token
+                                .toString()
+                        }
                     val map = HashMap<String, String>()
                     map["clinicId"] = clinicId.toString()
+                    map["token"] = token
                     val response = service.listClinicStaff(map)
                     when (response.code()) {
                         HTTP_OK -> {
@@ -224,7 +293,15 @@ class RemoteClinicsDataSourceImpl(
 
     override fun addNewClinicStaff(staff: ClinicStaff): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
-            val response = service.addNewClinicStaff(staff)
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.addNewClinicStaff(staff.copy(token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -250,7 +327,15 @@ class RemoteClinicsDataSourceImpl(
 
     override fun updateClinicStaff(staff: ClinicStaff): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
-            val response = service.updateClinicStaff(staff)
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.updateClinicStaff(staff.copy(token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->

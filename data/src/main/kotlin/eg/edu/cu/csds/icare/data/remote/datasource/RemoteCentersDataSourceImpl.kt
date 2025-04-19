@@ -11,6 +11,8 @@ import eg.edu.cu.csds.icare.data.remote.serivce.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.koin.core.annotation.Single
 import timber.log.Timber
 import java.net.ConnectException
@@ -26,7 +28,17 @@ class RemoteCentersDataSourceImpl(
         flow {
             emit(Resource.Loading())
             auth.currentUser?.let {
-                val response = service.fetchCenters()
+                val token =
+                    runBlocking {
+                        auth.currentUser
+                            ?.getIdToken(false)
+                            ?.await()
+                            ?.token
+                            .toString()
+                    }
+                val map = HashMap<String, String>()
+                map["token"] = token
+                val response = service.fetchCenters(map)
                 when (response.code()) {
                     HTTP_OK -> {
                         response.body()?.let { res ->
