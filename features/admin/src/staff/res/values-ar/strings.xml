@@ -33,4 +33,7 @@
     <string name="edit_center" >تعديل بيانات مركز</string>
     <string name="new_center_staff" >إضافة مسئول مركز</string>
     <string name="edit_center_staff" >تعديل بيانات مسئول مركز</string>
+    <string name="speciality" >التخصص</string>
+    <string name="from_time" >من الساعة</string>
+    <string name="to_time" >حتى الساعة</string>
 </resources>
