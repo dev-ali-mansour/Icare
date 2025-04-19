@@ -6,6 +6,8 @@ import eg.edu.cu.csds.icare.admin.screen.AdminScreen
 import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
 import eg.edu.cu.csds.icare.admin.screen.center.EditCenterScreen
 import eg.edu.cu.csds.icare.admin.screen.center.NewCenterScreen
+import eg.edu.cu.csds.icare.admin.screen.center.staff.EditCenterStaffScreen
+import eg.edu.cu.csds.icare.admin.screen.center.staff.NewCenterStaffScreen
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.admin.screen.clinic.EditClinicScreen
 import eg.edu.cu.csds.icare.admin.screen.clinic.NewClinicScreen
@@ -247,8 +249,22 @@ fun NavGraphBuilder.adminRoute(
     }
 
     composable<Screen.NewCenterStaff> {
+        NewCenterStaffScreen(
+            centerViewModel = centerViewModel,
+            onNavigationIconClicked = { onNavigationIconClicked() },
+            onProceedButtonClicked = { centerViewModel.addNewStaff() },
+            onSuccess = { onNavigationIconClicked },
+            onError = { onError(it) },
+        )
     }
 
     composable<Screen.EditCenterStaff> {
+        EditCenterStaffScreen(
+            centerViewModel = centerViewModel,
+            onNavigationIconClicked = { onNavigationIconClicked() },
+            onProceedButtonClicked = { centerViewModel.updateStaff() },
+            onSuccess = { onNavigationIconClicked },
+            onError = { onError(it) },
+        )
     }
 }
