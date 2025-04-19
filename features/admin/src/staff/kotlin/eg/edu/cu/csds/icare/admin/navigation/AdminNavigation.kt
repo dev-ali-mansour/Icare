@@ -14,6 +14,8 @@ import eg.edu.cu.csds.icare.admin.screen.clinic.staff.NewClinicStaffScreen
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.EditPharmacyScreen
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.NewPharmacyScreen
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.pharmacist.EditPharmacistScreen
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.pharmacist.NewPharmacistScreen
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 
@@ -209,9 +211,23 @@ fun NavGraphBuilder.adminRoute(
     }
 
     composable<Screen.NewPharmacist> {
+        NewPharmacistScreen(
+            pharmacyViewModel = pharmacyViewModel,
+            onNavigationIconClicked = { onNavigationIconClicked() },
+            onProceedButtonClicked = { pharmacyViewModel.addNewPharmacist() },
+            onSuccess = { onNavigationIconClicked },
+            onError = { onError(it) },
+        )
     }
 
     composable<Screen.EditPharmacist> {
+        EditPharmacistScreen(
+            pharmacyViewModel = pharmacyViewModel,
+            onNavigationIconClicked = { onNavigationIconClicked() },
+            onProceedButtonClicked = { pharmacyViewModel.updatePharmacist() },
+            onSuccess = { onNavigationIconClicked },
+            onError = { onError(it) },
+        )
     }
 
     composable<Screen.NewCenterStaff> {
