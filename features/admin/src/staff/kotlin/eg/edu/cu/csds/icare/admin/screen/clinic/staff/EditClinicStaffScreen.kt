@@ -45,7 +45,7 @@ internal fun EditClinicStaffScreen(
     val actionResource by clinicViewModel.actionResFlow
         .collectAsStateWithLifecycle(initialValue = Resource.Unspecified())
     val clinicsResource by clinicViewModel.clinicsResFlow.collectAsStateWithLifecycle()
-    var selectedDoctor by clinicViewModel.selectedDoctorState
+    var selectedStaff by clinicViewModel.selectedClinicStaffState
     var clinicsExpanded by clinicViewModel.clinicsExpandedState
 
     Scaffold(
@@ -96,7 +96,7 @@ internal fun EditClinicStaffScreen(
                             .height(XS_PADDING),
                 )
 
-                selectedDoctor?.let { doctor ->
+                selectedStaff?.let { staff ->
                     ClinicStaffDetailsContent(
                         modifier =
                             Modifier.constrainAs(content) {
@@ -107,26 +107,26 @@ internal fun EditClinicStaffScreen(
                                 width = Dimension.fillToConstraints
                                 height = Dimension.fillToConstraints
                             },
-                        firstName = doctor.firstName,
-                        lastName = doctor.lastName,
-                        clinicId = doctor.clinicId,
-                        email = doctor.email,
-                        phone = doctor.phone,
-                        profilePicture = doctor.profilePicture,
+                        firstName = staff.firstName,
+                        lastName = staff.lastName,
+                        clinicId = staff.clinicId,
+                        email = staff.email,
+                        phone = staff.phone,
+                        profilePicture = staff.profilePicture,
                         clinicsResource = clinicsResource,
                         actionResource = actionResource,
                         clinicsExpanded = clinicsExpanded,
-                        onFirstNameChanged = { selectedDoctor = doctor.copy(firstName = it) },
-                        onLastNameChanged = { selectedDoctor = doctor.copy(lastName = it) },
+                        onFirstNameChanged = { selectedStaff = staff.copy(firstName = it) },
+                        onLastNameChanged = { selectedStaff = staff.copy(lastName = it) },
                         onClinicsExpandedChange = { clinicsExpanded = !clinicsExpanded },
                         onClinicsDismissRequest = { clinicsExpanded = false },
                         onClinicClicked = {
-                            selectedDoctor = doctor.copy(clinicId = it)
+                            selectedStaff = staff.copy(clinicId = it)
                             clinicsExpanded = false
                         },
-                        onEmailChanged = { selectedDoctor = doctor.copy(email = it) },
-                        onPhoneChanged = { selectedDoctor = doctor.copy(phone = it) },
-                        onProfilePictureChanged = { selectedDoctor = doctor.copy(profilePicture = it) },
+                        onEmailChanged = { selectedStaff = staff.copy(email = it) },
+                        onPhoneChanged = { selectedStaff = staff.copy(phone = it) },
+                        onProfilePictureChanged = { selectedStaff = staff.copy(profilePicture = it) },
                         onProceedButtonClicked = { onProceedButtonClicked() },
                         onSuccess = { onSuccess },
                         onError = { onError(it) },
