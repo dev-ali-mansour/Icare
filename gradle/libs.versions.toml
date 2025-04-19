@@ -45,6 +45,7 @@ googleServices = "4.4.2"
 crashlyticsPlugin = "3.0.3"
 
 
+
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "appcompat" }
@@ -111,6 +112,7 @@ room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+
 
 [bundles]
 appcompat = ["appcompat", "appcompat-resources"]
