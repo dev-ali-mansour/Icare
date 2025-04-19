@@ -32,7 +32,7 @@ import eg.edu.cu.csds.icare.admin.screen.center.staff.CenterStaffsContent
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicsContent
 import eg.edu.cu.csds.icare.admin.screen.clinic.doctor.DoctorsContent
 import eg.edu.cu.csds.icare.admin.screen.clinic.staff.ClinicStaffsContent
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacistContent
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.pharmacist.PharmacistContent
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyContent
 import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
