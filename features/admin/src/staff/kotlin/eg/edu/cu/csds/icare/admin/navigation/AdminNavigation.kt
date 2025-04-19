@@ -4,6 +4,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import eg.edu.cu.csds.icare.admin.screen.AdminScreen
 import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
+import eg.edu.cu.csds.icare.admin.screen.center.EditCenterScreen
+import eg.edu.cu.csds.icare.admin.screen.center.NewCenterScreen
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.admin.screen.clinic.EditClinicScreen
 import eg.edu.cu.csds.icare.admin.screen.clinic.NewClinicScreen
@@ -146,9 +148,23 @@ fun NavGraphBuilder.adminRoute(
     }
 
     composable<Screen.NewCenter> {
+        NewCenterScreen(
+            centerViewModel = centerViewModel,
+            onNavigationIconClicked = { onNavigationIconClicked() },
+            onProceedButtonClicked = { centerViewModel.addNewCenter() },
+            onSuccess = { onNavigationIconClicked },
+            onError = { onError(it) },
+        )
     }
 
     composable<Screen.EditCenter> {
+        EditCenterScreen(
+            centerViewModel = centerViewModel,
+            onNavigationIconClicked = { onNavigationIconClicked() },
+            onProceedButtonClicked = { centerViewModel.updateCenter() },
+            onSuccess = { onNavigationIconClicked },
+            onError = { onError(it) },
+        )
     }
 
     composable<Screen.NewPharmacy> {
