@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Patterns
+import eg.edu.cu.csds.icare.core.domain.model.TimeSlot
 import java.math.RoundingMode
 import java.security.MessageDigest
 import java.text.DecimalFormat
@@ -44,7 +45,9 @@ fun Long.toFormattedString(): String = DecimalFormat("#,###", DecimalFormatSymbo
 
 fun Long.getFormattedDate(pattern: String = "dd/MM/yyyy"): String = getFormattedDateTime(pattern)
 
-fun Long.getFormattedDateTime(pattern: String = "dd/MM/yyyy HH:mm a"): String {
+fun Long.getFormattedTime(pattern: String = "hh:mm a"): String = getFormattedDateTime(pattern)
+
+fun Long.getFormattedDateTime(pattern: String = "dd/MM/yyyy hh:mm a"): String {
     val calender = Calendar.getInstance()
     calender.timeInMillis = this
     val dateFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
@@ -56,3 +59,20 @@ fun Double.toFormattedString(): String =
         .apply {
             roundingMode = RoundingMode.CEILING
         }.format(this)
+
+fun TimeSlot.divide(slotDurationMinutes: Short): List<TimeSlot> {
+    require(slotDurationMinutes > 0) { "lengthMinutes was $slotDurationMinutes. Must specify positive amount of minutes." }
+
+    val lengthMillis = slotDurationMinutes * Constants.MINUTES_TO_MILLIS
+    val timeSlots = mutableListOf<TimeSlot>()
+    var nextStartTime = startTime
+
+    while (nextStartTime < endTime) {
+        val nextEndTime = nextStartTime + lengthMillis
+        val slotEndTime = if (nextEndTime > endTime) endTime else nextEndTime
+        timeSlots.add(TimeSlot(nextStartTime, slotEndTime))
+        nextStartTime = nextEndTime
+    }
+
+    return timeSlots
+}

@@ -117,4 +117,21 @@ Objectives:\n
     <string name="search_here">Search here</string>
     <string name="Successful_operation">Successful Operation</string>
     <string name="or">Or</string>
+
+    <string name="sections_admin">Sections Admin</string>
+    <string name="clinics">Clinics</string>
+    <string name="pharmacies">Pharmacies</string>
+    <string name="centers">Centers</string>
+    <string name="doctors">Doctors</string>
+    <string name="clinic_staffs">Clinic Staffs</string>
+    <string name="center_staffs">Center Staffs</string>
+    <string name="pharmacists">Pharmacists</string>
+    <string name="no_clinics_data">No clinics data</string>
+    <string name="no_doctors_data">No Doctors data</string>
+    <string name="no_clinic_staff_data">No clinic staff data</string>
+    <string name="no_pharmacies_data">No pharmacies data</string>
+    <string name="no_pharmacists_data">No pharmacists data</string>
+    <string name="no_centers_data">No centers data</string>
+    <string name="no_center_staff_data">No center staff data</string>
+    <string name="add">Add</string>
 </resources>

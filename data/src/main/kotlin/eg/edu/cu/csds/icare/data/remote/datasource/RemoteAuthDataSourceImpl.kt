@@ -21,6 +21,7 @@ import eg.edu.cu.csds.icare.data.remote.serivce.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.koin.core.annotation.Single
 import timber.log.Timber
@@ -35,59 +36,70 @@ class RemoteAuthDataSourceImpl(
 ) : RemoteAuthDataSource {
     override fun getUserInfo(): Flow<Resource<User>> =
         flow {
-            runCatching {
-                emit(Resource.Loading())
-                auth.currentUser?.let { user ->
-                    val response = service.getLoginInfo()
-                    when (response.code()) {
-                        HTTP_OK -> {
-                            response.body()?.let { res ->
-                                when (res.statusCode) {
-                                    Constants.ERROR_CODE_OK ->
-                                        res.role?.let { role ->
-                                            val employee =
-                                                User(
-                                                    roleId = role.id,
-                                                    job = res.job,
-                                                    permissions = role.permissions,
-                                                )
-                                            emit(Resource.Success(data = employee))
-                                        } ?: emit(Resource.Error(UserNotAuthorizedException()))
+            emit(Resource.Loading())
+            auth.currentUser?.let { user ->
+                val token =
+                    runBlocking {
+                        auth.currentUser
+                            ?.getIdToken(false)
+                            ?.await()
+                            ?.token
+                            .toString()
+                    }
+                val map = HashMap<String, String>()
+                map["token"] = token
+                val response = service.getLoginInfo(map)
+                when (response.code()) {
+                    HTTP_OK -> {
+                        response.body()?.let { res ->
+                            when (res.statusCode) {
+                                Constants.ERROR_CODE_OK ->
+                                    res.role?.let { role ->
+                                        val employee =
+                                            User(
+                                                roleId = role.id,
+                                                job = res.job,
+                                                permissions = role.permissions,
+                                            )
+                                        emit(Resource.Success(data = employee))
+                                    } ?: emit(Resource.Error(UserNotAuthorizedException()))
 
-                                    Constants.ERROR_CODE_USER_COLLISION -> {
-                                        user.delete()
-                                        emit(Resource.Error(UserNotAuthorizedException()))
-                                    }
-
-                                    Constants.ERROR_CODE_SERVER_ERROR ->
-                                        emit(Resource.Error(ConnectException()))
-
-                                    else -> emit(Resource.Error(UserNotAuthorizedException()))
+                                Constants.ERROR_CODE_USER_COLLISION -> {
+                                    user.delete()
+                                    emit(Resource.Error(UserNotAuthorizedException()))
                                 }
+
+                                Constants.ERROR_CODE_SERVER_ERROR ->
+                                    emit(Resource.Error(ConnectException()))
+
+                                else -> emit(Resource.Error(UserNotAuthorizedException()))
                             }
                         }
-
-                        else -> emit(Resource.Error(UserNotAuthorizedException()))
                     }
-                } ?: run { emit(Resource.Error(UserNotAuthenticatedException())) }
-            }.onFailure {
-                Timber.e("getUserInfo() Error ${it.javaClass.simpleName}: ${it.message}")
-                emit(Resource.Error(it))
-            }
+
+                    else -> emit(Resource.Error(UserNotAuthorizedException()))
+                }
+            } ?: run { emit(Resource.Error(UserNotAuthenticatedException())) }
+        }.catch {
+            Timber.e("getUserInfo() Error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
         }
 
     override fun register(
         firstName: String,
         lastName: String,
         email: String,
-        password: String,
         birthDate: String,
         gender: String,
+        nationalId: String,
+        phone: String,
+        address: String,
+        weight: Double,
         chronicDiseases: String,
         currentMedications: String,
         allergies: String,
         pastSurgeries: String,
-        weight: Double,
+        password: String,
     ): Flow<Resource<Nothing?>> =
         flow {
             emit(Resource.Loading())
@@ -111,11 +123,14 @@ class RemoteAuthDataSourceImpl(
                     email,
                     birthDate,
                     gender,
+                    nationalId,
+                    phone,
+                    address,
+                    weight,
                     chronicDiseases,
                     currentMedications,
                     allergies,
                     pastSurgeries,
-                    weight,
                     token,
                 ).collect { resource ->
                     if (resource is Resource.Error) {
@@ -234,11 +249,14 @@ class RemoteAuthDataSourceImpl(
         email: String,
         birthDate: String,
         gender: String,
+        nationalId: String,
+        phone: String,
+        address: String,
+        weight: Double,
         chronicDiseases: String,
         currentMedications: String,
         allergies: String,
         pastSurgeries: String,
-        weight: Double,
         token: String,
     ): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
@@ -248,6 +266,9 @@ class RemoteAuthDataSourceImpl(
             map["email"] = email
             map["birthDate"] = birthDate
             map["gender"] = gender.toString()
+            map["nationalId"] = nationalId.toString()
+            map["phone"] = phone
+            map["address"] = address
             map["chronicDiseases"] = chronicDiseases
             map["currentMedications"] = currentMedications
             map["allergies"] = allergies

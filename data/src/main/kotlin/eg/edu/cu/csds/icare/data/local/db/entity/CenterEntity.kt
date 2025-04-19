@@ -1,5 +1,6 @@
 package eg.edu.cu.csds.icare.data.local.db.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
@@ -8,31 +9,26 @@ import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 data class CenterEntity(
     @PrimaryKey val id: Long,
     val name: String,
+    @ColumnInfo(defaultValue = "1")
+    val type: Short,
     val phone: String,
     val address: String,
-    val longitude: Double,
-    val latitude: Double,
-    val contractStatusId: Short,
 )
 
 fun CenterEntity.toModel() =
     LabImagingCenter(
         id = id,
         name = name,
+        type = type,
         phone = phone,
         address = address,
-        longitude = longitude,
-        latitude = latitude,
-        contractStatusId = contractStatusId,
     )
 
 fun LabImagingCenter.toEntity() =
     CenterEntity(
         id = id,
         name = name,
+        type = type,
         phone = phone,
         address = address,
-        longitude = longitude,
-        latitude = latitude,
-        contractStatusId = contractStatusId,
     )

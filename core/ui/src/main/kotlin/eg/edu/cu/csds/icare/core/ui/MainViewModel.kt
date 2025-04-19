@@ -1,11 +1,17 @@
 package eg.edu.cu.csds.icare.core.ui
 
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfo
+import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCenters
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinics
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoarding
+import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.ListPharmacies
+import eg.edu.cu.csds.icare.core.ui.common.SectionCategory
+import eg.edu.cu.csds.icare.core.ui.common.SectionItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,9 +22,12 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class MainViewModel(
-    private val dispatcher: CoroutineDispatcher,
+    dispatcher: CoroutineDispatcher,
     private val readOnBoarding: ReadOnBoarding,
     private val getUserInfo: GetUserInfo,
+    private val listClinics: ListClinics,
+    private val listPharmacies: ListPharmacies,
+    private val listCenters: ListCenters,
 ) : ViewModel() {
     private val _onBoardingCompleted: MutableStateFlow<Resource<Boolean>> =
         MutableStateFlow(Resource.Unspecified())
@@ -29,27 +38,123 @@ class MainViewModel(
     private val _resultFlow = MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
     val resultFlow: StateFlow<Resource<Nothing?>> = _resultFlow
 
+    var selectedCategoryTabIndex = mutableIntStateOf(0)
+    var selectedSectionTabIndex = mutableIntStateOf(0)
+
+    val adminCategories =
+        listOf(
+            SectionCategory(
+                titleResId = R.string.clinics,
+                sections =
+                    listOf(
+                        SectionItem(
+                            iconResId = R.drawable.ic_clinic,
+                            titleResId = R.string.clinics,
+                        ),
+                        SectionItem(
+                            iconResId = R.drawable.ic_doctor,
+                            titleResId = R.string.doctors,
+                        ),
+                        SectionItem(
+                            iconResId = R.drawable.ic_staff,
+                            titleResId = R.string.clinic_staffs,
+                        ),
+                    ),
+            ),
+            SectionCategory(
+                titleResId = R.string.pharmacies,
+                sections =
+                    listOf(
+                        SectionItem(
+                            iconResId = R.drawable.ic_pharmacy,
+                            titleResId = R.string.pharmacies,
+                        ),
+                        SectionItem(
+                            iconResId = R.drawable.ic_pharmacist,
+                            titleResId = R.string.pharmacists,
+                        ),
+                    ),
+            ),
+            SectionCategory(
+                titleResId = R.string.centers,
+                sections =
+                    listOf(
+                        SectionItem(
+                            iconResId = R.drawable.ic_lab,
+                            titleResId = R.string.centers,
+                        ),
+                        SectionItem(
+                            iconResId = R.drawable.ic_staff2,
+                            titleResId = R.string.center_staffs,
+                        ),
+                    ),
+            ),
+        )
+
     init {
         viewModelScope.launch(dispatcher) {
-            getUserInfo(forceUpdate = false).distinctUntilChanged().collect {
-                _currentUserFlow.value = it
-            }
-            readOnBoarding().collect { res ->
-                _onBoardingCompleted.value = res
-                if (res is Resource.Success && res.data == true) {
-                    viewModelScope.launch(dispatcher) {
-                        runCatching {
-                            // Todo replace this delay with actual call of fetching use cases
-                            _resultFlow.value = Resource.Loading()
-                            delay(timeMillis = 1000)
-                            _resultFlow.value = Resource.Success(null)
-                            /*fetchClinics().distinctUntilChanged().collect {
-                                _resultFlow.value = it
-                            }*/
-                        }.onFailure { _resultFlow.value = Resource.Error(it) }
+            runCatching {
+                getUserInfo(forceUpdate = false).distinctUntilChanged().collect {
+                    _currentUserFlow.value = it
+                }
+                readOnBoarding().collect { res ->
+                    _onBoardingCompleted.value = res
+
+                    if (res is Resource.Success) {
+
+                        if (_resultFlow.value !is Resource.Unspecified) {
+                            _resultFlow.value = Resource.Unspecified()
+                            delay(timeMillis = 100)
+                        }
+                        listClinics(forceUpdate = true).collect {
+                            when (it) {
+                                is Resource.Unspecified<*> ->
+                                    _resultFlow.value = Resource.Unspecified()
+
+                                is Resource.Loading<*> ->
+                                    _resultFlow.value = Resource.Loading()
+
+                                is Resource.Success ->
+                                    listPharmacies(forceUpdate = true).collect {
+                                        when (it) {
+                                            is Resource.Unspecified<*> ->
+                                                _resultFlow.value = Resource.Unspecified()
+
+                                            is Resource.Loading<*> ->
+                                                _resultFlow.value = Resource.Loading()
+
+                                            is Resource.Success ->
+                                                listCenters(forceUpdate = true).collect {
+                                                    when (it) {
+                                                        is Resource.Unspecified<*> ->
+                                                            _resultFlow.value =
+                                                                Resource.Unspecified()
+
+                                                        is Resource.Loading<*> ->
+                                                            _resultFlow.value = Resource.Loading()
+
+                                                        is Resource.Success ->
+                                                            _resultFlow.value =
+                                                                Resource.Success(null)
+
+                                                        is Resource.Error<*> ->
+                                                            _resultFlow.value =
+                                                                Resource.Error(it.error)
+                                                    }
+                                                }
+
+                                            is Resource.Error<*> ->
+                                                _resultFlow.value = Resource.Error(it.error)
+                                        }
+                                    }
+
+                                is Resource.Error<*> ->
+                                    _resultFlow.value = Resource.Error(it.error)
+                            }
+                        }
                     }
                 }
-            }
+            }.onFailure { _resultFlow.value = Resource.Error(it) }
         }
     }
 }

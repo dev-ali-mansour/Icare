@@ -10,9 +10,6 @@ data class PharmacyEntity(
     val name: String,
     val phone: String,
     val address: String,
-    val longitude: Double,
-    val latitude: Double,
-    val contractStatusId: Short,
 )
 
 fun PharmacyEntity.toModel() =
@@ -21,9 +18,6 @@ fun PharmacyEntity.toModel() =
         name = name,
         phone = phone,
         address = address,
-        longitude = longitude,
-        latitude = latitude,
-        contractStatusId = contractStatusId,
     )
 
 fun Pharmacy.toEntity() =
@@ -32,7 +26,4 @@ fun Pharmacy.toEntity() =
         name = name,
         phone = phone,
         address = address,
-        longitude = longitude,
-        latitude = latitude,
-        contractStatusId = contractStatusId,
     )

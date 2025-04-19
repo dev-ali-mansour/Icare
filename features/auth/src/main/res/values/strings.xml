@@ -46,5 +46,6 @@
     <string name="current_medications_error">Please enter current medications or type \"None\" if not exist.</string>
     <string name="allergies_error">Please enter your allergies or type \"None\" if not exist.</string>
     <string name="past_surgeries_error">Please enter your past surgeries or type \"None\" if not exist.</string>
+    <string name="address">Address</string>
 
 </resources>

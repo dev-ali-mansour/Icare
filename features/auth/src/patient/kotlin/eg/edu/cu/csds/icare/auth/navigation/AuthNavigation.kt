@@ -31,19 +31,12 @@ fun NavGraphBuilder.authenticationRoute(
             authViewModel = authViewModel,
         )
     }
+
     composable<Screen.PasswordRecovery> {
         PasswordRecoveryScreen(
             onLoginClicked = { onLoginClicked() },
             onRecoveryCompleted = { onRecoveryCompleted() },
             onError = { onError(it) },
-            authViewModel = authViewModel,
-        )
-    }
-    composable<Screen.Register> {
-        RegistrationScreen(
-            firebaseAuth = firebaseAuth,
-            onLoginClicked = { onLoginClicked() },
-            onRegisterCompleted = { onRegisterCompleted() },
             authViewModel = authViewModel,
         )
     }
@@ -54,6 +47,15 @@ fun NavGraphBuilder.authenticationRoute(
             mainViewModel = mainViewModel,
             authViewModel = authViewModel,
             onError = { onError(it) },
+        )
+    }
+
+    composable<Screen.Register> {
+        RegistrationScreen(
+            firebaseAuth = firebaseAuth,
+            onLoginClicked = { onLoginClicked() },
+            onRegisterCompleted = { onRegisterCompleted() },
+            authViewModel = authViewModel,
         )
     }
 }
