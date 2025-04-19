@@ -52,9 +52,45 @@ class PharmaciesRepositoryImpl(
             }
         }
 
-    override fun addNewPharmacy(pharmacy: Pharmacy): Flow<Resource<Nothing?>> = remotePharmaciesDataSource.addNewPharmacy(pharmacy)
+    override fun addNewPharmacy(pharmacy: Pharmacy): Flow<Resource<Nothing?>> =
+        flow {
+            emit(Resource.Loading())
+            remotePharmaciesDataSource.addNewPharmacy(pharmacy).collect { res ->
+                when (res) {
+                    is Resource.Unspecified<*> -> emit(Resource.Unspecified())
+                    is Resource.Loading<*> -> emit(Resource.Loading())
+                    is Resource.Success ->
+                        listPharmacies(true).collect { refreshResult ->
+                            when (refreshResult) {
+                                is Resource.Success -> emit(Resource.Success(null))
+                                is Resource.Error -> emit(Resource.Error(refreshResult.error))
+                                else -> {}
+                            }
+                        }
+                    is Resource.Error -> emit(Resource.Error(res.error))
+                }
+            }
+        }
 
-    override fun updatePharmacy(pharmacy: Pharmacy): Flow<Resource<Nothing?>> = remotePharmaciesDataSource.updatePharmacy(pharmacy)
+    override fun updatePharmacy(pharmacy: Pharmacy): Flow<Resource<Nothing?>> =
+        flow {
+            emit(Resource.Loading())
+            remotePharmaciesDataSource.updatePharmacy(pharmacy).collect { res ->
+                when (res) {
+                    is Resource.Unspecified<*> -> emit(Resource.Unspecified())
+                    is Resource.Loading<*> -> emit(Resource.Loading())
+                    is Resource.Success ->
+                        listPharmacies(true).collect { refreshResult ->
+                            when (refreshResult) {
+                                is Resource.Success -> emit(Resource.Success(null))
+                                is Resource.Error -> emit(Resource.Error(refreshResult.error))
+                                else -> {}
+                            }
+                        }
+                    is Resource.Error -> emit(Resource.Error(res.error))
+                }
+            }
+        }
 
     override fun listPharmacists(pharmacyId: Long): Flow<Resource<List<Pharmacist>>> =
         remotePharmaciesDataSource.listPharmacists(pharmacyId)
