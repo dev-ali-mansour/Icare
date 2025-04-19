@@ -20,6 +20,8 @@
     <string name="open" >Open</string>
     <string name="closed" >Closed</string>
     <string name="clinic" >Clinic</string>
+    <string name="pharmacy" >Pharmacy</string>
+    <string name="center" >Center</string>
     <string name="new_clinic" >New Clinic</string>
     <string name="edit_clinic" >Edit Clinic</string>
     <string name="new_doctor" >New Doctor</string>
