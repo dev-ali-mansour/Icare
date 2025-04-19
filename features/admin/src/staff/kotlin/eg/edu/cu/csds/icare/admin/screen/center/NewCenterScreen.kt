@@ -123,7 +123,7 @@ internal fun NewCenterScreen(
                     onPhoneChanged = { phone = it },
                     onAddressChanged = { address = it },
                     onProceedButtonClicked = { onProceedButtonClicked() },
-                    onSuccess = { onSuccess },
+                    onSuccess = { onSuccess() },
                     onError = { onError(it) },
                 )
             }

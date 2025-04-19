@@ -132,7 +132,7 @@ internal fun NewCenterStaffScreen(
                     onPhoneChanged = { phone = it },
                     onProfilePictureChanged = { profilePicture = it },
                     onProceedButtonClicked = { onProceedButtonClicked() },
-                    onSuccess = { onSuccess },
+                    onSuccess = { onSuccess() },
                     onError = { onError(it) },
                 )
             }

@@ -112,7 +112,7 @@ internal fun EditPharmacyScreen(
                         onPhoneChanged = { selectedPharmacy = pharmacy.copy(phone = it) },
                         onAddressChanged = { selectedPharmacy = pharmacy.copy(address = it) },
                         onProceedButtonClicked = { onProceedButtonClicked() },
-                        onSuccess = { onSuccess },
+                        onSuccess = { onSuccess() },
                         onError = { onError(it) },
                     )
                 }

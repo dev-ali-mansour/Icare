@@ -134,7 +134,7 @@ internal fun EditDoctorScreen(
                         onToTimeChanged = { selectedDoctor = doctor.copy(toTime = it) },
                         onProfilePictureChanged = { selectedDoctor = doctor.copy(profilePicture = it) },
                         onProceedButtonClicked = { onProceedButtonClicked() },
-                        onSuccess = { onSuccess },
+                        onSuccess = { onSuccess() },
                         onError = { onError(it) },
                     )
                 }
