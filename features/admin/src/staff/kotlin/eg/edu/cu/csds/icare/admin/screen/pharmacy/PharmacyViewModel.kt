@@ -58,6 +58,7 @@ class PharmacyViewModel(
     var pharmacyIdState = mutableLongStateOf(0)
     var emailState = mutableStateOf("")
     var profilePictureState = mutableStateOf("")
+    var pharmaciesExpandedState = mutableStateOf(false)
 
     fun addNewPharmacy() {
         viewModelScope.launch(dispatcher) {
