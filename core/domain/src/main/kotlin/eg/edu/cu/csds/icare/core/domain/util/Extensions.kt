@@ -45,9 +45,9 @@ fun Long.toFormattedString(): String = DecimalFormat("#,###", DecimalFormatSymbo
 
 fun Long.getFormattedDate(pattern: String = "dd/MM/yyyy"): String = getFormattedDateTime(pattern)
 
-fun Long.getFormattedTime(pattern: String = "HH:mm a"): String = getFormattedDateTime(pattern)
+fun Long.getFormattedTime(pattern: String = "hh:mm a"): String = getFormattedDateTime(pattern)
 
-fun Long.getFormattedDateTime(pattern: String = "dd/MM/yyyy HH:mm a"): String {
+fun Long.getFormattedDateTime(pattern: String = "dd/MM/yyyy hh:mm a"): String {
     val calender = Calendar.getInstance()
     calender.timeInMillis = this
     val dateFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
