@@ -292,7 +292,6 @@ internal fun HomeContentPreview() {
                         permissions =
                             listOf(
                                 Permission.CreatePrescriptionPermission.code,
-                                Permission.ViewMedicalHistoryPermission.code,
                             ),
                     ),
                 ),

@@ -11,8 +11,6 @@ data class ClinicEntity(
     val type: String,
     val phone: String,
     val address: String,
-    val longitude: Double,
-    val latitude: Double,
     val isOpen: Boolean,
 )
 
@@ -23,8 +21,6 @@ fun ClinicEntity.toModel() =
         type = type,
         phone = phone,
         address = address,
-        longitude = longitude,
-        latitude = latitude,
         isOpen = isOpen,
     )
 
@@ -35,7 +31,5 @@ fun Clinic.toEntity() =
         type = type,
         phone = phone,
         address = address,
-        longitude = longitude,
-        latitude = latitude,
         isOpen = isOpen,
     )

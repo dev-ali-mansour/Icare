@@ -44,16 +44,10 @@ sealed class Screen {
     data object Admin : Screen()
 
     @Serializable
-    data object Clinics : Screen()
-
-    @Serializable
     data object NewClinic : Screen()
 
     @Serializable
     data object EditClinic : Screen()
-
-    @Serializable
-    data object Pharmacies : Screen()
 
     @Serializable
     data object NewPharmacy : Screen()
@@ -62,16 +56,10 @@ sealed class Screen {
     data object EditPharmacy : Screen()
 
     @Serializable
-    data object Centers : Screen()
-
-    @Serializable
     data object NewCenter : Screen()
 
     @Serializable
     data object EditCenter : Screen()
-
-    @Serializable
-    data object Doctors : Screen()
 
     @Serializable
     data object NewDoctor : Screen()
@@ -80,25 +68,16 @@ sealed class Screen {
     data object EditDoctor : Screen()
 
     @Serializable
-    data object ClinicStaffs : Screen()
-
-    @Serializable
     data object NewClinicStaff : Screen()
 
     @Serializable
     data object EditClinicStaff : Screen()
 
     @Serializable
-    data object Pharmacists : Screen()
-
-    @Serializable
     data object NewPharmacist : Screen()
 
     @Serializable
     data object EditPharmacist : Screen()
-
-    @Serializable
-    data object CenterStaffs : Screen()
 
     @Serializable
     data object NewCenterStaff : Screen()

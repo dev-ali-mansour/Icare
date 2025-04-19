@@ -5,8 +5,6 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import eg.edu.cu.csds.icare.core.domain.util.hash
 import eg.edu.cu.csds.icare.data.BuildConfig
 import eg.edu.cu.csds.icare.data.remote.serivce.ApiService
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.tasks.await
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -30,19 +28,19 @@ class NetworkModule {
     @Single
     fun provideAuthInterceptor(auth: FirebaseAuth): Interceptor =
         Interceptor { chain ->
-            val token =
+            /*val token =
                 runBlocking {
                     auth.currentUser
                         ?.getIdToken(false)
                         ?.await()
                         ?.token
                         .toString()
-                }
+                }*/
             val request =
                 chain
                     .request()
                     .newBuilder()
-                    .addHeader("Authorization", "Bearer $token")
+//                    .addHeader("Authorization", "Bearer $token")
                     .addHeader("Content-Type", "application/json")
                     .addHeader("Signature", "${BuildConfig.FLAVOR}/${auth.currentUser?.uid}".hash())
                     .build()
@@ -60,8 +58,8 @@ class NetworkModule {
         return OkHttpClient
             .Builder()
 //            .certificatePinner(certificatePinner)
-            .readTimeout(timeout = 5, TimeUnit.MINUTES)
-            .connectTimeout(timeout = 5, TimeUnit.MINUTES)
+            .readTimeout(timeout = 1, TimeUnit.MINUTES)
+            .connectTimeout(timeout = 1, TimeUnit.MINUTES)
             .addInterceptor(authInterceptor)
             .addInterceptor(
                 interceptor =

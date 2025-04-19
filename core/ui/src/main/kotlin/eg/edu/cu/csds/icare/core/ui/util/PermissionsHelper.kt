@@ -8,11 +8,11 @@ fun hasPermission(
     route: Screen,
 ): Boolean =
     when (route) {
-        Screen.ViewMedicalHistory ->
-            permissions.contains(Permission.ViewMedicalHistoryPermission.code)
+        Screen.Admin,
+        Screen.ViewMedicalHistory,
+        -> permissions.contains(Permission.AdminPermission.code)
 
-        Screen.CreatePrescription ->
-            permissions.contains(Permission.CreatePrescriptionPermission.code)
+        Screen.CreatePrescription -> permissions.contains(Permission.CreatePrescriptionPermission.code)
 
         else -> false
     }

@@ -7,7 +7,7 @@ import eg.edu.cu.csds.icare.core.domain.model.Doctor
 
 @Entity(tableName = "doctors")
 data class DoctorEntity(
-    @PrimaryKey val id: Long,
+    @PrimaryKey val id: String,
     val firstName: String,
     val lastName: String,
     val clinicId: Long,
