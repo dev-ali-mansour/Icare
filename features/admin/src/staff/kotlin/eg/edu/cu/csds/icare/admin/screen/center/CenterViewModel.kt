@@ -109,7 +109,7 @@ class CenterViewModel(
         }
     }
 
-    fun addNewCenterStaff() {
+    fun addNewStaff() {
         viewModelScope.launch(dispatcher) {
             if (_actionResFlow.value !is Resource.Unspecified) {
                 _actionResFlow.value = Resource.Unspecified()
@@ -130,7 +130,7 @@ class CenterViewModel(
         }
     }
 
-    fun updateCenterStaff() {
+    fun updateStaff() {
         viewModelScope.launch(dispatcher) {
             if (_actionResFlow.value !is Resource.Unspecified) {
                 _actionResFlow.value = Resource.Unspecified()
