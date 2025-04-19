@@ -121,7 +121,7 @@ internal fun EditCenterScreen(
                         onPhoneChanged = { selectedCenter = pharmacy.copy(phone = it) },
                         onAddressChanged = { selectedCenter = pharmacy.copy(address = it) },
                         onProceedButtonClicked = { onProceedButtonClicked() },
-                        onSuccess = { onSuccess },
+                        onSuccess = { onSuccess() },
                         onError = { onError(it) },
                     )
                 }

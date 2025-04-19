@@ -119,7 +119,7 @@ internal fun NewClinicScreen(
                     onAddressChanged = { address = it },
                     onIsOpenChanged = { isOpen = it },
                     onProceedButtonClicked = { onProceedButtonClicked() },
-                    onSuccess = { onSuccess },
+                    onSuccess = { onSuccess() },
                     onError = { onError(it) },
                 )
             }

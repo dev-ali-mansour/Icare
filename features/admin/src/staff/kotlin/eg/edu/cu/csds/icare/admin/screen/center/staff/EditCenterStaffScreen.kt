@@ -128,7 +128,7 @@ internal fun EditCenterStaffScreen(
                         onPhoneChanged = { selectedStaff = staff.copy(phone = it) },
                         onProfilePictureChanged = { selectedStaff = staff.copy(profilePicture = it) },
                         onProceedButtonClicked = { onProceedButtonClicked() },
-                        onSuccess = { onSuccess },
+                        onSuccess = { onSuccess() },
                         onError = { onError(it) },
                     )
                 }

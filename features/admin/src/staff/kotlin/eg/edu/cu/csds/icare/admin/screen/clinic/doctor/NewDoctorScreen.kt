@@ -141,7 +141,7 @@ internal fun NewDoctorScreen(
                     onToTimeChanged = { toTime = it },
                     onProfilePictureChanged = { profilePicture = it },
                     onProceedButtonClicked = { onProceedButtonClicked() },
-                    onSuccess = { onSuccess },
+                    onSuccess = { onSuccess() },
                     onError = { onError(it) },
                 )
             }

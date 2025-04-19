@@ -128,7 +128,7 @@ internal fun EditPharmacistScreen(
                         onPhoneChanged = { selectedPharmacist = pharmacist.copy(phone = it) },
                         onProfilePictureChanged = { selectedPharmacist = pharmacist.copy(profilePicture = it) },
                         onProceedButtonClicked = { onProceedButtonClicked() },
-                        onSuccess = { onSuccess },
+                        onSuccess = { onSuccess() },
                         onError = { onError(it) },
                     )
                 }

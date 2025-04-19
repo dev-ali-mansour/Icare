@@ -116,7 +116,7 @@ internal fun EditClinicScreen(
                         onAddressChanged = { selectedClinic = clinic.copy(address = it) },
                         onIsOpenChanged = { selectedClinic = clinic.copy(isOpen = it) },
                         onProceedButtonClicked = { onProceedButtonClicked() },
-                        onSuccess = { onSuccess },
+                        onSuccess = { onSuccess() },
                         onError = { onError(it) },
                     )
                 }
