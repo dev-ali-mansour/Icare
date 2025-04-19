@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RegisteredResponse(
-    @SerialName("errorCode")
+    @SerialName("status")
     val statusCode: Short,
     @SerialName("registered")
     val isRegistered: Boolean,
