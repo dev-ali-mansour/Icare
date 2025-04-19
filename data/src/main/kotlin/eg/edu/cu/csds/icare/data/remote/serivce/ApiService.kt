@@ -37,7 +37,7 @@ interface ApiService {
         @Body body: HashMap<String, String>,
     ): Response<DoctorsResponse>
 
-    @POST("centers")
+    @POST("imagingCentersApi/get_imaging_centers")
     suspend fun fetchCenters(
         @Body body: HashMap<String, String>,
     ): Response<CentersResponse>
@@ -123,17 +123,17 @@ interface ApiService {
         @Body body: ClinicStaff,
     ): Response<ActionResultResponse>
 
-    @POST("addNewPharmacy")
+    @POST("pharmacyApi/addPharmacy")
     suspend fun addNewPharmacy(
         @Body body: Pharmacy,
     ): Response<ActionResultResponse>
 
-    @POST("updatePharmacy")
+    @POST("pharmacyApi/addPharmacy")
     suspend fun updatePharmacy(
         @Body body: Pharmacy,
     ): Response<ActionResultResponse>
 
-    @POST("listPharmacists")
+    @POST("pharmacyApi/getPharmaciest")
     suspend fun listPharmacists(
         @Body body: HashMap<String, String>,
     ): Response<PharmacistsResponse>
@@ -148,12 +148,12 @@ interface ApiService {
         @Body body: Pharmacist,
     ): Response<ActionResultResponse>
 
-    @POST("addNewCenter")
+    @POST("imagingCentersApi/add_imaging_center")
     suspend fun addNewCenter(
         @Body body: LabImagingCenter,
     ): Response<ActionResultResponse>
 
-    @POST("updateCenter")
+    @POST("imagingCentersApi/add_imaging_center")
     suspend fun updateCenter(
         @Body body: LabImagingCenter,
     ): Response<ActionResultResponse>

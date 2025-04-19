@@ -8,9 +8,9 @@ import kotlinx.serialization.Transient
 data class Pharmacy(
     @Transient
     val token: String = "",
-    @SerialName("pharmacy_ID")
+    @SerialName("pharmacyID")
     val id: Long = 0,
-    @SerialName("pharmacy_Name")
+    @SerialName("pharmacyName")
     val name: String = "",
     val phone: String = "",
     @SerialName("pharmacyAddress")
