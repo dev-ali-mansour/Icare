@@ -13,6 +13,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.SplashScreen
+import eg.edu.cu.csds.icare.appointment.AppointmentsViewModel
+import eg.edu.cu.csds.icare.appointment.navigation.appointmentsRoute
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
 import eg.edu.cu.csds.icare.auth.screen.AuthViewModel
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
@@ -26,6 +28,7 @@ import eg.edu.cu.csds.icare.home.navigation.homeRoute
 import eg.edu.cu.csds.icare.onboarding.navigation.onBoardingRoute
 import eg.edu.cu.csds.icare.settings.navigation.settingsRoute
 import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 import kotlin.system.exitProcess
 
 @Suppress("UnusedParameter")
@@ -41,6 +44,7 @@ fun SetupNavGraph(
     context: Context = LocalContext.current,
 ) {
     val onBoardingRes by mainViewModel.onBoardingCompleted.collectAsStateWithLifecycle()
+    val appointmentsViewModel: AppointmentsViewModel = koinViewModel()
     val alertMessage = remember { mutableStateOf("") }
     val showAlert = remember { mutableStateOf(false) }
     val exitApp = remember { mutableStateOf(false) }
@@ -67,7 +71,7 @@ fun SetupNavGraph(
                     firebaseAuth = firebaseAuth,
                     mainViewModel = mainViewModel,
                     navigateToHome = {
-                        navController.navigate(Screen.Home) {
+                        navController.navigate(Screen.MyAppointments) {
                             popUpTo(navController.graph.id) { inclusive = true }
                         }
                     },
@@ -170,6 +174,25 @@ fun SetupNavGraph(
                 navigateToScreen = { navController.navigate(it) },
                 onNavigationIconClicked = {
                     navController.navigateUpSafely()
+                },
+            )
+
+            appointmentsRoute(
+                appointmentsViewModel = appointmentsViewModel,
+                onNavigationIconClicked = {
+                    navController.navigateUpSafely()
+                },
+                onError = { error ->
+                    exitApp.value = false
+                    handleError(
+                        error,
+                        exitApp,
+                        context,
+                        authViewModel,
+                        navController,
+                        alertMessage,
+                        showAlert,
+                    )
                 },
             )
         }

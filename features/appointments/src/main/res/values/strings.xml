@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="my_appointments">My Appointments</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="pending_for_confirmation">Pending for confirmation</string>
+    <string name="reschedule">Reschedule</string>
+    <string name="cancel">Cancel</string>
+</resources>

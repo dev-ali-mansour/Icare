@@ -102,4 +102,9 @@
     <string name="no_pharmacists_data">لا توجد بيانات صيادلة</string>
     <string name="no_centers_data">لا توجد بيانات مراكز</string>
     <string name="no_center_staff_data">لا توجد بيانات أطقم مراكز</string>
+    <string name="appointments">المواعيد</string>
+    <string name="pending">قيد الانتظار</string>
+    <string name="confirmed">مؤكدة</string>
+    <string name="completed">مكتملة</string>
+    <string name="cancelled">ملغاة</string>
 </resources>

@@ -68,7 +68,15 @@ class RemoteCentersDataSourceImpl(
 
     override fun addNewCenter(center: LabImagingCenter): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
-            val response = service.addNewCenter(center)
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.addNewCenter(center.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -94,7 +102,15 @@ class RemoteCentersDataSourceImpl(
 
     override fun updateCenter(center: LabImagingCenter): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
-            val response = service.updateCenter(center)
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.updateCenter(center.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -148,7 +164,15 @@ class RemoteCentersDataSourceImpl(
 
     override fun addNewCenterStaff(staff: CenterStaff): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
-            val response = service.addNewCenterStaff(staff)
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.addNewCenterStaff(staff.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -174,7 +198,15 @@ class RemoteCentersDataSourceImpl(
 
     override fun updateCenterStaff(staff: CenterStaff): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
-            val response = service.updateCenterStaff(staff)
+            val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }
+            val response = service.updateCenterStaff(staff.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
