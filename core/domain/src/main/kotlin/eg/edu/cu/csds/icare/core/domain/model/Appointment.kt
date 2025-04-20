@@ -10,6 +10,7 @@ data class Appointment(
     val appointmentId: Long,
     val doctorName: String,
     val doctorSpecialty: String,
+    val doctorId: Int,
     val doctorImage: String,
     val dateTime: Long,
     val patientName: String,

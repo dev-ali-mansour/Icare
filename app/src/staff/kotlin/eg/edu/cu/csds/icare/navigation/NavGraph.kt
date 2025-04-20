@@ -203,6 +203,25 @@ fun SetupNavGraph(
                     navController.navigateUpSafely()
                 },
             )
+
+            appointmentsRoute(
+                appointmentsViewModel = appointmentsViewModel,
+                onNavigationIconClicked = {
+                    navController.navigateUpSafely()
+                },
+                onError = { error ->
+                    exitApp.value = false
+                    handleError(
+                        error,
+                        exitApp,
+                        context,
+                        authViewModel,
+                        navController,
+                        alertMessage,
+                        showAlert,
+                    )
+                },
+            )
         }
     }
 }
