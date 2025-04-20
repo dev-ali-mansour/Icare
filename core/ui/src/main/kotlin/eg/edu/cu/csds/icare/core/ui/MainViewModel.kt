@@ -8,6 +8,7 @@ import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfo
 import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCenters
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinics
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctors
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoarding
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.ListPharmacies
 import eg.edu.cu.csds.icare.core.ui.common.SectionCategory
@@ -23,11 +24,12 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class MainViewModel(
     dispatcher: CoroutineDispatcher,
-    private val readOnBoarding: ReadOnBoarding,
-    private val getUserInfo: GetUserInfo,
-    private val listClinics: ListClinics,
-    private val listPharmacies: ListPharmacies,
-    private val listCenters: ListCenters,
+    private val readOnBoardingUseCase: ReadOnBoarding,
+    private val getUserInfoUseCase: GetUserInfo,
+    private val listClinicsUseCase: ListClinics,
+    private val listDoctorsUseCase: ListDoctors,
+    private val listPharmaciesUseCase: ListPharmacies,
+    private val listCentersUseCase: ListCenters,
 ) : ViewModel() {
     private val _onBoardingCompleted: MutableStateFlow<Resource<Boolean>> =
         MutableStateFlow(Resource.Unspecified())
@@ -94,10 +96,10 @@ class MainViewModel(
     init {
         viewModelScope.launch(dispatcher) {
             runCatching {
-                getUserInfo(forceUpdate = false).distinctUntilChanged().collect {
+                getUserInfoUseCase(forceUpdate = false).distinctUntilChanged().collect {
                     _currentUserFlow.value = it
                 }
-                readOnBoarding().collect { res ->
+                readOnBoardingUseCase().collect { res ->
                     _onBoardingCompleted.value = res
 
                     if (res is Resource.Success) {
@@ -106,7 +108,7 @@ class MainViewModel(
                             _resultFlow.value = Resource.Unspecified()
                             delay(timeMillis = 100)
                         }
-                        listClinics(forceUpdate = true).collect {
+                        listClinicsUseCase(forceUpdate = true).collect {
                             when (it) {
                                 is Resource.Unspecified<*> ->
                                     _resultFlow.value = Resource.Unspecified()
@@ -115,16 +117,18 @@ class MainViewModel(
                                     _resultFlow.value = Resource.Loading()
 
                                 is Resource.Success ->
-                                    listPharmacies(forceUpdate = true).collect {
+                                    listDoctorsUseCase(forceUpdate = true).collect {
                                         when (it) {
                                             is Resource.Unspecified<*> ->
-                                                _resultFlow.value = Resource.Unspecified()
+                                                _resultFlow.value =
+                                                    Resource.Unspecified()
 
                                             is Resource.Loading<*> ->
                                                 _resultFlow.value = Resource.Loading()
 
                                             is Resource.Success ->
-                                                listCenters(forceUpdate = true).collect {
+
+                                                listPharmaciesUseCase(forceUpdate = true).collect {
                                                     when (it) {
                                                         is Resource.Unspecified<*> ->
                                                             _resultFlow.value =
@@ -134,8 +138,25 @@ class MainViewModel(
                                                             _resultFlow.value = Resource.Loading()
 
                                                         is Resource.Success ->
-                                                            _resultFlow.value =
-                                                                Resource.Success(null)
+                                                            listCentersUseCase(forceUpdate = true).collect {
+                                                                when (it) {
+                                                                    is Resource.Unspecified<*> ->
+                                                                        _resultFlow.value =
+                                                                            Resource.Unspecified()
+
+                                                                    is Resource.Loading<*> ->
+                                                                        _resultFlow.value =
+                                                                            Resource.Loading()
+
+                                                                    is Resource.Success ->
+                                                                        _resultFlow.value =
+                                                                            Resource.Success(null)
+
+                                                                    is Resource.Error<*> ->
+                                                                        _resultFlow.value =
+                                                                            Resource.Error(it.error)
+                                                                }
+                                                            }
 
                                                         is Resource.Error<*> ->
                                                             _resultFlow.value =
@@ -144,7 +165,8 @@ class MainViewModel(
                                                 }
 
                                             is Resource.Error<*> ->
-                                                _resultFlow.value = Resource.Error(it.error)
+                                                _resultFlow.value =
+                                                    Resource.Error(it.error)
                                         }
                                     }
 
