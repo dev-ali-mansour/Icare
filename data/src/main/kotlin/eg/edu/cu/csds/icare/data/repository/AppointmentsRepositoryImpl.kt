@@ -60,18 +60,9 @@ class AppointmentsRepositoryImpl(
     override fun getAppointments(statusId: Short): Flow<Resource<List<Appointment>>> =
         remoteAppointmentsDataSource.getAppointments(statusId)
 
-    override fun bookAppointment(
-        doctorId: Int,
-        dateTime: Long,
-    ): Flow<Resource<Nothing?>> = remoteAppointmentsDataSource.bookAppointment(doctorId, dateTime)
+    override fun bookAppointment(appointment: Appointment): Flow<Resource<Nothing?>> =
+        remoteAppointmentsDataSource.bookAppointment(appointment)
 
-    override fun updateAppointmentStatus(
-        appointmentId: Long,
-        statusId: Short,
-    ): Flow<Resource<Nothing?>> = remoteAppointmentsDataSource.updateAppointmentStatus(appointmentId, statusId)
-
-    override fun rescheduleAppointment(
-        appointmentId: Long,
-        dateTime: Long,
-    ): Flow<Resource<Nothing?>> = rescheduleAppointment(appointmentId, dateTime)
+    override fun updateAppointment(appointment: Appointment): Flow<Resource<Nothing?>> =
+        remoteAppointmentsDataSource.updateAppointment(appointment)
 }
