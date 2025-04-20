@@ -1,6 +1,7 @@
 package eg.edu.cu.csds.icare.data.remote.serivce
 
 import eg.edu.cu.csds.icare.core.domain.model.ActionResultResponse
+import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.AppointmentsResponse
 import eg.edu.cu.csds.icare.core.domain.model.BookingMethodsResponse
 import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
@@ -75,17 +76,12 @@ interface ApiService {
 
     @POST("bookAppointment")
     suspend fun bookAppointment(
-        @Body body: HashMap<String, String>,
+        @Body body: Appointment,
     ): Response<ActionResultResponse>
 
-    @POST("updateAppointmentStatus")
-    suspend fun updateAppointmentStatus(
-        @Body body: HashMap<String, String>,
-    ): Response<ActionResultResponse>
-
-    @POST("rescheduleAppointment")
-    suspend fun rescheduleAppointment(
-        @Body body: HashMap<String, String>,
+    @POST("updateAppointment")
+    suspend fun updateAppointment(
+        @Body body: Appointment,
     ): Response<ActionResultResponse>
 
     @POST("clinicApi/add_clinic")
