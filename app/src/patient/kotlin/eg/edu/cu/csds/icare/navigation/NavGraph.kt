@@ -71,7 +71,7 @@ fun SetupNavGraph(
                     firebaseAuth = firebaseAuth,
                     mainViewModel = mainViewModel,
                     navigateToHome = {
-                        navController.navigate(Screen.MyAppointments) {
+                        navController.navigate(Screen.Home) {
                             popUpTo(navController.graph.id) { inclusive = true }
                         }
                     },
