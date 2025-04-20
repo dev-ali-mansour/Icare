@@ -8,8 +8,10 @@ data class Appointment(
     @Transient
     val token: String = "",
     val appointmentId: Long,
-    val doctorName: String,
     val doctorSpecialty: String,
+    val doctorId: Int,
+    @Transient
+    val doctorName: String = "",
     val doctorImage: String,
     val dateTime: Long,
     val patientName: String,

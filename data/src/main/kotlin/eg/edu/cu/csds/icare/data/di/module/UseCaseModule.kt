@@ -17,8 +17,8 @@ import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOut
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.BookAppointment
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetAppointments
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetAppointmentsByStatus
-import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.RescheduleAppointment
-import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.UpdateAppointmentStatus
+import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetPatientAppointments
+import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.UpdateAppointment
 import eg.edu.cu.csds.icare.core.domain.usecase.center.AddNewCenter
 import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCenters
 import eg.edu.cu.csds.icare.core.domain.usecase.center.UpdateCenter
@@ -150,11 +150,8 @@ class UseCaseModule {
     fun provideGetAppointmentsByStatus(repository: AppointmentsRepository) = GetAppointmentsByStatus(repository)
 
     @Single
-    fun provideGetPatientAppointments(repository: AppointmentsRepository) = GetAppointmentsByStatus(repository)
+    fun provideGetPatientAppointments(repository: AppointmentsRepository) = GetPatientAppointments(repository)
 
     @Single
-    fun provideRescheduleAppointment(repository: AppointmentsRepository) = RescheduleAppointment(repository)
-
-    @Single
-    fun provideUpdateAppointmentStatus(repository: AppointmentsRepository): UpdateAppointmentStatus = UpdateAppointmentStatus(repository)
+    fun provideUpdateAppointment(repository: AppointmentsRepository): UpdateAppointment = UpdateAppointment(repository)
 }

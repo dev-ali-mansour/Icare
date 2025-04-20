@@ -54,6 +54,18 @@ fun Long.getFormattedDateTime(pattern: String = "dd/MM/yyyy hh:mm a"): String {
     return dateFormat.format(calender.timeInMillis)
 }
 
+fun Long.isTomorrow(): Boolean {
+    val tomorrowCalendar = Calendar.getInstance()
+    tomorrowCalendar.add(Calendar.DAY_OF_YEAR, 1)
+
+    val appointmentCalendar = Calendar.getInstance()
+    appointmentCalendar.timeInMillis = this
+
+    return tomorrowCalendar.get(Calendar.YEAR) == appointmentCalendar.get(Calendar.YEAR) &&
+        tomorrowCalendar.get(Calendar.MONTH) == appointmentCalendar.get(Calendar.MONTH) &&
+        tomorrowCalendar.get(Calendar.DAY_OF_MONTH) == appointmentCalendar.get(Calendar.DAY_OF_MONTH)
+}
+
 fun Double.toFormattedString(): String =
     DecimalFormat("#,###.##", DecimalFormatSymbols(Locale.ENGLISH))
         .apply {
