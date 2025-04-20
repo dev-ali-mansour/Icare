@@ -14,18 +14,7 @@ interface RemoteAppointmentsDataSource {
 
     fun getAppointments(statusId: Short): Flow<Resource<List<Appointment>>>
 
-    fun bookAppointment(
-        doctorId: Int,
-        dateTime: Long,
-    ): Flow<Resource<Nothing?>>
+    fun bookAppointment(appointment: Appointment): Flow<Resource<Nothing?>>
 
-    fun updateAppointmentStatus(
-        appointmentId: Long,
-        statusId: Short,
-    ): Flow<Resource<Nothing?>>
-
-    fun rescheduleAppointment(
-        appointmentId: Long,
-        dateTime: Long,
-    ): Flow<Resource<Nothing?>>
+    fun updateAppointment(appointment: Appointment): Flow<Resource<Nothing?>>
 }
