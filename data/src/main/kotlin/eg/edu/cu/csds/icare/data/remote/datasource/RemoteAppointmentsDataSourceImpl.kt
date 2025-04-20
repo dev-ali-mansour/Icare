@@ -8,6 +8,8 @@ import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.data.remote.serivce.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.koin.core.annotation.Single
 import timber.log.Timber
 import java.net.ConnectException
@@ -132,18 +134,20 @@ class RemoteAppointmentsDataSourceImpl(
             }
         }
 
-    override fun bookAppointment(
-        doctorId: Int,
-        dateTime: Long,
-    ): Flow<Resource<Nothing?>> =
+    override fun bookAppointment(appointment: Appointment): Flow<Resource<Nothing?>> =
         flow {
             runCatching {
                 emit(Resource.Loading())
                 auth.currentUser?.let { user ->
-                    val map = HashMap<String, String>()
-                    map["doctorId"] = doctorId.toString()
-                    map["dateTime"] = dateTime.toString()
-                    val response = service.getAppointmentsByStatus(map)
+                    val token =
+                        runBlocking {
+                            auth.currentUser
+                                ?.getIdToken(false)
+                                ?.await()
+                                ?.token
+                                .toString()
+                        }
+                    val response = service.bookAppointment(appointment.copy(token = token))
                     when (response.code()) {
                         HTTP_OK -> {
                             response.body()?.let { res ->
@@ -166,18 +170,20 @@ class RemoteAppointmentsDataSourceImpl(
             }
         }
 
-    override fun updateAppointmentStatus(
-        appointmentId: Long,
-        statusId: Short,
-    ): Flow<Resource<Nothing?>> =
+    override fun updateAppointment(appointment: Appointment): Flow<Resource<Nothing?>> =
         flow {
             runCatching {
                 emit(Resource.Loading())
                 auth.currentUser?.let { user ->
-                    val map = HashMap<String, String>()
-                    map["appointmentId"] = appointmentId.toString()
-                    map["statusId"] = statusId.toString()
-                    val response = service.getAppointmentsByStatus(map)
+                    val token =
+                        runBlocking {
+                            auth.currentUser
+                                ?.getIdToken(false)
+                                ?.await()
+                                ?.token
+                                .toString()
+                        }
+                    val response = service.updateAppointment(appointment.copy(token = token))
                     when (response.code()) {
                         HTTP_OK -> {
                             response.body()?.let { res ->
@@ -195,41 +201,7 @@ class RemoteAppointmentsDataSourceImpl(
                     }
                 }
             }.onFailure {
-                Timber.e("updateAppointmentStatus() error ${it.javaClass.simpleName}: ${it.message}")
-                emit(Resource.Error(it))
-            }
-        }
-
-    override fun rescheduleAppointment(
-        appointmentId: Long,
-        dateTime: Long,
-    ): Flow<Resource<Nothing?>> =
-        flow {
-            runCatching {
-                emit(Resource.Loading())
-                auth.currentUser?.let { user ->
-                    val map = HashMap<String, String>()
-                    map["appointmentId"] = appointmentId.toString()
-                    map["dateTime"] = dateTime.toString()
-                    val response = service.getAppointmentsByStatus(map)
-                    when (response.code()) {
-                        HTTP_OK -> {
-                            response.body()?.let { res ->
-                                when (res.statusCode) {
-                                    Constants.ERROR_CODE_OK ->
-                                        emit(Resource.Success(null))
-
-                                    Constants.ERROR_CODE_SERVER_ERROR ->
-                                        emit(Resource.Error(ConnectException()))
-                                }
-                            }
-                        }
-
-                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
-                    }
-                }
-            }.onFailure {
-                Timber.e("rescheduleAppointment() error ${it.javaClass.simpleName}: ${it.message}")
+                Timber.e("updateAppointment() error ${it.javaClass.simpleName}: ${it.message}")
                 emit(Resource.Error(it))
             }
         }
