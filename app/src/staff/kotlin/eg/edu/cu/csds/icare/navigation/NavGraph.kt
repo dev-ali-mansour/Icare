@@ -17,6 +17,8 @@ import eg.edu.cu.csds.icare.admin.navigation.adminRoute
 import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
+import eg.edu.cu.csds.icare.appointment.AppointmentsViewModel
+import eg.edu.cu.csds.icare.appointment.navigation.appointmentsRoute
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
 import eg.edu.cu.csds.icare.auth.screen.AuthViewModel
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
@@ -46,6 +48,7 @@ fun SetupNavGraph(
     context: Context = LocalContext.current,
 ) {
     val onBoardingRes by mainViewModel.onBoardingCompleted.collectAsStateWithLifecycle()
+    val appointmentsViewModel: AppointmentsViewModel = koinViewModel()
     val clinicViewModel: ClinicViewModel = koinViewModel()
     val pharmacyViewModel: PharmacyViewModel = koinViewModel()
     val centerViewModel: CenterViewModel = koinViewModel()
