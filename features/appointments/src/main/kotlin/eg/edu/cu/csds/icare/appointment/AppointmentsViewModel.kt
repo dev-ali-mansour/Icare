@@ -1,6 +1,5 @@
 package eg.edu.cu.csds.icare.appointment
 
-import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -13,8 +12,6 @@ import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.BookAppointm
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetAppointmentsByStatus
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetPatientAppointments
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.UpdateAppointment
-import eg.edu.cu.csds.icare.core.domain.util.Constants
-import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -116,14 +113,14 @@ class AppointmentsViewModel(
         }
     }
 
-    fun getPatientAppointments(context: Context) {
+    fun getPatientAppointments() {
         viewModelScope.launch(dispatcher) {
             if (_appointmentsResFlow.value !is Resource.Unspecified) {
                 _appointmentsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
 
-            _appointmentsResFlow.value =
+            /*_appointmentsResFlow.value =
                 Resource.Success(
                     listOf(
                         Appointment(
@@ -199,10 +196,10 @@ class AppointmentsViewModel(
                             status = context.getString(AppointmentStatus.CancelledStatus.textResId),
                         ),
                     ),
-                )
+                )*/
             getPatientAppointmentUseCase().collectLatest {
                 // Todo Pass resource to _appointmentsResFlow
-//                _appointmentsResFlow.value = it
+                _appointmentsResFlow.value = it
             }
         }
     }
