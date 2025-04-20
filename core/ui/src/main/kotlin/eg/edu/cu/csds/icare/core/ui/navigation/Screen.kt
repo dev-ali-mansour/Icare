@@ -92,7 +92,7 @@ sealed class Screen {
     data object BookAppointment : Screen()
 
     @Serializable
-    data object RescheduleAppointment : Screen()
+    data object Appointments : Screen()
 
     @Serializable
     data object NewPrescription : Screen()
