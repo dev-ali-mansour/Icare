@@ -17,6 +17,7 @@ import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOut
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.BookAppointment
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetAppointments
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetAppointmentsByStatus
+import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetPatientAppointments
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.RescheduleAppointment
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.UpdateAppointmentStatus
 import eg.edu.cu.csds.icare.core.domain.usecase.center.AddNewCenter
@@ -150,7 +151,7 @@ class UseCaseModule {
     fun provideGetAppointmentsByStatus(repository: AppointmentsRepository) = GetAppointmentsByStatus(repository)
 
     @Single
-    fun provideGetPatientAppointments(repository: AppointmentsRepository) = GetAppointmentsByStatus(repository)
+    fun provideGetPatientAppointments(repository: AppointmentsRepository) = GetPatientAppointments(repository)
 
     @Single
     fun provideRescheduleAppointment(repository: AppointmentsRepository) = RescheduleAppointment(repository)
