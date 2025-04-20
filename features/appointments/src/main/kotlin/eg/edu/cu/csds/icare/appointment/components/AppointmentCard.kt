@@ -124,7 +124,7 @@ fun AppointmentCardPreview() {
                     appointmentId = 1,
                     doctorName = "Dr. John Smith",
                     doctorSpecialty = "Cardiologist",
-                    doctorId = 101,
+                    doctorId = "101",
                     doctorImage = "",
                     dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
                     patientName = "Patient",
