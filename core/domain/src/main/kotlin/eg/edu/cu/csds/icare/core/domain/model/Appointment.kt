@@ -7,16 +7,16 @@ import kotlinx.serialization.Transient
 data class Appointment(
     @Transient
     val token: String = "",
-    val appointmentId: Long,
-    val doctorSpecialty: String,
-    val doctorId: Int,
+    val appointmentId: Long = 0,
+    val doctorSpecialty: String = "",
+    val doctorId: String = "",
     @Transient
     val doctorName: String = "",
-    val doctorImage: String,
-    val dateTime: Long,
-    val patientName: String,
-    val patientImage: String,
-    val statusId: Short,
+    val doctorImage: String = "",
+    val dateTime: Long = 0,
+    val patientName: String = "",
+    val patientImage: String = "",
+    val statusId: Short = 0,
     @Transient
     val status: String = "",
 )
