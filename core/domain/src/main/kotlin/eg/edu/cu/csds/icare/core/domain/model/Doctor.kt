@@ -8,13 +8,13 @@ import kotlinx.serialization.Transient
 
 @Serializable
 data class Doctor(
-    @Transient
+//    @Transient
     val token: String = "",
     @SerialName("doctorID")
     val id: String = "",
-    @SerialName("fName")
+    @SerialName("fname")
     val firstName: String = "",
-    @SerialName("lName")
+    @SerialName("lname")
     val lastName: String = "",
     @Transient
     val name: String = "$firstName $lastName",

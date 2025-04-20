@@ -53,7 +53,17 @@ class RemoteAppointmentsDataSourceImpl(
             runCatching {
                 emit(Resource.Loading())
                 auth.currentUser?.let { user ->
-                    val response = service.getPatientAppointments()
+                    val token =
+                        runBlocking {
+                            auth.currentUser
+                                ?.getIdToken(false)
+                                ?.await()
+                                ?.token
+                                .toString()
+                        }
+                    val map = HashMap<String, String>()
+                    map["token"] = token
+                    val response = service.getPatientAppointments(map)
                     when (response.code()) {
                         HTTP_OK -> {
                             response.body()?.let { res ->
@@ -81,7 +91,17 @@ class RemoteAppointmentsDataSourceImpl(
             runCatching {
                 emit(Resource.Loading())
                 auth.currentUser?.let { user ->
-                    val response = service.getAppointments()
+                    val token =
+                        runBlocking {
+                            auth.currentUser
+                                ?.getIdToken(false)
+                                ?.await()
+                                ?.token
+                                .toString()
+                        }
+                    val map = HashMap<String, String>()
+                    map["token"] = token
+                    val response = service.getAppointments(map)
                     when (response.code()) {
                         HTTP_OK -> {
                             response.body()?.let { res ->

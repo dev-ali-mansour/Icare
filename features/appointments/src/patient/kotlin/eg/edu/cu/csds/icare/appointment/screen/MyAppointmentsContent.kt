@@ -105,7 +105,13 @@ fun MyAppointmentsContent(
                     )
 
                 is Resource.Success -> {
-                    appointmentsRes.data?.let { appointments ->
+                    appointmentsRes.data?.let { list ->
+                        val appointments =
+                            list.map { appointment ->
+                                statusList.find { it.code == appointment.statusId }?.let {
+                                    appointment.copy(status = stringResource(it.textResId))
+                                } ?: appointment
+                            }
                         Column(modifier = Modifier.fillMaxSize()) {
                             ScrollableTabRow(
                                 selectedTabIndex = selectedTabIndex,
