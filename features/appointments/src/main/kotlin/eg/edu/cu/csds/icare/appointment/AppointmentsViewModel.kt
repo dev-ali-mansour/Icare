@@ -51,8 +51,7 @@ class AppointmentsViewModel(
     var selectedAppointment: MutableState<Appointment?> = mutableStateOf(null)
     var selectedStatusIdState: MutableState<Short> = mutableStateOf(1)
 
-    private val appointmentIdState = mutableLongStateOf(0L)
-    var doctorIdState = mutableIntStateOf(0)
+    var doctorIdState = mutableStateOf("")
     var doctorNameState = mutableStateOf("")
     var doctorSpecialtyState = mutableStateOf("")
     var doctorImageState = mutableStateOf("")
@@ -71,10 +70,9 @@ class AppointmentsViewModel(
 
             bookAppointmentUseCase(
                 Appointment(
-                    appointmentId = appointmentIdState.longValue,
                     doctorName = doctorNameState.value,
                     doctorSpecialty = doctorSpecialtyState.value,
-                    doctorId = doctorIdState.intValue,
+                    doctorId = doctorIdState.value,
                     doctorImage = doctorImageState.value,
                     dateTime = dateTimeState.longValue,
                     patientName = patientNameState.value,
@@ -132,7 +130,7 @@ class AppointmentsViewModel(
                             appointmentId = 1,
                             doctorName = "Dr. John Smith",
                             doctorSpecialty = "Cardiologist",
-                            doctorId = 101,
+                            doctorId = "101",
                             doctorImage = "",
                             dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
                             patientName = "Patient",
@@ -144,7 +142,7 @@ class AppointmentsViewModel(
                             appointmentId = 2,
                             doctorName = "Dr. Sarah Johnson",
                             doctorSpecialty = "Dermatologist",
-                            doctorId = 102,
+                            doctorId = "102",
                             doctorImage = "",
                             dateTime = System.currentTimeMillis() + Constants.THREE_DAYS,
                             patientName = "Patient",
@@ -156,7 +154,7 @@ class AppointmentsViewModel(
                             appointmentId = 3,
                             doctorName = "Dr. Anna Jones",
                             doctorSpecialty = "General Practitioner",
-                            doctorId = 101,
+                            doctorId = "101",
                             doctorImage = "",
                             dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
                             patientName = "Patient",
@@ -168,7 +166,7 @@ class AppointmentsViewModel(
                             appointmentId = 4,
                             doctorName = "Dr. Anna Jones",
                             doctorSpecialty = "Dentist",
-                            doctorId = 101,
+                            doctorId = "101",
                             doctorImage = "",
                             dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
                             patientName = "Patient",
@@ -180,7 +178,7 @@ class AppointmentsViewModel(
                             appointmentId = 5,
                             doctorName = "Dr. Anna Jones",
                             doctorSpecialty = "General Practitioner",
-                            doctorId = 101,
+                            doctorId = "101",
                             doctorImage = "",
                             dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
                             patientName = "Patient",
@@ -192,7 +190,7 @@ class AppointmentsViewModel(
                             appointmentId = 6,
                             doctorName = "Dr. Anna Jones",
                             doctorSpecialty = "General Practitioner",
-                            doctorId = 101,
+                            doctorId = "101",
                             doctorImage = "",
                             dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
                             patientName = "Patient",
