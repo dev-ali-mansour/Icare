@@ -172,7 +172,7 @@ internal fun DoctorDetailsContent(
 
                             TextField(
                                 value = lastName,
-                                onValueChange = { if (it.length < 10) onLastNameChanged(it) },
+                                onValueChange = { onLastNameChanged(it) },
                                 label = {
                                     Text(
                                         text = stringResource(R.string.last_name),
@@ -398,13 +398,24 @@ internal fun DoctorDetailsContent(
                                                 TimePickerDialog(
                                                     context,
                                                     { _: TimePicker, selectedHour: Int, selectedMinute: Int ->
-                                                        val selectedCalendar = Calendar.getInstance()
-                                                        selectedCalendar.set(Calendar.HOUR_OF_DAY, selectedHour)
-                                                        selectedCalendar.set(Calendar.MINUTE, selectedMinute)
+                                                        val selectedCalendar =
+                                                            Calendar.getInstance()
+                                                        selectedCalendar.set(
+                                                            Calendar.HOUR_OF_DAY,
+                                                            selectedHour,
+                                                        )
+                                                        selectedCalendar.set(
+                                                            Calendar.MINUTE,
+                                                            selectedMinute,
+                                                        )
                                                         selectedCalendar.set(Calendar.SECOND, 0)
-                                                        selectedCalendar.set(Calendar.MILLISECOND, 0)
+                                                        selectedCalendar.set(
+                                                            Calendar.MILLISECOND,
+                                                            0,
+                                                        )
 
-                                                        val timeInMillis = selectedCalendar.timeInMillis
+                                                        val timeInMillis =
+                                                            selectedCalendar.timeInMillis
 
                                                         onFromTimeChanged(timeInMillis)
                                                     },
@@ -459,13 +470,24 @@ internal fun DoctorDetailsContent(
                                                 TimePickerDialog(
                                                     context,
                                                     { _: TimePicker, selectedHour: Int, selectedMinute: Int ->
-                                                        val selectedCalendar = Calendar.getInstance()
-                                                        selectedCalendar.set(Calendar.HOUR_OF_DAY, selectedHour)
-                                                        selectedCalendar.set(Calendar.MINUTE, selectedMinute)
+                                                        val selectedCalendar =
+                                                            Calendar.getInstance()
+                                                        selectedCalendar.set(
+                                                            Calendar.HOUR_OF_DAY,
+                                                            selectedHour,
+                                                        )
+                                                        selectedCalendar.set(
+                                                            Calendar.MINUTE,
+                                                            selectedMinute,
+                                                        )
                                                         selectedCalendar.set(Calendar.SECOND, 0)
-                                                        selectedCalendar.set(Calendar.MILLISECOND, 0)
+                                                        selectedCalendar.set(
+                                                            Calendar.MILLISECOND,
+                                                            0,
+                                                        )
 
-                                                        val timeInMillis = selectedCalendar.timeInMillis
+                                                        val timeInMillis =
+                                                            selectedCalendar.timeInMillis
 
                                                         onToTimeChanged(timeInMillis)
                                                     },
