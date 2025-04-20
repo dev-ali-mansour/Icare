@@ -52,7 +52,7 @@ fun MyAppointmentsScreen(
     val appointmentsResource by appointmentsViewModel.appointmentsResFlow.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = Unit) {
-        appointmentsViewModel.getPatientAppointments(context)
+        appointmentsViewModel.getPatientAppointments()
     }
 
     Scaffold(
