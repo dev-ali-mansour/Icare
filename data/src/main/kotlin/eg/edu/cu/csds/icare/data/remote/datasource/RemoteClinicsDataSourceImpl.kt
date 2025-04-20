@@ -88,6 +88,7 @@ class RemoteClinicsDataSourceImpl(
                                             it.data?.let { clinics ->
                                                 emit(Resource.Success(null))
                                             }
+
                                         is Resource.Error -> emit(Resource.Error(it.error))
                                     }
                                 }
@@ -194,7 +195,7 @@ class RemoteClinicsDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.addNewDoctor(doctor.copy(token))
+            val response = service.addNewDoctor(doctor.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -228,7 +229,7 @@ class RemoteClinicsDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.updateDoctor(doctor.copy(token))
+            val response = service.updateDoctor(doctor.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -301,7 +302,7 @@ class RemoteClinicsDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.addNewClinicStaff(staff.copy(token))
+            val response = service.addNewClinicStaff(staff.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -335,7 +336,7 @@ class RemoteClinicsDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.updateClinicStaff(staff.copy(token))
+            val response = service.updateClinicStaff(staff.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->

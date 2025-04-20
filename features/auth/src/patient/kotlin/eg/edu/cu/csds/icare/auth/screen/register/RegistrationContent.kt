@@ -280,7 +280,7 @@ internal fun RegistrationContent(
 
                 TextField(
                     value = lastName,
-                    onValueChange = { if (it.length < 10) onLastNameChanged(it) },
+                    onValueChange = { onLastNameChanged(it) },
                     label = {
                         Text(
                             text = stringResource(R.string.last_name),
