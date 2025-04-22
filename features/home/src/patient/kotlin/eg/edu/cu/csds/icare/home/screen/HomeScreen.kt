@@ -90,7 +90,7 @@ internal fun HomeScreen(
     }
 
     LaunchedEffect(key1 = Unit) {
-        appointmentsViewModel.getPatientAppointments(context)
+        appointmentsViewModel.getPatientAppointments()
         clinicViewModel.listTopDoctors()
     }
 
