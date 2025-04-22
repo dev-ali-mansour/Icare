@@ -15,6 +15,10 @@ val Yellow700 = Color(color = 0xFFE3880C)
 val PaidColor = Color(color = 0xFF028A02)
 val UnPaidColor = Color(color = 0xFFAA0202)
 val MediumGray = Color(color = 0xFF9C9C9C)
+val LightGreen = Color(color = 0xFFE2EBCD)
+val AiryGreen = Color(color = 0xFFF1F8F5)
+val DeepTeal = Color(color = 0xFF3BDDDF)
+val BurntOrange = Color(color = 0xFFEE6F5C)
 
 val backgroundColor: Color
     @Composable
@@ -69,7 +73,7 @@ val contentColor: Color
     @Composable
     get() = Color.DarkGray
 
-val totalColor: Color
+val statusColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.5f) else Color.DarkGray
 

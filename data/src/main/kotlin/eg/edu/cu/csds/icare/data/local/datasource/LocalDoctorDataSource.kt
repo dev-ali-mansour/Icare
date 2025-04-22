@@ -8,5 +8,7 @@ interface LocalDoctorDataSource {
 
     fun listDoctors(): Flow<List<DoctorEntity>>
 
+    fun listTopDoctors(): Flow<List<DoctorEntity>>
+
     fun listDoctors(clinicId: Long): Flow<List<DoctorEntity>>
 }

@@ -17,6 +17,7 @@ import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.ListClinicStaff
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.UpdateClinicStaff
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.AddNewDoctor
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctors
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListTopDoctors
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.UpdateDoctor
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
@@ -37,6 +39,7 @@ class ClinicViewModel(
     private val addNewDoctorUseCase: AddNewDoctor,
     private val updateDoctorUseCase: UpdateDoctor,
     private val listDoctorsUseCase: ListDoctors,
+    private val listTopDoctorsUseCase: ListTopDoctors,
     private val addNewClinicStaffUseCase: AddNewClinicStaff,
     private val updateClinicStaffUseCase: UpdateClinicStaff,
     private val listClinicStaffUseCase: ListClinicStaff,
@@ -53,6 +56,10 @@ class ClinicViewModel(
     val clinicsResFlow: StateFlow<Resource<List<Clinic>>> = _clinicsResFlow
     private val _doctorsResFlow = MutableStateFlow<Resource<List<Doctor>>>(Resource.Unspecified())
     val doctorsResFlow: StateFlow<Resource<List<Doctor>>> = _doctorsResFlow
+    private val _topDoctorsResFlow =
+        MutableStateFlow<Resource<List<Doctor>>>(Resource.Unspecified())
+    val topDoctorsResFlow: StateFlow<Resource<List<Doctor>>> =
+        _topDoctorsResFlow.asStateFlow()
     private val _clinicStaffsResFlow =
         MutableStateFlow<Resource<List<ClinicStaff>>>(Resource.Unspecified())
     val clinicStaffsResFlow: StateFlow<Resource<List<ClinicStaff>>> = _clinicStaffsResFlow
@@ -173,6 +180,18 @@ class ClinicViewModel(
             }
             listDoctorsUseCase().collect { result ->
                 _doctorsResFlow.value = result
+            }
+        }
+    }
+
+    fun listTopDoctors() {
+        viewModelScope.launch(dispatcher) {
+            if (_topDoctorsResFlow.value !is Resource.Unspecified) {
+                _topDoctorsResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            listTopDoctorsUseCase().collect { result ->
+                _topDoctorsResFlow.value = result
             }
         }
     }

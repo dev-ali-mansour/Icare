@@ -33,6 +33,7 @@ import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.ListClinicStaff
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.UpdateClinicStaff
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.AddNewDoctor
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctors
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListTopDoctors
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.UpdateDoctor
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoarding
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.SaveOnBoarding
@@ -88,6 +89,9 @@ class UseCaseModule {
 
     @Single
     fun provideListDoctors(repository: ClinicsRepository) = ListDoctors(repository)
+
+    @Single
+    fun provideListTopDoctors(repository: ClinicsRepository) = ListTopDoctors(repository)
 
     @Single
     fun provideAddNewDoctor(repository: ClinicsRepository) = AddNewDoctor(repository)

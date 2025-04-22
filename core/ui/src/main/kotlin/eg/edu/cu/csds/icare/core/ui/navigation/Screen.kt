@@ -89,7 +89,25 @@ sealed class Screen {
     data object MyAppointments : Screen()
 
     @Serializable
-    data object BookAppointment : Screen()
+    data object ScanCenters : Screen()
+
+    @Serializable
+    data object Doctors : Screen()
+
+    @Serializable
+    data object DoctorProfile : Screen()
+
+    @Serializable
+    data object AppointmentConfirmation : Screen()
+
+    @Serializable
+    data object LabCenters : Screen()
+
+    @Serializable
+    data object Pharmacies : Screen()
+
+    @Serializable
+    data object TopDoctors : Screen()
 
     @Serializable
     data object Appointments : Screen()

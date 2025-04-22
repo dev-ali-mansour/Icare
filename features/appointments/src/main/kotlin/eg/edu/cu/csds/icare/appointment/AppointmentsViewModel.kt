@@ -47,6 +47,15 @@ class AppointmentsViewModel(
         _appointmentsResFlow.asStateFlow()
     var selectedAppointment: MutableState<Appointment?> = mutableStateOf(null)
     var selectedStatusIdState: MutableState<Short> = mutableStateOf(1)
+    val statusListState =
+        mutableStateOf(
+            listOf(
+                AppointmentStatus.PendingStatus,
+                AppointmentStatus.ConfirmedStatus,
+                AppointmentStatus.CancelledStatus,
+                AppointmentStatus.CompletedStatus,
+            ),
+        )
 
     var doctorIdState = mutableStateOf("")
     var doctorNameState = mutableStateOf("")
@@ -77,7 +86,7 @@ class AppointmentsViewModel(
                     statusId = statusIdState.intValue.toShort(),
                     status = statusState.value,
                 ),
-            ).collect {
+            ).collectLatest {
                 _actionResFlow.value = it
             }
         }
@@ -119,7 +128,77 @@ class AppointmentsViewModel(
                 _appointmentsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
+
+            /*_appointmentsResFlow.value =
+                Resource.Success(
+                    listOf(
+                        Appointment(
+                            appointmentId = 1,
+                            doctorName = "د.سيد عبدالحليم الجوهري",
+                            doctorSpecialty = "استشاري جراحة الفم والأسنان",
+                            doctorId = "101",
+                            doctorImage = "",
+                            dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
+                            statusId = AppointmentStatus.PendingStatus.code,
+                        ),
+                        Appointment(
+                            appointmentId = 2,
+                            doctorName = "د.محمد عبدالرحمن بدوي",
+                            doctorSpecialty = "مخ وأعصاب",
+                            doctorId = "102",
+                            doctorImage = "",
+                            dateTime = System.currentTimeMillis() + Constants.THREE_DAYS,
+                            statusId = AppointmentStatus.PendingStatus.code,
+                        ),
+                        Appointment(
+                            appointmentId = 3,
+                            doctorName = "د.سارة محمد الهلالي",
+                            doctorSpecialty = "نساء وتوليد",
+                            doctorId = "101",
+                            doctorImage = "",
+                            dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
+                            statusId = AppointmentStatus.PendingStatus.code,
+                        ),
+                        Appointment(
+                            appointmentId = 4,
+                            doctorName = "Dr. Anna Jones",
+                            doctorSpecialty = "Dentist",
+                            doctorId = "101",
+                            doctorImage = "",
+                            dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
+                            patientName = "Patient",
+                            patientImage = "",
+                            statusId = AppointmentStatus.ConfirmedStatus.code,
+                            status = context.getString(AppointmentStatus.ConfirmedStatus.textResId),
+                        ),
+                        Appointment(
+                            appointmentId = 5,
+                            doctorName = "Dr. Anna Jones",
+                            doctorSpecialty = "General Practitioner",
+                            doctorId = "101",
+                            doctorImage = "",
+                            dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
+                            patientName = "Patient",
+                            patientImage = "",
+                            statusId = AppointmentStatus.CompletedStatus.code,
+                            status = context.getString(AppointmentStatus.CompletedStatus.textResId),
+                        ),
+                        Appointment(
+                            appointmentId = 6,
+                            doctorName = "Dr. Anna Jones",
+                            doctorSpecialty = "General Practitioner",
+                            doctorId = "101",
+                            doctorImage = "",
+                            dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
+                            patientName = "Patient",
+                            patientImage = "",
+                            statusId = AppointmentStatus.CancelledStatus.code,
+                            status = context.getString(AppointmentStatus.CancelledStatus.textResId),
+                        ),
+                    ),
+                )*/
             getPatientAppointmentUseCase().collectLatest {
+                // Todo Pass resource to _appointmentsResFlow
                 _appointmentsResFlow.value = it
             }
         }

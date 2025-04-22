@@ -70,6 +70,7 @@ class ClinicsRepositoryImpl(
                                 else -> {}
                             }
                         }
+
                     is Resource.Error -> emit(Resource.Error(res.error))
                 }
             }
@@ -90,6 +91,7 @@ class ClinicsRepositoryImpl(
                                 else -> {}
                             }
                         }
+
                     is Resource.Error -> emit(Resource.Error(res.error))
                 }
             }
@@ -139,6 +141,16 @@ class ClinicsRepositoryImpl(
                 }
         }
 
+    override fun listTopDoctors(): Flow<Resource<List<Doctor>>> =
+        flow {
+            localDoctorDataSource
+                .listTopDoctors()
+                .distinctUntilChanged()
+                .collect { entities ->
+                    emit(Resource.Success(data = entities.map { it.toModel() }))
+                }
+        }
+
     override fun addNewDoctor(doctor: Doctor): Flow<Resource<Nothing?>> =
         flow {
             emit(Resource.Loading())
@@ -154,6 +166,7 @@ class ClinicsRepositoryImpl(
                                 else -> {}
                             }
                         }
+
                     is Resource.Error -> emit(Resource.Error(res.error))
                 }
             }
@@ -174,6 +187,7 @@ class ClinicsRepositoryImpl(
                                 else -> {}
                             }
                         }
+
                     is Resource.Error -> emit(Resource.Error(res.error))
                 }
             }
