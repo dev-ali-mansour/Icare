@@ -15,5 +15,7 @@ class LocalDoctorDataSourceImpl(
 
     override fun listDoctors(): Flow<List<DoctorEntity>> = doctorDao.listDoctors()
 
+    override fun listTopDoctors(): Flow<List<DoctorEntity>> = doctorDao.listTopDoctors()
+
     override fun listDoctors(clinicId: Long): Flow<List<DoctorEntity>> = doctorDao.listDoctors(clinicId)
 }
