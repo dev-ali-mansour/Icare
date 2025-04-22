@@ -15,6 +15,9 @@ interface DoctorDao {
     @Query("SELECT * FROM doctors")
     fun listDoctors(): Flow<List<DoctorEntity>>
 
+    @Query("SELECT * FROM doctors Order by rating DESC LIMIT 5")
+    fun listTopDoctors(): Flow<List<DoctorEntity>>
+
     @Query("SELECT * FROM doctors WHERE clinicId=:clinicId")
     fun listDoctors(clinicId: Long): Flow<List<DoctorEntity>>
 }

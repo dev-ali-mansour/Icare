@@ -107,4 +107,8 @@
     <string name="confirmed">مؤكدة</string>
     <string name="completed">مكتملة</string>
     <string name="cancelled">ملغاة</string>
+    <string name="scan_center">مركز أشعة</string>
+    <string name="book_appointment">حجز موعد</string>
+    <string name="lab_center">معمل تحاليل</string>
+    <string name="pharmacy">صيدلية</string>
 </resources>
