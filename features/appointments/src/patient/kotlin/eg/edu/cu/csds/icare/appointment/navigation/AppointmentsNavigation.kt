@@ -22,6 +22,6 @@ fun NavGraphBuilder.appointmentsRoute(
         )
     }
 
-    composable<Screen.BookAppointment> {
+    composable<Screen.Doctors> {
     }
 }
