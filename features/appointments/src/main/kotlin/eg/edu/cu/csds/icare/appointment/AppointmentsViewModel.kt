@@ -12,6 +12,7 @@ import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.BookAppointm
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetAppointmentsByStatus
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetPatientAppointments
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.UpdateAppointment
+import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -198,7 +199,6 @@ class AppointmentsViewModel(
                     ),
                 )*/
             getPatientAppointmentUseCase().collectLatest {
-                // Todo Pass resource to _appointmentsResFlow
                 _appointmentsResFlow.value = it
             }
         }
