@@ -139,4 +139,8 @@ Objectives:\n
     <string name="confirmed">Confirmed</string>
     <string name="completed">Completed</string>
     <string name="cancelled">Cancelled</string>
+    <string name="scan_center">Scan Center</string>
+    <string name="book_appointment">Book Appointment</string>
+    <string name="lab_center">Lab Center</string>
+    <string name="pharmacy">Pharmacy</string>
 </resources>

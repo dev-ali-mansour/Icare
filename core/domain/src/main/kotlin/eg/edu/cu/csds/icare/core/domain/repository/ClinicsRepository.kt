@@ -15,6 +15,8 @@ interface ClinicsRepository {
 
     fun listDoctors(forceRefresh: Boolean): Flow<Resource<List<Doctor>>>
 
+    fun listTopDoctors(): Flow<Resource<List<Doctor>>>
+
     fun listClinicDoctors(clinicId: Long): Flow<Resource<List<Doctor>>>
 
     fun addNewDoctor(doctor: Doctor): Flow<Resource<Nothing?>>
