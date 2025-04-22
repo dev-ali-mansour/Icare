@@ -50,6 +50,15 @@ class AppointmentsViewModel(
         _appointmentsResFlow.asStateFlow()
     var selectedAppointment: MutableState<Appointment?> = mutableStateOf(null)
     var selectedStatusIdState: MutableState<Short> = mutableStateOf(1)
+    val statusListState =
+        mutableStateOf(
+            listOf(
+                AppointmentStatus.PendingStatus,
+                AppointmentStatus.ConfirmedStatus,
+                AppointmentStatus.CancelledStatus,
+                AppointmentStatus.CompletedStatus,
+            ),
+        )
 
     var doctorIdState = mutableStateOf("")
     var doctorNameState = mutableStateOf("")
@@ -128,39 +137,30 @@ class AppointmentsViewModel(
                     listOf(
                         Appointment(
                             appointmentId = 1,
-                            doctorName = "Dr. John Smith",
-                            doctorSpecialty = "Cardiologist",
+                            doctorName = "د.سيد عبدالحليم الجوهري",
+                            doctorSpecialty = "استشاري جراحة الفم والأسنان",
                             doctorId = "101",
                             doctorImage = "",
                             dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
-                            patientName = "Patient",
-                            patientImage = "",
                             statusId = AppointmentStatus.PendingStatus.code,
-                            status = context.getString(AppointmentStatus.PendingStatus.textResId),
                         ),
                         Appointment(
                             appointmentId = 2,
-                            doctorName = "Dr. Sarah Johnson",
-                            doctorSpecialty = "Dermatologist",
+                            doctorName = "د.محمد عبدالرحمن بدوي",
+                            doctorSpecialty = "مخ وأعصاب",
                             doctorId = "102",
                             doctorImage = "",
                             dateTime = System.currentTimeMillis() + Constants.THREE_DAYS,
-                            patientName = "Patient",
-                            patientImage = "",
                             statusId = AppointmentStatus.PendingStatus.code,
-                            status = context.getString(AppointmentStatus.PendingStatus.textResId),
                         ),
                         Appointment(
                             appointmentId = 3,
-                            doctorName = "Dr. Anna Jones",
-                            doctorSpecialty = "General Practitioner",
+                            doctorName = "د.سارة محمد الهلالي",
+                            doctorSpecialty = "نساء وتوليد",
                             doctorId = "101",
                             doctorImage = "",
                             dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
-                            patientName = "Patient",
-                            patientImage = "",
                             statusId = AppointmentStatus.PendingStatus.code,
-                            status = context.getString(AppointmentStatus.PendingStatus.textResId),
                         ),
                         Appointment(
                             appointmentId = 4,
