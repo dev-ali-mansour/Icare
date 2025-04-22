@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.SplashScreen
+import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.appointment.AppointmentsViewModel
 import eg.edu.cu.csds.icare.appointment.navigation.appointmentsRoute
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
@@ -45,6 +46,7 @@ fun SetupNavGraph(
 ) {
     val onBoardingRes by mainViewModel.onBoardingCompleted.collectAsStateWithLifecycle()
     val appointmentsViewModel: AppointmentsViewModel = koinViewModel()
+    val clinicViewModel: ClinicViewModel = koinViewModel()
     val alertMessage = remember { mutableStateOf("") }
     val showAlert = remember { mutableStateOf(false) }
     val exitApp = remember { mutableStateOf(false) }
@@ -154,6 +156,8 @@ fun SetupNavGraph(
                 mediaHelper = mediaHelper,
                 mainViewModel = mainViewModel,
                 homeViewModel = homeViewModel,
+                appointmentsViewModel = appointmentsViewModel,
+                clinicViewModel = clinicViewModel,
                 navigateToScreen = { screen -> navController.navigate(screen) },
                 onError = { error ->
                     exitApp.value = false

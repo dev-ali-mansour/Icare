@@ -35,9 +35,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.firebase.auth.FirebaseAuth
+import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
+import eg.edu.cu.csds.icare.appointment.AppointmentsViewModel
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen.Profile
+import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.dialogTint
@@ -55,6 +58,8 @@ internal fun HomeScreen(
     mediaHelper: MediaHelper,
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
+    appointmentsViewModel: AppointmentsViewModel,
+    clinicViewModel: ClinicViewModel,
     navigateToScreen: (Screen) -> Unit,
     onError: suspend (Throwable?) -> Unit,
     context: Context = LocalContext.current,
@@ -66,6 +71,10 @@ internal fun HomeScreen(
     var openDialog by homeViewModel.openDialog
     var isPlayed by homeViewModel.isPlayed
     val userResource by mainViewModel.currentUserFlow.collectAsStateWithLifecycle()
+    val topDoctorsRes by clinicViewModel.topDoctorsResFlow.collectAsStateWithLifecycle()
+    val appointmentsRes by appointmentsViewModel.appointmentsResFlow.collectAsStateWithLifecycle()
+    val promotionRes by homeViewModel.promotionResFlow.collectAsStateWithLifecycle()
+    val statusList by appointmentsViewModel.statusListState
 
     BackHandler {
         openDialog = true
@@ -78,6 +87,11 @@ internal fun HomeScreen(
                 isPlayed = true
             }
         }
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        appointmentsViewModel.getPatientAppointments(context)
+        clinicViewModel.listTopDoctors()
     }
 
     Column(
@@ -98,7 +112,7 @@ internal fun HomeScreen(
                             .wrapContentHeight(),
                     shape = RoundedCornerShape(size = S_PADDING),
                 ) {
-                    Column(modifier = Modifier.padding(all = 16.dp)) {
+                    Column(modifier = Modifier.padding(all = M_PADDING)) {
                         Row(
                             modifier =
                                 Modifier
@@ -138,7 +152,6 @@ internal fun HomeScreen(
                                     alignment = Alignment.End,
                                 ),
                         ) {
-                            // Cancel button
                             Box(
                                 modifier =
                                     Modifier
@@ -161,7 +174,7 @@ internal fun HomeScreen(
                                     fontFamily = helveticaFamily,
                                 )
                             }
-                            // Confirm button
+
                             Box(
                                 modifier =
                                     Modifier
@@ -197,8 +210,15 @@ internal fun HomeScreen(
         HomeContent(
             firebaseUser = firebaseAuth.currentUser.getBasicInfo,
             userResource = userResource,
+            topDoctorsRes = topDoctorsRes,
+            appointmentsRes = appointmentsRes,
+            promotionsRes = promotionRes,
             appVersion = appVersion,
+            statusList = statusList,
             onUserClicked = { navigateToScreen(Profile) },
+            onPromotionClicked = {},
+            onServiceClicked = { navigateToScreen(it) },
+            onDoctorClicked = { },
             onError = { onError(it) },
         )
     }
