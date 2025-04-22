@@ -18,6 +18,8 @@ data class DoctorEntity(
     @ColumnInfo(defaultValue = "0.0")
     val toTime: Long,
     val specialty: String,
+    @ColumnInfo(defaultValue = "4.5")
+    val rating: Double,
     val profilePicture: String,
 )
 
@@ -33,6 +35,7 @@ fun DoctorEntity.toModel() =
         specialty = specialty,
         fromTime = fromTime,
         toTime = toTime,
+        rating = rating,
         profilePicture = profilePicture,
     )
 
@@ -47,5 +50,6 @@ fun Doctor.toEntity() =
         specialty = specialty,
         fromTime = fromTime,
         toTime = toTime,
+        rating = rating,
         profilePicture = profilePicture,
     )
