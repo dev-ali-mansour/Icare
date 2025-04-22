@@ -267,7 +267,7 @@ class RemoteAuthDataSourceImpl(
             map["birthDate"] = birthDate
             map["gender"] = gender.toString()
             map["nationalId"] = nationalId.toString()
-            map["phone"] = phone
+            map["phoneNumber"] = phone
             map["address"] = address
             map["chronicDiseases"] = chronicDiseases
             map["currentMedications"] = currentMedications
