@@ -2,11 +2,9 @@ package eg.edu.cu.csds.icare.core.domain.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 @Serializable
 data class Clinic(
-    @Transient
     val token: String = "",
     @SerialName("clinicID")
     val id: Long = 0,
