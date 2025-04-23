@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.firebase.auth.FirebaseAuth
+import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
+import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen.Profile
@@ -55,7 +57,10 @@ internal fun HomeScreen(
     mediaHelper: MediaHelper,
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
+    clinicViewModel: ClinicViewModel,
     navigateToScreen: (Screen) -> Unit,
+    onAppointmentClick: (Appointment) -> Unit = {},
+    onSeeAllClick: () -> Unit = {},
     onError: suspend (Throwable?) -> Unit,
     context: Context = LocalContext.current,
 ) {
@@ -66,6 +71,7 @@ internal fun HomeScreen(
     var openDialog by homeViewModel.openDialog
     var isPlayed by homeViewModel.isPlayed
     val userResource by mainViewModel.currentUserFlow.collectAsStateWithLifecycle()
+    val doctorScheduleRes by clinicViewModel.doctorScheduleResFlow.collectAsStateWithLifecycle()
 
     BackHandler {
         openDialog = true
@@ -198,7 +204,11 @@ internal fun HomeScreen(
             firebaseUser = firebaseAuth.currentUser.getBasicInfo,
             userResource = userResource,
             appVersion = appVersion,
+            doctorScheduleRes = doctorScheduleRes,
             onUserClicked = { navigateToScreen(Profile) },
+            onAppointmentClick = { onAppointmentClick(it) },
+            loadContentData = { clinicViewModel.getDoctorSchedule() },
+            onSeeAllClick = { onSeeAllClick() },
             onError = { onError(it) },
         )
     }
