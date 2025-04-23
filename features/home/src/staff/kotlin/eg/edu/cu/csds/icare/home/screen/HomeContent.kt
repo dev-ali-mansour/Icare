@@ -36,13 +36,16 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.core.net.toUri
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import eg.edu.cu.csds.icare.core.domain.model.Appointment
+import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.model.FirebaseUserBasicInfo
-import eg.edu.cu.csds.icare.core.domain.model.Permission
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.User
+import eg.edu.cu.csds.icare.core.ui.common.Role
 import eg.edu.cu.csds.icare.core.ui.theme.CATEGORY_ICON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.HEADER_ICON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.HEADER_PROFILE_CARD_WIDTH
+import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Orange200
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.U_PADDING
@@ -56,6 +59,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.kufamFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.home.R
+import eg.edu.cu.csds.icare.home.screen.doctor.DoctorContent
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
@@ -63,11 +67,15 @@ internal fun HomeContent(
     firebaseUser: FirebaseUserBasicInfo?,
     userResource: Resource<User>,
     appVersion: String,
+    doctorScheduleRes: Resource<DoctorSchedule>,
+    loadContentData: (Short) -> Unit,
     onUserClicked: () -> Unit,
+    onAppointmentClick: (Appointment) -> Unit,
+    onSeeAllClick: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
 ) {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-        val (progress, titleContainer, line, marquee) = createRefs()
+        val (progress, titleContainer, line, content, marquee) = createRefs()
         Surface(
             modifier =
                 Modifier.constrainAs(titleContainer) {
@@ -94,8 +102,7 @@ internal fun HomeContent(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         width = Dimension.fillToConstraints
-                    }
-                    .fillMaxWidth()
+                    }.fillMaxWidth()
                     .height(XS_PADDING)
                     .background(Yellow500),
         )
@@ -114,7 +121,46 @@ internal fun HomeContent(
                 )
 
             is Resource.Success ->
-                userResource.data?.let {
+                userResource.data?.let { user ->
+                    LaunchedEffect(key1 = true) {
+                        loadContentData(user.roleId)
+                    }
+                    when (doctorScheduleRes) {
+                        is Resource.Unspecified -> {}
+                        is Resource.Loading ->
+                            CircularProgressIndicator(
+                                modifier =
+                                    Modifier.constrainAs(progress) {
+                                        top.linkTo(parent.top, margin = M_PADDING)
+                                        start.linkTo(parent.start)
+                                        end.linkTo(parent.end)
+                                        bottom.linkTo(parent.bottom)
+                                    },
+                            )
+
+                        is Resource.Success ->
+                            doctorScheduleRes.data?.let { schedule ->
+                                DoctorContent(
+                                    modifier =
+                                        Modifier.constrainAs(content) {
+                                            top.linkTo(line.bottom)
+                                            start.linkTo(parent.start)
+                                            end.linkTo(parent.end)
+                                            bottom.linkTo(marquee.top, margin = M_PADDING)
+                                            width = Dimension.fillToConstraints
+                                            height = Dimension.fillToConstraints
+                                        },
+                                    schedule = schedule,
+                                    onAppointmentClick = {},
+                                    onSeeAllClick = {},
+                                )
+                            }
+
+                        is Resource.Error ->
+                            LaunchedEffect(key1 = true) {
+                                onError(doctorScheduleRes.error)
+                            }
+                    }
                 }
 
             is Resource.Error ->
@@ -131,8 +177,7 @@ internal fun HomeContent(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         bottom.linkTo(parent.bottom)
-                    }
-                    .fillMaxWidth(fraction = 0.9f)
+                    }.fillMaxWidth(fraction = 0.9f)
                     .basicMarquee(iterations = Int.MAX_VALUE),
             color = Orange200,
             fontSize = MaterialTheme.typography.titleMedium.fontSize,
@@ -166,8 +211,7 @@ private fun TitleView(
                     .constrainAs(logo) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
-                    }
-                    .size(HEADER_ICON_SIZE),
+                    }.size(HEADER_ICON_SIZE),
             painter = painterResource(CoreR.drawable.logo),
             contentDescription = null,
             contentScale = ContentScale.Fit,
@@ -194,8 +238,7 @@ private fun TitleView(
                     .constrainAs(card) {
                         top.linkTo(logo.top, S_PADDING)
                         end.linkTo(parent.end, S_PADDING)
-                    }
-                    .clickable { onUserClicked() },
+                    }.clickable { onUserClicked() },
             color = contentBackgroundColor,
             shape = RoundedCornerShape(S_PADDING),
         ) {
@@ -290,18 +333,40 @@ internal fun HomeContentPreview() {
                     email = "",
                     photoUrl = "".toUri(),
                 ),
-            userResource =
+            userResource = Resource.Success(User(roleId = Role.AdminRole.code)),
+            appVersion = "1.0.0",
+            doctorScheduleRes =
                 Resource.Success(
-                    User(
-                        permissions =
+                    DoctorSchedule(
+                        totalPatients = 2000,
+                        confirmed = 16,
+                        price = 500.0,
+                        availableSlots = 5,
+                        appointments =
                             listOf(
-                                Permission.AdminPermission.code,
-                                Permission.CreatePrescriptionPermission.code,
+                                Appointment(
+                                    patientName = "محمد السيد عثمان",
+                                    dateTime = System.currentTimeMillis(),
+                                ),
+                                Appointment(
+                                    patientName = "ابراهيم محمد",
+                                    dateTime = System.currentTimeMillis(),
+                                ),
+                                Appointment(
+                                    patientName = "شاكر محمد العربي",
+                                    dateTime = System.currentTimeMillis(),
+                                ),
+                                Appointment(
+                                    patientName = "أحمد عبد الحليم مهران",
+                                    dateTime = System.currentTimeMillis(),
+                                ),
                             ),
                     ),
                 ),
-            appVersion = "1.0.0",
             onUserClicked = {},
+            loadContentData = {},
+            onAppointmentClick = {},
+            onSeeAllClick = {},
             onError = {},
         )
     }
