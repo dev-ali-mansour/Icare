@@ -111,4 +111,9 @@
     <string name="book_appointment">حجز موعد</string>
     <string name="lab_center">معمل تحاليل</string>
     <string name="pharmacy">صيدلية</string>
+    <string name="price">سعر الخدمة</string>
+    <string name="available_slots">المواعيد المتاحة</string>
+    <string name="see_all">عرض الكل</string>
+    <string name="admins">مديري النظام</string>
+    <string name="patients">المرضى</string>
 </resources>
