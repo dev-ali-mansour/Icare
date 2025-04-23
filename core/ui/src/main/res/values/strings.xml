@@ -143,4 +143,9 @@ Objectives:\n
     <string name="book_appointment">Book Appointment</string>
     <string name="lab_center">Lab Center</string>
     <string name="pharmacy">Pharmacy</string>
+    <string name="price">Price</string>
+    <string name="available_slots">Available Slots</string>
+    <string name="see_all">See All</string>
+    <string name="admins">Admins</string>
+    <string name="patients">Patients</string>
 </resources>

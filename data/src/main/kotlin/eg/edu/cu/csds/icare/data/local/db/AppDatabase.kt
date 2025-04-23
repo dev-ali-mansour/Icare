@@ -3,6 +3,7 @@ package eg.edu.cu.csds.icare.data.local.db
 import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.DeleteColumn
+import androidx.room.DeleteTable
 import androidx.room.RenameColumn
 import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
@@ -18,18 +19,16 @@ import eg.edu.cu.csds.icare.data.local.db.entity.BookingMethodEntity
 import eg.edu.cu.csds.icare.data.local.db.entity.CenterEntity
 import eg.edu.cu.csds.icare.data.local.db.entity.ClinicEntity
 import eg.edu.cu.csds.icare.data.local.db.entity.DoctorEntity
-import eg.edu.cu.csds.icare.data.local.db.entity.PermissionEntity
 import eg.edu.cu.csds.icare.data.local.db.entity.PharmacyEntity
 import eg.edu.cu.csds.icare.data.local.db.entity.SettingsEntity
 import eg.edu.cu.csds.icare.data.local.db.entity.UserEntity
 
 @Database(
     entities = [
-        SettingsEntity::class, UserEntity::class, PermissionEntity::class,
-        BookingMethodEntity::class, ClinicEntity::class, CenterEntity::class, DoctorEntity::class,
-        PharmacyEntity::class,
+        SettingsEntity::class, UserEntity::class, BookingMethodEntity::class, ClinicEntity::class,
+        CenterEntity::class, DoctorEntity::class, PharmacyEntity::class,
     ],
-    version = 9,
+    version = 11,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -40,6 +39,8 @@ import eg.edu.cu.csds.icare.data.local.db.entity.UserEntity
         AutoMigration(from = 6, to = 7, spec = AppDatabase.AutoMigrationSpec7::class),
         AutoMigration(from = 7, to = 8),
         AutoMigration(from = 8, to = 9),
+        AutoMigration(from = 9, to = 10),
+        AutoMigration(from = 10, to = 11, spec = AppDatabase.AutoMigrationSpec11::class),
     ],
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -91,6 +92,20 @@ abstract class AppDatabase : RoomDatabase() {
         DeleteColumn(tableName = "lab_imaging_centers", columnName = "contractStatusId"),
     )
     class AutoMigrationSpec7 : AutoMigrationSpec {
+        @Override
+        override fun onPostMigrate(db: SupportSQLiteDatabase) = Unit
+    }
+
+    @DeleteTable.Entries(DeleteTable(tableName = "permissions"))
+    @DeleteColumn.Entries(DeleteColumn(tableName = "user", columnName = "job"))
+    @RenameColumn.Entries(
+        RenameColumn(
+            tableName = "user",
+            fromColumnName = "dateOfBirth",
+            toColumnName = "birthDate",
+        ),
+    )
+    class AutoMigrationSpec11 : AutoMigrationSpec {
         @Override
         override fun onPostMigrate(db: SupportSQLiteDatabase) = Unit
     }

@@ -54,15 +54,7 @@ class RemoteAuthDataSourceImpl(
                         response.body()?.let { res ->
                             when (res.statusCode) {
                                 Constants.ERROR_CODE_OK ->
-                                    res.role?.let { role ->
-                                        val employee =
-                                            User(
-                                                roleId = role.id,
-                                                job = res.job,
-                                                permissions = role.permissions,
-                                            )
-                                        emit(Resource.Success(data = employee))
-                                    } ?: emit(Resource.Error(UserNotAuthorizedException()))
+                                    emit(Resource.Success(data = res.user))
 
                                 Constants.ERROR_CODE_USER_COLLISION -> {
                                     user.delete()
@@ -267,7 +259,7 @@ class RemoteAuthDataSourceImpl(
             map["birthDate"] = birthDate
             map["gender"] = gender.toString()
             map["nationalId"] = nationalId.toString()
-            map["phone"] = phone
+            map["phoneNumber"] = phone
             map["address"] = address
             map["chronicDiseases"] = chronicDiseases
             map["currentMedications"] = currentMedications

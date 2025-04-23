@@ -161,6 +161,7 @@ fun SetupNavGraph(
                 mediaHelper = mediaHelper,
                 mainViewModel = mainViewModel,
                 homeViewModel = homeViewModel,
+                clinicViewModel = clinicViewModel,
                 navigateToScreen = { screen -> navController.navigate(screen) },
                 onError = { error ->
                     exitApp.value = false

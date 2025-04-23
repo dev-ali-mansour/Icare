@@ -1,12 +1,10 @@
 package eg.edu.cu.csds.icare.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
-import eg.edu.cu.csds.icare.core.domain.model.Permission
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.domain.repository.AuthRepository
 import eg.edu.cu.csds.icare.data.local.datasource.LocalAuthDataSource
-import eg.edu.cu.csds.icare.data.local.db.entity.PermissionEntity
 import eg.edu.cu.csds.icare.data.local.db.entity.toEntity
 import eg.edu.cu.csds.icare.data.local.db.entity.toModel
 import eg.edu.cu.csds.icare.data.remote.datasource.RemoteAuthDataSource
@@ -90,15 +88,7 @@ class AuthRepositoryImpl(
                 emit(Resource.Loading())
                 localAuthDataSource.getUser()?.let { userEntity ->
                     if (!forceUpdate) {
-                        val currentUser =
-                            userEntity
-                                .toModel()
-                                .copy(
-                                    permissions =
-                                        localAuthDataSource
-                                            .getPermissions()
-                                            .map { it.id },
-                                )
+                        val currentUser = userEntity.toModel()
                         emit(Resource.Success(currentUser))
                         return@flow
                     }
@@ -107,24 +97,13 @@ class AuthRepositoryImpl(
                     remoteAuthDataSource.getUserInfo().map { res ->
                         if (res is Resource.Success) {
                             res.data?.let { user ->
-                                localAuthDataSource.saveEmployee(
-                                    entity = user.toEntity(),
-                                    permissions = user.permissions.map { PermissionEntity(id = it) },
-                                )
+                                localAuthDataSource.saveEmployee(entity = user.toEntity())
                                 Resource.Success(data = user)
                             } ?: res
                         } else {
                             // Todo Pass resource error to the view model to handle it
 //                            res
-                            Resource.Success(
-                                User(
-                                    permissions =
-                                        listOf(
-                                            Permission.AdminPermission.code,
-                                            Permission.CreatePrescriptionPermission.code,
-                                        ),
-                                ),
-                            )
+                            Resource.Success(User(roleId = 1))
                         }
                     },
                 )

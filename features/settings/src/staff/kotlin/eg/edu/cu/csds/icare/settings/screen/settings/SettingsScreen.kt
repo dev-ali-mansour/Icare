@@ -23,7 +23,7 @@ import eg.edu.cu.csds.icare.core.ui.util.appShare
 import eg.edu.cu.csds.icare.core.ui.util.changeLanguage
 import eg.edu.cu.csds.icare.core.ui.util.contactUs
 import eg.edu.cu.csds.icare.core.ui.util.currentLanguage
-import eg.edu.cu.csds.icare.core.ui.util.hasPermission
+import eg.edu.cu.csds.icare.core.ui.util.isAdmin
 import eg.edu.cu.csds.icare.core.ui.util.reportError
 import eg.edu.cu.csds.icare.core.ui.util.showOurApps
 import eg.edu.cu.csds.icare.core.ui.util.showPrivacyPolicy
@@ -45,9 +45,9 @@ internal fun SettingsScreen(
     SideEffect {
         scope.launch {
             settingsViewModel.getSettingsItems(context)
-            currentUserRes.data?.let { employee ->
+            currentUserRes.data?.let { user ->
                 when {
-                    hasPermission(employee.permissions, Screen.Admin) -> {
+                    isAdmin(user.roleId) -> {
                         settingsViewModel.addAdminSection(context)
                     }
                 }

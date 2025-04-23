@@ -11,5 +11,8 @@
     <string name="cosmetics">Cosmetics</string>
     <string name="no_upcoming_appointments">No upcoming appointments</string>
     <string name="off">OFF</string>
+    <string name="total_patients">Total Patients</string>
+    <string name="till_today">Till Today</string>
+    <string name="today_appointment">Today\'s Appointment</string>
     <!--Multilingual Resources of Application-->
 </resources>

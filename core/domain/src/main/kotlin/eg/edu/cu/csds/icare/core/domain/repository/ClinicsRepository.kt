@@ -3,6 +3,7 @@ package eg.edu.cu.csds.icare.core.domain.repository
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
+import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import kotlinx.coroutines.flow.Flow
 
@@ -14,6 +15,8 @@ interface ClinicsRepository {
     fun updateClinic(clinic: Clinic): Flow<Resource<Nothing?>>
 
     fun listDoctors(forceRefresh: Boolean): Flow<Resource<List<Doctor>>>
+
+    fun getDoctorSchedule(): Flow<Resource<DoctorSchedule>>
 
     fun listTopDoctors(): Flow<Resource<List<Doctor>>>
 
