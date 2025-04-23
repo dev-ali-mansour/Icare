@@ -15,12 +15,12 @@ import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.DoctorScheduleResponse
 import eg.edu.cu.csds.icare.core.domain.model.DoctorsResponse
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
-import eg.edu.cu.csds.icare.core.domain.model.LoginInfoResponse
 import eg.edu.cu.csds.icare.core.domain.model.PharmaciesResponse
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacist
 import eg.edu.cu.csds.icare.core.domain.model.PharmacistsResponse
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 import eg.edu.cu.csds.icare.core.domain.model.RegisteredResponse
+import eg.edu.cu.csds.icare.core.domain.model.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -62,7 +62,7 @@ interface ApiService {
     @POST("loginInfo")
     suspend fun getLoginInfo(
         @Body body: HashMap<String, String>,
-    ): Response<LoginInfoResponse>
+    ): Response<UserResponse>
 
     @POST("appointmentApi/patientAppointment")
     suspend fun getPatientAppointments(

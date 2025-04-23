@@ -4,9 +4,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LoginInfoResponse(
+data class UserResponse(
     @SerialName("status")
     val statusCode: Short,
-    val role: Role?,
-    val job: String,
+    @SerialName("data")
+    val user: User,
 )
