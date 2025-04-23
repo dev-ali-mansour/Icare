@@ -5,9 +5,11 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
+import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.AddNewClinic
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinics
@@ -16,6 +18,7 @@ import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.AddNewClinicStaff
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.ListClinicStaff
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.UpdateClinicStaff
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.AddNewDoctor
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.GetDoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctors
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListTopDoctors
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.UpdateDoctor
@@ -25,7 +28,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
@@ -43,6 +45,7 @@ class ClinicViewModel(
     private val addNewClinicStaffUseCase: AddNewClinicStaff,
     private val updateClinicStaffUseCase: UpdateClinicStaff,
     private val listClinicStaffUseCase: ListClinicStaff,
+    private val getDoctorScheduleUseCase: GetDoctorSchedule,
 ) : ViewModel() {
     private val _actionResFlow =
         MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
@@ -58,8 +61,10 @@ class ClinicViewModel(
     val doctorsResFlow: StateFlow<Resource<List<Doctor>>> = _doctorsResFlow
     private val _topDoctorsResFlow =
         MutableStateFlow<Resource<List<Doctor>>>(Resource.Unspecified())
-    val topDoctorsResFlow: StateFlow<Resource<List<Doctor>>> =
-        _topDoctorsResFlow.asStateFlow()
+    val topDoctorsResFlow: StateFlow<Resource<List<Doctor>>> = _topDoctorsResFlow
+    private val _doctorScheduleResFlow =
+        MutableStateFlow<Resource<DoctorSchedule>>(Resource.Unspecified())
+    val doctorScheduleResFlow: StateFlow<Resource<DoctorSchedule>> = _doctorScheduleResFlow
     private val _clinicStaffsResFlow =
         MutableStateFlow<Resource<List<ClinicStaff>>>(Resource.Unspecified())
     val clinicStaffsResFlow: StateFlow<Resource<List<ClinicStaff>>> = _clinicStaffsResFlow
@@ -241,6 +246,68 @@ class ClinicViewModel(
             }
             listClinicStaffUseCase(selectedClinicIdState.longValue).collect { result ->
                 _clinicStaffsResFlow.value = result
+            }
+        }
+    }
+
+    fun getDoctorSchedule() {
+        viewModelScope.launch(dispatcher) {
+            if (_doctorScheduleResFlow.value !is Resource.Unspecified) {
+                _doctorScheduleResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+
+            getDoctorScheduleUseCase().collect { result ->
+                // Todo Remove this mock data
+                if (result is Resource.Error) {
+                    _doctorScheduleResFlow.value =
+                        Resource.Success(
+                            DoctorSchedule(
+                                totalPatients = 2000,
+                                confirmed = 16,
+                                price = 500.0,
+                                availableSlots = 5,
+                                appointments =
+                                    listOf(
+                                        Appointment(
+                                            id = 1,
+                                            patientName = "محمد السيد عثمان",
+                                            patientImage =
+                                                "https://t4.ftcdn.net/jpg/01/98/82/75/360_F_" +
+                                                    "198827520_wVNNHdMq4yLJe76WWivQQ5Ev2WtXac4N.webp",
+                                            dateTime = System.currentTimeMillis(),
+                                        ),
+                                        Appointment(
+                                            id = 2,
+                                            patientName = "ابراهيم محمد",
+                                            dateTime = System.currentTimeMillis().plus(other = 30 * 60 * 1000),
+                                        ),
+                                        Appointment(
+                                            id = 3,
+                                            patientName = "شاكر محمد العربي",
+                                            dateTime = System.currentTimeMillis().plus(other = 60 * 60 * 1000),
+                                        ),
+                                        Appointment(
+                                            id = 4,
+                                            patientName = "أحمد عبد الحليم مهران",
+                                            dateTime = System.currentTimeMillis().plus(other = (1.5 * 60 * 60 * 1000).toLong()),
+                                        ),
+                                        Appointment(
+                                            id = 5,
+                                            patientName = "محمد السيد شاكر",
+                                            dateTime = System.currentTimeMillis().plus(other = 2 * 60 * 60 * 1000),
+                                        ),
+                                        Appointment(
+                                            id = 6,
+                                            patientName = "ابراهيم محمد سعيد",
+                                            dateTime = System.currentTimeMillis().plus(other = (2.5 * 60 * 60 * 1000).toLong()),
+                                        ),
+                                    ),
+                            ),
+                        )
+                } else {
+                    _doctorScheduleResFlow.value = result
+                }
             }
         }
     }

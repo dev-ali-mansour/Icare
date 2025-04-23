@@ -6,7 +6,6 @@ import kotlinx.serialization.Transient
 
 @Serializable
 data class ClinicStaff(
-    @Transient
     val token: String = "",
     val id: String = "",
     val firstName: String = "",

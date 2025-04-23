@@ -3,6 +3,7 @@ package eg.edu.cu.csds.icare.data.repository
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
+import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.repository.ClinicsRepository
 import eg.edu.cu.csds.icare.data.local.datasource.LocalClinicsDataSource
@@ -140,6 +141,8 @@ class ClinicsRepositoryImpl(
                     emit(Resource.Success(data = entities.map { it.toModel() }))
                 }
         }
+
+    override fun getDoctorSchedule(): Flow<Resource<DoctorSchedule>> = remoteClinicsDataSource.getDoctorSchedule()
 
     override fun listTopDoctors(): Flow<Resource<List<Doctor>>> =
         flow {

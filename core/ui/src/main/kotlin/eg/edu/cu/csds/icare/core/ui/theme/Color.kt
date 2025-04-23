@@ -19,6 +19,9 @@ val LightGreen = Color(color = 0xFFE2EBCD)
 val AiryGreen = Color(color = 0xFFF1F8F5)
 val DeepTeal = Color(color = 0xFF3BDDDF)
 val BurntOrange = Color(color = 0xFFEE6F5C)
+val SkyAccent = Color(color = 0xFF3EBCDF)
+val mintAccent = Color(color = 0xFF82EEA6)
+val trustBlue = Color(color = 0xFF6488D9)
 
 val backgroundColor: Color
     @Composable

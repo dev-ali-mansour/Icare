@@ -6,7 +6,6 @@ import kotlinx.serialization.Transient
 
 @Serializable
 data class Pharmacist(
-    @Transient
     val token: String = "",
     @SerialName("pharmacistID")
     val id: String = "",
