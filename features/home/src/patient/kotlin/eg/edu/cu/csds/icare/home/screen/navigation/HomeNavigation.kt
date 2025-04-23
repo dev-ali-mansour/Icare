@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.home.navigation
+package eg.edu.cu.csds.icare.home.screen.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
