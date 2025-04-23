@@ -8,7 +8,6 @@ import kotlinx.serialization.Transient
 
 @Serializable
 data class Doctor(
-//    @Transient
     val token: String = "",
     @SerialName("doctorID")
     val id: String = "",
@@ -34,5 +33,6 @@ data class Doctor(
             slotDurationMinutes = 30,
         ),
     val rating: Double = 4.5,
+    val price: Double = 0.0,
     val profilePicture: String = "https://t4.ftcdn.net/jpg/01/98/82/75/360_F_198827520_wVNNHdMq4yLJe76WWivQQ5Ev2WtXac4N.webp",
 )
