@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
+import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
@@ -251,6 +252,44 @@ class RemoteClinicsDataSourceImpl(
         }.catch {
             Timber.e("updateDoctor() error ${it.javaClass.simpleName}: ${it.message}")
             emit(Resource.Error(it))
+        }
+
+    override fun getDoctorSchedule(): Flow<Resource<DoctorSchedule>> =
+        flow {
+            runCatching {
+                emit(Resource.Loading())
+                auth.currentUser?.let {
+                    val token =
+                        runBlocking {
+                            auth.currentUser
+                                ?.getIdToken(false)
+                                ?.await()
+                                ?.token
+                                .toString()
+                        }
+                    val map = HashMap<String, String>()
+                    map["token"] = token
+                    val response = service.getDoctorSchedule(map)
+                    when (response.code()) {
+                        HTTP_OK -> {
+                            response.body()?.let { res ->
+                                when (res.statusCode) {
+                                    Constants.ERROR_CODE_OK ->
+                                        emit(Resource.Success(res.schedule))
+
+                                    Constants.ERROR_CODE_SERVER_ERROR ->
+                                        emit(Resource.Error(ConnectException()))
+                                }
+                            }
+                        }
+
+                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
+                    }
+                }
+            }.onFailure {
+                Timber.e("getDoctorSchedule() error ${it.javaClass.simpleName}: ${it.message}")
+                emit(Resource.Error(it))
+            }
         }
 
     override fun listClinicStaff(clinicId: Long): Flow<Resource<List<ClinicStaff>>> =
