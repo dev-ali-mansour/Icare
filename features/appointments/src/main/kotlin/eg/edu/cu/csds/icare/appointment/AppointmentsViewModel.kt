@@ -12,6 +12,7 @@ import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.BookAppointm
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetAppointmentsByStatus
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetPatientAppointments
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.UpdateAppointment
+import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -169,7 +170,6 @@ class AppointmentsViewModel(
                             patientName = "Patient",
                             patientImage = "",
                             statusId = AppointmentStatus.ConfirmedStatus.code,
-                            status = context.getString(AppointmentStatus.ConfirmedStatus.textResId),
                         ),
                         Appointment(
                             appointmentId = 5,
@@ -181,7 +181,6 @@ class AppointmentsViewModel(
                             patientName = "Patient",
                             patientImage = "",
                             statusId = AppointmentStatus.CompletedStatus.code,
-                            status = context.getString(AppointmentStatus.CompletedStatus.textResId),
                         ),
                         Appointment(
                             appointmentId = 6,
@@ -193,12 +192,10 @@ class AppointmentsViewModel(
                             patientName = "Patient",
                             patientImage = "",
                             statusId = AppointmentStatus.CancelledStatus.code,
-                            status = context.getString(AppointmentStatus.CancelledStatus.textResId),
                         ),
                     ),
                 )*/
             getPatientAppointmentUseCase().collectLatest {
-                // Todo Pass resource to _appointmentsResFlow
                 _appointmentsResFlow.value = it
             }
         }
