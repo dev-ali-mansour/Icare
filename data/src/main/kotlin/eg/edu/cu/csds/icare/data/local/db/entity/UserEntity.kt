@@ -8,9 +8,8 @@ import eg.edu.cu.csds.icare.core.domain.model.User
 data class UserEntity(
     @PrimaryKey
     val roleId: Short,
-    val job: String,
     val nationalId: String,
-    val dateOfBirth: Long,
+    val birthDate: Long,
     val gender: Char,
     val address: String,
     val phoneNumber: String,
@@ -19,9 +18,8 @@ data class UserEntity(
 fun UserEntity.toModel(): User =
     User(
         roleId = this.roleId,
-        job = this.job,
         nationalId = this.nationalId,
-        dateOfBirth = this.dateOfBirth,
+        birthDate = this.birthDate,
         gender = this.gender,
         address = this.address,
         phoneNumber = this.phoneNumber,
@@ -30,9 +28,8 @@ fun UserEntity.toModel(): User =
 fun User.toEntity(): UserEntity =
     UserEntity(
         roleId = this.roleId,
-        job = this.job,
         nationalId = this.nationalId,
-        dateOfBirth = this.dateOfBirth,
+        birthDate = this.birthDate,
         gender = this.gender,
         address = this.address,
         phoneNumber = this.phoneNumber,
