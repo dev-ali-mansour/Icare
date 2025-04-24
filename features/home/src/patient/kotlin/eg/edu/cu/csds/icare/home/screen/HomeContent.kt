@@ -57,7 +57,6 @@ import coil.request.ImageRequest
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.FirebaseUserBasicInfo
-import eg.edu.cu.csds.icare.core.domain.model.Permission
 import eg.edu.cu.csds.icare.core.domain.model.Promotion
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.User
@@ -66,6 +65,7 @@ import eg.edu.cu.csds.icare.core.domain.util.getFormattedDate
 import eg.edu.cu.csds.icare.core.domain.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.ui.common.AppService
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
+import eg.edu.cu.csds.icare.core.ui.common.Role
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.theme.ACTION_BUTTON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.ANNOUNCEMENT_IMAGE_SIZE
@@ -663,15 +663,7 @@ internal fun HomeContentPreview() {
                     email = "",
                     photoUrl = "".toUri(),
                 ),
-            userResource =
-                Resource.Success(
-                    User(
-                        permissions =
-                            listOf(
-                                Permission.CreatePrescriptionPermission.code,
-                            ),
-                    ),
-                ),
+            userResource = Resource.Success(User(roleId = Role.AdminRole.code)),
             topDoctorsRes =
                 Resource.Success(
                     listOf(
