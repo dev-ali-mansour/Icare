@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Patterns
 import eg.edu.cu.csds.icare.core.domain.model.TimeSlot
+import eg.edu.cu.csds.icare.core.domain.util.Constants.MAX_PARTS_LENGTH
 import java.math.RoundingMode
 import java.security.MessageDigest
 import java.text.DecimalFormat
@@ -37,6 +38,21 @@ fun String.hash(): String {
     return bytes.joinToString(":") { "%02X".format(it) }
 }
 
+fun String.isValidDoubleInput(): Boolean {
+    if (isEmpty()) return true
+    if (this == "." || this == ",") return false
+
+    val cleaned = this.replace(",", ".")
+    if (cleaned.count { it == '.' } > 1) return false
+
+    val parts = cleaned.split(".")
+    return when (parts.size) {
+        1 -> parts[0].length <= MAX_PARTS_LENGTH
+        2 -> parts[0].length <= MAX_PARTS_LENGTH && parts[1].length <= 2
+        else -> false
+    }
+}
+
 fun Short.toFormattedString(): String = DecimalFormat("#,###", DecimalFormatSymbols(Locale.ENGLISH)).format(this)
 
 fun Int.toFormattedString(): String = DecimalFormat("#,###", DecimalFormatSymbols(Locale.ENGLISH)).format(this)
@@ -67,10 +83,14 @@ fun Long.isTomorrow(): Boolean {
 }
 
 fun Double.toFormattedString(): String =
-    DecimalFormat("#,###.##", DecimalFormatSymbols(Locale.ENGLISH))
-        .apply {
-            roundingMode = RoundingMode.CEILING
-        }.format(this)
+    runCatching {
+        DecimalFormat("#,###.##", DecimalFormatSymbols(Locale.ENGLISH))
+            .apply {
+                roundingMode = RoundingMode.CEILING
+            }.format(this)
+    }.getOrElse { "" }
+
+fun Double.formatForDisplay(): String = if (this == 0.0) "" else String.format(Locale.ENGLISH, "%.2f", this)
 
 fun TimeSlot.divide(slotDurationMinutes: Short): List<TimeSlot> {
     require(slotDurationMinutes > 0) { "lengthMinutes was $slotDurationMinutes. Must specify positive amount of minutes." }

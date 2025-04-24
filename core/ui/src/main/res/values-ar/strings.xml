@@ -116,4 +116,5 @@
     <string name="see_all">عرض الكل</string>
     <string name="admins">مديري النظام</string>
     <string name="patients">المرضى</string>
+    <string name="rating">التقييم</string>
 </resources>

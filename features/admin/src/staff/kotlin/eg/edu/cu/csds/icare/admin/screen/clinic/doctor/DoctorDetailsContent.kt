@@ -30,6 +30,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -45,6 +50,7 @@ import eg.edu.cu.csds.icare.admin.R
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.util.getFormattedTime
+import eg.edu.cu.csds.icare.core.domain.util.toFormattedString
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
@@ -56,6 +62,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
+import eg.edu.cu.csds.icare.core.ui.view.DoubleTextField
 import java.util.Calendar
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
@@ -70,7 +77,8 @@ internal fun DoctorDetailsContent(
     speciality: String,
     fromTime: Long,
     toTime: Long,
-    profilePicture: String,
+    price: Double,
+    rating: Double,
     clinicsResource: Resource<List<Clinic>>,
     actionResource: Resource<Nothing?>,
     clinicsExpanded: Boolean,
@@ -84,13 +92,22 @@ internal fun DoctorDetailsContent(
     onSpecialityChanged: (String) -> Unit,
     onFromTimeChanged: (Long) -> Unit,
     onToTimeChanged: (Long) -> Unit,
-    onProfilePictureChanged: (String) -> Unit,
+    onPriceChanged: (Double) -> Unit,
+    onRatingChanged: (Double) -> Unit,
     onProceedButtonClicked: () -> Unit,
     onSuccess: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
+    editRating: Boolean = false,
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
 ) {
+    var ratingTextState by remember {
+        mutableStateOf(TextFieldValue(rating.toFormattedString()))
+    }
+
+    LaunchedEffect(key1 = rating) {
+        ratingTextState = TextFieldValue(rating.toFormattedString())
+    }
     ConstraintLayout(
         modifier =
             modifier
@@ -354,8 +371,24 @@ internal fun DoctorDetailsContent(
                                     KeyboardOptions.Default.copy(
                                         autoCorrectEnabled = false,
                                         keyboardType = KeyboardType.Text,
-                                        imeAction = ImeAction.Done,
+                                        imeAction = ImeAction.Next,
                                     ),
+                            )
+
+                            DoubleTextField(
+                                value = price,
+                                onValueChanged = { onPriceChanged(it) },
+                                label = stringResource(CoreR.string.price),
+                                textColor = textColor,
+                            )
+
+                            DoubleTextField(
+                                value = rating,
+                                onValueChanged = { onRatingChanged(it) },
+                                label = stringResource(CoreR.string.rating),
+                                textColor = textColor,
+                                readOnly = !editRating,
+                                imeAction = ImeAction.Done,
                             )
 
                             TextField(
@@ -566,10 +599,12 @@ internal fun DoctorDetailsContentPreview() {
             speciality = "",
             fromTime = 0,
             toTime = 0,
-            profilePicture = "",
+            price = 500.0,
+            rating = 4.5,
             clinicsResource = Resource.Success(listOf(Clinic(name = "عيادة 1"))),
             actionResource = Resource.Unspecified(),
             clinicsExpanded = false,
+            editRating = true,
             onFirstNameChanged = {},
             onLastNameChanged = {},
             onClinicsExpandedChange = {},
@@ -580,7 +615,8 @@ internal fun DoctorDetailsContentPreview() {
             onSpecialityChanged = {},
             onFromTimeChanged = {},
             onToTimeChanged = {},
-            onProfilePictureChanged = {},
+            onPriceChanged = {},
+            onRatingChanged = {},
             onProceedButtonClicked = {},
             onSuccess = {},
             onError = {},

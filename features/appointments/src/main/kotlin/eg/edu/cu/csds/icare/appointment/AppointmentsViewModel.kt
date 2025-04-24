@@ -12,6 +12,7 @@ import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.BookAppointm
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetAppointmentsByStatus
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetPatientAppointments
 import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.UpdateAppointment
+import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
@@ -59,9 +60,7 @@ class AppointmentsViewModel(
         )
 
     var doctorIdState = mutableStateOf("")
-    var doctorNameState = mutableStateOf("")
     var doctorSpecialtyState = mutableStateOf("")
-    var doctorImageState = mutableStateOf("")
     var dateTimeState = mutableLongStateOf(0L)
     var patientNameState = mutableStateOf("")
     var patientImageState = mutableStateOf("")
@@ -77,10 +76,8 @@ class AppointmentsViewModel(
 
             bookAppointmentUseCase(
                 Appointment(
-                    doctorName = doctorNameState.value,
                     doctorSpecialty = doctorSpecialtyState.value,
                     doctorId = doctorIdState.value,
-                    doctorImage = doctorImageState.value,
                     dateTime = dateTimeState.longValue,
                     patientName = patientNameState.value,
                     patientImage = patientImageState.value,
@@ -130,73 +127,77 @@ class AppointmentsViewModel(
                 delay(timeMillis = 100)
             }
 
-            /*_appointmentsResFlow.value =
-                Resource.Success(
-                    listOf(
-                        Appointment(
-                            appointmentId = 1,
-                            doctorName = "د.سيد عبدالحليم الجوهري",
-                            doctorSpecialty = "استشاري جراحة الفم والأسنان",
-                            doctorId = "101",
-                            doctorImage = "",
-                            dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
-                            statusId = AppointmentStatus.PendingStatus.code,
-                        ),
-                        Appointment(
-                            appointmentId = 2,
-                            doctorName = "د.محمد عبدالرحمن بدوي",
-                            doctorSpecialty = "مخ وأعصاب",
-                            doctorId = "102",
-                            doctorImage = "",
-                            dateTime = System.currentTimeMillis() + Constants.THREE_DAYS,
-                            statusId = AppointmentStatus.PendingStatus.code,
-                        ),
-                        Appointment(
-                            appointmentId = 3,
-                            doctorName = "د.سارة محمد الهلالي",
-                            doctorSpecialty = "نساء وتوليد",
-                            doctorId = "101",
-                            doctorImage = "",
-                            dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
-                            statusId = AppointmentStatus.PendingStatus.code,
-                        ),
-                        Appointment(
-                            appointmentId = 4,
-                            doctorName = "Dr. Anna Jones",
-                            doctorSpecialty = "Dentist",
-                            doctorId = "101",
-                            doctorImage = "",
-                            dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
-                            patientName = "Patient",
-                            patientImage = "",
-                            statusId = AppointmentStatus.ConfirmedStatus.code,
-                        ),
-                        Appointment(
-                            appointmentId = 5,
-                            doctorName = "Dr. Anna Jones",
-                            doctorSpecialty = "General Practitioner",
-                            doctorId = "101",
-                            doctorImage = "",
-                            dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
-                            patientName = "Patient",
-                            patientImage = "",
-                            statusId = AppointmentStatus.CompletedStatus.code,
-                        ),
-                        Appointment(
-                            appointmentId = 6,
-                            doctorName = "Dr. Anna Jones",
-                            doctorSpecialty = "General Practitioner",
-                            doctorId = "101",
-                            doctorImage = "",
-                            dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
-                            patientName = "Patient",
-                            patientImage = "",
-                            statusId = AppointmentStatus.CancelledStatus.code,
-                        ),
-                    ),
-                )*/
             getPatientAppointmentUseCase().collectLatest {
-                _appointmentsResFlow.value = it
+                // Todo Remove this mock data
+                if (it is Resource.Error) {
+                    _appointmentsResFlow.value =
+                        Resource.Success(
+                            listOf(
+                                Appointment(
+                                    appointmentId = 1,
+                                    doctorName = "د.سيد عبدالحليم الجوهري",
+                                    doctorSpecialty = "استشاري جراحة الفم والأسنان",
+                                    doctorId = "101",
+                                    doctorImage = "",
+                                    dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
+                                    statusId = AppointmentStatus.PendingStatus.code,
+                                ),
+                                Appointment(
+                                    appointmentId = 2,
+                                    doctorName = "د.محمد عبدالرحمن بدوي",
+                                    doctorSpecialty = "مخ وأعصاب",
+                                    doctorId = "102",
+                                    doctorImage = "",
+                                    dateTime = System.currentTimeMillis() + Constants.THREE_DAYS,
+                                    statusId = AppointmentStatus.PendingStatus.code,
+                                ),
+                                Appointment(
+                                    appointmentId = 3,
+                                    doctorName = "د.سارة محمد الهلالي",
+                                    doctorSpecialty = "نساء وتوليد",
+                                    doctorId = "101",
+                                    doctorImage = "",
+                                    dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
+                                    statusId = AppointmentStatus.PendingStatus.code,
+                                ),
+                                Appointment(
+                                    appointmentId = 4,
+                                    doctorName = "Dr. Anna Jones",
+                                    doctorSpecialty = "Dentist",
+                                    doctorId = "101",
+                                    doctorImage = "",
+                                    dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
+                                    patientName = "Patient",
+                                    patientImage = "",
+                                    statusId = AppointmentStatus.ConfirmedStatus.code,
+                                ),
+                                Appointment(
+                                    appointmentId = 5,
+                                    doctorName = "Dr. Anna Jones",
+                                    doctorSpecialty = "General Practitioner",
+                                    doctorId = "101",
+                                    doctorImage = "",
+                                    dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
+                                    patientName = "Patient",
+                                    patientImage = "",
+                                    statusId = AppointmentStatus.CompletedStatus.code,
+                                ),
+                                Appointment(
+                                    appointmentId = 6,
+                                    doctorName = "Dr. Anna Jones",
+                                    doctorSpecialty = "General Practitioner",
+                                    doctorId = "101",
+                                    doctorImage = "",
+                                    dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
+                                    patientName = "Patient",
+                                    patientImage = "",
+                                    statusId = AppointmentStatus.CancelledStatus.code,
+                                ),
+                            ),
+                        )
+                } else {
+                    _appointmentsResFlow.value = it
+                }
             }
         }
     }
