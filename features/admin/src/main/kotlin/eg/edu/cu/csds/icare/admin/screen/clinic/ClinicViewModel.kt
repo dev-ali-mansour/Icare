@@ -311,4 +311,14 @@ class ClinicViewModel(
             }
         }
     }
+
+    fun selectCurrentDoctor(doctorId: String) {
+        viewModelScope.launch(dispatcher) {
+            listDoctorsUseCase().collect { result ->
+                result.data?.let { doctors ->
+                    selectedDoctorState.value = doctors.find { it.id == doctorId }
+                }
+            }
+        }
+    }
 }
