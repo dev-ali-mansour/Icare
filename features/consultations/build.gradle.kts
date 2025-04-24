@@ -19,7 +19,7 @@ plugins {
 }
 
 android {
-    namespace = "${BuildConfig.APP_ID}.home"
+    namespace = "${BuildConfig.APP_ID}.consultation"
     compileSdk = BuildConfig.COMPILE_SDK_VERSION
 
     defaultConfig {
@@ -125,7 +125,7 @@ ksp {
 
 dependencies {
     implementation(project(":core:ui"))
-    api(project(":features:consultations"))
+    api(project(":features:appointments"))
 
     ksp(libs.koin.ksp.compiler)
     testImplementation(libs.bundles.domain.test)

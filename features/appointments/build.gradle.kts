@@ -125,6 +125,7 @@ ksp {
 
 dependencies {
     implementation(project(":core:ui"))
+    api(project(":features:admin"))
 
     ksp(libs.koin.ksp.compiler)
     testImplementation(libs.bundles.domain.test)
