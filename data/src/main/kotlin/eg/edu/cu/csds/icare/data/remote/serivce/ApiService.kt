@@ -104,12 +104,12 @@ interface ApiService {
         @Body body: Doctor,
     ): Response<ActionResultResponse>
 
-    @POST("userApi/doctor_register")
+    @POST("userApi/doctorRegister")
     suspend fun updateDoctor(
         @Body body: Doctor,
     ): Response<ActionResultResponse>
 
-    @POST("userApi/doctor_schedule")
+    @POST("userApi/doctorSchedule")
     suspend fun getDoctorSchedule(
         @Body body: HashMap<String, String>,
     ): Response<DoctorScheduleResponse>
