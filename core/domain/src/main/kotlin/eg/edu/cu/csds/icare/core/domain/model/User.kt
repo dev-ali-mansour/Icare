@@ -10,4 +10,5 @@ data class User(
     val gender: Char = 'M',
     val address: String = "",
     val phoneNumber: String = "",
+    val isActive: Boolean = true,
 )
