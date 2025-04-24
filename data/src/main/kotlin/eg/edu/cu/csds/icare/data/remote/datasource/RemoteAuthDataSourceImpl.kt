@@ -54,9 +54,16 @@ class RemoteAuthDataSourceImpl(
                         response.body()?.let { res ->
                             when (res.statusCode) {
                                 Constants.ERROR_CODE_OK ->
-                                    emit(Resource.Success(data = res.user))
+                                    when {
+                                        res.user.isActive ->
+                                            emit(Resource.Success(data = res.user))
+                                        else ->
+                                            emit(Resource.Error(UserNotAuthorizedException()))
+                                    }
 
-                                Constants.ERROR_CODE_USER_COLLISION -> {
+                                Constants.ERROR_CODE_USER_COLLISION,
+                                Constants.ERROR_CODE_INVALID_USER_IDENTITY,
+                                -> {
                                     user.delete()
                                     emit(Resource.Error(UserNotAuthorizedException()))
                                 }
