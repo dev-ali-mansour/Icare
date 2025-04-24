@@ -27,6 +27,11 @@ fun NavGraphBuilder.homeRoute(
             homeViewModel = homeViewModel,
             clinicViewModel = clinicViewModel,
             navigateToScreen = { navigateToScreen(it) },
+            onPriceCardClicked = {
+                clinicViewModel.listClinics()
+                clinicViewModel.selectCurrentDoctor(it)
+                navigateToScreen(Screen.EditDoctor)
+            },
             onAppointmentClick = {
             },
             onSeeAllClick = {

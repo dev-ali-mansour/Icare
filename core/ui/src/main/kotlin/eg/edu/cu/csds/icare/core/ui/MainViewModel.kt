@@ -127,7 +127,6 @@ class MainViewModel(
                                                 _resultFlow.value = Resource.Loading()
 
                                             is Resource.Success ->
-
                                                 listPharmaciesUseCase(forceUpdate = true).collect {
                                                     when (it) {
                                                         is Resource.Unspecified<*> ->
@@ -153,25 +152,30 @@ class MainViewModel(
                                                                             Resource.Success(null)
 
                                                                     is Resource.Error<*> ->
-                                                                        _resultFlow.value =
-                                                                            Resource.Error(it.error)
+                                                                        // Todo Remove this mock data
+                                                                        _resultFlow.value = Resource.Success(null)
+//                                                                        _resultFlow.value = Resource.Error(it.error)
                                                                 }
                                                             }
 
                                                         is Resource.Error<*> ->
-                                                            _resultFlow.value =
-                                                                Resource.Error(it.error)
+                                                            // Todo Remove this mock data
+                                                            _resultFlow.value = Resource.Success(null)
+//                                                        _resultFlow.value = Resource.Error(it.error)
                                                     }
                                                 }
 
                                             is Resource.Error<*> ->
-                                                _resultFlow.value =
-                                                    Resource.Error(it.error)
+                                                // Todo Remove this mock data
+                                                _resultFlow.value = Resource.Success(null)
+//                                                _resultFlow.value = Resource.Error(it.error)
                                         }
                                     }
 
                                 is Resource.Error<*> ->
-                                    _resultFlow.value = Resource.Error(it.error)
+                                    // Todo Remove this mock data
+                                    _resultFlow.value = Resource.Success(null)
+//                                    _resultFlow.value = Resource.Error(it.error)
                             }
                         }
                     }

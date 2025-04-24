@@ -50,7 +50,6 @@ internal fun NewClinicStaffScreen(
     var clinicId by clinicViewModel.clinicIdState
     var email by clinicViewModel.emailState
     var phone by clinicViewModel.phoneState
-    var profilePicture by clinicViewModel.profilePictureState
     var clinicsExpanded by clinicViewModel.clinicsExpandedState
 
     Scaffold(
@@ -116,7 +115,6 @@ internal fun NewClinicStaffScreen(
                     clinicId = clinicId,
                     email = email,
                     phone = phone,
-                    profilePicture = profilePicture,
                     clinicsResource = clinicsResource,
                     actionResource = actionResource,
                     clinicsExpanded = clinicsExpanded,
@@ -130,7 +128,6 @@ internal fun NewClinicStaffScreen(
                     },
                     onEmailChanged = { email = it },
                     onPhoneChanged = { phone = it },
-                    onProfilePictureChanged = { profilePicture = it },
                     onProceedButtonClicked = { onProceedButtonClicked() },
                     onSuccess = { onSuccess() },
                     onError = { onError(it) },

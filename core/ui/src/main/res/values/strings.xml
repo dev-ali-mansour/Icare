@@ -148,4 +148,5 @@ Objectives:\n
     <string name="see_all">See All</string>
     <string name="admins">Admins</string>
     <string name="patients">Patients</string>
+    <string name="rating">Rating</string>
 </resources>

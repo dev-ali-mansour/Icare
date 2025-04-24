@@ -1,6 +1,7 @@
 package eg.edu.cu.csds.icare.admin.screen.clinic
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -85,7 +86,8 @@ class ClinicViewModel(
     var specialityState = mutableStateOf("")
     var fromTimeState = mutableLongStateOf(0)
     var toTimeState = mutableLongStateOf(0)
-    var profilePictureState = mutableStateOf("")
+    var priceState = mutableDoubleStateOf(0.0)
+    var ratingState = mutableDoubleStateOf(0.0)
     var clinicsExpandedState = mutableStateOf(false)
     var expandedFab = mutableStateOf(true)
 
@@ -153,7 +155,8 @@ class ClinicViewModel(
                     specialty = specialityState.value,
                     fromTime = fromTimeState.longValue,
                     toTime = toTimeState.longValue,
-                    profilePicture = profilePictureState.value,
+                    price = priceState.doubleValue,
+                    rating = ratingState.doubleValue,
                 ),
             ).collect { result ->
                 _actionResFlow.emit(result)
@@ -214,7 +217,6 @@ class ClinicViewModel(
                     clinicId = clinicIdState.longValue,
                     email = emailState.value,
                     phone = phoneState.value,
-                    profilePicture = profilePictureState.value,
                 ),
             ).collect { result ->
                 _actionResFlow.emit(result)
@@ -307,6 +309,16 @@ class ClinicViewModel(
                         )
                 } else {
                     _doctorScheduleResFlow.value = result
+                }
+            }
+        }
+    }
+
+    fun selectCurrentDoctor(doctorId: String) {
+        viewModelScope.launch(dispatcher) {
+            listDoctorsUseCase().collect { result ->
+                result.data?.let { doctors ->
+                    selectedDoctorState.value = doctors.find { it.id == doctorId }
                 }
             }
         }

@@ -200,6 +200,7 @@ fun NavGraphBuilder.adminRoute(
 
     composable<Screen.EditDoctor> {
         EditDoctorScreen(
+            mainViewModel = mainViewModel,
             clinicViewModel = clinicViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { clinicViewModel.updateDoctor() },
