@@ -11,6 +11,8 @@ import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
 import eg.edu.cu.csds.icare.core.domain.model.ClinicStaffResponse
 import eg.edu.cu.csds.icare.core.domain.model.ClinicsResponse
+import eg.edu.cu.csds.icare.core.domain.model.Consultation
+import eg.edu.cu.csds.icare.core.domain.model.ConsultationsResponse
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.DoctorScheduleResponse
 import eg.edu.cu.csds.icare.core.domain.model.DoctorsResponse
@@ -178,4 +180,29 @@ interface ApiService {
     suspend fun updateCenterStaff(
         @Body body: CenterStaff,
     ): Response<ActionResultResponse>
+
+    @POST("consultationApi/upsertConsultation")
+    suspend fun upsertConsultation(
+        @Body body: Consultation,
+    ): Response<ActionResultResponse>
+
+    @POST("consultationApi/patientConsultations")
+    suspend fun getPatientConsultations(
+        @Body body: HashMap<String, String>,
+    ): Response<ConsultationsResponse>
+
+    @POST("consultationApi/medicationsByStatus")
+    suspend fun getMedicationsByStatus(
+        @Body body: HashMap<String, String>,
+    ): Response<ConsultationsResponse>
+
+    @POST("consultationApi/labTestsByStatus")
+    suspend fun getLabTestsByStatus(
+        @Body body: HashMap<String, String>,
+    ): Response<ConsultationsResponse>
+
+    @POST("consultationApi/imagingTestsByStatus")
+    suspend fun getImagingTestsByStatus(
+        @Body body: HashMap<String, String>,
+    ): Response<ConsultationsResponse>
 }
