@@ -8,12 +8,9 @@ import kotlinx.serialization.Transient
 data class Consultation(
     val token: String = "",
     val id: Long = 0,
-    val doctorId: String = "",
-    val doctorName: String = "",
+    val appointment: Appointment = Appointment(),
     @SerialName("consultationTime")
     val dateTime: Long = 0,
-    val patientImage: String = "",
-    val patientName: String = "",
     val diagnosis: String = "",
     val pharmacyId: Long,
     val medication: String = "",
