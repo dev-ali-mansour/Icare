@@ -28,6 +28,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.admin.R
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.ui.MainViewModel
+import eg.edu.cu.csds.icare.core.ui.common.Role
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
@@ -36,12 +38,14 @@ import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun EditDoctorScreen(
+    mainViewModel: MainViewModel,
     clinicViewModel: ClinicViewModel,
     onNavigationIconClicked: () -> Unit,
     onProceedButtonClicked: () -> Unit,
     onSuccess: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
 ) {
+    val currentUserRes by mainViewModel.currentUserFlow.collectAsStateWithLifecycle()
     val actionResource by clinicViewModel.actionResFlow
         .collectAsStateWithLifecycle(initialValue = Resource.Unspecified())
     val clinicsResource by clinicViewModel.clinicsResFlow.collectAsStateWithLifecycle()
@@ -96,47 +100,52 @@ internal fun EditDoctorScreen(
                             .height(XS_PADDING),
                 )
 
-                selectedDoctor?.let { doctor ->
-                    DoctorDetailsContent(
-                        modifier =
-                            Modifier.constrainAs(content) {
-                                top.linkTo(line.bottom)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                                bottom.linkTo(parent.bottom)
-                                width = Dimension.fillToConstraints
-                                height = Dimension.fillToConstraints
+                currentUserRes.data?.let { user ->
+                    selectedDoctor?.let { doctor ->
+                        DoctorDetailsContent(
+                            modifier =
+                                Modifier.constrainAs(content) {
+                                    top.linkTo(line.bottom)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                    bottom.linkTo(parent.bottom)
+                                    width = Dimension.fillToConstraints
+                                    height = Dimension.fillToConstraints
+                                },
+                            firstName = doctor.firstName,
+                            lastName = doctor.lastName,
+                            clinicId = doctor.clinicId,
+                            email = doctor.email,
+                            phone = doctor.phone,
+                            speciality = doctor.specialty,
+                            fromTime = doctor.fromTime,
+                            toTime = doctor.toTime,
+                            price = doctor.price,
+                            rating = doctor.rating,
+                            editRating = user.roleId == Role.AdminRole.code,
+                            clinicsResource = clinicsResource,
+                            actionResource = actionResource,
+                            clinicsExpanded = clinicsExpanded,
+                            onFirstNameChanged = { selectedDoctor = doctor.copy(firstName = it) },
+                            onLastNameChanged = { selectedDoctor = doctor.copy(lastName = it) },
+                            onClinicsExpandedChange = { clinicsExpanded = !clinicsExpanded },
+                            onClinicsDismissRequest = { clinicsExpanded = false },
+                            onClinicClicked = {
+                                selectedDoctor = doctor.copy(clinicId = it)
+                                clinicsExpanded = false
                             },
-                        firstName = doctor.firstName,
-                        lastName = doctor.lastName,
-                        clinicId = doctor.clinicId,
-                        email = doctor.email,
-                        phone = doctor.phone,
-                        speciality = doctor.specialty,
-                        fromTime = doctor.fromTime,
-                        toTime = doctor.toTime,
-                        profilePicture = doctor.profilePicture,
-                        clinicsResource = clinicsResource,
-                        actionResource = actionResource,
-                        clinicsExpanded = clinicsExpanded,
-                        onFirstNameChanged = { selectedDoctor = doctor.copy(firstName = it) },
-                        onLastNameChanged = { selectedDoctor = doctor.copy(lastName = it) },
-                        onClinicsExpandedChange = { clinicsExpanded = !clinicsExpanded },
-                        onClinicsDismissRequest = { clinicsExpanded = false },
-                        onClinicClicked = {
-                            selectedDoctor = doctor.copy(clinicId = it)
-                            clinicsExpanded = false
-                        },
-                        onEmailChanged = { selectedDoctor = doctor.copy(email = it) },
-                        onPhoneChanged = { selectedDoctor = doctor.copy(phone = it) },
-                        onSpecialityChanged = { selectedDoctor = doctor.copy(specialty = it) },
-                        onFromTimeChanged = { selectedDoctor = doctor.copy(fromTime = it) },
-                        onToTimeChanged = { selectedDoctor = doctor.copy(toTime = it) },
-                        onProfilePictureChanged = { selectedDoctor = doctor.copy(profilePicture = it) },
-                        onProceedButtonClicked = { onProceedButtonClicked() },
-                        onSuccess = { onSuccess() },
-                        onError = { onError(it) },
-                    )
+                            onEmailChanged = { selectedDoctor = doctor.copy(email = it) },
+                            onPhoneChanged = { selectedDoctor = doctor.copy(phone = it) },
+                            onSpecialityChanged = { selectedDoctor = doctor.copy(specialty = it) },
+                            onFromTimeChanged = { selectedDoctor = doctor.copy(fromTime = it) },
+                            onToTimeChanged = { selectedDoctor = doctor.copy(toTime = it) },
+                            onPriceChanged = { selectedDoctor = doctor.copy(price = it) },
+                            onRatingChanged = { selectedDoctor = doctor.copy(rating = it) },
+                            onProceedButtonClicked = { onProceedButtonClicked() },
+                            onSuccess = { onSuccess() },
+                            onError = { onError(it) },
+                        )
+                    }
                 }
             }
         }
