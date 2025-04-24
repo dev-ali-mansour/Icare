@@ -17,8 +17,8 @@ object Constants {
     const val ERROR_CODE_OK: Short = 0
     const val ERROR_CODE_EXPIRED_TOKEN: Short = 1
     const val ERROR_CODE_USER_COLLISION: Short = 2
-    const val ERROR_CODE_INVALID_USER_IDENTITY: Short = 3
-    const val ERROR_CODE_SERVER_ERROR: Short = 5
+    const val ERROR_CODE_SERVER_ERROR: Short = 3
+    const val ERROR_CODE_INVALID_USER_IDENTITY: Short = 5
     const val NATIONAL_ID_LENGTH: Int = 14
     const val PHONE_LENGTH: Int = 11
     const val MINUTES_TO_MILLIS = 60000
