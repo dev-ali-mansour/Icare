@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -31,10 +32,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -52,6 +56,7 @@ import eg.edu.cu.csds.icare.core.domain.util.toFormattedString
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.theme.APPOINTMENTS_LIST_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
+import eg.edu.cu.csds.icare.core.ui.theme.LOGO_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.PATIENTS_CARD_WIDTH
@@ -68,14 +73,18 @@ import eg.edu.cu.csds.icare.core.ui.theme.mintAccent
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.theme.trustBlue
 import eg.edu.cu.csds.icare.home.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 fun DoctorContent(
     modifier: Modifier = Modifier,
     schedule: DoctorSchedule,
-    onAppointmentClick: (Appointment) -> Unit = {},
-    onSeeAllClick: () -> Unit = {},
+    onPriceCardClicked: () -> Unit,
+    onAppointmentClick: (Appointment) -> Unit,
+    onSeeAllClick: () -> Unit,
+    scope: CoroutineScope = rememberCoroutineScope(),
 ) {
     ConstraintLayout(
         modifier =
@@ -110,11 +119,17 @@ fun DoctorContent(
             title = stringResource(CoreR.string.price),
             value = "${schedule.price.toFormattedString()} ${stringResource(CoreR.string.egp)}",
             modifier =
-                Modifier.constrainAs(priceCard) {
-                    top.linkTo(confirmedCard.top)
-                    start.linkTo(confirmedCard.end, margin = XS_PADDING)
-                    end.linkTo(slotsCard.start, margin = XS_PADDING)
-                },
+                Modifier
+                    .constrainAs(priceCard) {
+                        top.linkTo(confirmedCard.top)
+                        start.linkTo(confirmedCard.end, margin = XS_PADDING)
+                        end.linkTo(slotsCard.start, margin = XS_PADDING)
+                    }.clickable {
+                        scope.launch {
+                            onPriceCardClicked()
+                        }
+                    },
+            allowEdit = true,
         )
 
         StatCard(
@@ -163,8 +178,8 @@ fun DoctorContent(
         ) {
             items(schedule.appointments.take(n = 4)) { appointment ->
                 AppointmentItem(
-                    modifier = Modifier.clickable { onAppointmentClick(appointment) },
                     appointment = appointment,
+                    onAppointmentClick = { onAppointmentClick(appointment) },
                 )
             }
         }
@@ -231,6 +246,7 @@ fun StatCard(
     title: String,
     value: String,
     modifier: Modifier = Modifier,
+    allowEdit: Boolean = false,
 ) {
     Card(
         modifier =
@@ -256,7 +272,7 @@ fun StatCard(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Spacer(modifier = Modifier.height(L_PADDING))
+            Spacer(modifier = Modifier.height(S_PADDING))
 
             Text(
                 text = value,
@@ -266,7 +282,17 @@ fun StatCard(
                 modifier = Modifier.fillMaxWidth(),
                 color = SkyAccent,
             )
-            Spacer(modifier = Modifier.height(L_PADDING))
+
+            Spacer(modifier = Modifier.height(if (allowEdit) XS_PADDING else L_PADDING))
+
+            if (allowEdit) {
+                Image(
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = null,
+                    modifier = Modifier.size(LOGO_WIDTH),
+                    colorFilter = ColorFilter.tint(SkyAccent, blendMode = BlendMode.SrcIn),
+                )
+            }
         }
     }
 }
@@ -276,12 +302,14 @@ fun AppointmentItem(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     appointment: Appointment,
+    onAppointmentClick: (Appointment) -> Unit,
 ) {
     ConstraintLayout(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(vertical = S_PADDING),
+                .padding(vertical = S_PADDING)
+                .clickable { onAppointmentClick(appointment) },
     ) {
         val (image, name, time) = createRefs()
         Image(
@@ -386,6 +414,7 @@ internal fun DoctorContentPreview() {
                             ),
                         ),
                 ),
+            onPriceCardClicked = {},
             onAppointmentClick = {},
             onSeeAllClick = {},
         )
