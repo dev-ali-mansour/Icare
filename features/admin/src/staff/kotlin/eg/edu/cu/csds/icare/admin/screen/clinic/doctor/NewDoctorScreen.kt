@@ -53,7 +53,8 @@ internal fun NewDoctorScreen(
     var specialty by clinicViewModel.specialityState
     var fromTime by clinicViewModel.fromTimeState
     var toTime by clinicViewModel.toTimeState
-    var profilePicture by clinicViewModel.profilePictureState
+    var price by clinicViewModel.priceState
+    var rating by clinicViewModel.ratingState
     var clinicsExpanded by clinicViewModel.clinicsExpandedState
 
     Scaffold(
@@ -122,7 +123,8 @@ internal fun NewDoctorScreen(
                     speciality = specialty,
                     fromTime = fromTime,
                     toTime = toTime,
-                    profilePicture = profilePicture,
+                    price = price,
+                    rating = rating,
                     clinicsResource = clinicsResource,
                     actionResource = actionResource,
                     clinicsExpanded = clinicsExpanded,
@@ -139,7 +141,8 @@ internal fun NewDoctorScreen(
                     onSpecialityChanged = { specialty = it },
                     onFromTimeChanged = { fromTime = it },
                     onToTimeChanged = { toTime = it },
-                    onProfilePictureChanged = { profilePicture = it },
+                    onPriceChanged = { price = it },
+                    onRatingChanged = { rating = it },
                     onProceedButtonClicked = { onProceedButtonClicked() },
                     onSuccess = { onSuccess() },
                     onError = { onError(it) },
