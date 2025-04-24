@@ -70,6 +70,7 @@ internal fun HomeContent(
     doctorScheduleRes: Resource<DoctorSchedule>,
     loadContentData: (Short) -> Unit,
     onUserClicked: () -> Unit,
+    onPriceCardClicked: () -> Unit,
     onAppointmentClick: (Appointment) -> Unit,
     onSeeAllClick: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
@@ -151,6 +152,7 @@ internal fun HomeContent(
                                             height = Dimension.fillToConstraints
                                         },
                                     schedule = schedule,
+                                    onPriceCardClicked = { onPriceCardClicked() },
                                     onAppointmentClick = {},
                                     onSeeAllClick = {},
                                 )
@@ -365,6 +367,7 @@ internal fun HomeContentPreview() {
                 ),
             onUserClicked = {},
             loadContentData = {},
+            onPriceCardClicked = {},
             onAppointmentClick = {},
             onSeeAllClick = {},
             onError = {},
