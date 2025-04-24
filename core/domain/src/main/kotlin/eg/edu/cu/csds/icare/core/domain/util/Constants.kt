@@ -24,4 +24,5 @@ object Constants {
     const val MINUTES_TO_MILLIS = 60000
     const val ONE_DAY = 24 * 60 * 60 * 1000
     const val THREE_DAYS = 72 * 60 * 60 * 1000
+    const val MAX_PARTS_LENGTH = 8
 }
