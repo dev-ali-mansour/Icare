@@ -59,7 +59,7 @@ interface ApiService {
         @Body body: HashMap<String, String>,
     ): Response<ActionResultResponse>
 
-    @POST("loginInfo")
+    @POST("/userApi/loginInfo")
     suspend fun getLoginInfo(
         @Body body: HashMap<String, String>,
     ): Response<UserResponse>
