@@ -60,9 +60,7 @@ class AppointmentsViewModel(
         )
 
     var doctorIdState = mutableStateOf("")
-    var doctorNameState = mutableStateOf("")
     var doctorSpecialtyState = mutableStateOf("")
-    var doctorImageState = mutableStateOf("")
     var dateTimeState = mutableLongStateOf(0L)
     var patientNameState = mutableStateOf("")
     var patientImageState = mutableStateOf("")
@@ -78,10 +76,8 @@ class AppointmentsViewModel(
 
             bookAppointmentUseCase(
                 Appointment(
-                    doctorName = doctorNameState.value,
                     doctorSpecialty = doctorSpecialtyState.value,
                     doctorId = doctorIdState.value,
-                    doctorImage = doctorImageState.value,
                     dateTime = dateTimeState.longValue,
                     patientName = patientNameState.value,
                     patientImage = patientImageState.value,
