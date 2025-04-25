@@ -117,4 +117,17 @@
     <string name="admins">مديري النظام</string>
     <string name="patients">المرضى</string>
     <string name="rating">التقييم</string>
+    <string name="medical_record">السجل الطبي</string>
+    <string name="male">ذكر</string>
+    <string name="female">أنثى</string>
+    <string name="gender">النوع</string>
+    <string name="kgm">كجم</string>
+    <string name="birth_date">تاريخ الميلاد</string>
+    <string name="weight">الوزن</string>
+    <string name="chronic_diseases">الأمراض المزمنة</string>
+    <string name="current_medications">الأدوية الحالية</string>
+    <string name="allergies">الحساسية</string>
+    <string name="past_surgeries">العمليات الجراحية</string>
+    <string name="view_medical_record">اضغط لعرض الملف الطبي</string>
+
 </resources>
