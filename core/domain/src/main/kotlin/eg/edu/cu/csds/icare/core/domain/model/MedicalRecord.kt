@@ -8,5 +8,5 @@ data class MedicalRecord(
     val patientId: String = "",
     val patientName: String = "",
     val patientImage: String = "",
-    val consultations: List<Consultation>,
+    val consultations: List<Consultation> = emptyList(),
 )
