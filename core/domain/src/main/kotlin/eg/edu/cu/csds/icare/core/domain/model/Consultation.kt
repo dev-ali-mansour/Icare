@@ -28,4 +28,6 @@ data class Consultation(
     @Transient
     val imgTestStatus: String = "",
     val followUpdDate: Long = 0,
+    @Transient
+    val readOnly: Boolean = true,
 )
