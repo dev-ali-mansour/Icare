@@ -3,7 +3,10 @@ package eg.edu.cu.csds.icare.home.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.google.firebase.auth.FirebaseAuth
+import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
+import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
@@ -16,6 +19,9 @@ fun NavGraphBuilder.homeRoute(
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
     clinicViewModel: ClinicViewModel,
+    pharmacyViewModel: PharmacyViewModel,
+    centerViewModel: CenterViewModel,
+    consultationViewModel: ConsultationViewModel,
     navigateToScreen: (Screen) -> Unit,
     onError: suspend (Throwable?) -> Unit,
 ) {
@@ -33,6 +39,10 @@ fun NavGraphBuilder.homeRoute(
                 navigateToScreen(Screen.EditDoctor)
             },
             onAppointmentClick = {
+                consultationViewModel.appointmentState.value = it
+                pharmacyViewModel.listPharmacies()
+                centerViewModel.listCenters()
+                navigateToScreen(Screen.NewConsultation)
             },
             onSeeAllClick = {
             },
