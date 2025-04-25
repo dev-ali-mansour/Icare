@@ -15,7 +15,6 @@
     <string name="phone_number">Phone Number</string>
     <string name="birth_date">Birth Date</string>
     <string name="address">Address</string>
-    <string name="name">Name</string>
     <string name="type">Type</string>
     <string name="open" >Open</string>
     <string name="closed" >Closed</string>

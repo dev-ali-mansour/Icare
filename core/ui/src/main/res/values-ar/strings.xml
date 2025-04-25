@@ -129,5 +129,5 @@
     <string name="allergies">الحساسية</string>
     <string name="past_surgeries">العمليات الجراحية</string>
     <string name="view_medical_record">اضغط لعرض الملف الطبي</string>
-
+    <string name="name">الاسم</string>
 </resources>

@@ -161,4 +161,5 @@ Objectives:\n
     <string name="past_surgeries">Past Surgeries</string>
     <string name="chronic_diseases">Chronic Diseases</string>
     <string name="view_medical_record">Click to view medical record</string>
+    <string name="name">Name</string>
 </resources>
