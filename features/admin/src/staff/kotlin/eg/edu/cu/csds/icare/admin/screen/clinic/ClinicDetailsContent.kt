@@ -101,7 +101,7 @@ internal fun ClinicDetailsContent(
                     onValueChange = { onNameChanged(it) },
                     label = {
                         Text(
-                            text = stringResource(R.string.name),
+                            text = stringResource(CoreR.string.name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
