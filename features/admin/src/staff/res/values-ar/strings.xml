@@ -14,7 +14,6 @@
     <string name="phone_number">رقم الموبايل</string>
     <string name="birth_date">تاريخ الميلاد</string>
     <string name="address">العنوان</string>
-    <string name="name">الاسم</string>
     <string name="type">النوع</string>
     <string name="open" >مفتوحة</string>
     <string name="closed" >مغلقة</string>
