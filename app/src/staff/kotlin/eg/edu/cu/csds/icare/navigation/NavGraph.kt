@@ -21,6 +21,8 @@ import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.appointment.navigation.appointmentsRoute
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
 import eg.edu.cu.csds.icare.auth.screen.AuthViewModel
+import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
+import eg.edu.cu.csds.icare.consultation.screen.navigation.consultationsRoute
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
@@ -52,6 +54,7 @@ fun SetupNavGraph(
     val clinicViewModel: ClinicViewModel = koinViewModel()
     val pharmacyViewModel: PharmacyViewModel = koinViewModel()
     val centerViewModel: CenterViewModel = koinViewModel()
+    val consultationViewModel: ConsultationViewModel = koinViewModel()
     val alertMessage = remember { mutableStateOf("") }
     val showAlert = remember { mutableStateOf(false) }
     val exitApp = remember { mutableStateOf(false) }
@@ -89,15 +92,7 @@ fun SetupNavGraph(
                     },
                     onError = { error ->
                         exitApp.value = true
-                        handleError(
-                            error,
-                            exitApp,
-                            context,
-                            authViewModel,
-                            navController,
-                            alertMessage,
-                            showAlert,
-                        )
+                        handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
                     },
                 )
             }
@@ -144,15 +139,7 @@ fun SetupNavGraph(
                 },
                 onError = { error ->
                     exitApp.value = false
-                    handleError(
-                        error,
-                        exitApp,
-                        context,
-                        authViewModel,
-                        navController,
-                        alertMessage,
-                        showAlert,
-                    )
+                    handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
                 },
             )
 
@@ -162,18 +149,13 @@ fun SetupNavGraph(
                 mainViewModel = mainViewModel,
                 homeViewModel = homeViewModel,
                 clinicViewModel = clinicViewModel,
+                pharmacyViewModel = pharmacyViewModel,
+                centerViewModel = centerViewModel,
+                consultationViewModel = consultationViewModel,
                 navigateToScreen = { screen -> navController.navigate(screen) },
                 onError = { error ->
                     exitApp.value = false
-                    handleError(
-                        error,
-                        exitApp,
-                        context,
-                        authViewModel,
-                        navController,
-                        alertMessage,
-                        showAlert,
-                    )
+                    handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
                 },
             )
 
@@ -188,15 +170,7 @@ fun SetupNavGraph(
                 navigateToScreen = { screen -> navController.navigate(screen) },
                 onError = { error ->
                     exitApp.value = false
-                    handleError(
-                        error,
-                        exitApp,
-                        context,
-                        authViewModel,
-                        navController,
-                        alertMessage,
-                        showAlert,
-                    )
+                    handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
                 },
             )
 
@@ -215,15 +189,19 @@ fun SetupNavGraph(
                 },
                 onError = { error ->
                     exitApp.value = false
-                    handleError(
-                        error,
-                        exitApp,
-                        context,
-                        authViewModel,
-                        navController,
-                        alertMessage,
-                        showAlert,
-                    )
+                    handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
+                },
+            )
+
+            consultationsRoute(
+                pharmacyViewModel = pharmacyViewModel,
+                centerViewModel = centerViewModel,
+                consultationViewModel = consultationViewModel,
+                onNavigationIconClicked = { navController.navigateUpSafely() },
+                navigateToScreen = { navController.navigate(it) },
+                onError = { error ->
+                    exitApp.value = false
+                    handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
                 },
             )
         }
