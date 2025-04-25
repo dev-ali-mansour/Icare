@@ -12,18 +12,18 @@ data class Consultation(
     @SerialName("consultationTime")
     val dateTime: Long = 0,
     val diagnosis: String = "",
-    val pharmacyId: Long,
-    val medication: String = "",
+    val pharmacyId: Long = 1,
+    val medications: String = "",
     val prescriptionStatusId: Short = 1,
     @Transient
     val prescriptionStatus: String = "",
-    val labCenterId: Long,
-    val labTest: String = "",
+    val labCenterId: Long = 1,
+    val labTests: String = "",
     val labTestStatusId: Short = 1,
     @Transient
     val labTestStatus: String = "",
-    val imagingCenterId: Long,
-    val imagingTest: String = "",
+    val imagingCenterId: Long = 1,
+    val imagingTests: String = "",
     val imgTestStatusId: Short = 1,
     @Transient
     val imgTestStatus: String = "",
