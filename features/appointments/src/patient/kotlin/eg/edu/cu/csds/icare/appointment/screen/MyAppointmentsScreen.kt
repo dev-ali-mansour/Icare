@@ -1,6 +1,5 @@
 package eg.edu.cu.csds.icare.appointment.screen
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,12 +21,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import eg.edu.cu.csds.icare.appointment.AppointmentsViewModel
+import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.appointment.R
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
@@ -39,20 +37,19 @@ import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyAppointmentsScreen(
-    appointmentsViewModel: AppointmentsViewModel,
+    appointmentViewModel: AppointmentViewModel,
     onNavigationIconClicked: () -> Unit,
     onReschedule: (Appointment) -> Unit,
     onCancel: (Appointment) -> Unit,
     onSuccess: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
-    context: Context = LocalContext.current,
 ) {
-    val actionResource by appointmentsViewModel.actionResFlow
+    val actionResource by appointmentViewModel.actionResFlow
         .collectAsStateWithLifecycle(initialValue = Resource.Unspecified())
-    val appointmentsResource by appointmentsViewModel.appointmentsResFlow.collectAsStateWithLifecycle()
+    val appointmentsResource by appointmentViewModel.appointmentsResFlow.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = Unit) {
-        appointmentsViewModel.getPatientAppointments()
+        appointmentViewModel.getPatientAppointments()
     }
 
     Scaffold(
