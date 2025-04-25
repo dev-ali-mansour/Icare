@@ -5,7 +5,13 @@ import eg.edu.cu.csds.icare.core.domain.repository.AppointmentsRepository
 import eg.edu.cu.csds.icare.core.domain.repository.AuthRepository
 import eg.edu.cu.csds.icare.core.domain.repository.CentersRepository
 import eg.edu.cu.csds.icare.core.domain.repository.ClinicsRepository
+import eg.edu.cu.csds.icare.core.domain.repository.ConsultationsRepository
 import eg.edu.cu.csds.icare.core.domain.repository.PharmaciesRepository
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.BookAppointment
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointments
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointmentsByStatus
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetPatientAppointments
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.UpdateAppointment
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.DeleteAccount
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfo
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkTokenAccount
@@ -14,11 +20,6 @@ import eg.edu.cu.csds.icare.core.domain.usecase.auth.SendRecoveryMail
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithEmailAndPassword
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithGoogle
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOut
-import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.BookAppointment
-import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetAppointments
-import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetAppointmentsByStatus
-import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetPatientAppointments
-import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.UpdateAppointment
 import eg.edu.cu.csds.icare.core.domain.usecase.center.AddNewCenter
 import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCenters
 import eg.edu.cu.csds.icare.core.domain.usecase.center.UpdateCenter
@@ -31,6 +32,12 @@ import eg.edu.cu.csds.icare.core.domain.usecase.clinic.UpdateClinic
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.AddNewClinicStaff
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.ListClinicStaff
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.UpdateClinicStaff
+import eg.edu.cu.csds.icare.core.domain.usecase.consultation.AddNewConsultation
+import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetImagingTestsByStatus
+import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetLabTestsByStatus
+import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetMedicalRecord
+import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetMedicationsByStatus
+import eg.edu.cu.csds.icare.core.domain.usecase.consultation.UpdateConsultation
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.AddNewDoctor
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.GetDoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctors
@@ -162,4 +169,22 @@ class UseCaseModule {
 
     @Single
     fun provideUpdateAppointment(repository: AppointmentsRepository): UpdateAppointment = UpdateAppointment(repository)
+
+    @Single
+    fun provideAddNewConsultation(repository: ConsultationsRepository) = AddNewConsultation(repository)
+
+    @Single
+    fun provideUpdateConsultation(repository: ConsultationsRepository) = UpdateConsultation(repository)
+
+    @Single
+    fun provideGetMedicalRecord(repository: ConsultationsRepository) = GetMedicalRecord(repository)
+
+    @Single
+    fun provideGetMedicationsByStatus(repository: ConsultationsRepository) = GetMedicationsByStatus(repository)
+
+    @Single
+    fun provideGetLabTestsByStatus(repository: ConsultationsRepository) = GetLabTestsByStatus(repository)
+
+    @Single
+    fun provideGetImagingTestsByStatus(repository: ConsultationsRepository) = GetImagingTestsByStatus(repository)
 }
