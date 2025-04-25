@@ -14,10 +14,12 @@ import androidx.navigation.compose.composable
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.SplashScreen
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
-import eg.edu.cu.csds.icare.appointment.AppointmentsViewModel
+import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.appointment.navigation.appointmentsRoute
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
 import eg.edu.cu.csds.icare.auth.screen.AuthViewModel
+import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
+import eg.edu.cu.csds.icare.consultation.screen.navigation.consultationsRoute
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
@@ -45,8 +47,9 @@ fun SetupNavGraph(
     context: Context = LocalContext.current,
 ) {
     val onBoardingRes by mainViewModel.onBoardingCompleted.collectAsStateWithLifecycle()
-    val appointmentsViewModel: AppointmentsViewModel = koinViewModel()
+    val appointmentViewModel: AppointmentViewModel = koinViewModel()
     val clinicViewModel: ClinicViewModel = koinViewModel()
+    val consultationViewModel: ConsultationViewModel = koinViewModel()
     val alertMessage = remember { mutableStateOf("") }
     val showAlert = remember { mutableStateOf(false) }
     val exitApp = remember { mutableStateOf(false) }
@@ -84,15 +87,7 @@ fun SetupNavGraph(
                     },
                     onError = { error ->
                         exitApp.value = true
-                        handleError(
-                            error,
-                            exitApp,
-                            context,
-                            authViewModel,
-                            navController,
-                            alertMessage,
-                            showAlert,
-                        )
+                        handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
                     },
                 )
             }
@@ -139,15 +134,7 @@ fun SetupNavGraph(
                 },
                 onError = { error ->
                     exitApp.value = false
-                    handleError(
-                        error,
-                        exitApp,
-                        context,
-                        authViewModel,
-                        navController,
-                        alertMessage,
-                        showAlert,
-                    )
+                    handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
                 },
             )
 
@@ -156,20 +143,12 @@ fun SetupNavGraph(
                 mediaHelper = mediaHelper,
                 mainViewModel = mainViewModel,
                 homeViewModel = homeViewModel,
-                appointmentsViewModel = appointmentsViewModel,
+                appointmentViewModel = appointmentViewModel,
                 clinicViewModel = clinicViewModel,
                 navigateToScreen = { screen -> navController.navigate(screen) },
                 onError = { error ->
                     exitApp.value = false
-                    handleError(
-                        error,
-                        exitApp,
-                        context,
-                        authViewModel,
-                        navController,
-                        alertMessage,
-                        showAlert,
-                    )
+                    handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
                 },
             )
 
@@ -182,21 +161,23 @@ fun SetupNavGraph(
             )
 
             appointmentsRoute(
-                appointmentsViewModel = appointmentsViewModel,
+                appointmentsViewModel = appointmentViewModel,
                 onNavigationIconClicked = {
                     navController.navigateUpSafely()
                 },
                 onError = { error ->
                     exitApp.value = false
-                    handleError(
-                        error,
-                        exitApp,
-                        context,
-                        authViewModel,
-                        navController,
-                        alertMessage,
-                        showAlert,
-                    )
+                    handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
+                },
+            )
+
+            consultationsRoute(
+                consultationViewModel = consultationViewModel,
+                onNavigationIconClicked = { navController.navigateUpSafely() },
+                navigateToScreen = { navController.navigate(it) },
+                onError = { error ->
+                    exitApp.value = false
+                    handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
                 },
             )
         }
