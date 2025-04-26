@@ -9,7 +9,6 @@ import eg.edu.cu.csds.icare.data.local.db.entity.toEntity
 import eg.edu.cu.csds.icare.data.local.db.entity.toModel
 import eg.edu.cu.csds.icare.data.remote.datasource.RemoteAuthDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
@@ -69,15 +68,30 @@ class AuthRepositoryImpl(
         }
 
     override fun signInWithGoogle(token: String): Flow<Resource<Boolean>> =
-        remoteAuthDataSource.signInWithGoogle(token).map { res ->
-            when {
-                res is Resource.Success && res.data == true ->
-                    getUserInfo(true)
+        flow {
+            remoteAuthDataSource.signInWithGoogle(token).collect { res ->
+                when {
+                    res is Resource.Success && res.data == true ->
+                        getUserInfo(true).collect { infoRes ->
+                            when (infoRes) {
+                                is Resource.Unspecified -> emit(Resource.Unspecified())
+                                is Resource.Loading -> emit(Resource.Loading())
+                                is Resource.Success -> emit(Resource.Success(true))
+                                is Resource.Error -> emit(Resource.Error(infoRes.error))
+                            }
+                        }
 
-                res is Resource.Error ->
-                    signOut()
+                    res is Resource.Error ->
+                        signOut().collect { signOutRes ->
+                            when (signOutRes) {
+                                is Resource.Unspecified -> emit(Resource.Unspecified())
+                                is Resource.Loading -> emit(Resource.Loading())
+                                is Resource.Success -> emit(Resource.Success(false))
+                                is Resource.Error -> emit(Resource.Error(signOutRes.error))
+                            }
+                        }
+                }
             }
-            res
         }
 
     override fun sendRecoveryEmail(email: String): Flow<Resource<Nothing?>> = remoteAuthDataSource.sendRecoveryEmail(email)
@@ -93,20 +107,17 @@ class AuthRepositoryImpl(
                         return@flow
                     }
                 }
-                emitAll(
-                    remoteAuthDataSource.getUserInfo().map { res ->
-                        if (res is Resource.Success) {
-                            res.data?.let { user ->
-                                localAuthDataSource.saveEmployee(entity = user.toEntity())
-                                Resource.Success(data = user)
-                            } ?: res
-                        } else {
-                            // Todo Pass resource error to the view model to handle it
-//                            res
-                            Resource.Success(User(roleId = 1))
-                        }
-                    },
-                )
+                remoteAuthDataSource.getUserInfo().collect { res ->
+                    if (res is Resource.Success) {
+                        res.data?.let { user ->
+                            localAuthDataSource.saveEmployee(entity = user.toEntity())
+                            emit(Resource.Success(data = user))
+                        } ?: emit(res)
+                    } else {
+                        // Todo Pass resource error to the view model to handle it
+                        emit(res)
+                    }
+                }
             }.onFailure { emit(Resource.Error(it)) }
         }
 

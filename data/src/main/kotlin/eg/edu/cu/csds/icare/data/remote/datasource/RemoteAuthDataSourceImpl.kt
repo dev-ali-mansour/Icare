@@ -46,6 +46,7 @@ class RemoteAuthDataSourceImpl(
                             ?.token
                             .toString()
                     }
+                val uid = user.uid
                 val map = HashMap<String, String>()
                 map["token"] = token
                 val response = service.getLoginInfo(map)
@@ -56,7 +57,7 @@ class RemoteAuthDataSourceImpl(
                                 Constants.ERROR_CODE_OK ->
                                     when {
                                         res.user.isActive ->
-                                            emit(Resource.Success(data = res.user))
+                                            emit(Resource.Success(data = res.user.copy(userId = uid)))
                                         else ->
                                             emit(Resource.Error(UserNotAuthorizedException()))
                                     }
