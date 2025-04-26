@@ -64,10 +64,10 @@ fun Long.getFormattedDate(pattern: String = "dd/MM/yyyy"): String = getFormatted
 fun Long.getFormattedTime(pattern: String = "hh:mm a"): String = getFormattedDateTime(pattern)
 
 fun Long.getFormattedDateTime(pattern: String = "dd/MM/yyyy hh:mm a"): String {
-    val calender = Calendar.getInstance()
-    calender.timeInMillis = this
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = this
     val dateFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
-    return dateFormat.format(calender.timeInMillis)
+    return dateFormat.format(calendar.time)
 }
 
 fun Long.isTomorrow(): Boolean {
