@@ -96,7 +96,7 @@ class MainViewModel(
     init {
         viewModelScope.launch(dispatcher) {
             runCatching {
-                getUserInfoUseCase(forceUpdate = false).distinctUntilChanged().collect {
+                getUserInfoUseCase(forceUpdate = true).distinctUntilChanged().collect {
                     _currentUserFlow.value = it
                 }
                 readOnBoardingUseCase().collect { res ->
