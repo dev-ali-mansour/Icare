@@ -112,7 +112,7 @@ interface ApiService {
         @Body body: Doctor,
     ): Response<ActionResultResponse>
 
-    @POST("userApi/doctorSchedule")
+    @POST("clinicApi/doctorSchedule")
     suspend fun getDoctorSchedule(
         @Body body: HashMap<String, String>,
     ): Response<DoctorScheduleResponse>
@@ -182,7 +182,7 @@ interface ApiService {
         @Body body: CenterStaff,
     ): Response<ActionResultResponse>
 
-    @POST("consultationApi/upsertConsultation")
+    @POST("clinicApi/consultation")
     suspend fun upsertConsultation(
         @Body body: Consultation,
     ): Response<ActionResultResponse>
@@ -192,17 +192,17 @@ interface ApiService {
         @Body body: HashMap<String, String>,
     ): Response<MedicalRecordResponse>
 
-    @POST("consultationApi/medicationsByStatus")
+    @POST("clinicApi/getConsultationsByPrescriptionStatus")
     suspend fun getMedicationsByStatus(
         @Body body: HashMap<String, String>,
     ): Response<ConsultationsResponse>
 
-    @POST("consultationApi/labTestsByStatus")
+    @POST("clinicApi/getConsultationsByLabTestStatus")
     suspend fun getLabTestsByStatus(
         @Body body: HashMap<String, String>,
     ): Response<ConsultationsResponse>
 
-    @POST("consultationApi/imagingTestsByStatus")
+    @POST("clinicApi/getConsultationsByImaginingTestStatus")
     suspend fun getImagingTestsByStatus(
         @Body body: HashMap<String, String>,
     ): Response<ConsultationsResponse>
