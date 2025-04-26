@@ -146,7 +146,7 @@ class RemoteConsultationsDataSourceImpl(
                     }
                 val map = HashMap<String, String>()
                 map["token"] = token
-                map["statusId"] = statusId.toString()
+                map["status"] = statusId.toString()
                 val response = service.getMedicationsByStatus(map)
                 when (response.code()) {
                     HTTP_OK -> {
@@ -185,7 +185,7 @@ class RemoteConsultationsDataSourceImpl(
                     }
                 val map = HashMap<String, String>()
                 map["token"] = token
-                map["statusId"] = statusId.toString()
+                map["status"] = statusId.toString()
                 val response = service.getLabTestsByStatus(map)
                 when (response.code()) {
                     HTTP_OK -> {
@@ -224,7 +224,7 @@ class RemoteConsultationsDataSourceImpl(
                     }
                 val map = HashMap<String, String>()
                 map["token"] = token
-                map["statusId"] = statusId.toString()
+                map["status"] = statusId.toString()
                 val response = service.getImagingTestsByStatus(map)
                 when (response.code()) {
                     HTTP_OK -> {
