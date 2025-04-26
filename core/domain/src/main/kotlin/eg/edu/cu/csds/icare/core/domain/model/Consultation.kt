@@ -9,11 +9,12 @@ data class Consultation(
     val token: String = "",
     val id: Long = 0,
     val appointment: Appointment = Appointment(),
-    @SerialName("consultationTime")
+    @SerialName("date")
     val dateTime: Long = 0,
     val diagnosis: String = "",
     val pharmacyId: Long = 1,
     val medications: String = "",
+    @SerialName("prescriptionsStatus")
     val prescriptionStatusId: Short = 1,
     @Transient
     val prescriptionStatus: String = "",
@@ -24,6 +25,7 @@ data class Consultation(
     val labTestStatus: String = "",
     val imagingCenterId: Long = 1,
     val imagingTests: String = "",
+    @SerialName("imagingCenterStatus")
     val imgTestStatusId: Short = 1,
     @Transient
     val imgTestStatus: String = "",
