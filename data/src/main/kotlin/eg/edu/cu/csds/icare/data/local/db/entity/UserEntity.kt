@@ -1,12 +1,15 @@
 package eg.edu.cu.csds.icare.data.local.db.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import eg.edu.cu.csds.icare.core.domain.model.User
 
-@Entity(tableName = "user")
+@Entity(tableName = "users")
 data class UserEntity(
     @PrimaryKey
+    @ColumnInfo(defaultValue = "")
+    val userId: String,
     val roleId: Short,
     val nationalId: String,
     val birthDate: Long,
@@ -17,6 +20,7 @@ data class UserEntity(
 
 fun UserEntity.toModel(): User =
     User(
+        userId = userId,
         roleId = this.roleId,
         nationalId = this.nationalId,
         birthDate = this.birthDate,
@@ -27,6 +31,7 @@ fun UserEntity.toModel(): User =
 
 fun User.toEntity(): UserEntity =
     UserEntity(
+        userId = userId,
         roleId = this.roleId,
         nationalId = this.nationalId,
         birthDate = this.birthDate,
