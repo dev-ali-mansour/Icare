@@ -15,9 +15,9 @@ interface UserDao {
     @Update
     suspend fun updateEmployee(entity: UserEntity)
 
-    @Query("SELECT * FROM user Limit 1")
+    @Query("SELECT * FROM users Limit 1")
     suspend fun getEmployee(): UserEntity?
 
-    @Query("DELETE FROM user")
+    @Query("DELETE FROM users")
     suspend fun clearEmployee()
 }
