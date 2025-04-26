@@ -153,8 +153,8 @@ internal fun HomeContent(
                                         },
                                     schedule = schedule,
                                     onPriceCardClicked = { onPriceCardClicked() },
-                                    onAppointmentClick = {},
-                                    onSeeAllClick = {},
+                                    onAppointmentClick = { onAppointmentClick(it) },
+                                    onSeeAllClick = { onSeeAllClick() },
                                 )
                             }
 

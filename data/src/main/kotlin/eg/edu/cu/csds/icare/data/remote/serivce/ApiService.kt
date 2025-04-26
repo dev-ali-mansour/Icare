@@ -17,6 +17,7 @@ import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.DoctorScheduleResponse
 import eg.edu.cu.csds.icare.core.domain.model.DoctorsResponse
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
+import eg.edu.cu.csds.icare.core.domain.model.MedicalRecordResponse
 import eg.edu.cu.csds.icare.core.domain.model.PharmaciesResponse
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacist
 import eg.edu.cu.csds.icare.core.domain.model.PharmacistsResponse
@@ -186,10 +187,10 @@ interface ApiService {
         @Body body: Consultation,
     ): Response<ActionResultResponse>
 
-    @POST("consultationApi/patientConsultations")
-    suspend fun getPatientConsultations(
+    @POST("consultationApi/medicalRecord")
+    suspend fun getMedicalRecord(
         @Body body: HashMap<String, String>,
-    ): Response<ConsultationsResponse>
+    ): Response<MedicalRecordResponse>
 
     @POST("consultationApi/medicationsByStatus")
     suspend fun getMedicationsByStatus(

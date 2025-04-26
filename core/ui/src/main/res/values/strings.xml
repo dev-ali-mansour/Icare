@@ -149,4 +149,17 @@ Objectives:\n
     <string name="admins">Admins</string>
     <string name="patients">Patients</string>
     <string name="rating">Rating</string>
+    <string name="medical_record">Medical Record</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="gender">Gender</string>
+    <string name="weight">Weight</string>
+    <string name="kgm">KGM</string>
+    <string name="birth_date">Birth Date</string>
+    <string name="current_medications">Current Medications</string>
+    <string name="allergies">Allergies</string>
+    <string name="past_surgeries">Past Surgeries</string>
+    <string name="chronic_diseases">Chronic Diseases</string>
+    <string name="view_medical_record">Click to view medical record</string>
+    <string name="name">Name</string>
 </resources>

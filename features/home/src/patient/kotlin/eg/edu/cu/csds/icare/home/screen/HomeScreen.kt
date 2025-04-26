@@ -36,7 +36,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
-import eg.edu.cu.csds.icare.appointment.AppointmentsViewModel
+import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen.Profile
@@ -58,7 +58,7 @@ internal fun HomeScreen(
     mediaHelper: MediaHelper,
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
-    appointmentsViewModel: AppointmentsViewModel,
+    appointmentViewModel: AppointmentViewModel,
     clinicViewModel: ClinicViewModel,
     navigateToScreen: (Screen) -> Unit,
     onError: suspend (Throwable?) -> Unit,
@@ -72,9 +72,9 @@ internal fun HomeScreen(
     var isPlayed by homeViewModel.isPlayed
     val userResource by mainViewModel.currentUserFlow.collectAsStateWithLifecycle()
     val topDoctorsRes by clinicViewModel.topDoctorsResFlow.collectAsStateWithLifecycle()
-    val appointmentsRes by appointmentsViewModel.appointmentsResFlow.collectAsStateWithLifecycle()
+    val appointmentsRes by appointmentViewModel.appointmentsResFlow.collectAsStateWithLifecycle()
     val promotionRes by homeViewModel.promotionResFlow.collectAsStateWithLifecycle()
-    val statusList by appointmentsViewModel.statusListState
+    val statusList by appointmentViewModel.statusListState
 
     BackHandler {
         openDialog = true
@@ -90,7 +90,7 @@ internal fun HomeScreen(
     }
 
     LaunchedEffect(key1 = Unit) {
-        appointmentsViewModel.getPatientAppointments()
+        appointmentViewModel.getPatientAppointments()
         clinicViewModel.listTopDoctors()
     }
 

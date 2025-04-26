@@ -8,10 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.BookAppointment
-import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetAppointmentsByStatus
-import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.GetPatientAppointments
-import eg.edu.cu.csds.icare.core.domain.usecase.booking.appointment.UpdateAppointment
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.BookAppointment
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointmentsByStatus
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetPatientAppointments
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.UpdateAppointment
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
-class AppointmentsViewModel(
+class AppointmentViewModel(
     private val dispatcher: CoroutineDispatcher,
     private val bookAppointmentUseCase: BookAppointment,
     private val updateAppointmentUseCase: UpdateAppointment,
