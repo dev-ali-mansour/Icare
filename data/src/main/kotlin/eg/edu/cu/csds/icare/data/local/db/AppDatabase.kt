@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.DeleteColumn
 import androidx.room.DeleteTable
 import androidx.room.RenameColumn
+import androidx.room.RenameTable
 import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -28,7 +29,7 @@ import eg.edu.cu.csds.icare.data.local.db.entity.UserEntity
         SettingsEntity::class, UserEntity::class, BookingMethodEntity::class, ClinicEntity::class,
         CenterEntity::class, DoctorEntity::class, PharmacyEntity::class,
     ],
-    version = 11,
+    version = 12,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -41,6 +42,7 @@ import eg.edu.cu.csds.icare.data.local.db.entity.UserEntity
         AutoMigration(from = 8, to = 9),
         AutoMigration(from = 9, to = 10),
         AutoMigration(from = 10, to = 11, spec = AppDatabase.AutoMigrationSpec11::class),
+        AutoMigration(from = 11, to = 12, spec = AppDatabase.AutoMigrationSpec12::class),
     ],
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -106,6 +108,12 @@ abstract class AppDatabase : RoomDatabase() {
         ),
     )
     class AutoMigrationSpec11 : AutoMigrationSpec {
+        @Override
+        override fun onPostMigrate(db: SupportSQLiteDatabase) = Unit
+    }
+
+    @RenameTable.Entries(RenameTable(fromTableName = "user", toTableName = "users"))
+    class AutoMigrationSpec12 : AutoMigrationSpec {
         @Override
         override fun onPostMigrate(db: SupportSQLiteDatabase) = Unit
     }
