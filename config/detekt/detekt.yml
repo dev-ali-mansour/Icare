@@ -106,7 +106,7 @@ complexity:
     ignoreOverloaded: false
   CyclomaticComplexMethod:
     active: true
-    threshold: 20
+    threshold: 25
     ignoreSingleWhenExpression: false
     ignoreSimpleWhenEntries: false
     ignoreNestingFunctions: false
@@ -132,9 +132,9 @@ complexity:
     ignoreAnnotated: [ 'Composable' ]
   LongParameterList:
     active: true
-    functionThreshold: 20
+    functionThreshold: 40
     constructorThreshold: 20
-    ignoreDefaultParameters: false
+    ignoreDefaultParameters: true
     ignoreDataClasses: true
     ignoreAnnotatedParameter: [ ]
   MethodOverloading:

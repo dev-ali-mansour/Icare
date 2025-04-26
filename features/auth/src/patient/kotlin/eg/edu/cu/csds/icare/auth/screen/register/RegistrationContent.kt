@@ -67,6 +67,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.Blue200
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.TEXT_AREA_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.XL4_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
@@ -123,8 +124,8 @@ internal fun RegistrationContent(
 ) {
     val genders =
         listOf(
-            GenderItem(code = 1, textResId = R.string.male),
-            GenderItem(code = 2, textResId = R.string.female),
+            GenderItem(code = 1, textResId = CoreR.string.male),
+            GenderItem(code = 2, textResId = CoreR.string.female),
         )
     var selectedBirthDate by remember { mutableStateOf<Long?>(null) }
     var selectedBirthDateFormatted by remember { mutableStateOf("") }
@@ -348,7 +349,7 @@ internal fun RegistrationContent(
                     readOnly = true,
                     label = {
                         Text(
-                            text = stringResource(R.string.birth_date),
+                            text = stringResource(CoreR.string.birth_date),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -409,7 +410,7 @@ internal fun RegistrationContent(
                         onValueChange = { },
                         label = {
                             Text(
-                                text = stringResource(R.string.gender),
+                                text = stringResource(CoreR.string.gender),
                                 color = dropDownTextColor,
                             )
                         },
@@ -555,7 +556,7 @@ internal fun RegistrationContent(
                     },
                     label = {
                         Text(
-                            text = stringResource(R.string.weight),
+                            text = stringResource(CoreR.string.weight),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -583,12 +584,12 @@ internal fun RegistrationContent(
                         ),
                 )
 
-                TextField(
+                OutlinedTextField(
                     value = chronicDiseases,
                     onValueChange = { onChronicDiseasesChange(it) },
                     label = {
                         Text(
-                            text = stringResource(R.string.chronic_diseases),
+                            text = stringResource(CoreR.string.chronic_diseases),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -598,8 +599,10 @@ internal fun RegistrationContent(
                     maxLines = 3,
                     modifier =
                         Modifier
+                            .padding(top = L_PADDING)
                             .fillMaxWidth(fraction = 0.8f)
-                            .padding(top = L_PADDING),
+                            .height(TEXT_AREA_HEIGHT),
+                    shape = RoundedCornerShape(S_PADDING),
                     colors =
                         TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
@@ -614,16 +617,16 @@ internal fun RegistrationContent(
                         KeyboardOptions.Default.copy(
                             autoCorrectEnabled = false,
                             keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next,
+                            imeAction = ImeAction.Default,
                         ),
                 )
 
-                TextField(
+                OutlinedTextField(
                     value = currentMedications,
                     onValueChange = { onCurrentMedicationsChange(it) },
                     label = {
                         Text(
-                            text = stringResource(R.string.current_medications),
+                            text = stringResource(CoreR.string.current_medications),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -633,8 +636,10 @@ internal fun RegistrationContent(
                     maxLines = 3,
                     modifier =
                         Modifier
+                            .padding(top = L_PADDING)
                             .fillMaxWidth(fraction = 0.8f)
-                            .padding(top = L_PADDING),
+                            .height(TEXT_AREA_HEIGHT),
+                    shape = RoundedCornerShape(S_PADDING),
                     colors =
                         TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
@@ -649,16 +654,16 @@ internal fun RegistrationContent(
                         KeyboardOptions.Default.copy(
                             autoCorrectEnabled = false,
                             keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next,
+                            imeAction = ImeAction.Default,
                         ),
                 )
 
-                TextField(
+                OutlinedTextField(
                     value = allergies,
                     onValueChange = { onAllergiesChange(it) },
                     label = {
                         Text(
-                            text = stringResource(R.string.allergies),
+                            text = stringResource(CoreR.string.allergies),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -668,8 +673,10 @@ internal fun RegistrationContent(
                     maxLines = 3,
                     modifier =
                         Modifier
+                            .padding(top = L_PADDING)
                             .fillMaxWidth(fraction = 0.8f)
-                            .padding(top = L_PADDING),
+                            .height(TEXT_AREA_HEIGHT),
+                    shape = RoundedCornerShape(S_PADDING),
                     colors =
                         TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
@@ -684,16 +691,16 @@ internal fun RegistrationContent(
                         KeyboardOptions.Default.copy(
                             autoCorrectEnabled = false,
                             keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next,
+                            imeAction = ImeAction.Default,
                         ),
                 )
 
-                TextField(
+                OutlinedTextField(
                     value = pastSurgeries,
                     onValueChange = { onPastSurgeriesChange(it) },
                     label = {
                         Text(
-                            text = stringResource(R.string.past_surgeries),
+                            text = stringResource(CoreR.string.past_surgeries),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -703,8 +710,10 @@ internal fun RegistrationContent(
                     maxLines = 3,
                     modifier =
                         Modifier
+                            .padding(top = L_PADDING)
                             .fillMaxWidth(fraction = 0.8f)
-                            .padding(top = L_PADDING),
+                            .height(TEXT_AREA_HEIGHT),
+                    shape = RoundedCornerShape(S_PADDING),
                     colors =
                         TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
@@ -719,7 +728,7 @@ internal fun RegistrationContent(
                         KeyboardOptions.Default.copy(
                             autoCorrectEnabled = false,
                             keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next,
+                            imeAction = ImeAction.Default,
                         ),
                 )
 

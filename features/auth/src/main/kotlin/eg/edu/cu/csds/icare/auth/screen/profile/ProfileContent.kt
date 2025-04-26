@@ -36,7 +36,7 @@ import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_ICON_SIZE
+import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
@@ -165,7 +165,7 @@ internal fun CurrentUserInfo(
                     .padding(XS_PADDING)
                     .clip(CircleShape)
                     .border(BOARDER_SIZE, Color.DarkGray, CircleShape)
-                    .size(PROFILE_ICON_SIZE)
+                    .size(PROFILE_IMAGE_SIZE)
                     .constrainAs(image) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)

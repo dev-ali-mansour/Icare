@@ -128,10 +128,7 @@ fun NavGraphBuilder.adminRoute(
             clinicViewModel = clinicViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { clinicViewModel.addNewClinic() },
-            onSuccess = {
-//                clinicViewModel.listClinics()
-                onNavigationIconClicked()
-            },
+            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }

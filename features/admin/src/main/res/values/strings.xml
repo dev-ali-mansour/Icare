@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="diagnosis">Diagnosis</string>
+    <string name="Prescription">Prescription</string>
+    <string name="lab_tests">Lab Tests</string>
+    <string name="imaging_tests">Imaging Tests</string>
+    <string name="follow_up_date">Follow-up Date</string>
+    <string name="edit_consultation">Edit Consultation</string>
+    <string name="new_consultation">New Consultation</string>
+    <string name="consultation_date">Consultation Date</string>
+    <string name="prescription_status">Prescription Status</string>
+    <string name="imaging_tests_status">Imaging Tests Status</string>
+    <string name="lab_tests_status">Lab Test Status</string>
+</resources>

@@ -277,6 +277,9 @@ class RemoteClinicsDataSourceImpl(
                                     Constants.ERROR_CODE_OK ->
                                         emit(Resource.Success(res.schedule))
 
+                                    Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                        emit(Resource.Error(UserNotAuthenticatedException()))
+
                                     Constants.ERROR_CODE_SERVER_ERROR ->
                                         emit(Resource.Error(ConnectException()))
                                 }

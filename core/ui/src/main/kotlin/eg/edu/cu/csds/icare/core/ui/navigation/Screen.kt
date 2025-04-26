@@ -113,8 +113,11 @@ sealed class Screen {
     data object Appointments : Screen()
 
     @Serializable
-    data object NewPrescription : Screen()
+    data object PatientMedicalRecord : Screen()
 
     @Serializable
-    data object EditPrescription : Screen()
+    data object NewConsultation : Screen()
+
+    @Serializable
+    data object EditConsultation : Screen()
 }
