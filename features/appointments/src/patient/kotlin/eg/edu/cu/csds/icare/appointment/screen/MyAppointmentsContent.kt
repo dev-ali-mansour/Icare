@@ -190,6 +190,7 @@ fun MyAppointmentsContent(
                     }
             }
         }
+
         when (actionResource) {
             is Resource.Unspecified -> {}
             is Resource.Loading ->
@@ -248,10 +249,11 @@ fun UpcomingAppointmentsContent(
             }
 
             items(tomorrowAppointments) { appointment ->
+                // Todo Show DateTime picker to reschedule the appointment
                 AppointmentCard(
                     appointment = appointment,
                     onReschedule = { onReschedule(appointment) },
-                    onCancel = { onCancel(appointment) },
+                    onCancel = { onCancel(appointment.copy(statusId = AppointmentStatus.CancelledStatus.code)) },
                     showActions = true,
                 )
             }
