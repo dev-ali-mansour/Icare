@@ -8,5 +8,5 @@ import kotlinx.coroutines.flow.Flow
 class GetDoctorSchedule(
     private val repository: ClinicsRepository,
 ) {
-    operator fun invoke(): Flow<Resource<DoctorSchedule>> = repository.getDoctorSchedule()
+    operator fun invoke(uid: String): Flow<Resource<DoctorSchedule>> = repository.getDoctorSchedule(uid)
 }
