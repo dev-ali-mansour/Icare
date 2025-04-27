@@ -1,5 +1,6 @@
 package eg.edu.cu.csds.icare.appointment.components
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,13 +20,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import eg.edu.cu.csds.icare.appointment.R
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.util.Constants
-import eg.edu.cu.csds.icare.core.domain.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Orange200
@@ -34,6 +35,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
+import eg.edu.cu.csds.icare.core.ui.util.getFormattedTime
 
 @Composable
 fun AppointmentCard(
@@ -41,6 +43,7 @@ fun AppointmentCard(
     onReschedule: () -> Unit,
     onCancel: () -> Unit,
     showActions: Boolean,
+    context: Context = LocalContext.current,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -79,7 +82,7 @@ fun AppointmentCard(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
-                    text = appointment.dateTime.getFormattedTime(),
+                    text = appointment.dateTime.getFormattedTime(context),
                     fontFamily = helveticaFamily,
                     modifier = Modifier.weight(weight = 1f),
                 )
