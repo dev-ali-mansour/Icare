@@ -187,7 +187,7 @@ interface ApiService {
         @Body body: Consultation,
     ): Response<ActionResultResponse>
 
-    @POST("consultationApi/medicalRecord")
+    @POST("clinicApi/medicalRecord")
     suspend fun getMedicalRecord(
         @Body body: HashMap<String, String>,
     ): Response<MedicalRecordResponse>
