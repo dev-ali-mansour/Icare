@@ -11,11 +11,7 @@ class LocalAuthDataSourceImpl(
     override suspend fun getUser(): UserEntity? = userDao.getEmployee()
 
     override suspend fun saveEmployee(entity: UserEntity) {
-        userDao.getEmployee()?.let {
-            userDao.updateEmployee(entity)
-        } ?: run {
-            userDao.persistUser(entity)
-        }
+        userDao.persistUser(entity)
     }
 
     override suspend fun clearEmployee() {
