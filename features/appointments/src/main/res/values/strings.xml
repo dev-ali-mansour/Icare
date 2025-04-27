@@ -5,4 +5,5 @@
     <string name="pending_for_confirmation">Pending for confirmation</string>
     <string name="reschedule">Reschedule</string>
     <string name="cancel">Cancel</string>
+    <string name="book_your_appointment_time">Book your appointment time</string>
 </resources>
