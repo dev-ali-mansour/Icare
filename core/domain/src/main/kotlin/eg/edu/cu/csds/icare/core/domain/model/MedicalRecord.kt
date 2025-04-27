@@ -5,7 +5,6 @@ import kotlinx.serialization.Transient
 
 @Serializable
 data class MedicalRecord(
-    val token: String = "",
     val patientId: String = "",
     val patientName: String = "",
     val patientImage: String = "",
