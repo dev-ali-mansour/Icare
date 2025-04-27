@@ -46,7 +46,8 @@ class ConsultationViewModel(
     private val _consultationsResFlow =
         MutableStateFlow<Resource<List<Consultation>>>(Resource.Unspecified())
     val consultationsResFlow: StateFlow<Resource<List<Consultation>>> = _consultationsResFlow
-    private val _medicalRecordResFlow = MutableStateFlow<Resource<MedicalRecord>>(Resource.Unspecified())
+    private val _medicalRecordResFlow =
+        MutableStateFlow<Resource<MedicalRecord>>(Resource.Unspecified())
     val medicalRecordResFlow: StateFlow<Resource<MedicalRecord>> = _medicalRecordResFlow
     var selectedConsultationState: MutableState<Consultation?> = mutableStateOf(null)
         set(value) {
@@ -68,27 +69,6 @@ class ConsultationViewModel(
     var followUpdDateState = mutableLongStateOf(0)
     var labCentersExpandedState = mutableStateOf(false)
     var imagingCentersExpandedState = mutableStateOf(false)
-
-    // Todo Remove this mock data
-    private val mockResource =
-        Resource.Success(
-            listOf(
-                Consultation(
-                    appointment =
-                        Appointment(
-                            id = 1,
-                            doctorName = "محمد السيد عثمان",
-                            doctorImage =
-                                "https://t4.ftcdn.net/jpg/01/98/82/75/360_F_" +
-                                    "198827520_wVNNHdMq4yLJe76WWivQQ5Ev2WtXac4N.webp",
-                            dateTime =
-                                System
-                                    .currentTimeMillis()
-                                    .minus(other = 1000 * 60 * 60 * 24 * 3),
-                        ),
-                ),
-            ),
-        )
 
     fun addNewConsultation() {
         viewModelScope.launch(dispatcher) {
@@ -142,41 +122,7 @@ class ConsultationViewModel(
             }
 
             getMedicalRecordUseCase(patientId).collect { result ->
-                // Todo Remove this mock data
-                if (result is Resource.Error) {
-                    _medicalRecordResFlow.value =
-                        Resource.Success(
-                            MedicalRecord(
-                                patientName = "محمد السيد عثمان",
-                                patientImage = "https://t.pimg.jp/047/354/467/1/47354467.jpg",
-                                gender = 'M',
-                                chronicDiseases = "مرض السكري",
-                                currentMedications = "أدوية السكري",
-                                allergies = "حساسية ضد الفول السوداني",
-                                pastSurgeries = "لا يوجد",
-                                weight = 80.5,
-                                consultations =
-                                    listOf(
-                                        Consultation(
-                                            dateTime =
-                                                System
-                                                    .currentTimeMillis()
-                                                    .minus(other = 1000 * 60 * 60 * 24 * 3),
-                                            appointment =
-                                                Appointment(
-                                                    id = 1,
-                                                    doctorName = "د.سيد عبد الحليم الجوهري",
-                                                    doctorImage =
-                                                        "https://t4.ftcdn.net/jpg/01/98/82/75/360_F_" +
-                                                            "198827520_wVNNHdMq4yLJe76WWivQQ5Ev2WtXac4N.webp",
-                                                ),
-                                        ),
-                                    ),
-                            ),
-                        )
-                } else {
-                    _medicalRecordResFlow.value = result
-                }
+                _medicalRecordResFlow.value = result
             }
         }
     }
@@ -189,12 +135,7 @@ class ConsultationViewModel(
             }
 
             getMedicationsByStatusUseCase(statusId).collect { result ->
-                // Todo Remove this mock data
-                if (result is Resource.Error) {
-                    _consultationsResFlow.value = mockResource
-                } else {
-//                    _consultationsResFlow.value = result
-                }
+                _consultationsResFlow.value = result
             }
         }
     }
@@ -207,12 +148,7 @@ class ConsultationViewModel(
             }
 
             getLabTestsByStatusUseCase(statusId).collect { result ->
-                // Todo Remove this mock data
-                if (result is Resource.Error) {
-                    _consultationsResFlow.value = mockResource
-                } else {
-//                    _consultationsResFlow.value = result
-                }
+                _consultationsResFlow.value = result
             }
         }
     }
@@ -225,12 +161,7 @@ class ConsultationViewModel(
             }
 
             getImagingTestsByStatusUseCase(statusId).collect { result ->
-                // Todo Remove this mock data
-                if (result is Resource.Error) {
-                    _consultationsResFlow.value = mockResource
-                } else {
-//                    _consultationsResFlow.value = result
-                }
+                _consultationsResFlow.value = result
             }
         }
     }
