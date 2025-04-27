@@ -52,18 +52,12 @@ class RemoteCentersDataSourceImpl(
                         }
                     }
 
-                    else -> {
-                        // Todo Pass ConnectException While failing to connect to the server
-                        emit(Resource.Success(listOf()))
-//                    emit(Resource.Error(ConnectException(response.code().toString())))
-                    }
+                    else -> emit(Resource.Error(ConnectException(response.code().toString())))
                 }
             }
         }.catch {
             Timber.e("fetchCenters() error ${it.javaClass.simpleName}: ${it.message}")
-            // Todo Pass ConnectException While failing to connect to the server
-            emit(Resource.Success(listOf()))
-//            emit(Resource.Error(it))
+            emit(Resource.Error(it))
         }
 
     override fun addNewCenter(center: LabImagingCenter): Flow<Resource<Nothing?>> =

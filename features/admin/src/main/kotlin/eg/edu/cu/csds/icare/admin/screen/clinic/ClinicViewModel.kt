@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
@@ -260,56 +259,7 @@ class ClinicViewModel(
             }
 
             getDoctorScheduleUseCase().collect { result ->
-                // Todo Remove this mock data
-                if (result is Resource.Error) {
-                    _doctorScheduleResFlow.value =
-                        Resource.Success(
-                            DoctorSchedule(
-                                totalPatients = 2000,
-                                confirmed = 16,
-                                price = 500.0,
-                                availableSlots = 5,
-                                appointments =
-                                    listOf(
-                                        Appointment(
-                                            id = 1,
-                                            patientName = "محمد السيد عثمان",
-                                            patientImage =
-                                                "https://t4.ftcdn.net/jpg/01/98/82/75/360_F_" +
-                                                    "198827520_wVNNHdMq4yLJe76WWivQQ5Ev2WtXac4N.webp",
-                                            dateTime = System.currentTimeMillis(),
-                                        ),
-                                        Appointment(
-                                            id = 2,
-                                            patientName = "ابراهيم محمد",
-                                            dateTime = System.currentTimeMillis().plus(other = 30 * 60 * 1000),
-                                        ),
-                                        Appointment(
-                                            id = 3,
-                                            patientName = "شاكر محمد العربي",
-                                            dateTime = System.currentTimeMillis().plus(other = 60 * 60 * 1000),
-                                        ),
-                                        Appointment(
-                                            id = 4,
-                                            patientName = "أحمد عبد الحليم مهران",
-                                            dateTime = System.currentTimeMillis().plus(other = (1.5 * 60 * 60 * 1000).toLong()),
-                                        ),
-                                        Appointment(
-                                            id = 5,
-                                            patientName = "محمد السيد شاكر",
-                                            dateTime = System.currentTimeMillis().plus(other = 2 * 60 * 60 * 1000),
-                                        ),
-                                        Appointment(
-                                            id = 6,
-                                            patientName = "ابراهيم محمد سعيد",
-                                            dateTime = System.currentTimeMillis().plus(other = (2.5 * 60 * 60 * 1000).toLong()),
-                                        ),
-                                    ),
-                            ),
-                        )
-                } else {
-                    _doctorScheduleResFlow.value = result
-                }
+                _doctorScheduleResFlow.value = result
             }
         }
     }

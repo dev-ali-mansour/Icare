@@ -17,7 +17,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -96,91 +100,72 @@ class MainViewModel(
     init {
         viewModelScope.launch(dispatcher) {
             runCatching {
-                getUserInfoUseCase(forceUpdate = true).distinctUntilChanged().collect {
-                    _currentUserFlow.value = it
-                }
-                readOnBoardingUseCase().collect { res ->
-                    _onBoardingCompleted.value = res
+                getUserInfoUseCase(forceUpdate = true)
+                    .distinctUntilChanged()
+                    .onEach { _currentUserFlow.value = it }
+                    .collect {}
 
-                    if (res is Resource.Success) {
+                readOnBoardingUseCase()
+                    .onEach { res ->
+                        _onBoardingCompleted.value = res
 
-                        if (_resultFlow.value !is Resource.Unspecified) {
-                            _resultFlow.value = Resource.Unspecified()
+                        if (res is Resource.Success) {
+                            _resultFlow.value = Resource.Loading()
                             delay(timeMillis = 100)
-                        }
-                        listClinicsUseCase(forceUpdate = true).collect {
-                            when (it) {
-                                is Resource.Unspecified<*> ->
-                                    _resultFlow.value = Resource.Unspecified()
 
-                                is Resource.Loading<*> ->
-                                    _resultFlow.value = Resource.Loading()
+                            val clinicsFlow =
+                                listClinicsUseCase(forceUpdate = true)
+                                    .onStart { emit(Resource.Loading()) }
+                                    .catch { emit(Resource.Error(it)) }
+                            val doctorsFlow =
+                                listDoctorsUseCase(forceUpdate = true)
+                                    .onStart { emit(Resource.Loading()) }
+                                    .catch { emit(Resource.Error(it)) }
+                            val pharmaciesFlow =
+                                listPharmaciesUseCase(forceUpdate = true)
+                                    .onStart { emit(Resource.Loading()) }
+                                    .catch { emit(Resource.Error(it)) }
+                            val centersFlow =
+                                listCentersUseCase(forceUpdate = true)
+                                    .onStart { emit(Resource.Loading()) }
+                                    .catch { emit(Resource.Error(it)) }
 
-                                is Resource.Success ->
-                                    listDoctorsUseCase(forceUpdate = true).collect {
-                                        when (it) {
-                                            is Resource.Unspecified<*> ->
-                                                _resultFlow.value =
-                                                    Resource.Unspecified()
+                            combine(
+                                clinicsFlow,
+                                doctorsFlow,
+                                pharmaciesFlow,
+                                centersFlow,
+                            ) { clinics, doctors, pharmacies, centers ->
+                                val errors =
+                                    listOf(
+                                        clinics,
+                                        doctors,
+                                        pharmacies,
+                                        centers,
+                                    ).filterIsInstance<Resource.Error<Nothing?>>()
+                                val loading =
+                                    listOf(
+                                        clinics,
+                                        doctors,
+                                        pharmacies,
+                                        centers,
+                                    ).filterIsInstance<Resource.Loading<Nothing?>>()
 
-                                            is Resource.Loading<*> ->
-                                                _resultFlow.value = Resource.Loading()
-
-                                            is Resource.Success ->
-                                                listPharmaciesUseCase(forceUpdate = true).collect {
-                                                    when (it) {
-                                                        is Resource.Unspecified<*> ->
-                                                            _resultFlow.value =
-                                                                Resource.Unspecified()
-
-                                                        is Resource.Loading<*> ->
-                                                            _resultFlow.value = Resource.Loading()
-
-                                                        is Resource.Success ->
-                                                            listCentersUseCase(forceUpdate = true).collect {
-                                                                when (it) {
-                                                                    is Resource.Unspecified<*> ->
-                                                                        _resultFlow.value =
-                                                                            Resource.Unspecified()
-
-                                                                    is Resource.Loading<*> ->
-                                                                        _resultFlow.value =
-                                                                            Resource.Loading()
-
-                                                                    is Resource.Success ->
-                                                                        _resultFlow.value =
-                                                                            Resource.Success(null)
-
-                                                                    is Resource.Error<*> ->
-                                                                        // Todo Remove this mock data
-                                                                        _resultFlow.value = Resource.Success(null)
-//                                                                        _resultFlow.value = Resource.Error(it.error)
-                                                                }
-                                                            }
-
-                                                        is Resource.Error<*> ->
-                                                            // Todo Remove this mock data
-                                                            _resultFlow.value = Resource.Success(null)
-//                                                        _resultFlow.value = Resource.Error(it.error)
-                                                    }
-                                                }
-
-                                            is Resource.Error<*> ->
-                                                // Todo Remove this mock data
-                                                _resultFlow.value = Resource.Success(null)
-//                                                _resultFlow.value = Resource.Error(it.error)
-                                        }
-                                    }
-
-                                is Resource.Error<*> ->
-                                    // Todo Remove this mock data
-                                    _resultFlow.value = Resource.Success(null)
-//                                    _resultFlow.value = Resource.Error(it.error)
+                                when {
+                                    errors.isNotEmpty() -> errors.first()
+                                    loading.isNotEmpty() -> Resource.Loading()
+                                    else -> Resource.Success(null)
+                                }
+                            }.collect {
+                                _resultFlow.value = it
                             }
+                        } else {
+                            _resultFlow.value = Resource.Unspecified()
                         }
-                    }
-                }
-            }.onFailure { _resultFlow.value = Resource.Error(it) }
+                    }.collect {}
+            }.onFailure {
+                _resultFlow.value = Resource.Error(it)
+            }
         }
     }
 }

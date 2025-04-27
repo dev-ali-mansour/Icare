@@ -108,6 +108,7 @@ class RemoteConsultationsDataSourceImpl(
                     }
                 val map = HashMap<String, String>()
                 map["token"] = token
+                map["uid"] = patientId
                 val response = service.getMedicalRecord(map)
                 when (response.code()) {
                     HTTP_OK -> {
@@ -115,6 +116,7 @@ class RemoteConsultationsDataSourceImpl(
                             when (res.statusCode) {
                                 Constants.ERROR_CODE_OK ->
                                     emit(Resource.Success(res.medicalRecord))
+
                                 Constants.ERROR_CODE_EXPIRED_TOKEN ->
                                     emit(Resource.Error(UserNotAuthenticatedException()))
 
@@ -146,7 +148,7 @@ class RemoteConsultationsDataSourceImpl(
                     }
                 val map = HashMap<String, String>()
                 map["token"] = token
-                map["statusId"] = statusId.toString()
+                map["status"] = statusId.toString()
                 val response = service.getMedicationsByStatus(map)
                 when (response.code()) {
                     HTTP_OK -> {
@@ -154,6 +156,7 @@ class RemoteConsultationsDataSourceImpl(
                             when (res.statusCode) {
                                 Constants.ERROR_CODE_OK ->
                                     emit(Resource.Success(res.consultations))
+
                                 Constants.ERROR_CODE_EXPIRED_TOKEN ->
                                     emit(Resource.Error(UserNotAuthenticatedException()))
 
@@ -185,7 +188,7 @@ class RemoteConsultationsDataSourceImpl(
                     }
                 val map = HashMap<String, String>()
                 map["token"] = token
-                map["statusId"] = statusId.toString()
+                map["status"] = statusId.toString()
                 val response = service.getLabTestsByStatus(map)
                 when (response.code()) {
                     HTTP_OK -> {
@@ -193,6 +196,7 @@ class RemoteConsultationsDataSourceImpl(
                             when (res.statusCode) {
                                 Constants.ERROR_CODE_OK ->
                                     emit(Resource.Success(res.consultations))
+
                                 Constants.ERROR_CODE_EXPIRED_TOKEN ->
                                     emit(Resource.Error(UserNotAuthenticatedException()))
 
@@ -224,7 +228,7 @@ class RemoteConsultationsDataSourceImpl(
                     }
                 val map = HashMap<String, String>()
                 map["token"] = token
-                map["statusId"] = statusId.toString()
+                map["status"] = statusId.toString()
                 val response = service.getImagingTestsByStatus(map)
                 when (response.code()) {
                     HTTP_OK -> {
@@ -232,6 +236,7 @@ class RemoteConsultationsDataSourceImpl(
                             when (res.statusCode) {
                                 Constants.ERROR_CODE_OK ->
                                     emit(Resource.Success(res.consultations))
+
                                 Constants.ERROR_CODE_EXPIRED_TOKEN ->
                                     emit(Resource.Error(UserNotAuthenticatedException()))
 
