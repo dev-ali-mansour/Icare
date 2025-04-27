@@ -3,6 +3,7 @@ package eg.edu.cu.csds.icare.data.repository
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.User
+import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
 import eg.edu.cu.csds.icare.core.domain.repository.AuthRepository
 import eg.edu.cu.csds.icare.data.local.datasource.LocalAuthDataSource
 import eg.edu.cu.csds.icare.data.local.db.entity.toEntity
@@ -108,14 +109,15 @@ class AuthRepositoryImpl(
                     }
                 }
                 remoteAuthDataSource.getUserInfo().collect { res ->
-                    if (res is Resource.Success) {
-                        res.data?.let { user ->
-                            localAuthDataSource.saveEmployee(entity = user.toEntity())
-                            emit(Resource.Success(data = user))
-                        } ?: emit(res)
-                    } else {
-                        // Todo Pass resource error to the view model to handle it
-                        emit(res)
+                    when (res) {
+                        is Resource.Success -> {
+                            res.data?.let { user ->
+                                localAuthDataSource.saveEmployee(entity = user.toEntity())
+                                emit(Resource.Success(data = user))
+                            } ?: emit(Resource.Error(UserNotAuthorizedException()))
+                        }
+
+                        else -> emit(res)
                     }
                 }
             }.onFailure { emit(Resource.Error(it)) }
