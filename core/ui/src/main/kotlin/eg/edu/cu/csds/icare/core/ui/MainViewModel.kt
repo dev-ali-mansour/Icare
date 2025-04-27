@@ -14,10 +14,14 @@ import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.ListPharmacies
 import eg.edu.cu.csds.icare.core.ui.common.SectionCategory
 import eg.edu.cu.csds.icare.core.ui.common.SectionItem
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
@@ -152,23 +156,19 @@ class MainViewModel(
                                                                             Resource.Success(null)
 
                                                                     is Resource.Error<*> ->
-                                                                        // Todo Remove this mock data
-                                                                        _resultFlow.value = Resource.Success(null)
-//                                                                        _resultFlow.value = Resource.Error(it.error)
+                                                                        _resultFlow.value =
+                                                                            Resource.Error(it.error)
                                                                 }
                                                             }
 
                                                         is Resource.Error<*> ->
-                                                            // Todo Remove this mock data
-                                                            _resultFlow.value = Resource.Success(null)
-//                                                        _resultFlow.value = Resource.Error(it.error)
+                                                            _resultFlow.value =
+                                                                Resource.Error(it.error)
                                                     }
                                                 }
 
                                             is Resource.Error<*> ->
-                                                // Todo Remove this mock data
-                                                _resultFlow.value = Resource.Success(null)
-//                                                _resultFlow.value = Resource.Error(it.error)
+                                                _resultFlow.value = Resource.Error(it.error)
                                         }
                                     }
 
@@ -177,6 +177,39 @@ class MainViewModel(
                                     _resultFlow.value = Resource.Success(null)
 //                                    _resultFlow.value = Resource.Error(it.error)
                             }
+                        }
+                        coroutineScope {
+                            val clinicsDeferred = async { listClinicsUseCase(forceUpdate = true).first() }
+                            val doctorsDeferred = async { listDoctorsUseCase(forceUpdate = true).first() }
+                            val pharmaciesDeferred = async { listPharmaciesUseCase(forceUpdate = true).first() }
+                            val centersDeferred = async { listCentersUseCase(forceUpdate = true).first() }
+
+                            // Wait for all requests to complete
+                            val results =
+                                awaitAll(
+                                    clinicsDeferred,
+                                    doctorsDeferred,
+                                    pharmaciesDeferred,
+                                    centersDeferred,
+                                )
+
+                            results.forEach { result ->
+                                when (result) {
+                                    is Resource.Error -> {
+                                        _resultFlow.value = Resource.Error(result.error)
+                                        return@coroutineScope
+                                    }
+                                    is Resource.Loading,
+                                    is Resource.Unspecified,
+                                    -> {
+                                        _resultFlow.value = Resource.Loading()
+                                        return@coroutineScope
+                                    }
+                                    is Resource.Success -> { }
+                                }
+                            }
+
+                            _resultFlow.value = Resource.Success(null)
                         }
                     }
                 }
