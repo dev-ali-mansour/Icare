@@ -68,7 +68,7 @@ internal fun HomeContent(
     userResource: Resource<User>,
     appVersion: String,
     doctorScheduleRes: Resource<DoctorSchedule>,
-    loadContentData: (Short) -> Unit,
+    loadContentData: (User) -> Unit,
     onUserClicked: () -> Unit,
     onPriceCardClicked: () -> Unit,
     onAppointmentClick: (Appointment) -> Unit,
@@ -124,7 +124,7 @@ internal fun HomeContent(
             is Resource.Success ->
                 userResource.data?.let { user ->
                     LaunchedEffect(key1 = true) {
-                        loadContentData(user.roleId)
+                        loadContentData(user)
                     }
                     when (doctorScheduleRes) {
                         is Resource.Unspecified -> {}
