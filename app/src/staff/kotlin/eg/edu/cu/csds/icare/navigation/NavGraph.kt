@@ -1,6 +1,7 @@
 package eg.edu.cu.csds.icare.navigation
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -12,6 +13,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.firebase.auth.FirebaseAuth
+import eg.edu.cu.csds.icare.MainActivity
 import eg.edu.cu.csds.icare.SplashScreen
 import eg.edu.cu.csds.icare.admin.navigation.adminRoute
 import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
@@ -27,6 +29,7 @@ import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
+import eg.edu.cu.csds.icare.core.ui.util.activity
 import eg.edu.cu.csds.icare.core.ui.util.getErrorMessage
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.home.HomeViewModel
@@ -92,7 +95,15 @@ fun SetupNavGraph(
                     },
                     onError = { error ->
                         exitApp.value = true
-                        handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
+                        handleError(
+                            error,
+                            exitApp,
+                            context,
+                            authViewModel,
+                            navController,
+                            alertMessage,
+                            showAlert,
+                        )
                     },
                 )
             }
@@ -117,11 +128,9 @@ fun SetupNavGraph(
                     }
                 },
                 onLoginSuccess = {
-                    navController.navigate(Screen.Home) {
-                        popUpTo(navController.graph.id) {
-                            inclusive = true
-                        }
-                    }
+                    val intent = Intent(context, MainActivity::class.java)
+                    context.activity.finish()
+                    context.startActivity(intent)
                 },
                 onRecoveryCompleted = {
                     navController.navigate(Screen.Login) {
@@ -139,7 +148,15 @@ fun SetupNavGraph(
                 },
                 onError = { error ->
                     exitApp.value = false
-                    handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
+                    handleError(
+                        error,
+                        exitApp,
+                        context,
+                        authViewModel,
+                        navController,
+                        alertMessage,
+                        showAlert,
+                    )
                 },
             )
 
@@ -155,7 +172,15 @@ fun SetupNavGraph(
                 navigateToScreen = { screen -> navController.navigate(screen) },
                 onError = { error ->
                     exitApp.value = false
-                    handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
+                    handleError(
+                        error,
+                        exitApp,
+                        context,
+                        authViewModel,
+                        navController,
+                        alertMessage,
+                        showAlert,
+                    )
                 },
             )
 
@@ -170,7 +195,15 @@ fun SetupNavGraph(
                 navigateToScreen = { screen -> navController.navigate(screen) },
                 onError = { error ->
                     exitApp.value = false
-                    handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
+                    handleError(
+                        error,
+                        exitApp,
+                        context,
+                        authViewModel,
+                        navController,
+                        alertMessage,
+                        showAlert,
+                    )
                 },
             )
 
@@ -189,7 +222,15 @@ fun SetupNavGraph(
                 },
                 onError = { error ->
                     exitApp.value = false
-                    handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
+                    handleError(
+                        error,
+                        exitApp,
+                        context,
+                        authViewModel,
+                        navController,
+                        alertMessage,
+                        showAlert,
+                    )
                 },
             )
 
@@ -201,7 +242,15 @@ fun SetupNavGraph(
                 navigateToScreen = { navController.navigate(it) },
                 onError = { error ->
                     exitApp.value = false
-                    handleError(error, exitApp, context, authViewModel, navController, alertMessage, showAlert)
+                    handleError(
+                        error,
+                        exitApp,
+                        context,
+                        authViewModel,
+                        navController,
+                        alertMessage,
+                        showAlert,
+                    )
                 },
             )
         }
