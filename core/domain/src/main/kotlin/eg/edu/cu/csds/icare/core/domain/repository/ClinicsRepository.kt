@@ -16,7 +16,7 @@ interface ClinicsRepository {
 
     fun listDoctors(forceRefresh: Boolean): Flow<Resource<List<Doctor>>>
 
-    fun getDoctorSchedule(): Flow<Resource<DoctorSchedule>>
+    fun getDoctorSchedule(uid: String): Flow<Resource<DoctorSchedule>>
 
     fun listTopDoctors(): Flow<Resource<List<Doctor>>>
 
