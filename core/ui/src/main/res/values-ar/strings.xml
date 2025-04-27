@@ -117,7 +117,7 @@
     <string name="admins">مديري النظام</string>
     <string name="patients">المرضى</string>
     <string name="rating">التقييم</string>
-    <string name="medical_record">السجل الطبي</string>
+    <string name="medical_record">الملف الطبي</string>
     <string name="male">ذكر</string>
     <string name="female">أنثى</string>
     <string name="gender">النوع</string>
