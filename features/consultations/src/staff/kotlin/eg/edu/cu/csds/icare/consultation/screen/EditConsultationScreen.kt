@@ -21,8 +21,6 @@ import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -36,6 +34,7 @@ import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
 import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
 import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
@@ -53,6 +52,7 @@ internal fun EditConsultationScreen(
     onNavigationIconClicked: () -> Unit,
     onPatientCardClick: (String) -> Unit,
     onProceedButtonClicked: () -> Unit,
+    navigateToScreen: (Screen) -> Unit,
     onError: suspend (Throwable?) -> Unit,
 ) {
     val pharmaciesRes by pharmacyViewModel.pharmaciesResFlow.collectAsStateWithLifecycle()
@@ -63,8 +63,8 @@ internal fun EditConsultationScreen(
     var pharmaciesExpanded by pharmacyViewModel.pharmaciesExpandedState
     var labCentersExpanded by consultationViewModel.labCentersExpandedState
     var imagingCentersExpanded by consultationViewModel.imagingCentersExpandedState
-    var showSuccessDialog by remember { mutableStateOf(false) }
-    var isRefreshing by remember { mutableStateOf(false) }
+    var showSuccessDialog by consultationViewModel.showSuccessDialog
+    var isRefreshing by consultationViewModel.isRefreshing
     val state = rememberPullToRefreshState()
     val scope = rememberCoroutineScope()
 
@@ -169,7 +169,9 @@ internal fun EditConsultationScreen(
                             consultation.copy(labCenterId = it)
                             labCentersExpanded = false
                         },
-                        onImagingCentersExpandedChange = { imagingCentersExpanded = !imagingCentersExpanded },
+                        onImagingCentersExpandedChange = {
+                            imagingCentersExpanded = !imagingCentersExpanded
+                        },
                         onImagingCentersDismissRequest = { imagingCentersExpanded = false },
                         onImagingCenterClicked = {
                             consultation.copy(imagingCenterId = it)
@@ -182,7 +184,8 @@ internal fun EditConsultationScreen(
                                 showSuccessDialog = true
                                 delay(timeMillis = 2000)
                                 showSuccessDialog = false
-                                onNavigationIconClicked()
+                                delay(timeMillis = 1000)
+                                navigateToScreen(Screen.Home)
                             }
                         },
                         onError = { onError(it) },

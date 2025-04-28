@@ -34,6 +34,7 @@ import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
 import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
 import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
@@ -51,6 +52,7 @@ internal fun NewConsultationScreen(
     onNavigationIconClicked: () -> Unit,
     onPatientCardClick: (String) -> Unit,
     onProceedButtonClicked: () -> Unit,
+    navigateToScreen: (Screen) -> Unit,
     onError: suspend (Throwable?) -> Unit,
 ) {
     val pharmaciesRes by pharmacyViewModel.pharmaciesResFlow.collectAsStateWithLifecycle()
@@ -189,7 +191,8 @@ internal fun NewConsultationScreen(
                             showSuccessDialog = true
                             delay(timeMillis = 2000)
                             showSuccessDialog = false
-                            onNavigationIconClicked()
+                            delay(timeMillis = 1000)
+                            navigateToScreen(Screen.Home)
                         }
                     },
                     onError = { onError(it) },

@@ -239,7 +239,13 @@ fun SetupNavGraph(
                 centerViewModel = centerViewModel,
                 consultationViewModel = consultationViewModel,
                 onNavigationIconClicked = { navController.navigateUpSafely() },
-                navigateToScreen = { navController.navigate(it) },
+                navigateToScreen = {
+                    navController.navigate(it) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
+                },
                 onError = { error ->
                     exitApp.value = false
                     handleError(
