@@ -136,4 +136,5 @@
     <string name="imaging_center" >مركز أشعة</string>
     <string name="search">بحث</string>
     <string name="book_now">احجز الآن</string>
+    <string name="search_by_doctor_name_or_speciality">ابحث باسم الطبيب أو التخصص</string>
 </resources>
