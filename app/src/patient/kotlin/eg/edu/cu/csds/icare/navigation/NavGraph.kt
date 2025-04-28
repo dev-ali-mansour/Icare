@@ -186,6 +186,8 @@ fun SetupNavGraph(
             )
 
             appointmentsRoute(
+                mainViewModel = mainViewModel,
+                clinicViewModel = clinicViewModel,
                 appointmentsViewModel = appointmentViewModel,
                 onNavigationIconClicked = {
                     navController.navigateUpSafely()

@@ -5,9 +5,5 @@
     <string name="pending_for_confirmation">في انتظار التأكيد</string>
     <string name="reschedule">إعادة جدولة</string>
     <string name="cancel">إلغاء</string>
-    <string name="doctors">Doctors</string>
-    <string name="doctors_list_title">Doctors List</string>
-    <string name="no_doctors_available">No doctors available</string>
-    <string name="search">Search</string>
-    <string name="error_loading_doctors">Error loading doctors</string>
+    <string name="book_your_appointment_time">احجز ميعاد حجزك</string>
 </resources>

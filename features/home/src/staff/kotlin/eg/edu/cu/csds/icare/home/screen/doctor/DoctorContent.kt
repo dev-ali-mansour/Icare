@@ -51,7 +51,6 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
-import eg.edu.cu.csds.icare.core.domain.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.domain.util.toFormattedString
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.theme.APPOINTMENTS_LIST_HEIGHT
@@ -72,6 +71,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.mintAccent
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.theme.trustBlue
+import eg.edu.cu.csds.icare.core.ui.util.getFormattedTime
 import eg.edu.cu.csds.icare.home.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -215,7 +215,7 @@ fun TotalPatientsCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    stringResource(R.string.total_patients),
+                    stringResource(R.string.total_appointments),
                     fontFamily = helveticaFamily,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
@@ -366,7 +366,7 @@ fun AppointmentItem(
                     ).padding(U_PADDING),
         ) {
             Text(
-                appointment.dateTime.getFormattedTime(),
+                appointment.dateTime.getFormattedTime(context),
                 color = Color.White,
                 fontSize = MaterialTheme.typography.titleMedium.fontSize,
             )

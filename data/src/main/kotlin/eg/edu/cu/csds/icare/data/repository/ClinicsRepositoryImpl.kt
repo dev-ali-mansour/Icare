@@ -142,7 +142,7 @@ class ClinicsRepositoryImpl(
                 }
         }
 
-    override fun getDoctorSchedule(): Flow<Resource<DoctorSchedule>> = remoteClinicsDataSource.getDoctorSchedule()
+    override fun getDoctorSchedule(uid: String): Flow<Resource<DoctorSchedule>> = remoteClinicsDataSource.getDoctorSchedule(uid)
 
     override fun listTopDoctors(): Flow<Resource<List<Doctor>>> =
         flow {
