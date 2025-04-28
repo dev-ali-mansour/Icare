@@ -88,11 +88,11 @@ fun MyAppointmentsContent(
                     },
         ) {
             when (appointmentsRes) {
-                is Resource.Unspecified -> LaunchedEffect(key1 = true) { showLoading(false) }
-                is Resource.Loading -> LaunchedEffect(key1 = true) { showLoading(true) }
+                is Resource.Unspecified -> LaunchedEffect(key1 = appointmentsRes) { showLoading(false) }
+                is Resource.Loading -> LaunchedEffect(key1 = appointmentsRes) { showLoading(true) }
 
                 is Resource.Success -> {
-                    LaunchedEffect(key1 = true) { showLoading(false) }
+                    LaunchedEffect(key1 = appointmentsRes) { showLoading(false) }
                     appointmentsRes.data?.let { list ->
                         val appointments =
                             list.map { appointment ->
@@ -173,15 +173,15 @@ fun MyAppointmentsContent(
                 }
 
                 is Resource.Error ->
-                    LaunchedEffect(key1 = true) {
+                    LaunchedEffect(key1 = appointmentsRes) {
                         showLoading(false)
                         onError(appointmentsRes.error)
                     }
             }
         }
         when (actionResource) {
-            is Resource.Unspecified -> LaunchedEffect(key1 = true) { showLoading(false) }
-            is Resource.Loading -> LaunchedEffect(key1 = true) { showLoading(true) }
+            is Resource.Unspecified -> LaunchedEffect(key1 = actionResource) { showLoading(false) }
+            is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
 
             is Resource.Success ->
                 LaunchedEffect(key1 = Unit) {
@@ -190,7 +190,7 @@ fun MyAppointmentsContent(
                 }
 
             is Resource.Error ->
-                LaunchedEffect(key1 = true) {
+                LaunchedEffect(key1 = actionResource) {
                     showLoading(false)
                     onError(actionResource.error)
                 }
