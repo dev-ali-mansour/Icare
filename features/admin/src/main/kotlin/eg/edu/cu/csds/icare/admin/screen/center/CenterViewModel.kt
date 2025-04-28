@@ -101,13 +101,13 @@ class CenterViewModel(
         }
     }
 
-    fun listCenters() {
+    fun listCenters(forceRefresh: Boolean = false) {
         viewModelScope.launch(dispatcher) {
             if (_centersResFlow.value !is Resource.Unspecified) {
                 _centersResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listCentersUseCase().collect { result ->
+            listCentersUseCase(forceRefresh).collect { result ->
                 _centersResFlow.value = result
             }
         }
