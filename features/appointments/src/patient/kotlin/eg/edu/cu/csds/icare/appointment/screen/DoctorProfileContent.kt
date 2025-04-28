@@ -65,7 +65,7 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 @Composable
 fun DoctorProfileContent(
     userRes: Resource<User>,
-    doctor: Doctor,
+    selectedDoctor: Doctor?,
     doctorScheduleRes: Resource<DoctorSchedule>,
     actionResource: Resource<Nothing?>,
     showLoading: (Boolean) -> Unit,
@@ -83,136 +83,78 @@ fun DoctorProfileContent(
                 .fillMaxSize()
                 .padding(bottom = M_PADDING),
     ) {
-        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+        ConstraintLayout(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+        ) {
             val (card, details) = createRefs()
             userRes.data?.let { user ->
-                when (doctorScheduleRes) {
-                    is Resource.Unspecified -> LaunchedEffect(key1 = true) { showLoading(false) }
-                    is Resource.Loading -> LaunchedEffect(key1 = true) { showLoading(true) }
+                selectedDoctor?.let { doctor ->
+                    when (doctorScheduleRes) {
+                        is Resource.Unspecified -> LaunchedEffect(key1 = true) { showLoading(false) }
+                        is Resource.Loading -> LaunchedEffect(key1 = true) { showLoading(true) }
 
-                    is Resource.Success -> {
-                        LaunchedEffect(key1 = true) { showLoading(false) }
-                        doctorScheduleRes.data?.let { schedule ->
-                            Card(
-                                modifier =
-                                    Modifier
-                                        .constrainAs(card) {
-                                            top.linkTo(parent.top)
-                                            start.linkTo(parent.start)
-                                            end.linkTo(parent.end)
-                                            width = Dimension.fillToConstraints
-                                        }.height(RECORD_PATIENT_CARD_HEIGHT)
-                                        .padding(XS_PADDING),
-                                colors = CardDefaults.cardColors(containerColor = cardBackgroundColor),
-                                elevation = CardDefaults.cardElevation(XS_PADDING),
-                            ) {
-                                ConstraintLayout(
+                        is Resource.Success -> {
+                            LaunchedEffect(key1 = true) { showLoading(false) }
+                            doctorScheduleRes.data?.let { schedule ->
+                                Card(
                                     modifier =
                                         Modifier
-                                            .fillMaxWidth()
-                                            .padding(XL_PADDING),
+                                            .constrainAs(card) {
+                                                top.linkTo(parent.top)
+                                                start.linkTo(parent.start)
+                                                end.linkTo(parent.end)
+                                                width = Dimension.fillToConstraints
+                                            }.height(RECORD_PATIENT_CARD_HEIGHT)
+                                            .padding(XS_PADDING),
+                                    colors = CardDefaults.cardColors(containerColor = cardBackgroundColor),
+                                    elevation = CardDefaults.cardElevation(XS_PADDING),
                                 ) {
-                                    val (image, name, speciality, price, totalApp, rating) = createRefs()
-                                    Image(
+                                    ConstraintLayout(
                                         modifier =
                                             Modifier
-                                                .padding(XS_PADDING)
-                                                .clip(CircleShape)
-                                                .border(BOARDER_SIZE, Color.DarkGray, CircleShape)
-                                                .size(PROFILE_IMAGE_SIZE)
-                                                .constrainAs(image) {
-                                                    top.linkTo(parent.top)
-                                                    start.linkTo(parent.start)
-                                                    end.linkTo(parent.end)
-                                                },
-                                        painter =
-                                            rememberAsyncImagePainter(
-                                                ImageRequest
-                                                    .Builder(context)
-                                                    .data(data = doctor.profilePicture)
-                                                    .placeholder(CoreR.drawable.user_placeholder)
-                                                    .error(CoreR.drawable.user_placeholder)
-                                                    .build(),
-                                            ),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Fit,
-                                    )
-
-                                    Text(
-                                        text = "${stringResource(CoreR.string.name)}: ${doctor.name}",
-                                        modifier =
-                                            Modifier.constrainAs(name) {
-                                                top.linkTo(image.bottom, margin = S_PADDING)
-                                                start.linkTo(parent.start)
-                                                width = Dimension.fillToConstraints
-                                            },
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = MaterialTheme.typography.titleSmall.fontSize,
-                                        textAlign = TextAlign.Start,
-                                        fontFamily = helveticaFamily,
-                                        color = Color.White,
-                                        maxLines = 1,
-                                    )
-
-                                    Text(
-                                        text = "${stringResource(CoreR.string.speciality)}: ${doctor.specialty}",
-                                        modifier =
-                                            Modifier.constrainAs(speciality) {
-                                                top.linkTo(name.bottom)
-                                                start.linkTo(name.start)
-                                            },
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = MaterialTheme.typography.titleSmall.fontSize,
-                                        textAlign = TextAlign.Start,
-                                        fontFamily = helveticaFamily,
-                                        color = Color.White,
-                                        maxLines = 1,
-                                    )
-
-                                    Text(
-                                        text = "${stringResource(CoreR.string.appointment_price)}: ${doctor.price} ${
-                                            stringResource(
-                                                CoreR.string.egp,
-                                            )
-                                        }",
-                                        modifier =
-                                            Modifier.constrainAs(price) {
-                                                top.linkTo(speciality.bottom)
-                                                start.linkTo(name.start)
-                                            },
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = MaterialTheme.typography.titleSmall.fontSize,
-                                        textAlign = TextAlign.Start,
-                                        fontFamily = helveticaFamily,
-                                        color = Color.White,
-                                        maxLines = 1,
-                                    )
-
-                                    Text(
-                                        text = "${stringResource(CoreR.string.total_appointments)}: ${schedule.totalPatients}",
-                                        modifier =
-                                            Modifier.constrainAs(totalApp) {
-                                                top.linkTo(price.bottom)
-                                                start.linkTo(name.start)
-                                            },
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = MaterialTheme.typography.titleSmall.fontSize,
-                                        textAlign = TextAlign.Start,
-                                        fontFamily = helveticaFamily,
-                                        color = Color.White,
-                                        maxLines = 1,
-                                    )
-
-                                    Row(
-                                        modifier =
-                                            Modifier.constrainAs(rating) {
-                                                top.linkTo(totalApp.bottom)
-                                                start.linkTo(name.start)
-                                            },
-                                        verticalAlignment = Alignment.CenterVertically,
+                                                .fillMaxWidth()
+                                                .padding(XL_PADDING),
                                     ) {
+                                        val (image, name, speciality, price, totalApp, rating) = createRefs()
+                                        Image(
+                                            modifier =
+                                                Modifier
+                                                    .padding(XS_PADDING)
+                                                    .clip(CircleShape)
+                                                    .border(
+                                                        BOARDER_SIZE,
+                                                        Color.DarkGray,
+                                                        CircleShape,
+                                                    ).size(PROFILE_IMAGE_SIZE)
+                                                    .constrainAs(image) {
+                                                        top.linkTo(parent.top)
+                                                        start.linkTo(parent.start)
+                                                        end.linkTo(parent.end)
+                                                    },
+                                            painter =
+                                                rememberAsyncImagePainter(
+                                                    ImageRequest
+                                                        .Builder(context)
+                                                        .data(data = doctor.profilePicture)
+                                                        .placeholder(CoreR.drawable.user_placeholder)
+                                                        .error(CoreR.drawable.user_placeholder)
+                                                        .build(),
+                                                ),
+                                            contentDescription = null,
+                                            contentScale = ContentScale.Fit,
+                                        )
+
                                         Text(
-                                            text = "${stringResource(CoreR.string.rating)}: ",
+                                            text = "${stringResource(CoreR.string.name)}: ${doctor.name}",
+                                            modifier =
+                                                Modifier.constrainAs(name) {
+                                                    top.linkTo(image.bottom, margin = S_PADDING)
+                                                    start.linkTo(parent.start)
+                                                    width = Dimension.fillToConstraints
+                                                },
                                             fontWeight = FontWeight.Bold,
                                             fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                             textAlign = TextAlign.Start,
@@ -220,65 +162,138 @@ fun DoctorProfileContent(
                                             color = Color.White,
                                             maxLines = 1,
                                         )
-                                        Icon(
-                                            Icons.Default.Star,
-                                            contentDescription = null,
-                                            tint = Yellow300,
-                                            modifier = Modifier.size(M_PADDING),
-                                        )
+
                                         Text(
-                                            text = "${doctor.rating}",
-                                            fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                            text = "${stringResource(CoreR.string.speciality)}: ${doctor.specialty}",
+                                            modifier =
+                                                Modifier.constrainAs(speciality) {
+                                                    top.linkTo(name.bottom)
+                                                    start.linkTo(name.start)
+                                                },
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                                            textAlign = TextAlign.Start,
+                                            fontFamily = helveticaFamily,
+                                            color = Color.White,
+                                            maxLines = 1,
                                         )
+
+                                        Text(
+                                            text = "${stringResource(CoreR.string.appointment_price)}: ${doctor.price} ${
+                                                stringResource(
+                                                    CoreR.string.egp,
+                                                )
+                                            }",
+                                            modifier =
+                                                Modifier.constrainAs(price) {
+                                                    top.linkTo(speciality.bottom)
+                                                    start.linkTo(name.start)
+                                                },
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                                            textAlign = TextAlign.Start,
+                                            fontFamily = helveticaFamily,
+                                            color = Color.White,
+                                            maxLines = 1,
+                                        )
+
+                                        Text(
+                                            text = "${stringResource(CoreR.string.total_appointments)}: ${schedule.totalPatients}",
+                                            modifier =
+                                                Modifier.constrainAs(totalApp) {
+                                                    top.linkTo(price.bottom)
+                                                    start.linkTo(name.start)
+                                                },
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                                            textAlign = TextAlign.Start,
+                                            fontFamily = helveticaFamily,
+                                            color = Color.White,
+                                            maxLines = 1,
+                                        )
+
+                                        Row(
+                                            modifier =
+                                                Modifier.constrainAs(rating) {
+                                                    top.linkTo(totalApp.bottom)
+                                                    start.linkTo(name.start)
+                                                },
+                                            verticalAlignment = Alignment.CenterVertically,
+                                        ) {
+                                            Text(
+                                                text = "${stringResource(CoreR.string.rating)}: ",
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                                                textAlign = TextAlign.Start,
+                                                fontFamily = helveticaFamily,
+                                                color = Color.White,
+                                                maxLines = 1,
+                                            )
+                                            Icon(
+                                                Icons.Default.Star,
+                                                contentDescription = null,
+                                                tint = Yellow300,
+                                                modifier = Modifier.size(M_PADDING),
+                                            )
+                                            Text(
+                                                text = "${doctor.rating}",
+                                                fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                            )
+                                        }
                                     }
                                 }
-                            }
 
-                            Column(
-                                modifier =
-                                    Modifier
-                                        .constrainAs(details) {
-                                            top.linkTo(card.bottom, margin = S_PADDING)
-                                            start.linkTo(card.start)
-                                            end.linkTo(card.end)
-                                            bottom.linkTo(parent.bottom)
-                                            width = Dimension.fillToConstraints
-                                            height = Dimension.fillToConstraints
-                                        }.verticalScroll(rememberScrollState()),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                            ) {
-                                val availableSlots =
-                                    getAvailableTimeSlots(
-                                        from = doctor.fromTime,
-                                        to = doctor.toTime,
-                                        bookedAppointments = schedule.appointments,
-                                    )
-
-                                TimeSlotSelector(
-                                    dates = availableSlots,
-                                    selectedSlot = selectedSlot,
-                                    onSlotSelected = { onSlotSelected(it) },
-                                )
-
-                                Spacer(modifier = Modifier.height(L_PADDING))
-
-                                AnimatedButton(
+                                Column(
                                     modifier =
                                         Modifier
-                                            .fillMaxWidth(fraction = 0.6f),
-                                    text = stringResource(CoreR.string.book_now),
-                                    color = buttonBackgroundColor,
-                                    onClick = { onProceedButtonClicked(doctor.id, user.userId) },
-                                )
+                                            .constrainAs(details) {
+                                                top.linkTo(card.bottom, margin = S_PADDING)
+                                                start.linkTo(card.start)
+                                                end.linkTo(card.end)
+                                                bottom.linkTo(parent.bottom)
+                                                width = Dimension.fillToConstraints
+                                                height = Dimension.fillToConstraints
+                                            },
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                ) {
+                                    val availableSlots =
+                                        getAvailableTimeSlots(
+                                            from = doctor.fromTime,
+                                            to = doctor.toTime,
+                                            bookedAppointments = schedule.appointments,
+                                        )
+
+                                    TimeSlotSelector(
+                                        dates = availableSlots,
+                                        selectedSlot = selectedSlot,
+                                        onSlotSelected = { onSlotSelected(it) },
+                                    )
+
+                                    Spacer(modifier = Modifier.height(L_PADDING))
+
+                                    AnimatedButton(
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth(fraction = 0.6f),
+                                        text = stringResource(CoreR.string.book_now),
+                                        color = buttonBackgroundColor,
+                                        onClick = {
+                                            onProceedButtonClicked(
+                                                doctor.id,
+                                                user.userId,
+                                            )
+                                        },
+                                    )
+                                }
                             }
                         }
-                    }
 
-                    is Resource.Error ->
-                        LaunchedEffect(key1 = true) {
-                            showLoading(false)
-                            onError(doctorScheduleRes.error)
-                        }
+                        is Resource.Error ->
+                            LaunchedEffect(key1 = true) {
+                                showLoading(false)
+                                onError(doctorScheduleRes.error)
+                            }
+                    }
                 }
             }
 
@@ -311,7 +326,7 @@ internal fun DoctorDetailsContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         DoctorProfileContent(
             userRes = Resource.Success(data = User()),
-            doctor =
+            selectedDoctor =
                 Doctor(
                     name = "Dr. John Doe",
                     profilePicture = "https://t4.ftcdn.net/jpg/01/98/82/75/360_F_198827520_wVNNHdMq4yLJe76WWivQQ5Ev2WtXac4N.webp",
