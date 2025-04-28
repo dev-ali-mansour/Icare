@@ -92,7 +92,7 @@ sealed class Screen {
     data object ScanCenters : Screen()
 
     @Serializable
-    data object Doctors : Screen()
+    data object DoctorList : Screen()
 
     @Serializable
     data object DoctorProfile : Screen()
@@ -105,9 +105,6 @@ sealed class Screen {
 
     @Serializable
     data object Pharmacies : Screen()
-
-    @Serializable
-    data object TopDoctors : Screen()
 
     @Serializable
     data object Appointments : Screen()

@@ -21,7 +21,7 @@ sealed class AppService(
     data object BookAppointment : AppService(
         iconResId = R.drawable.ic_appointment,
         textResId = R.string.book_appointment,
-        screen = Screen.Doctors,
+        screen = Screen.DoctorList,
     )
 
     data object LabCenter : AppService(
