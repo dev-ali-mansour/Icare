@@ -1,52 +1,97 @@
 package eg.edu.cu.csds.icare.core.ui.view
 
 import android.content.res.Configuration
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
-import eg.edu.cu.csds.icare.core.ui.theme.DOUBLE_THICK_BORDER_STROKE_SIZE
-import eg.edu.cu.csds.icare.core.ui.theme.PaidColor
-import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
+import eg.edu.cu.csds.icare.core.domain.util.Constants
+import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.itemBackgroundColor
+import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 
 @Composable
-fun DoctorView(
-    modifier: Modifier = Modifier,
+fun DoctorCard(
     doctor: Doctor,
+    onClick: () -> Unit,
 ) {
-    Surface(
+    Card(
+        onClick = onClick,
         modifier =
             Modifier
                 .fillMaxWidth()
-                .alpha(alpha = if (!isSystemInDarkTheme()) 0.5f else 1f),
-        color = itemBackgroundColor,
-        shape = RoundedCornerShape(S_PADDING),
-        border = BorderStroke(DOUBLE_THICK_BORDER_STROKE_SIZE, PaidColor),
+                .padding(horizontal = M_PADDING, vertical = XS_PADDING),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        shape = MaterialTheme.shapes.medium,
     ) {
-        ConstraintLayout(
+        Row(
             modifier =
-                modifier
-                    .fillMaxWidth()
-                    .background(contentBackgroundColor)
-                    .padding(XL_PADDING),
+                Modifier
+                    .padding(M_PADDING),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(text = doctor.name)
+            AsyncImage(
+                model = doctor.profilePicture,
+                contentDescription = "",
+                modifier =
+                    Modifier
+                        .size(60.dp)
+                        .clip(CircleShape)
+                        .align(Alignment.Top),
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Text(
+                    text = "${doctor.firstName} ${doctor.lastName}",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = helveticaFamily,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = doctor.specialty,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontFamily = helveticaFamily,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = doctor.availability,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontFamily = helveticaFamily,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
+                )
+            }
         }
     }
 }
@@ -56,13 +101,30 @@ fun DoctorView(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(locale = "ar", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun DoctorViewPreview() {
-    Column(
-        modifier =
-            Modifier
-                .padding(XS_PADDING)
-                .background(color = backgroundColor),
-    ) {
-        DoctorView(doctor = Doctor(name = "Ali Mansour"))
+fun DoctorCardPreview() {
+    MaterialTheme {
+        Column(
+            modifier =
+                Modifier
+                    .padding(XS_PADDING)
+                    .background(color = backgroundColor),
+        ) {
+            DoctorCard(
+                doctor =
+                    Doctor(
+                        id = "101",
+                        firstName = "Dr. John",
+                        lastName = "Smith",
+                        specialty = "Cardiologist",
+                        fromTime = System.currentTimeMillis(),
+                        toTime = System.currentTimeMillis() + Constants.ONE_DAY,
+                        availability = "10:00 AM - 6:00 PM",
+                        profilePicture = "",
+                        availableSlots = emptyList(),
+                        clinicId = 1,
+                    ),
+                onClick = {},
+            )
+        }
     }
 }

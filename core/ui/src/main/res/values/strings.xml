@@ -162,4 +162,7 @@ Objectives:\n
     <string name="chronic_diseases">Chronic Diseases</string>
     <string name="view_medical_record">Click to view medical record</string>
     <string name="name">Name</string>
+    <string name="speciality">Speciality</string>
+    <string name="total_appointments">Total Appointments</string>
+    <string name="appointment_price">Appointment Price</string>
 </resources>

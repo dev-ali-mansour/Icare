@@ -42,7 +42,6 @@ import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Consultation
 import eg.edu.cu.csds.icare.core.domain.model.MedicalRecord
 import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.domain.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
@@ -57,6 +56,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.trustBlue
+import eg.edu.cu.csds.icare.core.ui.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
@@ -241,9 +241,11 @@ internal fun MedicalRecordContent(
                             )
 
                             Text(
-                                text = "${stringResource(
-                                    CoreR.string.weight,
-                                )}: ${medicalRecord.weight} ${stringResource(CoreR.string.kgm)}",
+                                text = "${
+                                    stringResource(
+                                        CoreR.string.weight,
+                                    )
+                                }: ${medicalRecord.weight} ${stringResource(CoreR.string.kgm)}",
                                 modifier =
                                     Modifier.constrainAs(weight) {
                                         top.linkTo(surgeries.bottom)
@@ -358,7 +360,7 @@ fun ConsultationItem(
                     ).padding(U_PADDING),
         ) {
             Text(
-                consultation.dateTime.getFormattedDateTime(),
+                consultation.dateTime.getFormattedDateTime(context),
                 color = Color.White,
                 fontSize = MaterialTheme.typography.titleMedium.fontSize,
             )
