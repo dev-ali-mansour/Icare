@@ -5,10 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,12 +41,14 @@ fun DoctorsListContent(
     modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .padding(bottom = M_PADDING),
+        modifier = modifier.fillMaxSize(),
     ) {
-        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+        ConstraintLayout(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+        ) {
             val (search, details) = createRefs()
 
             SearchTextField(
@@ -77,20 +79,22 @@ fun DoctorsListContent(
                         if (doctors.isEmpty()) {
                             EmptyContentView(
                                 modifier =
-                                    Modifier.constrainAs(details) {
-                                        top.linkTo(search.bottom, margin = M_PADDING)
-                                        start.linkTo(parent.start)
-                                        end.linkTo(parent.end)
-                                        bottom.linkTo(parent.bottom)
-                                        width = Dimension.fillToConstraints
-                                        height = Dimension.fillToConstraints
-                                    },
+                                    Modifier
+                                        .constrainAs(details) {
+                                            top.linkTo(search.bottom, margin = M_PADDING)
+                                            start.linkTo(parent.start)
+                                            end.linkTo(parent.end)
+                                            bottom.linkTo(parent.bottom)
+                                            width = Dimension.fillToConstraints
+                                            height = Dimension.fillToConstraints
+                                        },
                                 text = stringResource(R.string.no_doctors_available),
                             )
                         } else {
-                            LazyColumn(
+                            DoctorListContent(
+                                doctors = doctors,
                                 modifier =
-                                    Modifier.constrainAs(details) {
+                                    modifier.constrainAs(details) {
                                         top.linkTo(search.bottom, margin = M_PADDING)
                                         start.linkTo(parent.start)
                                         end.linkTo(parent.end)
@@ -98,16 +102,8 @@ fun DoctorsListContent(
                                         width = Dimension.fillToConstraints
                                         height = Dimension.fillToConstraints
                                     },
-                                state = rememberLazyListState(),
-                                verticalArrangement = Arrangement.spacedBy(S_PADDING),
-                            ) {
-                                items(doctors) { doctor ->
-                                    DoctorView(
-                                        doctor = doctor,
-                                        onClick = { onDoctorClicked(doctor) },
-                                    )
-                                }
-                            }
+                                onDoctorClicked = { onDoctorClicked(it) },
+                            )
                         }
                     }
                 }
@@ -118,6 +114,25 @@ fun DoctorsListContent(
                         onError(doctorsRes.error)
                     }
             }
+        }
+    }
+}
+
+@Composable
+private fun DoctorListContent(
+    doctors: List<Doctor>,
+    onDoctorClicked: (Doctor) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(S_PADDING),
+    ) {
+        items(doctors) { doctor ->
+            DoctorView(
+                doctor = doctor,
+                onClick = { onDoctorClicked(doctor) },
+            )
         }
     }
 }
