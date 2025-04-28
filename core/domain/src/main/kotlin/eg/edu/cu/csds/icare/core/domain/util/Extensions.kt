@@ -130,7 +130,6 @@ fun getAvailableTimeSlots(
     val slotPeriodMillis = TimeUnit.MINUTES.toMillis(slotPeriodMinutes.toLong())
     val calendar = Calendar.getInstance()
 
-    // Set time to 00:00:00 to start from the beginning of the day
     calendar.set(Calendar.HOUR_OF_DAY, 0)
     calendar.set(Calendar.MINUTE, 0)
     calendar.set(Calendar.SECOND, 0)
@@ -192,14 +191,13 @@ private fun getDailyAvailableSlots(
     while (currentSlotStart < toTimestamp) {
         val currentSlotEnd = currentSlotStart + slotPeriodMillis
 
-        // Check if this slot is booked
         val isBooked =
             bookedAppointments.any { appointment ->
                 val appointmentEnd = appointment.dateTime + slotPeriodMillis
                 (currentSlotStart < appointmentEnd) && (currentSlotEnd > appointment.dateTime)
             }
 
-        if (!isBooked) {
+        if (!isBooked && currentSlotStart >= Calendar.getInstance().timeInMillis) {
             availableSlots.add(currentSlotStart)
         }
 
