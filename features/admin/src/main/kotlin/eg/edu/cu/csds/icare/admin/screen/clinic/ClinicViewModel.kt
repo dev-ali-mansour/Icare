@@ -72,6 +72,8 @@ class ClinicViewModel(
     var selectedDoctorState: MutableState<Doctor?> = mutableStateOf(null)
     var selectedClinicStaffState: MutableState<ClinicStaff?> = mutableStateOf(null)
 
+    var showSuccessDialog = mutableStateOf(false)
+    var isRefreshing = mutableStateOf(false)
     var selectedClinicIdState = mutableLongStateOf(0)
     var searchQueryState = mutableStateOf("")
     var nameState = mutableStateOf("")
@@ -180,14 +182,14 @@ class ClinicViewModel(
         }
     }
 
-    fun listDoctors(forceUpdate: Boolean = false) {
+    fun listDoctors(forceRefresh: Boolean = false) {
         viewModelScope.launch(dispatcher) {
             searchQueryState.value = ""
             if (_doctorsResFlow.value !is Resource.Unspecified) {
                 _doctorsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listDoctorsUseCase(forceUpdate).collect { result ->
+            listDoctorsUseCase(forceRefresh).collect { result ->
                 _doctorsResFlow.value = result
             }
         }
