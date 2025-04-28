@@ -26,22 +26,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
-import eg.edu.cu.csds.icare.core.ui.R
+import eg.edu.cu.csds.icare.core.ui.common.CenterTypeItem
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 
 @Composable
 fun CenterView(
+    showType: Boolean = false,
     center: LabImagingCenter,
     onClick: () -> Unit,
 ) {
+    val list = listOf(CenterTypeItem.ImagingCenter, CenterTypeItem.LabCenter)
     Card(
         onClick = onClick,
         modifier =
@@ -50,9 +54,9 @@ fun CenterView(
                 .padding(horizontal = M_PADDING, vertical = XS_PADDING),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                containerColor = cardBackgroundColor,
             ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = XS_PADDING),
         shape = MaterialTheme.shapes.medium,
     ) {
         Row(
@@ -62,7 +66,7 @@ fun CenterView(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
-                painter = if (center.type.toInt() == 1) painterResource(R.drawable.ic_scan) else painterResource(R.drawable.ic_lab_colored),
+                painter = painterResource(list.first { it.code == center.type }.iconResId),
                 contentDescription = null,
                 modifier =
                     Modifier
@@ -71,27 +75,31 @@ fun CenterView(
                         .align(Alignment.Top),
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(M_PADDING))
 
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
-                    text = if (center.type.toInt() == 1) "${center.name} Scan" else "${center.name} Lab",
+                    text = center.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     fontFamily = helveticaFamily,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
-//                Spacer(modifier = Modifier.height(S_PADDING))
-//                Text(
-//                    text = center.type.toString(),
-//                    style = MaterialTheme.typography.bodyMedium,
-//                    fontFamily = helveticaFamily,
-//                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
-//                )
+                if (showType) {
+                    Spacer(modifier = Modifier.height(S_PADDING))
+                    Text(
+                        text = stringResource(list.first { it.code == center.type }.textResId),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontFamily = helveticaFamily,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(S_PADDING))
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Phone, contentDescription = null)
                     Spacer(modifier = Modifier.width(XS_PADDING))
@@ -123,6 +131,7 @@ fun CenterCardPreview() {
                     .background(color = backgroundColor),
         ) {
             CenterView(
+                showType = true,
                 center =
                     LabImagingCenter(
                         type = 0,
