@@ -248,7 +248,7 @@ class RemoteClinicsDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun getDoctorSchedule(): Flow<Resource<DoctorSchedule>> =
+    override fun getDoctorSchedule(uid: String): Flow<Resource<DoctorSchedule>> =
         flow {
             runCatching {
                 emit(Resource.Loading())
@@ -263,6 +263,7 @@ class RemoteClinicsDataSourceImpl(
                         }
                     val map = HashMap<String, String>()
                     map["token"] = token
+                    map["uid"] = token
                     val response = service.getDoctorSchedule(map)
                     when (response.code()) {
                         HTTP_OK -> {

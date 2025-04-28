@@ -11,7 +11,7 @@
     <string name="cosmetics">مستحضرات التجميل</string>
     <string name="no_upcoming_appointments">لا توجد مواعيد محجوزة</string>
     <string name="off">خصم</string>
-    <string name="total_patients">عدد الحالات</string>
+    <string name="total_appointments">عدد الحالات</string>
     <string name="till_today">حتى اليوم</string>
     <string name="today_appointment">مواعيد اليوم</string>
 
