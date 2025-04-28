@@ -118,39 +118,36 @@ internal fun DoctorProfileScreen(
                             .fillMaxWidth()
                             .height(XS_PADDING),
                 )
-
-                selectedDoctor?.let { doctor ->
-                    DoctorProfileContent(
-                        modifier =
-                            Modifier.constrainAs(content) {
-                                top.linkTo(line.bottom)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                                bottom.linkTo(parent.bottom)
-                                width = Dimension.fillToConstraints
-                                height = Dimension.fillToConstraints
-                            },
-                        userRes = userRes,
-                        doctor = doctor,
-                        doctorScheduleRes = doctorScheduleResource,
-                        actionResource = actionResource,
-                        showLoading = { isRefreshing = it },
-                        selectedSlot = selectedSlot,
-                        onSlotSelected = { selectedSlot = it },
-                        onProceedButtonClicked = { doctorId, userId ->
-                            onProceedButtonClicked(doctorId, userId)
+                DoctorProfileContent(
+                    modifier =
+                        Modifier.constrainAs(content) {
+                            top.linkTo(line.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                            width = Dimension.fillToConstraints
+                            height = Dimension.fillToConstraints
                         },
-                        onSuccess = {
-                            scope.launch {
-                                showSuccessDialog = true
-                                delay(timeMillis = 2000)
-                                showSuccessDialog = false
-                                onSuccess()
-                            }
-                        },
-                        onError = { onError(it) },
-                    )
-                }
+                    userRes = userRes,
+                    selectedDoctor = selectedDoctor,
+                    doctorScheduleRes = doctorScheduleResource,
+                    actionResource = actionResource,
+                    showLoading = { isRefreshing = it },
+                    selectedSlot = selectedSlot,
+                    onSlotSelected = { selectedSlot = it },
+                    onProceedButtonClicked = { doctorId, userId ->
+                        onProceedButtonClicked(doctorId, userId)
+                    },
+                    onSuccess = {
+                        scope.launch {
+                            showSuccessDialog = true
+                            delay(timeMillis = 2000)
+                            showSuccessDialog = false
+                            onSuccess()
+                        }
+                    },
+                    onError = { onError(it) },
+                )
 
                 Indicator(
                     modifier =
