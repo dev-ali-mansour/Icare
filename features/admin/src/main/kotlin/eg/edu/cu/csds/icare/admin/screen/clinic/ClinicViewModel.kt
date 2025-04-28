@@ -182,6 +182,7 @@ class ClinicViewModel(
 
     fun listDoctors() {
         viewModelScope.launch(dispatcher) {
+            searchQueryState.value = ""
             if (_doctorsResFlow.value !is Resource.Unspecified) {
                 _doctorsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
