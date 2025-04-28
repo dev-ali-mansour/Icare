@@ -49,11 +49,11 @@ import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.RECORD_PATIENT_CARD_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.SERVICE_ICON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.SkyAccent
 import eg.edu.cu.csds.icare.core.ui.theme.U_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.trustBlue
 import eg.edu.cu.csds.icare.core.ui.util.getFormattedDateTime
@@ -114,7 +114,7 @@ internal fun MedicalRecordContent(
                                     width = Dimension.fillToConstraints
                                 }.height(RECORD_PATIENT_CARD_HEIGHT)
                                 .padding(XS_PADDING),
-                        colors = CardDefaults.cardColors(containerColor = SkyAccent),
+                        colors = CardDefaults.cardColors(containerColor = cardBackgroundColor),
                         elevation = CardDefaults.cardElevation(XS_PADDING),
                     ) {
                         ConstraintLayout(
@@ -355,7 +355,7 @@ fun ConsultationItem(
                         top.linkTo(image.bottom)
                         start.linkTo(name.start)
                     }.background(
-                        color = SkyAccent,
+                        color = cardBackgroundColor,
                         shape = RoundedCornerShape(XS_PADDING),
                     ).padding(U_PADDING),
         ) {
