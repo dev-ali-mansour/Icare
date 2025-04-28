@@ -127,13 +127,13 @@ class ClinicViewModel(
         }
     }
 
-    fun listClinics() {
+    fun listClinics(forceUpdate: Boolean = false) {
         viewModelScope.launch(dispatcher) {
             if (_clinicsResFlow.value !is Resource.Unspecified) {
                 _clinicsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listClinicsUseCase().collect { result ->
+            listClinicsUseCase(forceUpdate).collect { result ->
                 _clinicsResFlow.emit(result)
             }
         }
@@ -180,14 +180,14 @@ class ClinicViewModel(
         }
     }
 
-    fun listDoctors() {
+    fun listDoctors(forceUpdate: Boolean = false) {
         viewModelScope.launch(dispatcher) {
             searchQueryState.value = ""
             if (_doctorsResFlow.value !is Resource.Unspecified) {
                 _doctorsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listDoctorsUseCase().collect { result ->
+            listDoctorsUseCase(forceUpdate).collect { result ->
                 _doctorsResFlow.value = result
             }
         }
