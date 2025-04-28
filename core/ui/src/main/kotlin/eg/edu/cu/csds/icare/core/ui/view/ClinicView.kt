@@ -1,88 +1,100 @@
 package eg.edu.cu.csds.icare.core.ui.view
 
 import android.content.res.Configuration
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.compose.ui.unit.dp
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
-import eg.edu.cu.csds.icare.core.ui.theme.DOUBLE_THICK_BORDER_STROKE_SIZE
+import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.PaidColor
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.UnPaidColor
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.itemBackgroundColor
 
 @Composable
 fun ClinicView(
-    modifier: Modifier = Modifier,
+//    modifier: Modifier = Modifier,
     clinic: Clinic,
+    onClick: () -> Unit = {},
 ) {
-    Surface(
+    Card(
+        onClick = onClick,
         modifier =
             Modifier
                 .fillMaxWidth()
-                .alpha(alpha = if (!isSystemInDarkTheme()) 0.5f else 1f),
-        color = itemBackgroundColor,
-        shape = RoundedCornerShape(S_PADDING),
-        border = BorderStroke(DOUBLE_THICK_BORDER_STROKE_SIZE, PaidColor),
+                .padding(horizontal = M_PADDING, vertical = XS_PADDING),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        shape = MaterialTheme.shapes.medium,
     ) {
-        ConstraintLayout(
+        Row(
             modifier =
-                modifier
-                    .fillMaxWidth()
-                    .background(contentBackgroundColor),
+                Modifier
+                    .padding(M_PADDING),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Column(
+            Image(
+                painter = painterResource(R.drawable.ic_clinic),
+                contentDescription = null,
                 modifier =
                     Modifier
-                        .fillMaxWidth()
-                        .padding(M_PADDING),
+                        .size(60.dp)
+                        .clip(CircleShape)
+                        .align(Alignment.Top),
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
                     text = clinic.name,
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
                 Spacer(modifier = Modifier.height(S_PADDING))
-
                 Text(
                     text = clinic.type,
                     style = MaterialTheme.typography.bodyLarge,
                 )
-
                 Spacer(modifier = Modifier.height(S_PADDING))
-
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Phone, contentDescription = null)
                     Spacer(modifier = Modifier.width(XS_PADDING))
                     Text(text = clinic.phone)
                 }
-
                 Spacer(modifier = Modifier.height(M_PADDING))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -90,9 +102,7 @@ fun ClinicView(
                     Spacer(modifier = Modifier.width(XS_PADDING))
                     Text(text = clinic.address)
                 }
-
                 Spacer(modifier = Modifier.height(S_PADDING))
-
                 Text(
                     text = if (clinic.isOpen) "Open" else "Closed",
                     color = if (clinic.isOpen) PaidColor else UnPaidColor,
