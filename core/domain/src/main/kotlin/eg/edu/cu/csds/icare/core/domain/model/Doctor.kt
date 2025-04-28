@@ -1,7 +1,6 @@
 package eg.edu.cu.csds.icare.core.domain.model
 
 import eg.edu.cu.csds.icare.core.domain.util.divide
-import eg.edu.cu.csds.icare.core.domain.util.getFormattedTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -26,7 +25,7 @@ data class Doctor(
     val fromTime: Long = System.currentTimeMillis(),
     val toTime: Long = fromTime.plus(other = 5 * 60 * 60 * 1000),
     @Transient
-    val availability: String = "${fromTime.getFormattedTime()} - ${toTime.getFormattedTime()}",
+    val availability: String = "",
     @Transient
     val availableSlots: List<TimeSlot> =
         TimeSlot(startTime = fromTime, endTime = toTime).divide(

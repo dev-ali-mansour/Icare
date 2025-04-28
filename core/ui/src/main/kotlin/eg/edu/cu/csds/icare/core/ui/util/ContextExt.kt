@@ -26,6 +26,7 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
+import androidx.core.os.ConfigurationCompat
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.FirebaseNetworkException
@@ -40,6 +41,9 @@ import eg.edu.cu.csds.icare.data.BuildConfig
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 val Context.activity: Activity
     get() {
@@ -355,4 +359,27 @@ fun Context.linkGoogleAccount(launcher: ManagedActivityResultLauncher<Intent, Ac
     val googleSignInClient = GoogleSignIn.getClient(this, gso)
     googleSignInClient.revokeAccess()
     launcher.launch(googleSignInClient.signInIntent)
+}
+
+fun Long.getFormattedDate(
+    context: Context,
+    pattern: String = "dd/MM/yyyy",
+): String = getFormattedDateTime(context, pattern)
+
+fun Long.getFormattedTime(
+    context: Context,
+    pattern: String = "hh:mm a",
+): String = getFormattedDateTime(context, pattern)
+
+fun Long.getFormattedDateTime(
+    context: Context,
+    pattern: String = "dd/MM/yyyy hh:mm a",
+): String {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = this
+    // Get the current locale from the application's configuration
+    val configuration = context.resources.configuration
+    val locale = ConfigurationCompat.getLocales(configuration)[0] ?: Locale.getDefault()
+    val dateFormat = SimpleDateFormat(pattern, locale)
+    return dateFormat.format(calendar.time)
 }
