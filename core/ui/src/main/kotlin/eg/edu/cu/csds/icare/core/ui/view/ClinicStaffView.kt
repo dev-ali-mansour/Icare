@@ -46,9 +46,9 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 @Composable
 fun ClinicStaffView(
     clinicStaff: ClinicStaff,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
+    onClick: () -> Unit,
 ) {
     Card(
         onClick = onClick,

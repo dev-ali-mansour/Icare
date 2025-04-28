@@ -41,14 +41,14 @@ import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 
 @Composable
 fun ClinicView(
-//    modifier: Modifier = Modifier,
     clinic: Clinic,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
     Card(
         onClick = onClick,
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .padding(horizontal = M_PADDING, vertical = XS_PADDING),
         colors =

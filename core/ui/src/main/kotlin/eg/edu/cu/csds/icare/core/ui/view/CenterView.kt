@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.ui.common.CenterTypeItem
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
@@ -41,15 +42,16 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 
 @Composable
 fun CenterView(
-    showType: Boolean = false,
     center: LabImagingCenter,
+    modifier: Modifier = Modifier,
+    showType: Boolean = false,
     onClick: () -> Unit,
 ) {
-    val list = listOf(CenterTypeItem.ImagingCenter, CenterTypeItem.LabCenter)
+    val types = listOf(CenterTypeItem.ImagingCenter, CenterTypeItem.LabCenter)
     Card(
         onClick = onClick,
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .padding(horizontal = M_PADDING, vertical = XS_PADDING),
         colors =
@@ -66,11 +68,14 @@ fun CenterView(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
-                painter = painterResource(list.first { it.code == center.type }.iconResId),
+                painter =
+                    painterResource(
+                        types.first { it.code == center.type || it.code == 1.toShort() }.iconResId,
+                    ),
                 contentDescription = null,
                 modifier =
                     Modifier
-                        .size(60.dp)
+                        .size(PROFILE_IMAGE_SIZE)
                         .clip(CircleShape)
                         .align(Alignment.Top),
             )
@@ -91,7 +96,10 @@ fun CenterView(
                 if (showType) {
                     Spacer(modifier = Modifier.height(S_PADDING))
                     Text(
-                        text = stringResource(list.first { it.code == center.type }.textResId),
+                        text =
+                            stringResource(
+                                types.first { it.code == center.type || it.code == 1.toShort() }.textResId,
+                            ),
                         style = MaterialTheme.typography.bodyMedium,
                         fontFamily = helveticaFamily,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
