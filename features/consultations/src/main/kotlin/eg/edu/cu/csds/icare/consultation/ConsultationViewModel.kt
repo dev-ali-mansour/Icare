@@ -93,6 +93,7 @@ class ConsultationViewModel(
                     followUpdDate = followUpdDateState.longValue,
                 ),
             ).collect { result ->
+                if (result is Resource.Success) resetStates()
                 _actionResFlow.emit(result)
             }
         }
@@ -106,6 +107,7 @@ class ConsultationViewModel(
             }
             selectedConsultationState.value?.let {
                 updateConsultationUseCase(it).collect { result ->
+                    if (result is Resource.Success) selectedConsultationState.value = null
                     _actionResFlow.emit(result)
                 }
             } ?: run {
@@ -164,5 +166,20 @@ class ConsultationViewModel(
                 _consultationsResFlow.value = result
             }
         }
+    }
+
+    private fun resetStates() {
+        appointmentState.value = Appointment()
+        diagnosisState.value = ""
+        pharmacyIdState.longValue = 1
+        medicationsState.value = ""
+        prescriptionStatusIdState.value = 1
+        labCenterIdState.longValue = 1
+        labTestsState.value = ""
+        labTestStatusIdState.value = 1
+        imagingCenterIdState.longValue = 1
+        imagingTestsState.value = ""
+        imgTestStatusIdState.value = 1
+        followUpdDateState.longValue = 0
     }
 }
