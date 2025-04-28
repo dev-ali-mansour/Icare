@@ -133,4 +133,6 @@
     <string name="speciality">التخصص</string>
     <string name="total_appointments">عدد مرات الحجز</string>
     <string name="appointment_price">سعر الكشف</string>
+    <string name="imaging_center" >مركز أشعة</string>
+    <string name="search">بحث</string>
 </resources>
