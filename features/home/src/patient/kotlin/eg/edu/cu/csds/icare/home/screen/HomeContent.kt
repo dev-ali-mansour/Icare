@@ -67,7 +67,6 @@ import eg.edu.cu.csds.icare.core.ui.common.Role
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.theme.ACTION_BUTTON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.ANNOUNCEMENT_IMAGE_SIZE
-import eg.edu.cu.csds.icare.core.ui.theme.AiryGreen
 import eg.edu.cu.csds.icare.core.ui.theme.CARD_ROUND_CORNER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.CATEGORY_ICON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.DeepTeal
@@ -84,6 +83,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow700
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
@@ -142,8 +142,7 @@ internal fun HomeContent(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         width = Dimension.fillToConstraints
-                    }
-                    .fillMaxWidth()
+                    }.fillMaxWidth()
                     .height(XS_PADDING)
                     .background(Yellow500),
         )
@@ -173,8 +172,7 @@ internal fun HomeContent(
                                     bottom.linkTo(marquee.top)
                                     width = Dimension.fillToConstraints
                                     height = Dimension.fillToConstraints
-                                }
-                                .background(backgroundColor)
+                                }.background(backgroundColor)
                                 .verticalScroll(rememberScrollState())
                                 .padding(M_PADDING),
                     ) {
@@ -287,7 +285,7 @@ internal fun HomeContent(
                             shape = RoundedCornerShape(CARD_ROUND_CORNER_SIZE),
                             colors =
                                 CardDefaults.cardColors(
-                                    containerColor = AiryGreen,
+                                    containerColor = cardBackgroundColor,
                                 ),
                         ) {
                             ConstraintLayout(
@@ -323,8 +321,7 @@ internal fun HomeContent(
                                                     .constrainAs(doctorImage) {
                                                         top.linkTo(parent.top)
                                                         start.linkTo(parent.start)
-                                                    }
-                                                    .size(ACTION_BUTTON_SIZE),
+                                                    }.size(ACTION_BUTTON_SIZE),
                                         ) {
                                             AsyncImage(
                                                 model = appointment.doctorImage,
@@ -512,8 +509,7 @@ internal fun HomeContent(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         bottom.linkTo(parent.bottom)
-                    }
-                    .fillMaxWidth(fraction = 0.9f)
+                    }.fillMaxWidth(fraction = 0.9f)
                     .basicMarquee(iterations = Int.MAX_VALUE),
             color = Orange200,
             fontSize = MaterialTheme.typography.titleMedium.fontSize,
@@ -547,8 +543,7 @@ private fun TitleView(
                     .constrainAs(logo) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
-                    }
-                    .size(HEADER_ICON_SIZE),
+                    }.size(HEADER_ICON_SIZE),
             painter = painterResource(CoreR.drawable.logo),
             contentDescription = null,
             contentScale = ContentScale.Fit,
@@ -575,8 +570,7 @@ private fun TitleView(
                     .constrainAs(card) {
                         top.linkTo(logo.top, S_PADDING)
                         end.linkTo(parent.end, S_PADDING)
-                    }
-                    .clickable { onUserClicked() },
+                    }.clickable { onUserClicked() },
             color = contentBackgroundColor,
             shape = RoundedCornerShape(S_PADDING),
         ) {
