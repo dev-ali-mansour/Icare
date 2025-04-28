@@ -15,7 +15,9 @@ import androidx.navigation.compose.composable
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.MainActivity
 import eg.edu.cu.csds.icare.SplashScreen
+import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
 import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.appointment.navigation.appointmentsRoute
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
@@ -52,6 +54,8 @@ fun SetupNavGraph(
     val onBoardingRes by mainViewModel.onBoardingCompleted.collectAsStateWithLifecycle()
     val appointmentViewModel: AppointmentViewModel = koinViewModel()
     val clinicViewModel: ClinicViewModel = koinViewModel()
+    val pharmacyViewModel: PharmacyViewModel = koinViewModel()
+    val centerViewModel: CenterViewModel = koinViewModel()
     val consultationViewModel: ConsultationViewModel = koinViewModel()
     val alertMessage = remember { mutableStateOf("") }
     val showAlert = remember { mutableStateOf(false) }
@@ -162,6 +166,8 @@ fun SetupNavGraph(
                 homeViewModel = homeViewModel,
                 appointmentViewModel = appointmentViewModel,
                 clinicViewModel = clinicViewModel,
+                pharmacyViewModel = pharmacyViewModel,
+                centerViewModel = centerViewModel,
                 navigateToScreen = { screen -> navController.navigate(screen) },
                 onError = { error ->
                     exitApp.value = false
@@ -192,6 +198,7 @@ fun SetupNavGraph(
                 onNavigationIconClicked = {
                     navController.navigateUpSafely()
                 },
+                navigateToScreen = { navController.navigate(it) },
                 onError = { error ->
                     exitApp.value = false
                     handleError(
