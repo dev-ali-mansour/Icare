@@ -54,7 +54,8 @@ class ConsultationViewModel(
             appointmentState.value = value.value?.appointment ?: Appointment()
             field.value = value.value
         }
-
+    var showSuccessDialog = mutableStateOf(false)
+    var isRefreshing = mutableStateOf(false)
     var appointmentState = mutableStateOf(Appointment())
     var diagnosisState = mutableStateOf("")
     var pharmacyIdState = mutableLongStateOf(1)
