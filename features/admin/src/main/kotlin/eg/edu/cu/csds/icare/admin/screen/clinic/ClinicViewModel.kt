@@ -73,6 +73,7 @@ class ClinicViewModel(
     var selectedClinicStaffState: MutableState<ClinicStaff?> = mutableStateOf(null)
 
     var selectedClinicIdState = mutableLongStateOf(0)
+    var searchQueryState = mutableStateOf("")
     var nameState = mutableStateOf("")
     var typeState = mutableStateOf("")
     var phoneState = mutableStateOf("")
@@ -187,6 +188,37 @@ class ClinicViewModel(
             }
             listDoctorsUseCase().collect { result ->
                 _doctorsResFlow.value = result
+            }
+        }
+    }
+
+    fun searchDoctors() {
+        viewModelScope.launch(dispatcher) {
+            if (_doctorsResFlow.value !is Resource.Unspecified) {
+                _doctorsResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            listDoctorsUseCase().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        result.data?.let { doctors ->
+                            val filtered =
+                                doctors.filter { doctor ->
+                                    doctor.name.contains(
+                                        searchQueryState.value,
+                                        ignoreCase = true,
+                                    ) ||
+                                        doctor.specialty.contains(
+                                            searchQueryState.value,
+                                            ignoreCase = true,
+                                        )
+                                }
+                            _doctorsResFlow.value = Resource.Success(filtered)
+                        }
+                    }
+
+                    else -> _doctorsResFlow.value = result
+                }
             }
         }
     }
