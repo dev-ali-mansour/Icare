@@ -101,3 +101,7 @@ val dropDownTextColor: Color
 val trailIconColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.White else Blue500
+
+val cardBackgroundColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) AiryGreen else SkyAccent.copy(alpha = 0.7f)
