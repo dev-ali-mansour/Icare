@@ -108,7 +108,7 @@
     <string name="completed">مكتملة</string>
     <string name="cancelled">ملغاة</string>
     <string name="scan_center">مركز أشعة</string>
-    <string name="book_appointment">حجز موعد</string>
+    <string name="appointment_booking">حجز موعد</string>
     <string name="lab_center">معمل تحاليل</string>
     <string name="pharmacy">صيدلية</string>
     <string name="price">سعر الخدمة</string>
@@ -135,4 +135,5 @@
     <string name="appointment_price">سعر الكشف</string>
     <string name="imaging_center" >مركز أشعة</string>
     <string name="search">بحث</string>
+    <string name="book_now">احجز الآن</string>
 </resources>
