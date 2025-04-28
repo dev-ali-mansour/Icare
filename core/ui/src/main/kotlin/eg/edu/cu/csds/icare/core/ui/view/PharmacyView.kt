@@ -32,29 +32,28 @@ import androidx.compose.ui.unit.dp
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.PaidColor
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.UnPaidColor
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 
 @Composable
 fun PharmacyView(
-//    modifier: Modifier = Modifier,
     pharmacy: Pharmacy,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Card(
         onClick = onClick,
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .padding(horizontal = M_PADDING, vertical = XS_PADDING),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                containerColor = cardBackgroundColor,
             ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = XS_PADDING),
         shape = MaterialTheme.shapes.medium,
     ) {
         Row(
@@ -73,11 +72,11 @@ fun PharmacyView(
                         .align(Alignment.Top),
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(M_PADDING))
 
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(XS_PADDING),
             ) {
                 Text(
                     text = pharmacy.name,
@@ -97,7 +96,6 @@ fun PharmacyView(
                     Spacer(modifier = Modifier.width(XS_PADDING))
                     Text(text = pharmacy.address)
                 }
-
             }
         }
     }
@@ -122,8 +120,8 @@ fun PharmacyCardPreview() {
                     name = "Pharmacy 1",
                     address = "Address 1",
                     phone = "123456789",
-
                 ),
+            onClick = {},
         )
 
         Spacer(modifier = Modifier.height(XS_PADDING))
@@ -135,8 +133,8 @@ fun PharmacyCardPreview() {
                     name = "Pharmacy 2",
                     address = "Address 2",
                     phone = "123456789",
-
-                    ),
+                ),
+            onClick = {},
         )
     }
 }
