@@ -75,7 +75,7 @@ class RemoteClinicsDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.addNewClinic(clinic.copy(token = token))
+            val response = service.upsertClinic(clinic.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -122,7 +122,7 @@ class RemoteClinicsDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.updateClinic(clinic.copy(token = token))
+            val response = service.upsertClinic(clinic.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -190,7 +190,7 @@ class RemoteClinicsDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.addNewDoctor(doctor.copy(token = token))
+            val response = service.upsertDoctor(doctor.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -224,7 +224,7 @@ class RemoteClinicsDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.updateDoctor(doctor.copy(token = token))
+            val response = service.upsertDoctor(doctor.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -339,7 +339,7 @@ class RemoteClinicsDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.addNewClinicStaff(staff.copy(token = token))
+            val response = service.upsertClinicStaff(staff.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -373,7 +373,7 @@ class RemoteClinicsDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.updateClinicStaff(staff.copy(token = token))
+            val response = service.upsertClinicStaff(staff.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
