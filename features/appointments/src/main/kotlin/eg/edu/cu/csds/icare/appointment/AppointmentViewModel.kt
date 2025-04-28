@@ -1,5 +1,6 @@
 package eg.edu.cu.csds.icare.appointment
 
+import androidx.compose.runtime.MutableLongState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -47,7 +48,7 @@ class AppointmentViewModel(
         _appointmentsResFlow.asStateFlow()
     var selectedAppointment: MutableState<Appointment?> = mutableStateOf(null)
     var selectedStatusIdState: MutableState<Short> = mutableStateOf(1)
-    var selectedSlotState: MutableState<Long> = mutableLongStateOf(0)
+    var selectedSlotState: MutableLongState = mutableLongStateOf(0)
     val statusListState =
         mutableStateOf(
             listOf(
@@ -90,6 +91,10 @@ class AppointmentViewModel(
 
             selectedAppointment.value?.let {
                 updateAppointmentUseCase(it).collect { result ->
+                    if (result is Resource.Success) {
+                        selectedAppointment.value = null
+                        getPatientAppointments()
+                    }
                     _actionResFlow.emit(result)
                 }
             } ?: run {
