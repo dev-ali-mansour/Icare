@@ -1,5 +1,6 @@
 package eg.edu.cu.csds.icare.core.ui.common
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import eg.edu.cu.csds.icare.core.ui.R
 
@@ -7,8 +8,18 @@ sealed class CenterTypeItem(
     val code: Short,
     @StringRes
     val textResId: Int,
+    @DrawableRes
+    val iconResId: Int,
 ) {
-    data object ImagingCenter : CenterTypeItem(code = 1, textResId = R.string.imaging_center)
+    data object ImagingCenter : CenterTypeItem(
+        code = 1,
+        textResId = R.string.imaging_center,
+        iconResId = R.drawable.ic_scan,
+    )
 
-    data object LabCenter : CenterTypeItem(code = 2, textResId = R.string.lab_center)
+    data object LabCenter : CenterTypeItem(
+        code = 2,
+        textResId = R.string.lab_center,
+        iconResId = R.drawable.ic_lab_colored,
+    )
 }
