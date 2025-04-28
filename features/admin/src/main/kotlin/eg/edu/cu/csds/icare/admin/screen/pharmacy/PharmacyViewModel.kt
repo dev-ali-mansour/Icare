@@ -50,6 +50,7 @@ class PharmacyViewModel(
     var selectedPharmacistState: MutableState<Pharmacist?> = mutableStateOf(null)
 
     var selectedPharmacyIdState = mutableLongStateOf(0)
+    var searchQueryState = mutableStateOf("")
     var nameState = mutableStateOf("")
     var phoneState = mutableStateOf("")
     var addressState = mutableStateOf("")
@@ -151,6 +152,38 @@ class PharmacyViewModel(
             }
             listPharmacistsUseCase(selectedPharmacyIdState.longValue).collect { result ->
                 _pharmacistsResFlow.value = result
+            }
+        }
+    }
+
+    fun searchPharmacies() {
+        viewModelScope.launch(dispatcher) {
+            if (_pharmaciesResFlow.value !is Resource.Unspecified) {
+                _pharmaciesResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            listPharmaciesUseCase().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        result.data?.let { pharmacies ->
+                            val filtered =
+                                pharmacies.filter { pharmacy ->
+                                    searchQueryState.value.isEmpty() ||
+                                        pharmacy.name.contains(
+                                            searchQueryState.value,
+                                            ignoreCase = true,
+                                        ) ||
+                                        pharmacy.address.contains(
+                                            searchQueryState.value,
+                                            ignoreCase = true,
+                                        )
+                                }
+                            _pharmaciesResFlow.value = Resource.Success(filtered)
+                        }
+                    }
+
+                    else -> _pharmaciesResFlow.value = result
+                }
             }
         }
     }
