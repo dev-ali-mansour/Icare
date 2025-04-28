@@ -37,5 +37,4 @@
     <string name="from_time" >من الساعة</string>
     <string name="to_time" >حتى الساعة</string>
     <string name="lab_center" >مركز تحاليل</string>
-    <string name="imaging_center" >مركز أشعة</string>
 </resources>

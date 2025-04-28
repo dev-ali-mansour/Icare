@@ -165,4 +165,6 @@ Objectives:\n
     <string name="speciality">Speciality</string>
     <string name="total_appointments">Total Appointments</string>
     <string name="appointment_price">Appointment Price</string>
+    <string name="imaging_center" >Imaging Center</string>
+    <string name="search">Search</string>
 </resources>
