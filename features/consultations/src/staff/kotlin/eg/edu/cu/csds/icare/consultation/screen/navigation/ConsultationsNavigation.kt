@@ -41,7 +41,6 @@ fun NavGraphBuilder.consultationsRoute(
             },
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { consultationViewModel.addNewConsultation() },
-            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }
@@ -57,7 +56,6 @@ fun NavGraphBuilder.consultationsRoute(
             },
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { consultationViewModel.updateConsultation() },
-            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }
