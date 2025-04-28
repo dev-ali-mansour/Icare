@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
@@ -66,6 +67,7 @@ fun SearchTextField(
                 fontFamily = helveticaFamily,
                 color = textColor,
                 maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         },
         textStyle =
