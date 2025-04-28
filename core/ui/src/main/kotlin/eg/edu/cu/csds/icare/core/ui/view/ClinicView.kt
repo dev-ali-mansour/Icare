@@ -37,6 +37,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.UnPaidColor
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 
 @Composable
 fun ClinicView(
@@ -52,9 +53,9 @@ fun ClinicView(
                 .padding(horizontal = M_PADDING, vertical = XS_PADDING),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                containerColor = cardBackgroundColor,
             ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = XS_PADDING),
         shape = MaterialTheme.shapes.medium,
     ) {
         Row(
@@ -73,11 +74,11 @@ fun ClinicView(
                         .align(Alignment.Top),
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(M_PADDING))
 
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(XS_PADDING),
             ) {
                 Text(
                     text = clinic.name,
