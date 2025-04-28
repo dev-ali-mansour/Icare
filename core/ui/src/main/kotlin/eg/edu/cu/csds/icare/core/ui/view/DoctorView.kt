@@ -1,7 +1,10 @@
 package eg.edu.cu.csds.icare.core.ui.view
 
+import android.content.Context
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,21 +22,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.util.Constants
+import eg.edu.cu.csds.icare.core.ui.R
+import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 
 @Composable
-fun DoctorCard(
+fun DoctorView(
     doctor: Doctor,
     onClick: () -> Unit,
+    context: Context = LocalContext.current,
 ) {
     Card(
         onClick = onClick,
@@ -43,9 +54,9 @@ fun DoctorCard(
                 .padding(horizontal = M_PADDING, vertical = XS_PADDING),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                containerColor = cardBackgroundColor,
             ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = XS_PADDING),
         shape = MaterialTheme.shapes.medium,
     ) {
         Row(
@@ -54,21 +65,32 @@ fun DoctorCard(
                     .padding(M_PADDING),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            AsyncImage(
-                model = doctor.profilePicture,
-                contentDescription = "",
+            Image(
                 modifier =
                     Modifier
-                        .size(60.dp)
+                        .align(Alignment.Top)
+                        .padding(XS_PADDING)
                         .clip(CircleShape)
-                        .align(Alignment.Top),
+                        .border(BOARDER_SIZE, Color.DarkGray, CircleShape)
+                        .size(PROFILE_IMAGE_SIZE),
+                painter =
+                    rememberAsyncImagePainter(
+                        ImageRequest
+                            .Builder(context)
+                            .data(data = doctor.profilePicture)
+                            .placeholder(R.drawable.user_placeholder)
+                            .error(R.drawable.user_placeholder)
+                            .build(),
+                    ),
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(M_PADDING))
 
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(XS_PADDING),
             ) {
                 Text(
                     text = "${doctor.firstName} ${doctor.lastName}",
@@ -77,14 +99,14 @@ fun DoctorCard(
                     fontFamily = helveticaFamily,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(M_PADDING))
                 Text(
                     text = doctor.specialty,
                     style = MaterialTheme.typography.bodyMedium,
                     fontFamily = helveticaFamily,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
                 )
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(M_PADDING))
                 Text(
                     text = doctor.availability,
                     style = MaterialTheme.typography.bodySmall,
@@ -109,7 +131,7 @@ fun DoctorCardPreview() {
                     .padding(XS_PADDING)
                     .background(color = backgroundColor),
         ) {
-            DoctorCard(
+            DoctorView(
                 doctor =
                     Doctor(
                         id = "101",
