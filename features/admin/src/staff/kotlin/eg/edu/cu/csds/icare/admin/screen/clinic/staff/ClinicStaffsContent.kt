@@ -2,7 +2,6 @@ package eg.edu.cu.csds.icare.admin.screen.clinic.staff
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -100,13 +99,9 @@ internal fun ClinicStaffsContent(
                                     staff.id
                                 },
                             ) { staff ->
-                                ClinicStaffView(
-                                    modifier =
-                                        Modifier.clickable {
-                                            onItemClicked(staff)
-                                        },
-                                    staff = staff,
-                                )
+                                ClinicStaffView(clinicStaff = staff) {
+                                    onItemClicked(staff)
+                                }
                             }
                         }
                     }

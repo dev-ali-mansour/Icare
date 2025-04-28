@@ -70,11 +70,8 @@ internal fun CenterDetailsContent(
     onError: suspend (Throwable?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val types =
-        listOf(
-            CenterTypeItem(code = 1, textResId = R.string.lab_center),
-            CenterTypeItem(code = 2, textResId = R.string.imaging_center),
-        )
+    val types = listOf(CenterTypeItem.ImagingCenter, CenterTypeItem.LabCenter)
+
     ConstraintLayout(
         modifier =
             modifier
@@ -149,9 +146,9 @@ internal fun CenterDetailsContent(
                                 .menuAnchor(MenuAnchorType.PrimaryNotEditable),
                         readOnly = true,
                         value =
-                            types.firstOrNull { it.code == type }?.textResId?.let {
-                                stringResource(it)
-                            } ?: "",
+                            stringResource(
+                                types.first { it.code == type || it.code == 1.toShort() }.textResId,
+                            ),
                         onValueChange = { },
                         label = {
                             Text(

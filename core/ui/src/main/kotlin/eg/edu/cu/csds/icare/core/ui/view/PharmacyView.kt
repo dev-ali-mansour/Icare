@@ -40,8 +40,8 @@ import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 @Composable
 fun PharmacyView(
     pharmacy: Pharmacy,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
     Card(
         onClick = onClick,

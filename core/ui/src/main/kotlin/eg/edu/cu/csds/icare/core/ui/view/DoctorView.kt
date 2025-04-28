@@ -43,13 +43,14 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 @Composable
 fun DoctorView(
     doctor: Doctor,
-    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
+    onClick: () -> Unit,
 ) {
     Card(
         onClick = onClick,
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .padding(horizontal = M_PADDING, vertical = XS_PADDING),
         colors =

@@ -48,9 +48,9 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 @Composable
 fun PharmacistView(
     pharmacist: Pharmacist,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
+    onClick: () -> Unit,
 ) {
     Card(
         onClick = onClick,
@@ -73,7 +73,8 @@ fun PharmacistView(
         ) {
             Image(
                 modifier =
-                    Modifier.align(Alignment.Top)
+                    Modifier
+                        .align(Alignment.Top)
                         .padding(XS_PADDING)
                         .clip(CircleShape)
                         .border(BOARDER_SIZE, Color.DarkGray, CircleShape)

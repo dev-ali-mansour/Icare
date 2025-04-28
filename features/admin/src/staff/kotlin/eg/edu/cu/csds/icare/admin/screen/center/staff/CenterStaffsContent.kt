@@ -2,7 +2,6 @@ package eg.edu.cu.csds.icare.admin.screen.center.staff
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -101,11 +100,10 @@ internal fun CenterStaffsContent(
                                 },
                             ) { staff ->
                                 CenterStaffView(
-                                    modifier =
-                                        Modifier.clickable {
-                                            onItemClicked(staff)
-                                        },
-                                    staff = staff,
+                                    centerStaff = staff,
+                                    onClick = {
+                                        onItemClicked(staff)
+                                    },
                                 )
                             }
                         }
