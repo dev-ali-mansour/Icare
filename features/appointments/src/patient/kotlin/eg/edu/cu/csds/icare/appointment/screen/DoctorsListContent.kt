@@ -4,88 +4,119 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.appointment.R
-import eg.edu.cu.csds.icare.appointment.components.DoctorCard
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.view.DoctorView
+import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import eg.edu.cu.csds.icare.core.ui.view.SearchTextField
+import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 fun DoctorsListContent(
     doctorsRes: Resource<List<Doctor>>,
     searchQuery: String,
+    showLoading: (Boolean) -> Unit,
     onSearchQueryChange: (String) -> Unit,
-    onDoctorClick: (Doctor) -> Unit,
+    onSearch: () -> Unit,
+    onClear: () -> Unit,
+    onDoctorClicked: (Doctor) -> Unit,
+    onError: suspend (Throwable?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
-        when (doctorsRes) {
-            is Resource.Unspecified -> {}
-            is Resource.Loading -> {
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier
-                            .align(Alignment.Center)
-                            .padding(XL_PADDING),
-                )
-            }
+    Surface(
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(bottom = M_PADDING),
+    ) {
+        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+            val (search, details) = createRefs()
 
-            is Resource.Success -> {
-                val doctors =
-                    doctorsRes.data
-                        .orEmpty()
-                        .filter { doctor ->
-                            searchQuery.isEmpty() ||
-                                doctor.name.contains(searchQuery, ignoreCase = true) ||
-                                doctor.specialty.contains(searchQuery, ignoreCase = true)
-                        }
+            SearchTextField(
+                modifier =
+                    Modifier
+                        .constrainAs(search) {
+                            top.linkTo(parent.top, margin = M_PADDING)
+                            start.linkTo(parent.start, M_PADDING)
+                            end.linkTo(parent.end, M_PADDING)
+                            width = Dimension.fillToConstraints
+                        },
+                placeholder = stringResource(CoreR.string.search_by_doctor_name_or_speciality),
+                value = searchQuery,
+                focus = false,
+                onValueChange = { onSearchQueryChange(it) },
+                onClear = { onClear() },
+                onSearch = { onSearch() },
+            )
 
-                if (doctors.isEmpty()) {
-                    Text(
-                        text = stringResource(id = R.string.no_doctors_available),
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.align(Alignment.Center),
-                    )
-                } else {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(M_PADDING),
-                        verticalArrangement = Arrangement.spacedBy(S_PADDING),
-                    ) {
-                        items(doctors) { doctor ->
-                            DoctorCard(
-                                doctor = doctor,
-                                onClick = { onDoctorClick(doctor) },
+            when (doctorsRes) {
+                is Resource.Unspecified -> LaunchedEffect(key1 = true) { showLoading(false) }
+                is Resource.Loading -> LaunchedEffect(key1 = true) { showLoading(true) }
+
+                is Resource.Success -> {
+                    LaunchedEffect(key1 = true) { showLoading(false) }
+                    doctorsRes.data?.let { doctors ->
+
+                        if (doctors.isEmpty()) {
+                            EmptyContentView(
+                                modifier =
+                                    Modifier.constrainAs(details) {
+                                        top.linkTo(search.bottom, margin = M_PADDING)
+                                        start.linkTo(parent.start)
+                                        end.linkTo(parent.end)
+                                        bottom.linkTo(parent.bottom)
+                                        width = Dimension.fillToConstraints
+                                        height = Dimension.fillToConstraints
+                                    },
+                                text = stringResource(R.string.no_doctors_available),
                             )
+                        } else {
+                            LazyColumn(
+                                modifier =
+                                    Modifier.constrainAs(details) {
+                                        top.linkTo(search.bottom, margin = M_PADDING)
+                                        start.linkTo(parent.start)
+                                        end.linkTo(parent.end)
+                                        bottom.linkTo(parent.bottom)
+                                        width = Dimension.fillToConstraints
+                                        height = Dimension.fillToConstraints
+                                    },
+                                state = rememberLazyListState(),
+                                verticalArrangement = Arrangement.spacedBy(S_PADDING),
+                            ) {
+                                items(doctors) { doctor ->
+                                    DoctorView(
+                                        doctor = doctor,
+                                        onClick = { onDoctorClicked(doctor) },
+                                    )
+                                }
+                            }
                         }
                     }
                 }
-            }
 
-            is Resource.Error -> {
-                Text(
-                    text = stringResource(id = R.string.error_loading_doctors),
-                    modifier = Modifier.align(Alignment.Center),
-                )
+                is Resource.Error ->
+                    LaunchedEffect(key1 = true) {
+                        showLoading(false)
+                        onError(doctorsRes.error)
+                    }
             }
         }
     }
@@ -97,48 +128,38 @@ fun DoctorsListContent(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
 @Composable
 fun DoctorsListContentPreview() {
-    val doctors =
-        listOf(
-            Doctor(
-                id = "1",
-                firstName = "Dr. Anna ",
-                lastName = "Jones",
-                specialty = "General Practitioner",
-            ),
-            Doctor(
-                id = "2",
-                firstName = "Dr. Tiya ",
-                lastName = "Mcdariel",
-                specialty = "Heart Specialist",
-            ),
-            Doctor(
-                id = "3",
-                firstName = "Dr. John ",
-                lastName = "Berry",
-                specialty = "General Practitioner",
-            ),
-        )
-
-    Column(modifier = Modifier.background(backgroundColor)) {
-        SearchTextField(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = M_PADDING, vertical = S_PADDING),
-            placeholder = "Search",
-            value = "",
-            focus = false,
-            onValueChange = {},
-            onClear = {},
-            onSearch = {},
-        )
-
+    Box(modifier = Modifier.background(backgroundColor)) {
         DoctorsListContent(
-            doctorsRes = Resource.Success(doctors),
+            doctorsRes =
+                Resource.Success(
+                    listOf(
+                        Doctor(
+                            id = "1",
+                            firstName = "Dr. Anna ",
+                            lastName = "Jones",
+                            specialty = "General Practitioner",
+                        ),
+                        Doctor(
+                            id = "2",
+                            firstName = "Dr. Tiya ",
+                            lastName = "Mcdariel",
+                            specialty = "Heart Specialist",
+                        ),
+                        Doctor(
+                            id = "3",
+                            firstName = "Dr. John ",
+                            lastName = "Berry",
+                            specialty = "General Practitioner",
+                        ),
+                    ),
+                ),
             searchQuery = "",
-            onDoctorClick = {},
+            showLoading = {},
+            onDoctorClicked = {},
             onSearchQueryChange = {},
-            modifier = Modifier.fillMaxSize(),
+            onSearch = {},
+            onClear = {},
+            onError = {},
         )
     }
 }
