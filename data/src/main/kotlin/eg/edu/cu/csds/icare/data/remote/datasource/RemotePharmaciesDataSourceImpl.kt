@@ -68,7 +68,7 @@ class RemotePharmaciesDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.addNewPharmacy(pharmacy.copy(token))
+            val response = service.upsertPharmacy(pharmacy.copy(token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -102,7 +102,7 @@ class RemotePharmaciesDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.updatePharmacy(pharmacy.copy(token))
+            val response = service.upsertPharmacy(pharmacy.copy(token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -164,7 +164,7 @@ class RemotePharmaciesDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.addNewPharmacist(pharmacist.copy(token))
+            val response = service.upsertPharmacist(pharmacist.copy(token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -198,7 +198,7 @@ class RemotePharmaciesDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.updatePharmacist(pharmacist.copy(token))
+            val response = service.upsertPharmacist(pharmacist.copy(token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->

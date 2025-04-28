@@ -61,8 +61,6 @@ import eg.edu.cu.csds.icare.core.domain.model.Promotion
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.domain.util.Constants
-import eg.edu.cu.csds.icare.core.domain.util.getFormattedDate
-import eg.edu.cu.csds.icare.core.domain.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.ui.common.AppService
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.common.Role
@@ -92,6 +90,8 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.kufamFamily
 import eg.edu.cu.csds.icare.core.ui.theme.statusColor
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
+import eg.edu.cu.csds.icare.core.ui.util.getFormattedDate
+import eg.edu.cu.csds.icare.core.ui.util.getFormattedTime
 import eg.edu.cu.csds.icare.home.R
 import eg.edu.cu.csds.icare.home.component.PromotionItem
 import eg.edu.cu.csds.icare.home.component.ServiceItem
@@ -112,6 +112,7 @@ internal fun HomeContent(
     onServiceClicked: (Screen) -> Unit = {},
     onDoctorClicked: (Doctor) -> Unit = {},
     onError: suspend (Throwable?) -> Unit,
+    context: Context = LocalContext.current,
 ) {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (progress, titleContainer, line, content, marquee) = createRefs()
@@ -141,7 +142,8 @@ internal fun HomeContent(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         width = Dimension.fillToConstraints
-                    }.fillMaxWidth()
+                    }
+                    .fillMaxWidth()
                     .height(XS_PADDING)
                     .background(Yellow500),
         )
@@ -171,7 +173,8 @@ internal fun HomeContent(
                                     bottom.linkTo(marquee.top)
                                     width = Dimension.fillToConstraints
                                     height = Dimension.fillToConstraints
-                                }.background(backgroundColor)
+                                }
+                                .background(backgroundColor)
                                 .verticalScroll(rememberScrollState())
                                 .padding(M_PADDING),
                     ) {
@@ -199,7 +202,8 @@ internal fun HomeContent(
                                     )
                                     Text(
                                         text = " ${stringResource(R.string.discount_50)} ${
-                                            stringResource(R.string.off)}",
+                                            stringResource(R.string.off)
+                                        }",
                                         fontWeight = FontWeight.Bold,
                                         fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                                         fontFamily = helveticaFamily,
@@ -319,7 +323,8 @@ internal fun HomeContent(
                                                     .constrainAs(doctorImage) {
                                                         top.linkTo(parent.top)
                                                         start.linkTo(parent.start)
-                                                    }.size(ACTION_BUTTON_SIZE),
+                                                    }
+                                                    .size(ACTION_BUTTON_SIZE),
                                         ) {
                                             AsyncImage(
                                                 model = appointment.doctorImage,
@@ -389,7 +394,7 @@ internal fun HomeContent(
                                                 },
                                         )
                                         Text(
-                                            text = appointment.dateTime.getFormattedDate(),
+                                            text = appointment.dateTime.getFormattedDate(context),
                                             modifier =
                                                 Modifier.constrainAs(date) {
                                                     top.linkTo(dateIcon.top)
@@ -413,7 +418,7 @@ internal fun HomeContent(
                                         )
 
                                         Text(
-                                            text = appointment.dateTime.getFormattedTime(),
+                                            text = appointment.dateTime.getFormattedTime(context),
                                             modifier =
                                                 Modifier.constrainAs(time) {
                                                     top.linkTo(timeIcon.top)
@@ -507,7 +512,8 @@ internal fun HomeContent(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         bottom.linkTo(parent.bottom)
-                    }.fillMaxWidth(fraction = 0.9f)
+                    }
+                    .fillMaxWidth(fraction = 0.9f)
                     .basicMarquee(iterations = Int.MAX_VALUE),
             color = Orange200,
             fontSize = MaterialTheme.typography.titleMedium.fontSize,
@@ -541,7 +547,8 @@ private fun TitleView(
                     .constrainAs(logo) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
-                    }.size(HEADER_ICON_SIZE),
+                    }
+                    .size(HEADER_ICON_SIZE),
             painter = painterResource(CoreR.drawable.logo),
             contentDescription = null,
             contentScale = ContentScale.Fit,
@@ -568,7 +575,8 @@ private fun TitleView(
                     .constrainAs(card) {
                         top.linkTo(logo.top, S_PADDING)
                         end.linkTo(parent.end, S_PADDING)
-                    }.clickable { onUserClicked() },
+                    }
+                    .clickable { onUserClicked() },
             color = contentBackgroundColor,
             shape = RoundedCornerShape(S_PADDING),
         ) {

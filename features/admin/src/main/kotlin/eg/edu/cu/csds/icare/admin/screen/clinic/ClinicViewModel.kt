@@ -251,14 +251,13 @@ class ClinicViewModel(
         }
     }
 
-    fun getDoctorSchedule() {
+    fun getDoctorSchedule(doctorId: String) {
         viewModelScope.launch(dispatcher) {
             if (_doctorScheduleResFlow.value !is Resource.Unspecified) {
                 _doctorScheduleResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-
-            getDoctorScheduleUseCase().collect { result ->
+            getDoctorScheduleUseCase(doctorId).collect { result ->
                 _doctorScheduleResFlow.value = result
             }
         }

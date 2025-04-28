@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
+import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen.Profile
@@ -61,6 +62,7 @@ internal fun HomeScreen(
     appointmentViewModel: AppointmentViewModel,
     clinicViewModel: ClinicViewModel,
     navigateToScreen: (Screen) -> Unit,
+    onDoctorClicked: (Doctor) -> Unit = {},
     onError: suspend (Throwable?) -> Unit,
     context: Context = LocalContext.current,
 ) {
@@ -218,7 +220,7 @@ internal fun HomeScreen(
             onUserClicked = { navigateToScreen(Profile) },
             onPromotionClicked = {},
             onServiceClicked = { navigateToScreen(it) },
-            onDoctorClicked = { },
+            onDoctorClicked = { onDoctorClicked(it) },
             onError = { onError(it) },
         )
     }

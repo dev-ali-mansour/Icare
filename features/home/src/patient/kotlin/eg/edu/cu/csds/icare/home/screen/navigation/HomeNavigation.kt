@@ -30,6 +30,11 @@ fun NavGraphBuilder.homeRoute(
             appointmentViewModel = appointmentViewModel,
             clinicViewModel = clinicViewModel,
             navigateToScreen = { navigateToScreen(it) },
+            onDoctorClicked = {
+                clinicViewModel.selectedDoctorState.value = it
+                clinicViewModel.getDoctorSchedule(it.id)
+                navigateToScreen(Screen.DoctorProfile)
+            },
             onError = { onError(it) },
         )
     }

@@ -209,7 +209,7 @@ internal fun HomeScreen(
             onUserClicked = { navigateToScreen(Profile) },
             onPriceCardClicked = { onPriceCardClicked(firebaseAuth.currentUser?.uid.toString()) },
             onAppointmentClick = { onAppointmentClick(it) },
-            loadContentData = { clinicViewModel.getDoctorSchedule() },
+            loadContentData = { clinicViewModel.getDoctorSchedule(it.userId) },
             onSeeAllClick = { onSeeAllClick() },
             onError = { onError(it) },
         )

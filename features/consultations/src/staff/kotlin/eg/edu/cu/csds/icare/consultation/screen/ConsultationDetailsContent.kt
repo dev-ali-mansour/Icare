@@ -71,8 +71,6 @@ import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.domain.util.getFormattedDate
-import eg.edu.cu.csds.icare.core.domain.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.CONSULTATION_PATIENT_CARD_HEIGHT
@@ -92,6 +90,8 @@ import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
+import eg.edu.cu.csds.icare.core.ui.util.getFormattedDate
+import eg.edu.cu.csds.icare.core.ui.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import kotlinx.coroutines.launch
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
@@ -147,7 +147,8 @@ internal fun ConsultationDetailsContent(
     var showDatePicker by remember { mutableStateOf(false) }
     val openDatePicker = { showDatePicker = true }
 
-    val statusList = remember { listOf(AppointmentStatus.PendingStatus, AppointmentStatus.ConfirmedStatus) }
+    val statusList =
+        remember { listOf(AppointmentStatus.PendingStatus, AppointmentStatus.ConfirmedStatus) }
 
     if (showDatePicker) {
         val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
@@ -158,7 +159,7 @@ internal fun ConsultationDetailsContent(
                     onClick = {
                         datePickerState.selectedDateMillis?.let {
                             selectedDate = it
-                            selectedDateFormatted = it.getFormattedDate()
+                            selectedDateFormatted = it.getFormattedDate(context)
                             onFollowUpDateChanged(it)
                         }
                         showDatePicker = false
@@ -319,7 +320,11 @@ internal fun ConsultationDetailsContent(
                         val imagingCenters = centers.filter { it.type == 2.toShort() }
 
                         Text(
-                            text = "${stringResource(R.string.consultation_date)}: ${dateTime.getFormattedDateTime()}",
+                            text = "${stringResource(R.string.consultation_date)}: ${
+                                dateTime.getFormattedDateTime(
+                                    context,
+                                )
+                            }",
                             modifier =
                                 Modifier
                                     .padding(top = L_PADDING)

@@ -61,7 +61,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.auth.R
-import eg.edu.cu.csds.icare.core.domain.util.getFormattedDate
 import eg.edu.cu.csds.icare.core.ui.common.GenderItem
 import eg.edu.cu.csds.icare.core.ui.theme.Blue200
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
@@ -78,6 +77,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
+import eg.edu.cu.csds.icare.core.ui.util.getFormattedDate
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import kotlinx.coroutines.launch
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
@@ -143,8 +143,8 @@ internal fun RegistrationContent(
                     onClick = {
                         datePickerState.selectedDateMillis?.let {
                             selectedBirthDate = it
-                            selectedBirthDateFormatted = it.getFormattedDate()
-                            onBirthDateChanged(it.getFormattedDate("yyyy-MM-dd"))
+                            selectedBirthDateFormatted = it.getFormattedDate(context)
+                            onBirthDateChanged(it.getFormattedDate(context, "yyyy-MM-dd"))
                         }
                         showDatePicker = false
                     },
