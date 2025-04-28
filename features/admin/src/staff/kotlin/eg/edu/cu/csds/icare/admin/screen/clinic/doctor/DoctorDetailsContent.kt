@@ -49,7 +49,6 @@ import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.admin.R
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.domain.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.domain.util.toFormattedString
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
@@ -61,6 +60,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
+import eg.edu.cu.csds.icare.core.ui.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import eg.edu.cu.csds.icare.core.ui.view.DoubleTextField
 import java.util.Calendar
@@ -348,7 +348,7 @@ internal fun DoctorDetailsContent(
                                 onValueChange = { onSpecialityChanged(it) },
                                 label = {
                                     Text(
-                                        text = stringResource(R.string.speciality),
+                                        text = stringResource(CoreR.string.speciality),
                                         fontFamily = helveticaFamily,
                                         color = textColor,
                                     )
@@ -392,7 +392,7 @@ internal fun DoctorDetailsContent(
                             )
 
                             TextField(
-                                value = fromTime.getFormattedTime(),
+                                value = fromTime.getFormattedTime(context),
                                 onValueChange = {},
                                 readOnly = true,
                                 label = {
@@ -464,7 +464,7 @@ internal fun DoctorDetailsContent(
                             )
 
                             TextField(
-                                value = toTime.getFormattedTime(),
+                                value = toTime.getFormattedTime(context),
                                 onValueChange = {},
                                 readOnly = true,
                                 label = {

@@ -130,4 +130,7 @@
     <string name="past_surgeries">العمليات الجراحية</string>
     <string name="view_medical_record">اضغط لعرض الملف الطبي</string>
     <string name="name">الاسم</string>
+    <string name="speciality">التخصص</string>
+    <string name="total_appointments">عدد مرات الحجز</string>
+    <string name="appointment_price">سعر الكشف</string>
 </resources>

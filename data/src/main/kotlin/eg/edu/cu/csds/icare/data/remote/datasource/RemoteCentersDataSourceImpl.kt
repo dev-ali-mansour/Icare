@@ -70,7 +70,7 @@ class RemoteCentersDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.addNewCenter(center.copy(token = token))
+            val response = service.upsertCenter(center.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -104,7 +104,7 @@ class RemoteCentersDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.updateCenter(center.copy(token = token))
+            val response = service.upsertCenter(center.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -166,7 +166,7 @@ class RemoteCentersDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.addNewCenterStaff(staff.copy(token = token))
+            val response = service.upsertCenterStaff(staff.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
@@ -200,7 +200,7 @@ class RemoteCentersDataSourceImpl(
                         ?.token
                         .toString()
                 }
-            val response = service.updateCenterStaff(staff.copy(token = token))
+            val response = service.upsertCenterStaff(staff.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
