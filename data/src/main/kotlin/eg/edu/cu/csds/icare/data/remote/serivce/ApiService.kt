@@ -73,7 +73,7 @@ interface ApiService {
         @Body body: HashMap<String, String>,
     ): Response<AppointmentsResponse>
 
-    @POST("appointmentApi/allAppointments")
+    @POST("appointmentApi/getAppointments")
     suspend fun getAppointments(
         @Body body: HashMap<String, String>,
     ): Response<AppointmentsResponse>
