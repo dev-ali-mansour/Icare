@@ -283,7 +283,7 @@ class ClinicViewModel(
                 _clinicStaffsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listClinicStaffUseCase(selectedClinicIdState.longValue).collect { result ->
+            listClinicStaffUseCase().collect { result ->
                 _clinicStaffsResFlow.value = result
             }
         }
