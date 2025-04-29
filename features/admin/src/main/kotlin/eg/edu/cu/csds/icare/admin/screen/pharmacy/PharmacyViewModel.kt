@@ -156,7 +156,7 @@ class PharmacyViewModel(
                 _pharmacistsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listPharmacistsUseCase(selectedPharmacyIdState.longValue).collect { result ->
+            listPharmacistsUseCase().collect { result ->
                 _pharmacistsResFlow.value = result
             }
         }
