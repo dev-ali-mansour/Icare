@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -32,8 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.admin.R
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.Resource
@@ -60,6 +57,7 @@ internal fun ClinicStaffDetailsContent(
     phone: String,
     clinicsResource: Resource<List<Clinic>>,
     actionResource: Resource<Nothing?>,
+    showLoading: (Boolean) -> Unit,
     clinicsExpanded: Boolean,
     onFirstNameChanged: (String) -> Unit,
     onLastNameChanged: (String) -> Unit,
@@ -73,286 +71,254 @@ internal fun ClinicStaffDetailsContent(
     onError: suspend (Throwable?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    ConstraintLayout(
+    Surface(
         modifier =
             modifier
                 .fillMaxSize()
                 .padding(bottom = XL_PADDING),
     ) {
-        val (card, loading) = createRefs()
+        when (clinicsResource) {
+            is Resource.Unspecified -> LaunchedEffect(key1 = clinicsResource) { showLoading(false) }
+            is Resource.Loading -> LaunchedEffect(key1 = clinicsResource) { showLoading(true) }
 
-        Surface(
-            modifier =
-                Modifier
-                    .constrainAs(card) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
-                        width = Dimension.fillToConstraints
-                        height = Dimension.fillToConstraints
-                    },
-        ) {
-            when (clinicsResource) {
-                is Resource.Unspecified -> {}
-                is Resource.Loading ->
-                    CircularProgressIndicator(
+            is Resource.Success -> {
+                LaunchedEffect(key1 = clinicsResource) { showLoading(false) }
+                clinicsResource.data?.let { clinics ->
+
+                    Column(
                         modifier =
                             Modifier
-                                .padding(XL_PADDING)
-                                .constrainAs(loading) {
-                                    top.linkTo(parent.top, margin = L_PADDING)
-                                    start.linkTo(parent.start)
-                                    end.linkTo(parent.end)
-                                    bottom.linkTo(parent.bottom)
-                                },
-                    )
-
-                is Resource.Success -> {
-                    clinicsResource.data?.let { clinics ->
-
-                        Column(
+                                .fillMaxSize()
+                                .background(backgroundColor)
+                                .verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        TextField(
+                            value = firstName,
+                            onValueChange = { onFirstNameChanged(it) },
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.first_name),
+                                    fontFamily = helveticaFamily,
+                                    color = textColor,
+                                )
+                            },
+                            singleLine = true,
                             modifier =
                                 Modifier
-                                    .fillMaxSize()
-                                    .background(backgroundColor)
-                                    .verticalScroll(rememberScrollState()),
-                            horizontalAlignment = Alignment.CenterHorizontally,
+                                    .fillMaxWidth(fraction = 0.8f)
+                                    .padding(top = L_PADDING),
+                            colors =
+                                TextFieldDefaults.colors(
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent,
+                                    cursorColor = contentColor,
+                                    focusedTextColor = textColor,
+                                    focusedIndicatorColor = Yellow500,
+                                    unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                                ),
+                            keyboardOptions =
+                                KeyboardOptions.Default.copy(
+                                    autoCorrectEnabled = false,
+                                    keyboardType = KeyboardType.Text,
+                                    imeAction = ImeAction.Next,
+                                ),
+                        )
+
+                        TextField(
+                            value = lastName,
+                            onValueChange = { onLastNameChanged(it) },
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.last_name),
+                                    fontFamily = helveticaFamily,
+                                    color = textColor,
+                                )
+                            },
+                            singleLine = true,
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth(fraction = 0.8f),
+                            colors =
+                                TextFieldDefaults.colors(
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent,
+                                    cursorColor = contentColor,
+                                    focusedTextColor = textColor,
+                                    focusedIndicatorColor = Yellow500,
+                                    unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                                ),
+                            keyboardOptions =
+                                KeyboardOptions.Default.copy(
+                                    autoCorrectEnabled = false,
+                                    keyboardType = KeyboardType.Text,
+                                    imeAction = ImeAction.Next,
+                                ),
+                        )
+
+                        ExposedDropdownMenuBox(
+                            modifier = Modifier.fillMaxWidth(fraction = 0.8f),
+                            expanded = clinicsExpanded,
+                            onExpandedChange = {
+                                onClinicsExpandedChange(it)
+                            },
                         ) {
-                            TextField(
-                                value = firstName,
-                                onValueChange = { onFirstNameChanged(it) },
-                                label = {
-                                    Text(
-                                        text = stringResource(R.string.first_name),
-                                        fontFamily = helveticaFamily,
-                                        color = textColor,
-                                    )
-                                },
-                                singleLine = true,
+                            OutlinedTextField(
                                 modifier =
                                     Modifier
-                                        .fillMaxWidth(fraction = 0.8f)
-                                        .padding(top = L_PADDING),
+                                        .fillMaxWidth()
+                                        .menuAnchor(MenuAnchorType.PrimaryNotEditable),
+                                readOnly = true,
+                                value =
+                                    clinics.firstOrNull { it.id == clinicId }?.name ?: "",
+                                onValueChange = { },
+                                label = {
+                                    Text(
+                                        text = stringResource(R.string.clinic),
+                                        color = dropDownTextColor,
+                                    )
+                                },
+                                trailingIcon = {
+                                    ExposedDropdownMenuDefaults.TrailingIcon(
+                                        expanded = clinicsExpanded,
+                                    )
+                                },
                                 colors =
-                                    TextFieldDefaults.colors(
-                                        focusedContainerColor = Color.Transparent,
-                                        unfocusedContainerColor = Color.Transparent,
-                                        disabledContainerColor = Color.Transparent,
-                                        cursorColor = contentColor,
-                                        focusedTextColor = textColor,
-                                        focusedIndicatorColor = Yellow500,
-                                        unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                                    ),
-                                keyboardOptions =
-                                    KeyboardOptions.Default.copy(
-                                        autoCorrectEnabled = false,
-                                        keyboardType = KeyboardType.Text,
-                                        imeAction = ImeAction.Next,
+                                    ExposedDropdownMenuDefaults.textFieldColors(
+                                        focusedTextColor = Color.White,
+                                        unfocusedTextColor = Color.White,
+                                        focusedContainerColor = barBackgroundColor,
+                                        unfocusedContainerColor = barBackgroundColor,
+                                        unfocusedTrailingIconColor = Color.White,
+                                        focusedTrailingIconColor = Color.White,
+                                        focusedLabelColor = Color.White,
+                                        unfocusedLabelColor = Color.White,
                                     ),
                             )
 
-                            TextField(
-                                value = lastName,
-                                onValueChange = { onLastNameChanged(it) },
-                                label = {
-                                    Text(
-                                        text = stringResource(R.string.last_name),
-                                        fontFamily = helveticaFamily,
-                                        color = textColor,
-                                    )
-                                },
-                                singleLine = true,
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth(fraction = 0.8f),
-                                colors =
-                                    TextFieldDefaults.colors(
-                                        focusedContainerColor = Color.Transparent,
-                                        unfocusedContainerColor = Color.Transparent,
-                                        disabledContainerColor = Color.Transparent,
-                                        cursorColor = contentColor,
-                                        focusedTextColor = textColor,
-                                        focusedIndicatorColor = Yellow500,
-                                        unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                                    ),
-                                keyboardOptions =
-                                    KeyboardOptions.Default.copy(
-                                        autoCorrectEnabled = false,
-                                        keyboardType = KeyboardType.Text,
-                                        imeAction = ImeAction.Next,
-                                    ),
-                            )
-
-                            ExposedDropdownMenuBox(
-                                modifier = Modifier.fillMaxWidth(fraction = 0.8f),
+                            ExposedDropdownMenu(
                                 expanded = clinicsExpanded,
-                                onExpandedChange = {
-                                    onClinicsExpandedChange(it)
+                                onDismissRequest = {
+                                    onClinicsDismissRequest()
                                 },
                             ) {
-                                OutlinedTextField(
-                                    modifier =
-                                        Modifier
-                                            .fillMaxWidth()
-                                            .menuAnchor(MenuAnchorType.PrimaryNotEditable),
-                                    readOnly = true,
-                                    value =
-                                        clinics.firstOrNull { it.id == clinicId }?.name ?: "",
-                                    onValueChange = { },
-                                    label = {
-                                        Text(
-                                            text = stringResource(R.string.clinic),
-                                            color = dropDownTextColor,
-                                        )
-                                    },
-                                    trailingIcon = {
-                                        ExposedDropdownMenuDefaults.TrailingIcon(
-                                            expanded = clinicsExpanded,
-                                        )
-                                    },
-                                    colors =
-                                        ExposedDropdownMenuDefaults.textFieldColors(
-                                            focusedTextColor = Color.White,
-                                            unfocusedTextColor = Color.White,
-                                            focusedContainerColor = barBackgroundColor,
-                                            unfocusedContainerColor = barBackgroundColor,
-                                            unfocusedTrailingIconColor = Color.White,
-                                            focusedTrailingIconColor = Color.White,
-                                            focusedLabelColor = Color.White,
-                                            unfocusedLabelColor = Color.White,
-                                        ),
-                                )
-
-                                ExposedDropdownMenu(
-                                    expanded = clinicsExpanded,
-                                    onDismissRequest = {
-                                        onClinicsDismissRequest()
-                                    },
-                                ) {
-                                    clinics.forEach {
-                                        DropdownMenuItem(
-                                            text = {
-                                                Text(
-                                                    text = it.name,
-                                                    color = dropDownTextColor,
-                                                )
-                                            },
-                                            onClick = { onClinicClicked(it.id) },
-                                        )
-                                    }
+                                clinics.forEach {
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(
+                                                text = it.name,
+                                                color = dropDownTextColor,
+                                            )
+                                        },
+                                        onClick = { onClinicClicked(it.id) },
+                                    )
                                 }
                             }
-
-                            TextField(
-                                value = email,
-                                onValueChange = { onEmailChanged(it) },
-                                label = {
-                                    Text(
-                                        text = stringResource(R.string.email),
-                                        fontFamily = helveticaFamily,
-                                        color = textColor,
-                                    )
-                                },
-                                singleLine = true,
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth(fraction = 0.8f),
-                                colors =
-                                    TextFieldDefaults.colors(
-                                        focusedContainerColor = Color.Transparent,
-                                        unfocusedContainerColor = Color.Transparent,
-                                        disabledContainerColor = Color.Transparent,
-                                        cursorColor = contentColor,
-                                        focusedTextColor = textColor,
-                                        focusedIndicatorColor = Yellow500,
-                                        unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                                    ),
-                                keyboardOptions =
-                                    KeyboardOptions.Default.copy(
-                                        autoCorrectEnabled = false,
-                                        keyboardType = KeyboardType.Email,
-                                        imeAction = ImeAction.Next,
-                                    ),
-                            )
-
-                            TextField(
-                                value = phone,
-                                onValueChange = { if (it.length < 14) onPhoneChanged(it) },
-                                label = {
-                                    Text(
-                                        text = stringResource(R.string.phone_number),
-                                        fontFamily = helveticaFamily,
-                                        color = textColor,
-                                    )
-                                },
-                                singleLine = true,
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth(fraction = 0.8f),
-                                colors =
-                                    TextFieldDefaults.colors(
-                                        focusedContainerColor = Color.Transparent,
-                                        unfocusedContainerColor = Color.Transparent,
-                                        disabledContainerColor = Color.Transparent,
-                                        cursorColor = contentColor,
-                                        focusedTextColor = textColor,
-                                        focusedIndicatorColor = Yellow500,
-                                        unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                                    ),
-                                keyboardOptions =
-                                    KeyboardOptions.Default.copy(
-                                        autoCorrectEnabled = false,
-                                        keyboardType = KeyboardType.Phone,
-                                        imeAction = ImeAction.Done,
-                                    ),
-                            )
-
-                            Spacer(modifier = Modifier.height(L_PADDING))
-
-                            AnimatedButton(
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth(fraction = 0.6f),
-                                text = stringResource(CoreR.string.proceed),
-                                color = buttonBackgroundColor,
-                                onClick = { onProceedButtonClicked() },
-                            )
                         }
-                    }
-                }
 
-                is Resource.Error ->
-                    LaunchedEffect(key1 = true) {
-                        onError(clinicsResource.error)
-                    }
-            }
-        }
-        when (actionResource) {
-            is Resource.Unspecified -> {}
-            is Resource.Loading ->
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier
-                            .padding(XL_PADDING)
-                            .constrainAs(loading) {
-                                top.linkTo(parent.top, margin = L_PADDING)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                                bottom.linkTo(parent.bottom)
+                        TextField(
+                            value = email,
+                            onValueChange = { onEmailChanged(it) },
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.email),
+                                    fontFamily = helveticaFamily,
+                                    color = textColor,
+                                )
                             },
-                )
+                            singleLine = true,
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth(fraction = 0.8f),
+                            colors =
+                                TextFieldDefaults.colors(
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent,
+                                    cursorColor = contentColor,
+                                    focusedTextColor = textColor,
+                                    focusedIndicatorColor = Yellow500,
+                                    unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                                ),
+                            keyboardOptions =
+                                KeyboardOptions.Default.copy(
+                                    autoCorrectEnabled = false,
+                                    keyboardType = KeyboardType.Email,
+                                    imeAction = ImeAction.Next,
+                                ),
+                        )
 
-            is Resource.Success ->
-                LaunchedEffect(key1 = Unit) {
-                    onSuccess()
+                        TextField(
+                            value = phone,
+                            onValueChange = { if (it.length < 14) onPhoneChanged(it) },
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.phone_number),
+                                    fontFamily = helveticaFamily,
+                                    color = textColor,
+                                )
+                            },
+                            singleLine = true,
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth(fraction = 0.8f),
+                            colors =
+                                TextFieldDefaults.colors(
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent,
+                                    cursorColor = contentColor,
+                                    focusedTextColor = textColor,
+                                    focusedIndicatorColor = Yellow500,
+                                    unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                                ),
+                            keyboardOptions =
+                                KeyboardOptions.Default.copy(
+                                    autoCorrectEnabled = false,
+                                    keyboardType = KeyboardType.Phone,
+                                    imeAction = ImeAction.Done,
+                                ),
+                        )
+
+                        Spacer(modifier = Modifier.height(L_PADDING))
+
+                        AnimatedButton(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth(fraction = 0.6f),
+                            text = stringResource(CoreR.string.proceed),
+                            color = buttonBackgroundColor,
+                            onClick = { onProceedButtonClicked() },
+                        )
+                    }
                 }
+            }
 
             is Resource.Error ->
-                LaunchedEffect(key1 = true) {
-                    onError(actionResource.error)
+                LaunchedEffect(key1 = clinicsResource) {
+                    showLoading(false)
+                    onError(clinicsResource.error)
                 }
         }
+    }
+
+    when (actionResource) {
+        is Resource.Unspecified -> LaunchedEffect(key1 = actionResource) { showLoading(false) }
+        is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
+
+        is Resource.Success ->
+            LaunchedEffect(key1 = Unit) {
+                showLoading(false)
+                onSuccess()
+            }
+
+        is Resource.Error ->
+            LaunchedEffect(key1 = actionResource) {
+                showLoading(false)
+                onError(actionResource.error)
+            }
     }
 }
 
@@ -372,6 +338,7 @@ internal fun ClinicStaffDetailsContentPreview() {
             clinicsResource = Resource.Success(listOf(Clinic(name = "عيادة 1"))),
             actionResource = Resource.Unspecified(),
             clinicsExpanded = false,
+            showLoading = {},
             onFirstNameChanged = {},
             onLastNameChanged = {},
             onClinicsExpandedChange = {},
