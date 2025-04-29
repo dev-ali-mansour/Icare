@@ -7,5 +7,6 @@ import kotlinx.serialization.Serializable
 data class ClinicStaffResponse(
     @SerialName("status")
     val statusCode: Short,
+    @SerialName("data")
     val staffList: List<ClinicStaff>,
 )
