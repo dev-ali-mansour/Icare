@@ -11,6 +11,7 @@ import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.BookAppointment
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAdminStatistics
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointments
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointmentsByStatus
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetPatientAppointments
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.UpdateAppointment
@@ -35,6 +36,7 @@ class AppointmentViewModel(
     private val getAppointmentsByStatusUseCase: GetAppointmentsByStatus,
     private val getPatientAppointmentUseCase: GetPatientAppointments,
     private val getAdminStatisticsUseCase: GetAdminStatistics,
+    private val getAppointmentUseCase: GetAppointments,
 ) : ViewModel() {
     private val _actionResFlow =
         MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
@@ -144,6 +146,19 @@ class AppointmentViewModel(
 
             getAdminStatisticsUseCase().collect {
                 _adminStatsRes.value = it
+            }
+        }
+    }
+
+    fun getAppointments() {
+        viewModelScope.launch(dispatcher) {
+            if (_appointmentsResFlow.value !is Resource.Unspecified) {
+                _appointmentsResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+
+            getAppointmentUseCase().collectLatest {
+                _appointmentsResFlow.value = it
             }
         }
     }
