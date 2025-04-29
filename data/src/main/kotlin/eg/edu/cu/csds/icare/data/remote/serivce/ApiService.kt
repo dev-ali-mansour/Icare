@@ -102,7 +102,7 @@ interface ApiService {
         @Body body: HashMap<String, String>,
     ): Response<ClinicStaffResponse>
 
-    @POST("addNewClinicStaff")
+    @POST("userApi/clinicStaffRegister")
     suspend fun upsertClinicStaff(
         @Body body: ClinicStaff,
     ): Response<ActionResultResponse>
