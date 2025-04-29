@@ -9,6 +9,7 @@ import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
 import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
+import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.common.Role
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
@@ -40,7 +41,7 @@ fun NavGraphBuilder.homeRoute(
                 when (user.roleId) {
                     Role.AdminRole.code -> appointmentViewModel.getAdminStatistics()
                     Role.DoctorRole.code -> clinicViewModel.getDoctorSchedule(user.userId)
-                    Role.ClinicStaffRole.code -> {}
+                    Role.ClinicStaffRole.code -> appointmentViewModel.getAppointments()
                     Role.PharmacistRole.code -> {}
                     Role.CenterStaffRole.code -> {}
                 }
@@ -60,6 +61,12 @@ fun NavGraphBuilder.homeRoute(
             onSeeAllClick = {
             },
             onSectionsAdminClicked = { navigateToScreen(Screen.Admin) },
+            onConfirm = {
+                appointmentViewModel.selectedAppointment.value =
+                    it.copy(statusId = AppointmentStatus.ConfirmedStatus.code)
+                appointmentViewModel.updateAppointment()
+                appointmentViewModel.getAppointments()
+            },
             onError = { onError(it) },
         )
     }
