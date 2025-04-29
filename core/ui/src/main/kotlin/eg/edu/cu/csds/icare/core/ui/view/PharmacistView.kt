@@ -99,7 +99,7 @@ fun PharmacistView(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
-                    text = "${pharmacist.firstName} ${pharmacist.lastName}",
+                    text = pharmacist.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontFamily = helveticaFamily,
                     fontWeight = FontWeight.Bold,
@@ -107,7 +107,7 @@ fun PharmacistView(
                 )
                 Spacer(modifier = Modifier.width(M_PADDING))
                 Text(
-                    text = pharmacist.pharmacyId.toString(),
+                    text = pharmacist.pharmacyName,
                     style = MaterialTheme.typography.bodyMedium,
                     fontFamily = helveticaFamily,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
