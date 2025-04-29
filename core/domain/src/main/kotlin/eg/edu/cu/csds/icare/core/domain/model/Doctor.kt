@@ -31,7 +31,7 @@ data class Doctor(
         TimeSlot(startTime = fromTime, endTime = toTime).divide(
             slotDurationMinutes = 30,
         ),
-    val rating: Double = 4.5,
+    val rating: Double = 0.0,
     val price: Double = 0.0,
     val profilePicture: String = "",
 )

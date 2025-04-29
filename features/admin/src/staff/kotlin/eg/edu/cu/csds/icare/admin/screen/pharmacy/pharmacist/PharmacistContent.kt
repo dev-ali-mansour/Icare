@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -27,10 +26,11 @@ import eg.edu.cu.csds.icare.core.ui.view.PharmacistView
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
-internal fun PharmacistContent(
+fun PharmacistContent(
     modifier: Modifier = Modifier,
     pharmacistsResource: Resource<List<Pharmacist>>,
     actionResource: Resource<Nothing?>,
+    showLoading: (Boolean) -> Unit,
     onExpandStateChanged: (Boolean) -> Unit,
     onItemClicked: (Pharmacist) -> Unit,
     onError: suspend (Throwable?) -> Unit,
@@ -38,22 +38,14 @@ internal fun PharmacistContent(
     ConstraintLayout(
         modifier = modifier.fillMaxSize(),
     ) {
-        val (progress, emptyContent, list) = createRefs()
+        val (emptyContent, list) = createRefs()
 
         when (pharmacistsResource) {
-            is Resource.Unspecified -> {}
-            is Resource.Loading ->
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier.constrainAs(progress) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                        },
-                )
+            is Resource.Unspecified -> LaunchedEffect(key1 = pharmacistsResource) { showLoading(false) }
+            is Resource.Loading -> LaunchedEffect(key1 = pharmacistsResource) { showLoading(true) }
 
             is Resource.Success -> {
+                LaunchedEffect(key1 = pharmacistsResource) { showLoading(false) }
                 pharmacistsResource.data?.let { pharmacists ->
                     val listState = rememberLazyListState()
                     val expandedFabState =
@@ -111,30 +103,24 @@ internal fun PharmacistContent(
             }
 
             is Resource.Error ->
-                LaunchedEffect(key1 = true) {
+                LaunchedEffect(key1 = pharmacistsResource) {
+                    showLoading(false)
                     onError(pharmacistsResource.error)
                 }
         }
 
         when (actionResource) {
-            is Resource.Unspecified -> {}
-            is Resource.Loading ->
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier.constrainAs(
-                            progress,
-                        ) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                        },
-                )
+            is Resource.Unspecified -> LaunchedEffect(key1 = actionResource) { showLoading(false) }
+            is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
 
-            is Resource.Success -> {}
+            is Resource.Success ->
+                LaunchedEffect(key1 = Unit) {
+                    showLoading(false)
+                }
 
             is Resource.Error ->
-                LaunchedEffect(key1 = true) {
+                LaunchedEffect(key1 = actionResource) {
+                    showLoading(false)
                     onError(actionResource.error)
                 }
         }
@@ -152,6 +138,7 @@ internal fun PharmacistContentPreview() {
             modifier = Modifier,
             pharmacistsResource = Resource.Success(data = listOf()),
             actionResource = Resource.Success(null),
+            showLoading = {},
             onExpandStateChanged = {},
             onItemClicked = {},
         ) {}

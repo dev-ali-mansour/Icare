@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -58,9 +57,9 @@ internal fun PharmacistDetailsContent(
     pharmacyId: Long,
     email: String,
     phone: String,
-    profilePicture: String,
     pharmaciesResource: Resource<List<Pharmacy>>,
     actionResource: Resource<Nothing?>,
+    showLoading: (Boolean) -> Unit,
     pharmaciesExpanded: Boolean,
     onFirstNameChanged: (String) -> Unit,
     onLastNameChanged: (String) -> Unit,
@@ -69,7 +68,6 @@ internal fun PharmacistDetailsContent(
     onPharmacyClicked: (Long) -> Unit,
     onEmailChanged: (String) -> Unit,
     onPhoneChanged: (String) -> Unit,
-    onProfilePictureChanged: (String) -> Unit,
     onProceedButtonClicked: () -> Unit,
     onSuccess: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
@@ -96,21 +94,17 @@ internal fun PharmacistDetailsContent(
                     },
         ) {
             when (pharmaciesResource) {
-                is Resource.Unspecified -> {}
-                is Resource.Loading ->
-                    CircularProgressIndicator(
-                        modifier =
-                            Modifier
-                                .padding(XL_PADDING)
-                                .constrainAs(loading) {
-                                    top.linkTo(parent.top, margin = L_PADDING)
-                                    start.linkTo(parent.start)
-                                    end.linkTo(parent.end)
-                                    bottom.linkTo(parent.bottom)
-                                },
-                    )
+                is Resource.Unspecified ->
+                    LaunchedEffect(key1 = pharmaciesResource) {
+                        showLoading(
+                            false,
+                        )
+                    }
+
+                is Resource.Loading -> LaunchedEffect(key1 = pharmaciesResource) { showLoading(true) }
 
                 is Resource.Success -> {
+                    LaunchedEffect(key1 = pharmaciesResource) { showLoading(false) }
                     pharmaciesResource.data?.let { pharmacies ->
 
                         Column(
@@ -325,33 +319,25 @@ internal fun PharmacistDetailsContent(
                 }
 
                 is Resource.Error ->
-                    LaunchedEffect(key1 = true) {
+                    LaunchedEffect(key1 = pharmaciesResource) {
+                        showLoading(false)
                         onError(pharmaciesResource.error)
                     }
             }
         }
         when (actionResource) {
-            is Resource.Unspecified -> {}
-            is Resource.Loading ->
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier
-                            .padding(XL_PADDING)
-                            .constrainAs(loading) {
-                                top.linkTo(parent.top, margin = L_PADDING)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                                bottom.linkTo(parent.bottom)
-                            },
-                )
+            is Resource.Unspecified -> LaunchedEffect(key1 = actionResource) { showLoading(false) }
+            is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
 
             is Resource.Success ->
                 LaunchedEffect(key1 = Unit) {
+                    showLoading(false)
                     onSuccess()
                 }
 
             is Resource.Error ->
-                LaunchedEffect(key1 = true) {
+                LaunchedEffect(key1 = actionResource) {
+                    showLoading(false)
                     onError(actionResource.error)
                 }
         }
@@ -371,10 +357,10 @@ internal fun PharmacistDetailsContentPreview() {
             pharmacyId = 0,
             email = "",
             phone = "",
-            profilePicture = "",
             pharmaciesResource = Resource.Success(listOf(Pharmacy(name = "صيدلية العزبي"))),
             actionResource = Resource.Unspecified(),
             pharmaciesExpanded = false,
+            showLoading = {},
             onFirstNameChanged = {},
             onLastNameChanged = {},
             onPharmaciesExpandedChange = {},
@@ -382,7 +368,6 @@ internal fun PharmacistDetailsContentPreview() {
             onPharmacyClicked = {},
             onEmailChanged = {},
             onPhoneChanged = {},
-            onProfilePictureChanged = {},
             onProceedButtonClicked = {},
             onSuccess = {},
             onError = {},

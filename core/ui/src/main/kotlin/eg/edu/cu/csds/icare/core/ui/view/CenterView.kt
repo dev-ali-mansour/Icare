@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -70,14 +71,17 @@ fun CenterView(
             Image(
                 painter =
                     painterResource(
-                        types.first { it.code == center.type || it.code == 1.toShort() }.iconResId,
+                        types.firstOrNull { it.code == center.type }?.iconResId
+                            ?: types.first().iconResId,
                     ),
                 contentDescription = null,
                 modifier =
                     Modifier
-                        .size(PROFILE_IMAGE_SIZE)
+                        .align(Alignment.Top)
+                        .padding(XS_PADDING)
                         .clip(CircleShape)
-                        .align(Alignment.Top),
+                        .size(PROFILE_IMAGE_SIZE),
+                contentScale = ContentScale.FillBounds,
             )
 
             Spacer(modifier = Modifier.width(M_PADDING))
@@ -98,7 +102,8 @@ fun CenterView(
                     Text(
                         text =
                             stringResource(
-                                types.first { it.code == center.type || it.code == 1.toShort() }.textResId,
+                                types.firstOrNull { it.code == center.type }?.textResId
+                                    ?: types.first().textResId,
                             ),
                         style = MaterialTheme.typography.bodyMedium,
                         fontFamily = helveticaFamily,
@@ -142,7 +147,7 @@ fun CenterCardPreview() {
                 showType = true,
                 center =
                     LabImagingCenter(
-                        type = 0,
+                        type = 1,
                         name = "Alfa",
                         phone = "0123456789",
                         address = "53 james street,Giza,Egypt",
@@ -152,7 +157,7 @@ fun CenterCardPreview() {
             CenterView(
                 center =
                     LabImagingCenter(
-                        type = 1,
+                        type = 2,
                         name = "Beta",
                         phone = "0123456789",
                         address = "53 james street,Giza,Egypt",

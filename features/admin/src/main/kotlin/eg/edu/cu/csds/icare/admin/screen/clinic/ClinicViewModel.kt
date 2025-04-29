@@ -108,6 +108,7 @@ class ClinicViewModel(
                     isOpen = isOpenState.value,
                 ),
             ).collect { result ->
+                if (result is Resource.Success) resetStates()
                 _actionResFlow.emit(result)
             }
         }
@@ -129,13 +130,13 @@ class ClinicViewModel(
         }
     }
 
-    fun listClinics(forceUpdate: Boolean = false) {
+    fun listClinics(forceRefresh: Boolean = false) {
         viewModelScope.launch(dispatcher) {
             if (_clinicsResFlow.value !is Resource.Unspecified) {
                 _clinicsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listClinicsUseCase(forceUpdate).collect { result ->
+            listClinicsUseCase(forceRefresh).collect { result ->
                 _clinicsResFlow.emit(result)
             }
         }
@@ -161,6 +162,7 @@ class ClinicViewModel(
                     rating = ratingState.doubleValue,
                 ),
             ).collect { result ->
+                if (result is Resource.Success) resetStates()
                 _actionResFlow.emit(result)
             }
         }
@@ -253,6 +255,7 @@ class ClinicViewModel(
                     phone = phoneState.value,
                 ),
             ).collect { result ->
+                if (result is Resource.Success) resetStates()
                 _actionResFlow.emit(result)
             }
         }
@@ -306,5 +309,15 @@ class ClinicViewModel(
                 }
             }
         }
+    }
+
+    private fun resetStates() {
+        selectedClinicState.value = null
+        selectedClinicIdState.longValue = 0
+        nameState.value = ""
+        typeState.value = ""
+        addressState.value = ""
+        phoneState.value = ""
+        isOpenState.value = false
     }
 }

@@ -16,8 +16,6 @@
     <string name="birth_date">Birth Date</string>
     <string name="address">Address</string>
     <string name="type">Type</string>
-    <string name="open" >Open</string>
-    <string name="closed" >Closed</string>
     <string name="clinic" >Clinic</string>
     <string name="pharmacy" >Pharmacy</string>
     <string name="center" >Center</string>

@@ -170,6 +170,7 @@ class ConsultationViewModel(
     }
 
     private fun resetStates() {
+        selectedConsultationState.value = null
         appointmentState.value = Appointment()
         diagnosisState.value = ""
         pharmacyIdState.longValue = 1

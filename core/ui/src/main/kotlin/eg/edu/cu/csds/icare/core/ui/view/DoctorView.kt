@@ -63,6 +63,7 @@ fun DoctorView(
         Row(
             modifier =
                 Modifier
+                    .fillMaxWidth()
                     .padding(M_PADDING),
             verticalAlignment = Alignment.CenterVertically,
         ) {

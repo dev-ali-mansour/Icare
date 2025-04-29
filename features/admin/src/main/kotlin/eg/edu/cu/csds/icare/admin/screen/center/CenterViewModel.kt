@@ -52,6 +52,8 @@ class CenterViewModel(
     var selectedCenterState: MutableState<LabImagingCenter?> = mutableStateOf(null)
     var selectedCenterStaffState: MutableState<CenterStaff?> = mutableStateOf(null)
 
+    var showSuccessDialog = mutableStateOf(false)
+    var isRefreshing = mutableStateOf(false)
     var selectedCenterIdState = mutableLongStateOf(0)
     var searchQueryState = mutableStateOf("")
     var nameState = mutableStateOf("")
@@ -62,7 +64,6 @@ class CenterViewModel(
     var lastNameState = mutableStateOf("")
     var centerIdState = mutableLongStateOf(0)
     var emailState = mutableStateOf("")
-    var profilePictureState = mutableStateOf("")
     var typesExpandedState = mutableStateOf(false)
     var centersExpandedState = mutableStateOf(false)
 
@@ -80,6 +81,7 @@ class CenterViewModel(
                     address = addressState.value,
                 ),
             ).collect { result ->
+                if (result is Resource.Success) resetStates()
                 _actionResFlow.emit(result)
             }
         }
@@ -93,6 +95,7 @@ class CenterViewModel(
             }
             selectedCenterState.value?.let {
                 updateCenterUseCase(it).collect { result ->
+                    if (result is Resource.Success) resetStates()
                     _actionResFlow.emit(result)
                 }
             } ?: run {
@@ -244,9 +247,9 @@ class CenterViewModel(
                     centerId = centerIdState.longValue,
                     email = emailState.value,
                     phone = phoneState.value,
-                    profilePicture = profilePictureState.value,
                 ),
             ).collect { result ->
+                if (result is Resource.Success) resetStates()
                 _actionResFlow.emit(result)
             }
         }
@@ -260,6 +263,7 @@ class CenterViewModel(
             }
             selectedCenterStaffState.value?.let {
                 updateCenterStaffUseCase(it).collect { result ->
+                    if (result is Resource.Success) resetStates()
                     _actionResFlow.emit(result)
                 }
             } ?: run {
@@ -278,5 +282,15 @@ class CenterViewModel(
                 _centerStaffsResFlow.value = result
             }
         }
+    }
+
+    private fun resetStates() {
+        selectedCenterStaffState.value = null
+        selectedCenterState.value = null
+        selectedCenterState.value = null
+        nameState.value = ""
+        typeState.value = 0.toShort()
+        phoneState.value = ""
+        addressState.value = ""
     }
 }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -59,6 +58,7 @@ internal fun CenterDetailsContent(
     phone: String,
     address: String,
     actionResource: Resource<Nothing?>,
+    showLoading: (Boolean) -> Unit,
     onNameChanged: (String) -> Unit,
     onTypesExpandedChange: (Boolean) -> Unit,
     onTypesDismissRequest: () -> Unit,
@@ -78,7 +78,7 @@ internal fun CenterDetailsContent(
                 .fillMaxSize()
                 .padding(bottom = XL_PADDING),
     ) {
-        val (card, loading) = createRefs()
+        val (card) = createRefs()
         Surface(
             modifier =
                 Modifier
@@ -272,27 +272,18 @@ internal fun CenterDetailsContent(
         }
 
         when (actionResource) {
-            is Resource.Unspecified -> {}
-            is Resource.Loading ->
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier
-                            .padding(XL_PADDING)
-                            .constrainAs(loading) {
-                                top.linkTo(parent.top, margin = L_PADDING)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                                bottom.linkTo(parent.bottom)
-                            },
-                )
+            is Resource.Unspecified -> LaunchedEffect(key1 = actionResource) { showLoading(false) }
+            is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
 
             is Resource.Success ->
                 LaunchedEffect(key1 = Unit) {
+                    showLoading(false)
                     onSuccess()
                 }
 
             is Resource.Error ->
-                LaunchedEffect(key1 = true) {
+                LaunchedEffect(key1 = actionResource) {
+                    showLoading(false)
                     onError(actionResource.error)
                 }
         }
@@ -313,6 +304,7 @@ internal fun CenterDetailsContentPreview() {
             phone = "",
             address = "",
             actionResource = Resource.Success(null),
+            showLoading = {},
             onNameChanged = {},
             onTypesExpandedChange = {},
             onTypesDismissRequest = {},
