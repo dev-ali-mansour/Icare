@@ -56,7 +56,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.trustBlue
-import eg.edu.cu.csds.icare.core.ui.util.getFormattedDateTime
+import eg.edu.cu.csds.icare.data.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
