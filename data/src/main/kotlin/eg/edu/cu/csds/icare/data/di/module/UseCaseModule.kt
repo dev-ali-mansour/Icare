@@ -8,6 +8,7 @@ import eg.edu.cu.csds.icare.core.domain.repository.ClinicsRepository
 import eg.edu.cu.csds.icare.core.domain.repository.ConsultationsRepository
 import eg.edu.cu.csds.icare.core.domain.repository.PharmaciesRepository
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.BookAppointment
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAdminStatistics
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointments
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointmentsByStatus
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetPatientAppointments
@@ -187,4 +188,7 @@ class UseCaseModule {
 
     @Single
     fun provideGetImagingTestsByStatus(repository: ConsultationsRepository) = GetImagingTestsByStatus(repository)
+
+    @Single
+    fun provideGetAdminStatistics(repository: AppointmentsRepository) = GetAdminStatistics(repository)
 }
