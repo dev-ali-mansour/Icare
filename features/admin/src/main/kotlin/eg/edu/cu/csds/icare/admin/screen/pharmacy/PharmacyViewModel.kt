@@ -51,6 +51,8 @@ class PharmacyViewModel(
     var selectedPharmacyState: MutableState<Pharmacy?> = mutableStateOf(null)
     var selectedPharmacistState: MutableState<Pharmacist?> = mutableStateOf(null)
 
+    var showSuccessDialog = mutableStateOf(false)
+    var isRefreshing = mutableStateOf(false)
     var selectedPharmacyIdState = mutableLongStateOf(0)
     var searchQueryState = mutableStateOf("")
     var nameState = mutableStateOf("")
@@ -76,6 +78,7 @@ class PharmacyViewModel(
                     address = addressState.value,
                 ),
             ).collect { result ->
+                if (result is Resource.Success) resetStates()
                 _actionResFlow.emit(result)
             }
         }
@@ -125,6 +128,7 @@ class PharmacyViewModel(
                     profilePicture = profilePictureState.value,
                 ),
             ).collect { result ->
+                if (result is Resource.Success) resetStates()
                 _actionResFlow.emit(result)
             }
         }
@@ -188,5 +192,13 @@ class PharmacyViewModel(
                 }
             }
         }
+    }
+
+    private fun resetStates() {
+        selectedPharmacyState.value = null
+        selectedPharmacistState.value = null
+        nameState.value = ""
+        phoneState.value = ""
+        addressState.value = ""
     }
 }
