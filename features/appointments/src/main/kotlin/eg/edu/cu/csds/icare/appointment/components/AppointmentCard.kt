@@ -42,7 +42,9 @@ fun AppointmentCard(
     appointment: Appointment,
     onReschedule: () -> Unit,
     onCancel: () -> Unit,
+    onConfirm: () -> Unit,
     showActions: Boolean,
+    showConfirm: Boolean = false,
     context: Context = LocalContext.current,
 ) {
     Card(
@@ -59,6 +61,11 @@ fun AppointmentCard(
                     )
                     Text(
                         text = appointment.doctorSpecialty,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontFamily = helveticaFamily,
+                    )
+                    Text(
+                        text = appointment.patientName,
                         style = MaterialTheme.typography.bodyMedium,
                         fontFamily = helveticaFamily,
                     )
@@ -89,18 +96,27 @@ fun AppointmentCard(
 
                 if (showActions) {
                     Row {
-                        TextButton(onClick = onReschedule) {
-                            Text(
-                                text = stringResource(R.string.reschedule),
-                                fontFamily = helveticaFamily,
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(S_PADDING))
-                        TextButton(onClick = onCancel) {
-                            Text(
-                                text = stringResource(R.string.cancel),
-                                fontFamily = helveticaFamily,
-                            )
+                        if (showConfirm) {
+                            TextButton(onClick = { onConfirm() }) {
+                                Text(
+                                    text = stringResource(R.string.confirm),
+                                    fontFamily = helveticaFamily,
+                                )
+                            }
+                        } else {
+                            TextButton(onClick = { onReschedule() }) {
+                                Text(
+                                    text = stringResource(R.string.reschedule),
+                                    fontFamily = helveticaFamily,
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(S_PADDING))
+                            TextButton(onClick = { onCancel() }) {
+                                Text(
+                                    text = stringResource(R.string.cancel),
+                                    fontFamily = helveticaFamily,
+                                )
+                            }
                         }
                     }
                 }
@@ -136,8 +152,10 @@ fun AppointmentCardPreview() {
                     status = stringResource(AppointmentStatus.ConfirmedStatus.textResId),
                 ),
             showActions = true,
+            showConfirm = true,
             onReschedule = {},
             onCancel = {},
+            onConfirm = {},
         )
     }
 }

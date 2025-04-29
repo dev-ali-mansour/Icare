@@ -104,7 +104,7 @@ fun ClinicStaffView(
                 )
                 Spacer(modifier = Modifier.height(M_PADDING))
                 Text(
-                    text = clinicStaff.clinicId.toString(),
+                    text = clinicStaff.clinicName,
                     style = MaterialTheme.typography.bodyMedium,
                     fontFamily = helveticaFamily,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
@@ -148,6 +148,7 @@ fun ClinicStaffCardPreview() {
                         lastName = "Ahmed",
                         profilePicture = "",
                         clinicId = 1,
+                        clinicName = "عيادة 1",
                         email = "mAhmed@example.com",
                         phone = "0123456789",
                     ),

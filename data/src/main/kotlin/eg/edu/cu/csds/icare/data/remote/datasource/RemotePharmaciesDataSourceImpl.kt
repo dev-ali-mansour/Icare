@@ -126,12 +126,20 @@ class RemotePharmaciesDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun listPharmacists(pharmacyId: Long): Flow<Resource<List<Pharmacist>>> =
+    override fun listPharmacists(): Flow<Resource<List<Pharmacist>>> =
         flow {
             emit(Resource.Loading())
             auth.currentUser?.let {
+                val token =
+                    runBlocking {
+                        auth.currentUser
+                            ?.getIdToken(false)
+                            ?.await()
+                            ?.token
+                            .toString()
+                    }
                 val map = HashMap<String, String>()
-                map["pharmacyId"] = pharmacyId.toString()
+                map["token"] = token
                 val response = service.listPharmacists(map)
                 when (response.code()) {
                     HTTP_OK -> {

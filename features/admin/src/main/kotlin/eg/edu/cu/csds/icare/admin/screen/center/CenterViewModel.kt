@@ -81,7 +81,10 @@ class CenterViewModel(
                     address = addressState.value,
                 ),
             ).collect { result ->
-                if (result is Resource.Success) resetStates()
+                if (result is Resource.Success) {
+                    resetStates()
+                    listCenters(forceRefresh = false)
+                }
                 _actionResFlow.emit(result)
             }
         }
@@ -95,7 +98,9 @@ class CenterViewModel(
             }
             selectedCenterState.value?.let {
                 updateCenterUseCase(it).collect { result ->
-                    if (result is Resource.Success) resetStates()
+                    if (result is Resource.Success) {
+                        listCenters(forceRefresh = false)
+                    }
                     _actionResFlow.emit(result)
                 }
             } ?: run {
@@ -116,13 +121,13 @@ class CenterViewModel(
         }
     }
 
-    fun listLabCenters() {
+    fun listLabCenters(forceRefresh: Boolean = false) {
         viewModelScope.launch(dispatcher) {
             if (_centersResFlow.value !is Resource.Unspecified) {
                 _centersResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listCentersUseCase().collect { result ->
+            listCentersUseCase(forceUpdate = forceRefresh).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         result.data?.let { centers ->
@@ -175,13 +180,13 @@ class CenterViewModel(
         }
     }
 
-    fun listImagingCenters() {
+    fun listImagingCenters(forceRefresh: Boolean = false) {
         viewModelScope.launch(dispatcher) {
             if (_centersResFlow.value !is Resource.Unspecified) {
                 _centersResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listCentersUseCase().collect { result ->
+            listCentersUseCase(forceUpdate = forceRefresh).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         result.data?.let { centers ->
@@ -249,7 +254,10 @@ class CenterViewModel(
                     phone = phoneState.value,
                 ),
             ).collect { result ->
-                if (result is Resource.Success) resetStates()
+                if (result is Resource.Success) {
+                    resetStates()
+                    listStaff()
+                }
                 _actionResFlow.emit(result)
             }
         }
@@ -263,7 +271,9 @@ class CenterViewModel(
             }
             selectedCenterStaffState.value?.let {
                 updateCenterStaffUseCase(it).collect { result ->
-                    if (result is Resource.Success) resetStates()
+                    if (result is Resource.Success) {
+                        listStaff()
+                    }
                     _actionResFlow.emit(result)
                 }
             } ?: run {
@@ -278,7 +288,7 @@ class CenterViewModel(
                 _centerStaffsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listCenterStaffUseCase(selectedCenterIdState.longValue).collect { result ->
+            listCenterStaffUseCase().collect { result ->
                 _centerStaffsResFlow.value = result
             }
         }

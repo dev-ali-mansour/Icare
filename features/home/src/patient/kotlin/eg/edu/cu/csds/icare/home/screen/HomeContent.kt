@@ -90,8 +90,8 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.kufamFamily
 import eg.edu.cu.csds.icare.core.ui.theme.statusColor
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
-import eg.edu.cu.csds.icare.core.ui.util.getFormattedDate
-import eg.edu.cu.csds.icare.core.ui.util.getFormattedTime
+import eg.edu.cu.csds.icare.data.util.getFormattedDate
+import eg.edu.cu.csds.icare.data.util.getFormattedTime
 import eg.edu.cu.csds.icare.home.R
 import eg.edu.cu.csds.icare.home.component.PromotionItem
 import eg.edu.cu.csds.icare.home.component.ServiceItem

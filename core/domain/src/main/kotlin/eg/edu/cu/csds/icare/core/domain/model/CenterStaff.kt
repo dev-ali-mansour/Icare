@@ -15,6 +15,7 @@ data class CenterStaff(
     val name: String = "$firstName $lastName",
     @SerialName("labCenterID")
     val centerId: Long = 0,
+    val centerName: String = "",
     val email: String = "",
     @SerialName("phoneNumber")
     val phone: String = "",

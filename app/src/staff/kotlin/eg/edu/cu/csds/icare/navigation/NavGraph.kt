@@ -169,6 +169,7 @@ fun SetupNavGraph(
                 pharmacyViewModel = pharmacyViewModel,
                 centerViewModel = centerViewModel,
                 consultationViewModel = consultationViewModel,
+                appointmentViewModel = appointmentViewModel,
                 navigateToScreen = { screen -> navController.navigate(screen) },
                 onError = { error ->
                     exitApp.value = false

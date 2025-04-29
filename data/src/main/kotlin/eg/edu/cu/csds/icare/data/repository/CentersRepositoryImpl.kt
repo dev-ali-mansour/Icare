@@ -92,7 +92,7 @@ class CentersRepositoryImpl(
             }
         }
 
-    override fun listCenterStaff(centerId: Long): Flow<Resource<List<CenterStaff>>> = remoteCentersDataSource.listCenterStaff(centerId)
+    override fun listCenterStaff(): Flow<Resource<List<CenterStaff>>> = remoteCentersDataSource.listCenterStaff()
 
     override fun addNewCenterStaff(staff: CenterStaff): Flow<Resource<Nothing?>> = remoteCentersDataSource.addNewCenterStaff(staff)
 

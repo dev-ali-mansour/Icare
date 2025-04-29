@@ -1,5 +1,6 @@
 package eg.edu.cu.csds.icare.data.repository
 
+import eg.edu.cu.csds.icare.core.domain.model.AdminStatistics
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.repository.AppointmentsRepository
@@ -23,4 +24,6 @@ class AppointmentsRepositoryImpl(
 
     override fun updateAppointment(appointment: Appointment): Flow<Resource<Nothing?>> =
         remoteAppointmentsDataSource.updateAppointment(appointment)
+
+    override fun getAdminStatistics(): Flow<Resource<AdminStatistics>> = remoteAppointmentsDataSource.getAdminStatistics()
 }
