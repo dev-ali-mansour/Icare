@@ -78,7 +78,10 @@ class PharmacyViewModel(
                     address = addressState.value,
                 ),
             ).collect { result ->
-                if (result is Resource.Success) resetStates()
+                if (result is Resource.Success) {
+                    resetStates()
+                    listPharmacies(forceRefresh = false)
+                }
                 _actionResFlow.emit(result)
             }
         }
@@ -92,6 +95,7 @@ class PharmacyViewModel(
             }
             selectedPharmacyState.value?.let {
                 updatePharmacyUseCase(it).collect { result ->
+                    if (result is Resource.Success) listPharmacies(forceRefresh = false)
                     _actionResFlow.emit(result)
                 }
             } ?: run {
@@ -128,7 +132,10 @@ class PharmacyViewModel(
                     profilePicture = profilePictureState.value,
                 ),
             ).collect { result ->
-                if (result is Resource.Success) resetStates()
+                if (result is Resource.Success) {
+                    resetStates()
+                    listPharmacists()
+                }
                 _actionResFlow.emit(result)
             }
         }
@@ -142,6 +149,7 @@ class PharmacyViewModel(
             }
             selectedPharmacistState.value?.let {
                 updatePharmacistUseCase(it).collect { result ->
+                    if (result is Resource.Success) listPharmacists()
                     _actionResFlow.emit(result)
                 }
             } ?: run {
@@ -156,7 +164,7 @@ class PharmacyViewModel(
                 _pharmacistsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listPharmacistsUseCase(selectedPharmacyIdState.longValue).collect { result ->
+            listPharmacistsUseCase().collect { result ->
                 _pharmacistsResFlow.value = result
             }
         }
@@ -195,6 +203,9 @@ class PharmacyViewModel(
     }
 
     private fun resetStates() {
+        viewModelScope.launch {
+            _actionResFlow.emit(Resource.Unspecified())
+        }
         selectedPharmacyState.value = null
         selectedPharmacistState.value = null
         nameState.value = ""

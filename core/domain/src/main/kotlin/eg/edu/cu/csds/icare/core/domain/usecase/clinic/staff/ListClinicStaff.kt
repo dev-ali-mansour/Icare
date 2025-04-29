@@ -8,5 +8,5 @@ import kotlinx.coroutines.flow.Flow
 class ListClinicStaff(
     private val repository: ClinicsRepository,
 ) {
-    operator fun invoke(clinicId: Long): Flow<Resource<List<ClinicStaff>>> = repository.listClinicStaff(clinicId)
+    operator fun invoke(): Flow<Resource<List<ClinicStaff>>> = repository.listClinicStaff()
 }

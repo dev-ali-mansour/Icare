@@ -12,7 +12,7 @@ interface RemotePharmaciesDataSource {
 
     fun updatePharmacy(pharmacy: Pharmacy): Flow<Resource<Nothing?>>
 
-    fun listPharmacists(pharmacyId: Long): Flow<Resource<List<Pharmacist>>>
+    fun listPharmacists(): Flow<Resource<List<Pharmacist>>>
 
     fun addNewPharmacist(pharmacist: Pharmacist): Flow<Resource<Nothing?>>
 

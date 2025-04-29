@@ -138,4 +138,7 @@
     <string name="book_now">احجز الآن</string>
     <string name="search_by_doctor_name_or_speciality">ابحث باسم الطبيب أو التخصص</string>
     <string name="open" >مفتوحة</string>
-    <string name="closed" >مغلقة</string></resources>
+    <string name="closed" >مغلقة</string>
+    <string name="scan_centers">مراكز أشعة</string>
+    <string name="lab_centers">معامل تحاليل</string>
+</resources>
