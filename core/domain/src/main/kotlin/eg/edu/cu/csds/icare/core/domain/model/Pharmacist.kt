@@ -9,9 +9,7 @@ data class Pharmacist(
     val token: String = "",
     @SerialName("pharmacistID")
     val id: String = "",
-    @SerialName("fname")
     val firstName: String = "",
-    @SerialName("lname")
     val lastName: String = "",
     @Transient
     val name: String = "$firstName $lastName",
