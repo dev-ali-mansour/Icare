@@ -12,13 +12,13 @@ sealed class CenterTypeItem(
     val iconResId: Int,
 ) {
     data object ImagingCenter : CenterTypeItem(
-        code = 1,
+        code = 2,
         textResId = R.string.imaging_center,
         iconResId = R.drawable.ic_scan,
     )
 
     data object LabCenter : CenterTypeItem(
-        code = 2,
+        code = 1,
         textResId = R.string.lab_center,
         iconResId = R.drawable.ic_lab_colored,
     )
