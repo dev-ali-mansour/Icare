@@ -1,9 +1,11 @@
 package eg.edu.cu.csds.icare.data.local.db.entity
 
+import android.content.Context
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
+import eg.edu.cu.csds.icare.data.util.getFormattedTime
 
 @Entity(tableName = "doctors")
 data class DoctorEntity(
@@ -25,7 +27,7 @@ data class DoctorEntity(
     val profilePicture: String,
 )
 
-fun DoctorEntity.toModel() =
+fun DoctorEntity.toModel(context: Context) =
     Doctor(
         id = id,
         firstName = firstName,
@@ -37,6 +39,7 @@ fun DoctorEntity.toModel() =
         specialty = specialty,
         fromTime = fromTime,
         toTime = toTime,
+        availability = "${fromTime.getFormattedTime(context)} - ${toTime.getFormattedTime(context)}",
         rating = rating,
         price = price,
         profilePicture = profilePicture,
