@@ -12,7 +12,7 @@ interface CentersRepository {
 
     fun updateCenter(center: LabImagingCenter): Flow<Resource<Nothing?>>
 
-    fun listCenterStaff(centerId: Long): Flow<Resource<List<CenterStaff>>>
+    fun listCenterStaff(): Flow<Resource<List<CenterStaff>>>
 
     fun addNewCenterStaff(staff: CenterStaff): Flow<Resource<Nothing?>>
 
