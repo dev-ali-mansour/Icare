@@ -60,6 +60,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.kufamFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.home.R
 import eg.edu.cu.csds.icare.home.screen.admin.AdminContent
+import eg.edu.cu.csds.icare.home.screen.clinic.ClinicStaffContent
 import eg.edu.cu.csds.icare.home.screen.doctor.DoctorContent
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
@@ -70,12 +71,16 @@ internal fun HomeContent(
     appVersion: String,
     adminStatsRes: Resource<AdminStatistics>,
     doctorScheduleRes: Resource<DoctorSchedule>,
+    appointmentsRes: Resource<List<Appointment>>,
+    appointmentsActionResource: Resource<Nothing?>,
     showLoading: (Boolean) -> Unit,
     onUserClicked: () -> Unit,
     onPriceCardClicked: () -> Unit,
     onAppointmentClick: (Appointment) -> Unit,
     onSeeAllClick: () -> Unit,
     onSectionsAdminClicked: () -> Unit,
+    onConfirm: (Appointment) -> Unit,
+    onSuccess: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -196,6 +201,26 @@ internal fun HomeContent(
                                 onError(doctorScheduleRes.error)
                             }
                     }
+                }
+
+                Role.ClinicStaffRole.code -> {
+                    ClinicStaffContent(
+                        modifier =
+                            Modifier.constrainAs(content) {
+                                top.linkTo(line.bottom)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                bottom.linkTo(marquee.top, margin = M_PADDING)
+                                width = Dimension.fillToConstraints
+                                height = Dimension.fillToConstraints
+                            },
+                        appointmentsRes = appointmentsRes,
+                        actionResource = appointmentsActionResource,
+                        showLoading = { showLoading(it) },
+                        onConfirm = { onConfirm(it) },
+                        onSuccess = { onSuccess() },
+                        onError = { onError },
+                    )
                 }
 
                 else -> {}
@@ -410,6 +435,10 @@ internal fun HomeContentPreview() {
                             ),
                     ),
                 ),
+            appointmentsRes = Resource.Success(emptyList()),
+            appointmentsActionResource = Resource.Unspecified(),
+            onConfirm = {},
+            onSuccess = {},
             showLoading = {},
             onUserClicked = {},
             onPriceCardClicked = {},
