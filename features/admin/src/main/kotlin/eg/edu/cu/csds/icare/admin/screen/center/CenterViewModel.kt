@@ -278,7 +278,7 @@ class CenterViewModel(
                 _centerStaffsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listCenterStaffUseCase(selectedCenterIdState.longValue).collect { result ->
+            listCenterStaffUseCase().collect { result ->
                 _centerStaffsResFlow.value = result
             }
         }
