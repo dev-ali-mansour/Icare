@@ -42,6 +42,7 @@ import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
+import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
@@ -72,6 +73,7 @@ internal fun HomeScreen(
     onAppointmentClick: (Appointment) -> Unit,
     onSeeAllClick: () -> Unit,
     onSectionsAdminClicked: () -> Unit,
+    onConfirm: (Appointment) -> Unit,
     onError: suspend (Throwable?) -> Unit,
     context: Context = LocalContext.current,
 ) {
@@ -84,6 +86,9 @@ internal fun HomeScreen(
     val userResource by mainViewModel.currentUserFlow.collectAsStateWithLifecycle()
     val doctorScheduleRes by clinicViewModel.doctorScheduleResFlow.collectAsStateWithLifecycle()
     val adminStatsRes by appointmentViewModel.adminStatsRes.collectAsStateWithLifecycle()
+    val appointmentsRes by appointmentViewModel.appointmentsResFlow.collectAsStateWithLifecycle()
+    val appointmentsActionResource by appointmentViewModel.actionResFlow
+        .collectAsStateWithLifecycle(initialValue = Resource.Unspecified())
     var isRefreshing by appointmentViewModel.isRefreshing
     val state = rememberPullToRefreshState()
 
@@ -232,12 +237,16 @@ internal fun HomeScreen(
                 appVersion = appVersion,
                 adminStatsRes = adminStatsRes,
                 doctorScheduleRes = doctorScheduleRes,
+                appointmentsRes = appointmentsRes,
+                appointmentsActionResource = appointmentsActionResource,
                 showLoading = { isRefreshing = it },
                 onUserClicked = { navigateToScreen(Profile) },
                 onSectionsAdminClicked = { onSectionsAdminClicked() },
                 onPriceCardClicked = { onPriceCardClicked(firebaseAuth.currentUser?.uid.toString()) },
                 onAppointmentClick = { onAppointmentClick(it) },
                 onSeeAllClick = { onSeeAllClick() },
+                onConfirm = { onConfirm(it) },
+                onSuccess = {},
                 onError = { onError(it) },
             )
         }
