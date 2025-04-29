@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -49,7 +48,7 @@ import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.admin.R
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.domain.util.toFormattedString
+import eg.edu.cu.csds.icare.core.domain.util.formatForDisplay
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
@@ -60,9 +59,9 @@ import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
-import eg.edu.cu.csds.icare.core.ui.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import eg.edu.cu.csds.icare.core.ui.view.DoubleTextField
+import eg.edu.cu.csds.icare.data.util.getFormattedTime
 import java.util.Calendar
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
@@ -81,6 +80,7 @@ internal fun DoctorDetailsContent(
     rating: Double,
     clinicsResource: Resource<List<Clinic>>,
     actionResource: Resource<Nothing?>,
+    showLoading: (Boolean) -> Unit,
     clinicsExpanded: Boolean,
     onFirstNameChanged: (String) -> Unit,
     onLastNameChanged: (String) -> Unit,
@@ -97,16 +97,16 @@ internal fun DoctorDetailsContent(
     onProceedButtonClicked: () -> Unit,
     onSuccess: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
-    editRating: Boolean = false,
     modifier: Modifier = Modifier,
+    editRating: Boolean = false,
     context: Context = LocalContext.current,
 ) {
     var ratingTextState by remember {
-        mutableStateOf(TextFieldValue(rating.toFormattedString()))
+        mutableStateOf(TextFieldValue(rating.formatForDisplay()))
     }
 
     LaunchedEffect(key1 = rating) {
-        ratingTextState = TextFieldValue(rating.toFormattedString())
+        ratingTextState = TextFieldValue(rating.formatForDisplay())
     }
     ConstraintLayout(
         modifier =
@@ -114,7 +114,7 @@ internal fun DoctorDetailsContent(
                 .fillMaxSize()
                 .padding(bottom = XL_PADDING),
     ) {
-        val (card, loading) = createRefs()
+        val (card) = createRefs()
 
         Surface(
             modifier =
@@ -129,21 +129,13 @@ internal fun DoctorDetailsContent(
                     },
         ) {
             when (clinicsResource) {
-                is Resource.Unspecified -> {}
-                is Resource.Loading ->
-                    CircularProgressIndicator(
-                        modifier =
-                            Modifier
-                                .padding(XL_PADDING)
-                                .constrainAs(loading) {
-                                    top.linkTo(parent.top, margin = L_PADDING)
-                                    start.linkTo(parent.start)
-                                    end.linkTo(parent.end)
-                                    bottom.linkTo(parent.bottom)
-                                },
-                    )
+                is Resource.Unspecified ->
+                    LaunchedEffect(key1 = clinicsResource) { showLoading(false) }
+
+                is Resource.Loading -> LaunchedEffect(key1 = clinicsResource) { showLoading(true) }
 
                 is Resource.Success -> {
+                    LaunchedEffect(key1 = clinicsResource) { showLoading(false) }
                     clinicsResource.data?.let { clinics ->
 
                         Column(
@@ -551,32 +543,25 @@ internal fun DoctorDetailsContent(
 
                 is Resource.Error ->
                     LaunchedEffect(key1 = true) {
+                        showLoading(false)
                         onError(clinicsResource.error)
                     }
             }
         }
+
         when (actionResource) {
-            is Resource.Unspecified -> {}
-            is Resource.Loading ->
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier
-                            .padding(XL_PADDING)
-                            .constrainAs(loading) {
-                                top.linkTo(parent.top, margin = L_PADDING)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                                bottom.linkTo(parent.bottom)
-                            },
-                )
+            is Resource.Unspecified -> LaunchedEffect(key1 = actionResource) { showLoading(false) }
+            is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
 
             is Resource.Success ->
                 LaunchedEffect(key1 = Unit) {
+                    showLoading(false)
                     onSuccess()
                 }
 
             is Resource.Error ->
-                LaunchedEffect(key1 = true) {
+                LaunchedEffect(key1 = actionResource) {
+                    showLoading(false)
                     onError(actionResource.error)
                 }
         }
@@ -605,6 +590,7 @@ internal fun DoctorDetailsContentPreview() {
             actionResource = Resource.Unspecified(),
             clinicsExpanded = false,
             editRating = true,
+            showLoading = {},
             onFirstNameChanged = {},
             onLastNameChanged = {},
             onClinicsExpandedChange = {},

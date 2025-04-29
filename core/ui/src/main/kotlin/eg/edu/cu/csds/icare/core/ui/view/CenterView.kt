@@ -25,34 +25,41 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
-import eg.edu.cu.csds.icare.core.ui.R
+import eg.edu.cu.csds.icare.core.ui.common.CenterTypeItem
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 
 @Composable
 fun CenterView(
     center: LabImagingCenter,
+    modifier: Modifier = Modifier,
+    showType: Boolean = false,
     onClick: () -> Unit,
 ) {
+    val types = listOf(CenterTypeItem.ImagingCenter, CenterTypeItem.LabCenter)
     Card(
         onClick = onClick,
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .padding(horizontal = M_PADDING, vertical = XS_PADDING),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                containerColor = cardBackgroundColor,
             ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = XS_PADDING),
         shape = MaterialTheme.shapes.medium,
     ) {
         Row(
@@ -62,36 +69,50 @@ fun CenterView(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
-                painter = if (center.type.toInt() == 1) painterResource(R.drawable.ic_scan) else painterResource(R.drawable.ic_lab_colored),
+                painter =
+                    painterResource(
+                        types.firstOrNull { it.code == center.type }?.iconResId
+                            ?: types.first().iconResId,
+                    ),
                 contentDescription = null,
                 modifier =
                     Modifier
-                        .size(60.dp)
+                        .align(Alignment.Top)
+                        .padding(XS_PADDING)
                         .clip(CircleShape)
-                        .align(Alignment.Top),
+                        .size(PROFILE_IMAGE_SIZE),
+                contentScale = ContentScale.FillBounds,
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(M_PADDING))
 
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
-                    text = if (center.type.toInt() == 1) "${center.name} Scan" else "${center.name} Lab",
+                    text = center.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     fontFamily = helveticaFamily,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
-//                Spacer(modifier = Modifier.height(S_PADDING))
-//                Text(
-//                    text = center.type.toString(),
-//                    style = MaterialTheme.typography.bodyMedium,
-//                    fontFamily = helveticaFamily,
-//                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
-//                )
+                if (showType) {
+                    Spacer(modifier = Modifier.height(S_PADDING))
+                    Text(
+                        text =
+                            stringResource(
+                                types.firstOrNull { it.code == center.type }?.textResId
+                                    ?: types.first().textResId,
+                            ),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontFamily = helveticaFamily,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(S_PADDING))
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Phone, contentDescription = null)
                     Spacer(modifier = Modifier.width(XS_PADDING))
@@ -123,9 +144,10 @@ fun CenterCardPreview() {
                     .background(color = backgroundColor),
         ) {
             CenterView(
+                showType = true,
                 center =
                     LabImagingCenter(
-                        type = 0,
+                        type = 1,
                         name = "Alfa",
                         phone = "0123456789",
                         address = "53 james street,Giza,Egypt",
@@ -135,7 +157,7 @@ fun CenterCardPreview() {
             CenterView(
                 center =
                     LabImagingCenter(
-                        type = 1,
+                        type = 2,
                         name = "Beta",
                         phone = "0123456789",
                         address = "53 james street,Giza,Egypt",

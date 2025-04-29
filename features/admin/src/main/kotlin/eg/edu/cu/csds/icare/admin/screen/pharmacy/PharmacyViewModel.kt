@@ -42,14 +42,19 @@ class PharmacyViewModel(
             SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
             replay = 0,
         )
-    private val _pharmaciesResFlow = MutableStateFlow<Resource<List<Pharmacy>>>(Resource.Unspecified())
+    private val _pharmaciesResFlow =
+        MutableStateFlow<Resource<List<Pharmacy>>>(Resource.Unspecified())
     val pharmaciesResFlow: StateFlow<Resource<List<Pharmacy>>> = _pharmaciesResFlow
-    private val _pharmacistsResFlow = MutableStateFlow<Resource<List<Pharmacist>>>(Resource.Unspecified())
+    private val _pharmacistsResFlow =
+        MutableStateFlow<Resource<List<Pharmacist>>>(Resource.Unspecified())
     val pharmacistsResFlow: StateFlow<Resource<List<Pharmacist>>> = _pharmacistsResFlow
     var selectedPharmacyState: MutableState<Pharmacy?> = mutableStateOf(null)
     var selectedPharmacistState: MutableState<Pharmacist?> = mutableStateOf(null)
 
+    var showSuccessDialog = mutableStateOf(false)
+    var isRefreshing = mutableStateOf(false)
     var selectedPharmacyIdState = mutableLongStateOf(0)
+    var searchQueryState = mutableStateOf("")
     var nameState = mutableStateOf("")
     var phoneState = mutableStateOf("")
     var addressState = mutableStateOf("")
@@ -73,6 +78,7 @@ class PharmacyViewModel(
                     address = addressState.value,
                 ),
             ).collect { result ->
+                if (result is Resource.Success) resetStates()
                 _actionResFlow.emit(result)
             }
         }
@@ -94,13 +100,13 @@ class PharmacyViewModel(
         }
     }
 
-    fun listPharmacies() {
+    fun listPharmacies(forceRefresh: Boolean = false) {
         viewModelScope.launch(dispatcher) {
             if (_pharmaciesResFlow.value !is Resource.Unspecified) {
                 _pharmaciesResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listPharmaciesUseCase().collect { result ->
+            listPharmaciesUseCase(forceRefresh).collect { result ->
                 _pharmaciesResFlow.value = result
             }
         }
@@ -122,6 +128,7 @@ class PharmacyViewModel(
                     profilePicture = profilePictureState.value,
                 ),
             ).collect { result ->
+                if (result is Resource.Success) resetStates()
                 _actionResFlow.emit(result)
             }
         }
@@ -153,5 +160,45 @@ class PharmacyViewModel(
                 _pharmacistsResFlow.value = result
             }
         }
+    }
+
+    fun searchPharmacies() {
+        viewModelScope.launch(dispatcher) {
+            if (_pharmaciesResFlow.value !is Resource.Unspecified) {
+                _pharmaciesResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            listPharmaciesUseCase().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        result.data?.let { pharmacies ->
+                            val filtered =
+                                pharmacies.filter { pharmacy ->
+                                    searchQueryState.value.isEmpty() ||
+                                        pharmacy.name.contains(
+                                            searchQueryState.value,
+                                            ignoreCase = true,
+                                        ) ||
+                                        pharmacy.address.contains(
+                                            searchQueryState.value,
+                                            ignoreCase = true,
+                                        )
+                                }
+                            _pharmaciesResFlow.value = Resource.Success(filtered)
+                        }
+                    }
+
+                    else -> _pharmaciesResFlow.value = result
+                }
+            }
+        }
+    }
+
+    private fun resetStates() {
+        selectedPharmacyState.value = null
+        selectedPharmacistState.value = null
+        nameState.value = ""
+        phoneState.value = ""
+        addressState.value = ""
     }
 }

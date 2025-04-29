@@ -72,7 +72,10 @@ class ClinicViewModel(
     var selectedDoctorState: MutableState<Doctor?> = mutableStateOf(null)
     var selectedClinicStaffState: MutableState<ClinicStaff?> = mutableStateOf(null)
 
+    var showSuccessDialog = mutableStateOf(false)
+    var isRefreshing = mutableStateOf(false)
     var selectedClinicIdState = mutableLongStateOf(0)
+    var searchQueryState = mutableStateOf("")
     var nameState = mutableStateOf("")
     var typeState = mutableStateOf("")
     var phoneState = mutableStateOf("")
@@ -105,6 +108,7 @@ class ClinicViewModel(
                     isOpen = isOpenState.value,
                 ),
             ).collect { result ->
+                if (result is Resource.Success) resetStates()
                 _actionResFlow.emit(result)
             }
         }
@@ -126,13 +130,13 @@ class ClinicViewModel(
         }
     }
 
-    fun listClinics() {
+    fun listClinics(forceRefresh: Boolean = false) {
         viewModelScope.launch(dispatcher) {
             if (_clinicsResFlow.value !is Resource.Unspecified) {
                 _clinicsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listClinicsUseCase().collect { result ->
+            listClinicsUseCase(forceRefresh).collect { result ->
                 _clinicsResFlow.emit(result)
             }
         }
@@ -158,6 +162,7 @@ class ClinicViewModel(
                     rating = ratingState.doubleValue,
                 ),
             ).collect { result ->
+                if (result is Resource.Success) resetStates()
                 _actionResFlow.emit(result)
             }
         }
@@ -179,14 +184,46 @@ class ClinicViewModel(
         }
     }
 
-    fun listDoctors() {
+    fun listDoctors(forceRefresh: Boolean = false) {
+        viewModelScope.launch(dispatcher) {
+            searchQueryState.value = ""
+            if (_doctorsResFlow.value !is Resource.Unspecified) {
+                _doctorsResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            listDoctorsUseCase(forceRefresh).collect { result ->
+                _doctorsResFlow.value = result
+            }
+        }
+    }
+
+    fun searchDoctors() {
         viewModelScope.launch(dispatcher) {
             if (_doctorsResFlow.value !is Resource.Unspecified) {
                 _doctorsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
             listDoctorsUseCase().collect { result ->
-                _doctorsResFlow.value = result
+                when (result) {
+                    is Resource.Success -> {
+                        result.data?.let { doctors ->
+                            val filtered =
+                                doctors.filter { doctor ->
+                                    doctor.name.contains(
+                                        searchQueryState.value,
+                                        ignoreCase = true,
+                                    ) ||
+                                        doctor.specialty.contains(
+                                            searchQueryState.value,
+                                            ignoreCase = true,
+                                        )
+                                }
+                            _doctorsResFlow.value = Resource.Success(filtered)
+                        }
+                    }
+
+                    else -> _doctorsResFlow.value = result
+                }
             }
         }
     }
@@ -218,6 +255,7 @@ class ClinicViewModel(
                     phone = phoneState.value,
                 ),
             ).collect { result ->
+                if (result is Resource.Success) resetStates()
                 _actionResFlow.emit(result)
             }
         }
@@ -271,5 +309,15 @@ class ClinicViewModel(
                 }
             }
         }
+    }
+
+    private fun resetStates() {
+        selectedClinicState.value = null
+        selectedClinicIdState.longValue = 0
+        nameState.value = ""
+        typeState.value = ""
+        addressState.value = ""
+        phoneState.value = ""
+        isOpenState.value = false
     }
 }

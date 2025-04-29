@@ -23,7 +23,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
@@ -80,7 +79,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.SkyAccent
 import eg.edu.cu.csds.icare.core.ui.theme.TEXT_AREA_HEIGHT
-import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
@@ -90,9 +88,9 @@ import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
-import eg.edu.cu.csds.icare.core.ui.util.getFormattedDate
-import eg.edu.cu.csds.icare.core.ui.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
+import eg.edu.cu.csds.icare.data.util.getFormattedDate
+import eg.edu.cu.csds.icare.data.util.getFormattedDateTime
 import kotlinx.coroutines.launch
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
@@ -119,6 +117,7 @@ internal fun ConsultationDetailsContent(
     imagingTests: String,
     imgTestStatusId: Short,
     followUpdDate: Long,
+    showLoading: (Boolean) -> Unit,
     onPatientCardClick: (String) -> Unit,
     onDiagnosisChanged: (String) -> Unit,
     onPharmaciesExpandedChange: (Boolean) -> Unit,
@@ -198,7 +197,7 @@ internal fun ConsultationDetailsContent(
                 .padding(bottom = M_PADDING),
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (loading, details) = createRefs()
+            val (details) = createRefs()
 
             Column(
                 modifier =
@@ -616,7 +615,7 @@ internal fun ConsultationDetailsContent(
                                 onValueChange = { },
                                 label = {
                                     Text(
-                                        text = stringResource(R.string.imaging_center),
+                                        text = stringResource(CoreR.string.imaging_center),
                                         color = dropDownTextColor,
                                     )
                                 },
@@ -773,27 +772,18 @@ internal fun ConsultationDetailsContent(
             }
 
             when (actionResource) {
-                is Resource.Unspecified -> {}
-                is Resource.Loading ->
-                    CircularProgressIndicator(
-                        modifier =
-                            Modifier
-                                .padding(XL_PADDING)
-                                .constrainAs(loading) {
-                                    top.linkTo(parent.top, margin = L_PADDING)
-                                    start.linkTo(parent.start)
-                                    end.linkTo(parent.end)
-                                    bottom.linkTo(parent.bottom)
-                                },
-                    )
+                is Resource.Unspecified -> LaunchedEffect(key1 = actionResource) { showLoading(false) }
+                is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
 
                 is Resource.Success ->
                     LaunchedEffect(key1 = Unit) {
+                        showLoading(false)
                         onSuccess()
                     }
 
                 is Resource.Error ->
-                    LaunchedEffect(key1 = true) {
+                    LaunchedEffect(key1 = actionResource) {
+                        showLoading(false)
                         onError(actionResource.error)
                     }
             }
@@ -840,6 +830,7 @@ internal fun ConsultationDetailsContentPreview() {
             imagingTests = "",
             imgTestStatusId = 0,
             followUpdDate = System.currentTimeMillis().plus(other = 7 * 24 * 60 * 60 * 1000),
+            showLoading = {},
             onPatientCardClick = {},
             onDiagnosisChanged = {},
             onPharmacyClicked = {},

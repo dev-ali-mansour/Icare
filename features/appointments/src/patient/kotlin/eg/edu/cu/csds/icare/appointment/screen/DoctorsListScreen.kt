@@ -12,14 +12,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,38 +31,33 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
-import eg.edu.cu.csds.icare.appointment.R
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
-import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.view.SearchTextField
+import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DoctorsListScreen(
-    clinicDoctorsViewModel: ClinicViewModel,
-    onDoctorClick: (Doctor) -> Unit,
-    onBack: () -> Unit,
+    clinicViewModel: ClinicViewModel,
+    onNavigationIconClicked: () -> Unit,
+    onSearch: () -> Unit,
+    onClear: () -> Unit,
+    onDoctorClicked: (Doctor) -> Unit,
+    onError: suspend (Throwable?) -> Unit,
 ) {
-    val actionResource by clinicDoctorsViewModel.actionResFlow
-        .collectAsStateWithLifecycle(initialValue = Resource.Unspecified())
-
-    val doctorsResource by clinicDoctorsViewModel.doctorsResFlow.collectAsStateWithLifecycle()
-    var searchQuery: String by remember { mutableStateOf("") }
-
-    LaunchedEffect(key1 = Unit) {
-        clinicDoctorsViewModel.listDoctors()
-    }
+    val doctorsResource by clinicViewModel.doctorsResFlow.collectAsStateWithLifecycle()
+    var searchQuery: String by clinicViewModel.searchQueryState
+    var isRefreshing by remember { mutableStateOf(false) }
+    val state = rememberPullToRefreshState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(R.string.doctors_list_title)) },
+                title = { Text(text = stringResource(CoreR.string.appointment_booking)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,
@@ -68,7 +66,7 @@ fun DoctorsListScreen(
                         actionIconContentColor = Color.White,
                     ),
                 navigationIcon = {
-                    IconButton(onClick = { onBack() }) {
+                    IconButton(onClick = { onNavigationIconClicked() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
@@ -79,59 +77,69 @@ fun DoctorsListScreen(
             )
         },
     ) { paddingValues ->
-        ConstraintLayout(
+        Surface(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .background(backgroundColor),
+                    .pullToRefresh(
+                        state = state,
+                        isRefreshing = isRefreshing,
+                        onRefresh = {
+                            clinicViewModel.listDoctors()
+                        },
+                    ).padding(paddingValues),
         ) {
-            val (line, searchBar, content) = createRefs()
-
-            Box(
+            ConstraintLayout(
                 modifier =
                     Modifier
-                        .constrainAs(line) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }.background(Yellow500)
-                        .fillMaxWidth()
-                        .height(XS_PADDING),
-            )
+                        .background(backgroundColor)
+                        .fillMaxSize(),
+            ) {
+                val (line, content, refresh) = createRefs()
 
-            SearchTextField(
-                modifier =
-                    Modifier
-                        .constrainAs(searchBar) {
+                Box(
+                    modifier =
+                        Modifier
+                            .constrainAs(line) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                            }.background(Yellow500)
+                            .fillMaxWidth()
+                            .height(XS_PADDING),
+                )
+
+                DoctorsListContent(
+                    modifier =
+                        Modifier.constrainAs(content) {
                             top.linkTo(line.bottom)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
-                        }.fillMaxWidth()
-                        .padding(horizontal = M_PADDING, vertical = S_PADDING),
-                placeholder = stringResource(R.string.search),
-                value = searchQuery,
-                focus = false,
-                onValueChange = { searchQuery = it },
-                onClear = { searchQuery = "" },
-                onSearch = {},
-            )
+                            bottom.linkTo(parent.bottom)
+                            width = Dimension.fillToConstraints
+                            height = Dimension.fillToConstraints
+                        },
+                    doctorsRes = doctorsResource,
+                    searchQuery = searchQuery,
+                    showLoading = { isRefreshing = it },
+                    onSearchQueryChange = { searchQuery = it },
+                    onSearch = { onSearch() },
+                    onClear = { onClear() },
+                    onDoctorClicked = { onDoctorClicked(it) },
+                    onError = { onError(it) },
+                )
 
-            DoctorsListContent(
-                modifier =
-                    Modifier.constrainAs(content) {
-                        top.linkTo(searchBar.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
-                        width = Dimension.fillToConstraints
-                        height = Dimension.fillToConstraints
-                    },
-                doctorsRes = doctorsResource,
-                searchQuery = searchQuery,
-                onSearchQueryChange = { searchQuery = it },
-                onDoctorClick = onDoctorClick,
-            )
+                Indicator(
+                    modifier =
+                        Modifier.constrainAs(refresh) {
+                            top.linkTo(parent.top, margin = XL_PADDING)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
+                    isRefreshing = isRefreshing,
+                    state = state,
+                )
+            }
         }
     }
 }

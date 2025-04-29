@@ -2,14 +2,12 @@ package eg.edu.cu.csds.icare.admin.screen.pharmacy
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -28,10 +26,11 @@ import eg.edu.cu.csds.icare.core.ui.view.PharmacyView
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
-internal fun PharmacyContent(
+fun PharmacyContent(
     modifier: Modifier = Modifier,
     pharmaciesResource: Resource<List<Pharmacy>>,
     actionResource: Resource<Nothing?>,
+    showLoading: (Boolean) -> Unit,
     onExpandStateChanged: (Boolean) -> Unit,
     onItemClicked: (Pharmacy) -> Unit,
     onError: suspend (Throwable?) -> Unit,
@@ -39,22 +38,14 @@ internal fun PharmacyContent(
     ConstraintLayout(
         modifier = modifier.fillMaxSize(),
     ) {
-        val (progress, emptyContent, list) = createRefs()
+        val (emptyContent, list) = createRefs()
 
         when (pharmaciesResource) {
-            is Resource.Unspecified -> {}
-            is Resource.Loading ->
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier.constrainAs(progress) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                        },
-                )
+            is Resource.Unspecified -> LaunchedEffect(key1 = pharmaciesResource) { showLoading(false) }
+            is Resource.Loading -> LaunchedEffect(key1 = pharmaciesResource) { showLoading(true) }
 
             is Resource.Success -> {
+                LaunchedEffect(key1 = pharmaciesResource) { showLoading(false) }
                 pharmaciesResource.data?.let { pharmacies ->
                     val listState = rememberLazyListState()
                     val expandedFabState =
@@ -100,13 +91,9 @@ internal fun PharmacyContent(
                                     pharmacy.id
                                 },
                             ) { pharmacy ->
-                                PharmacyView(
-                                    modifier =
-                                        Modifier.clickable {
-                                            onItemClicked(pharmacy)
-                                        },
-                                    pharmacy = pharmacy,
-                                )
+                                PharmacyView(pharmacy = pharmacy) {
+                                    onItemClicked(pharmacy)
+                                }
                             }
                         }
                     }
@@ -114,30 +101,22 @@ internal fun PharmacyContent(
             }
 
             is Resource.Error ->
-                LaunchedEffect(key1 = true) {
+                LaunchedEffect(key1 = pharmaciesResource) {
+                    showLoading(false)
                     onError(pharmaciesResource.error)
                 }
         }
 
         when (actionResource) {
-            is Resource.Unspecified -> {}
-            is Resource.Loading ->
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier.constrainAs(
-                            progress,
-                        ) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                        },
-                )
+            is Resource.Unspecified -> LaunchedEffect(key1 = actionResource) { showLoading(false) }
+            is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
 
-            is Resource.Success -> {}
+            is Resource.Success ->
+                LaunchedEffect(key1 = actionResource) { showLoading(false) }
 
             is Resource.Error ->
-                LaunchedEffect(key1 = true) {
+                LaunchedEffect(key1 = actionResource) {
+                    showLoading(false)
                     onError(actionResource.error)
                 }
         }
@@ -155,6 +134,7 @@ internal fun PharmacyContentPreview() {
             modifier = Modifier,
             pharmaciesResource = Resource.Success(data = listOf()),
             actionResource = Resource.Success(null),
+            showLoading = {},
             onExpandStateChanged = {},
             onItemClicked = {},
         ) {}

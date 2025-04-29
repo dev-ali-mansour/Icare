@@ -6,4 +6,5 @@
     <string name="reschedule">Reschedule</string>
     <string name="cancel">Cancel</string>
     <string name="book_your_appointment_time">Book your appointment time</string>
+    <string name="no_doctors_available">No doctors available</string>
 </resources>

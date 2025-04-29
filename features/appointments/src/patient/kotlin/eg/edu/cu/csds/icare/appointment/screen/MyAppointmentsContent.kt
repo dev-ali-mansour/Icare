@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
@@ -42,12 +41,10 @@ import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.domain.util.isTomorrow
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
-import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.TAB_INDICATOR_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.TAB_INDICATOR_ROUND_CORNER_SIZE
-import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow700
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
@@ -59,6 +56,7 @@ fun MyAppointmentsContent(
     appointmentsRes: Resource<List<Appointment>>,
     actionResource: Resource<Nothing?>,
     onReschedule: (Appointment) -> Unit,
+    showLoading: (Boolean) -> Unit,
     onCancel: (Appointment) -> Unit,
     onSuccess: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
@@ -75,7 +73,7 @@ fun MyAppointmentsContent(
                 AppointmentStatus.CompletedStatus,
                 AppointmentStatus.CancelledStatus,
             )
-        val (card, loading) = createRefs()
+        val (card) = createRefs()
 
         Surface(
             modifier =
@@ -90,21 +88,11 @@ fun MyAppointmentsContent(
                     },
         ) {
             when (appointmentsRes) {
-                is Resource.Unspecified -> {}
-                is Resource.Loading ->
-                    CircularProgressIndicator(
-                        modifier =
-                            Modifier
-                                .padding(XL_PADDING)
-                                .constrainAs(loading) {
-                                    top.linkTo(parent.top, margin = L_PADDING)
-                                    start.linkTo(parent.start)
-                                    end.linkTo(parent.end)
-                                    bottom.linkTo(parent.bottom)
-                                },
-                    )
+                is Resource.Unspecified -> LaunchedEffect(key1 = appointmentsRes) { showLoading(false) }
+                is Resource.Loading -> LaunchedEffect(key1 = appointmentsRes) { showLoading(true) }
 
                 is Resource.Success -> {
+                    LaunchedEffect(key1 = appointmentsRes) { showLoading(false) }
                     appointmentsRes.data?.let { list ->
                         val appointments =
                             list.map { appointment ->
@@ -185,34 +173,25 @@ fun MyAppointmentsContent(
                 }
 
                 is Resource.Error ->
-                    LaunchedEffect(key1 = true) {
+                    LaunchedEffect(key1 = appointmentsRes) {
+                        showLoading(false)
                         onError(appointmentsRes.error)
                     }
             }
         }
-
         when (actionResource) {
-            is Resource.Unspecified -> {}
-            is Resource.Loading ->
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier
-                            .padding(XL_PADDING)
-                            .constrainAs(loading) {
-                                top.linkTo(parent.top, margin = L_PADDING)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                                bottom.linkTo(parent.bottom)
-                            },
-                )
+            is Resource.Unspecified -> LaunchedEffect(key1 = actionResource) { showLoading(false) }
+            is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
 
             is Resource.Success ->
                 LaunchedEffect(key1 = Unit) {
+                    showLoading(false)
                     onSuccess()
                 }
 
             is Resource.Error ->
-                LaunchedEffect(key1 = true) {
+                LaunchedEffect(key1 = actionResource) {
+                    showLoading(false)
                     onError(actionResource.error)
                 }
         }
@@ -249,7 +228,6 @@ fun UpcomingAppointmentsContent(
             }
 
             items(tomorrowAppointments) { appointment ->
-                // Todo Show DateTime picker to reschedule the appointment
                 AppointmentCard(
                     appointment = appointment,
                     onReschedule = { onReschedule(appointment) },
@@ -349,6 +327,7 @@ internal fun MyAppointmentContentPreview() {
                     ),
                 ),
             actionResource = Resource.Unspecified(),
+            showLoading = {},
             onReschedule = {},
             onCancel = {},
             onSuccess = {},

@@ -140,7 +140,7 @@ Objectives:\n
     <string name="completed">Completed</string>
     <string name="cancelled">Cancelled</string>
     <string name="scan_center">Scan Center</string>
-    <string name="book_appointment">Book Appointment</string>
+    <string name="appointment_booking">Appointment Booking</string>
     <string name="lab_center">Lab Center</string>
     <string name="pharmacy">Pharmacy</string>
     <string name="price">Price</string>
@@ -165,4 +165,10 @@ Objectives:\n
     <string name="speciality">Speciality</string>
     <string name="total_appointments">Total Appointments</string>
     <string name="appointment_price">Appointment Price</string>
+    <string name="imaging_center" >Imaging Center</string>
+    <string name="search">Search</string>
+    <string name="book_now">Book Now</string>
+    <string name="search_by_doctor_name_or_speciality">Search by doctor name or speciality</string>
+    <string name="open" >Open</string>
+    <string name="closed" >Closed</string>
 </resources>

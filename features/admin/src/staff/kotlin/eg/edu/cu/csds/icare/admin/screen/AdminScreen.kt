@@ -18,6 +18,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -54,6 +57,7 @@ internal fun AdminScreen(
     pharmacyViewModel: PharmacyViewModel,
     centerViewModel: CenterViewModel,
     onNavigationIconClicked: () -> Unit,
+    onRefresh: () -> Unit,
     onFabClicked: () -> Unit,
     onCategoryTabClicked: () -> Unit,
     onSectionTabClicked: () -> Unit,
@@ -78,6 +82,10 @@ internal fun AdminScreen(
     var selectedCategoryTabIndex by mainViewModel.selectedCategoryTabIndex
     var selectedSectionTabIndex by mainViewModel.selectedSectionTabIndex
     var expandedFab by clinicViewModel.expandedFab
+    var clinicIsRefreshing by clinicViewModel.isRefreshing
+    var pharmacyIsRefreshing by pharmacyViewModel.isRefreshing
+    var centerIsRefreshing by centerViewModel.isRefreshing
+    val state = rememberPullToRefreshState()
 
     LaunchedEffect(key1 = Unit) {
         clinicViewModel.listClinics()
@@ -130,7 +138,11 @@ internal fun AdminScreen(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .pullToRefresh(
+                        state = state,
+                        isRefreshing = clinicIsRefreshing || pharmacyIsRefreshing || centerIsRefreshing,
+                        onRefresh = { onRefresh() },
+                    ).padding(paddingValues),
         ) {
             ConstraintLayout(
                 modifier =
@@ -138,7 +150,7 @@ internal fun AdminScreen(
                         .background(backgroundColor)
                         .fillMaxWidth(),
             ) {
-                val (line, content) = createRefs()
+                val (refresh, line, content) = createRefs()
                 Box(
                     modifier =
                         Modifier
@@ -172,6 +184,7 @@ internal fun AdminScreen(
                     centersResource = centersResource,
                     centerStaffsResource = centerStaffsResource,
                     actionResource = actionResource,
+                    showLoading = { clinicIsRefreshing = it },
                     onCategoryTabClicked = {
                         selectedCategoryTabIndex = it
                         onCategoryTabClicked()
@@ -189,6 +202,17 @@ internal fun AdminScreen(
                     onCenterClicked = { onCenterClicked(it) },
                     onCenterStaffClicked = { onCenterStaffClicked(it) },
                     onError = onError,
+                )
+
+                Indicator(
+                    modifier =
+                        Modifier.constrainAs(refresh) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
+                    isRefreshing = clinicIsRefreshing || pharmacyIsRefreshing || centerIsRefreshing,
+                    state = state,
                 )
             }
         }

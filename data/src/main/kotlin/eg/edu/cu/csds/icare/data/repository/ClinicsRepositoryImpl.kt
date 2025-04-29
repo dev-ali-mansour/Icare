@@ -1,5 +1,6 @@
 package eg.edu.cu.csds.icare.data.repository
 
+import android.content.Context
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
@@ -18,6 +19,7 @@ import org.koin.core.annotation.Single
 
 @Single
 class ClinicsRepositoryImpl(
+    private val context: Context,
     private val remoteClinicsDataSource: RemoteClinicsDataSource,
     private val localClinicsDataSource: LocalClinicsDataSource,
     private val localDoctorDataSource: LocalDoctorDataSource,
@@ -105,7 +107,7 @@ class ClinicsRepositoryImpl(
                     .listDoctors()
                     .distinctUntilChanged()
                     .collect { entities ->
-                        emit(Resource.Success(data = entities.map { it.toModel() }))
+                        emit(Resource.Success(data = entities.map { it.toModel(context) }))
                     }
                 return@flow
             }
@@ -123,7 +125,7 @@ class ClinicsRepositoryImpl(
                             .listDoctors()
                             .distinctUntilChanged()
                             .collect { entities ->
-                                emit(Resource.Success(data = entities.map { it.toModel() }))
+                                emit(Resource.Success(data = entities.map { it.toModel(context) }))
                             }
                     }
 
@@ -138,7 +140,7 @@ class ClinicsRepositoryImpl(
                 .listDoctors(clinicId)
                 .distinctUntilChanged()
                 .collect { entities ->
-                    emit(Resource.Success(data = entities.map { it.toModel() }))
+                    emit(Resource.Success(data = entities.map { it.toModel(context) }))
                 }
         }
 
@@ -150,7 +152,7 @@ class ClinicsRepositoryImpl(
                 .listTopDoctors()
                 .distinctUntilChanged()
                 .collect { entities ->
-                    emit(Resource.Success(data = entities.map { it.toModel() }))
+                    emit(Resource.Success(data = entities.map { it.toModel(context) }))
                 }
         }
 
