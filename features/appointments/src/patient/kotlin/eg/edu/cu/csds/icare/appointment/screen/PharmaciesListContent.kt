@@ -129,6 +129,7 @@ private fun PharmacyListContent(
             PharmacyView(
                 pharmacy = pharmacy,
                 modifier = modifier,
+                onClick = {},
             )
         }
     }
