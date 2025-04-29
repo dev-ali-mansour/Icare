@@ -32,8 +32,8 @@ import eg.edu.cu.csds.icare.admin.screen.center.staff.CenterStaffsContent
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicsContent
 import eg.edu.cu.csds.icare.admin.screen.clinic.doctor.DoctorsContent
 import eg.edu.cu.csds.icare.admin.screen.clinic.staff.ClinicStaffsContent
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.pharmacist.PharmacistContent
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyContent
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.pharmacist.PharmacistContent
 import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
@@ -68,6 +68,7 @@ internal fun AdminContent(
     centersResource: Resource<List<LabImagingCenter>>,
     centerStaffsResource: Resource<List<CenterStaff>>,
     actionResource: Resource<Nothing?>,
+    showLoading: (Boolean) -> Unit,
     onCategoryTabClicked: (Int) -> Unit,
     onSectionTabClicked: (Int) -> Unit,
     onExpandStateChanged: (Boolean) -> Unit,
@@ -210,6 +211,7 @@ internal fun AdminContent(
                                 modifier = Modifier,
                                 clinicsResource = clinicsResource,
                                 actionResource = actionResource,
+                                showLoading = { showLoading(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
                                 onItemClicked = { onClinicClicked(it) },
                                 onError = onError,
@@ -220,6 +222,7 @@ internal fun AdminContent(
                                 modifier = Modifier,
                                 doctorsResource = doctorsResource,
                                 actionResource = actionResource,
+                                showLoading = { showLoading(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
                                 onItemClicked = { onDoctorClicked(it) },
                                 onError = onError,
@@ -230,6 +233,7 @@ internal fun AdminContent(
                                 modifier = Modifier,
                                 staffsResource = clinicStaffsResource,
                                 actionResource = actionResource,
+                                showLoading = { showLoading(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
                                 onItemClicked = { onClinicStaffClicked(it) },
                                 onError = onError,
@@ -243,6 +247,7 @@ internal fun AdminContent(
                                 modifier = Modifier,
                                 pharmaciesResource = pharmaciesResource,
                                 actionResource = actionResource,
+                                showLoading = { showLoading(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
                                 onItemClicked = { onPharmacyClicked(it) },
                                 onError = onError,
@@ -253,6 +258,7 @@ internal fun AdminContent(
                                 modifier = Modifier,
                                 pharmacistsResource = pharmacistsResource,
                                 actionResource = actionResource,
+                                showLoading = { showLoading(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
                                 onItemClicked = { onPharmacistClicked(it) },
                                 onError = onError,
@@ -266,6 +272,7 @@ internal fun AdminContent(
                                 modifier = Modifier,
                                 centersResource = centersResource,
                                 actionResource = actionResource,
+                                showLoading = { showLoading(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
                                 onItemClicked = { onCenterClicked(it) },
                                 onError = onError,
@@ -276,6 +283,7 @@ internal fun AdminContent(
                                 modifier = Modifier,
                                 staffsResource = centerStaffsResource,
                                 actionResource = actionResource,
+                                showLoading = { showLoading(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
                                 onItemClicked = { onCenterStaffClicked(it) },
                                 onError = onError,
@@ -306,6 +314,7 @@ internal fun AdminContentPreview() {
             centersResource = Resource.Success(listOf()),
             centerStaffsResource = Resource.Success(listOf()),
             actionResource = Resource.Success(null),
+            showLoading = {},
             onCategoryTabClicked = {},
             onSectionTabClicked = {},
             onExpandStateChanged = {},
