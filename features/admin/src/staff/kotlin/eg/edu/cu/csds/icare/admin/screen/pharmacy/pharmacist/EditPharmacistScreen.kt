@@ -16,8 +16,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +35,9 @@ import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
+import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +53,10 @@ internal fun EditPharmacistScreen(
     val pharmaciesResource by pharmacyViewModel.pharmaciesResFlow.collectAsStateWithLifecycle()
     var selectedPharmacist by pharmacyViewModel.selectedPharmacistState
     var pharmaciesExpanded by pharmacyViewModel.pharmaciesExpandedState
-
+    var showSuccessDialog by pharmacyViewModel.showSuccessDialog
+    var isRefreshing by pharmacyViewModel.isRefreshing
+    val state = rememberPullToRefreshState()
+    val scope = rememberCoroutineScope()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -83,7 +92,8 @@ internal fun EditPharmacistScreen(
                         .background(backgroundColor)
                         .fillMaxWidth(),
             ) {
-                val (line, content) = createRefs()
+                val (refresh, line, content) = createRefs()
+
                 Box(
                     modifier =
                         Modifier
@@ -112,10 +122,10 @@ internal fun EditPharmacistScreen(
                         pharmacyId = pharmacist.pharmacyId,
                         email = pharmacist.email,
                         phone = pharmacist.phone,
-                        profilePicture = pharmacist.profilePicture,
                         pharmaciesResource = pharmaciesResource,
                         actionResource = actionResource,
                         pharmaciesExpanded = pharmaciesExpanded,
+                        showLoading = { isRefreshing = it },
                         onFirstNameChanged = { selectedPharmacist = pharmacist.copy(firstName = it) },
                         onLastNameChanged = { selectedPharmacist = pharmacist.copy(lastName = it) },
                         onPharmaciesExpandedChange = { pharmaciesExpanded = !pharmaciesExpanded },
@@ -126,11 +136,29 @@ internal fun EditPharmacistScreen(
                         },
                         onEmailChanged = { selectedPharmacist = pharmacist.copy(email = it) },
                         onPhoneChanged = { selectedPharmacist = pharmacist.copy(phone = it) },
-                        onProfilePictureChanged = { selectedPharmacist = pharmacist.copy(profilePicture = it) },
                         onProceedButtonClicked = { onProceedButtonClicked() },
-                        onSuccess = { onSuccess() },
+                        onSuccess = {
+                            scope.launch {
+                                showSuccessDialog = true
+                                delay(timeMillis = 2000)
+                                showSuccessDialog = false
+                                onSuccess()
+                            }
+                        },
                         onError = { onError(it) },
                     )
+
+                    Indicator(
+                        modifier =
+                            Modifier.constrainAs(refresh) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                            },
+                        isRefreshing = isRefreshing,
+                        state = state,
+                    )
+                    if (showSuccessDialog) SuccessesDialog {}
                 }
             }
         }
