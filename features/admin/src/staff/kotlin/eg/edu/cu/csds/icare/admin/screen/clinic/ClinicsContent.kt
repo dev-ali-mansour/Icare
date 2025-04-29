@@ -2,14 +2,12 @@ package eg.edu.cu.csds.icare.admin.screen.clinic
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -28,10 +26,11 @@ import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
-internal fun ClinicsContent(
+fun ClinicsContent(
     modifier: Modifier = Modifier,
     clinicsResource: Resource<List<Clinic>>,
     actionResource: Resource<Nothing?>,
+    showLoading: (Boolean) -> Unit,
     onExpandStateChanged: (Boolean) -> Unit,
     onItemClicked: (Clinic) -> Unit,
     onError: suspend (Throwable?) -> Unit,
@@ -39,22 +38,14 @@ internal fun ClinicsContent(
     ConstraintLayout(
         modifier = modifier.fillMaxSize(),
     ) {
-        val (progress, emptyContent, list) = createRefs()
+        val (emptyContent, list) = createRefs()
 
         when (clinicsResource) {
-            is Resource.Unspecified -> {}
-            is Resource.Loading ->
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier.constrainAs(progress) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                        },
-                )
+            is Resource.Unspecified -> LaunchedEffect(key1 = clinicsResource) { showLoading(false) }
+            is Resource.Loading -> LaunchedEffect(key1 = clinicsResource) { showLoading(true) }
 
             is Resource.Success -> {
+                LaunchedEffect(key1 = clinicsResource) { showLoading(false) }
                 clinicsResource.data?.let { clinics ->
                     val listState = rememberLazyListState()
                     val expandedFabState =
@@ -100,13 +91,9 @@ internal fun ClinicsContent(
                                     clinic.id
                                 },
                             ) { clinic ->
-                                ClinicView(
-                                    modifier =
-                                        Modifier.clickable {
-                                            onItemClicked(clinic)
-                                        },
-                                    clinic = clinic,
-                                )
+                                ClinicView(clinic = clinic) {
+                                    onItemClicked(clinic)
+                                }
                             }
                         }
                     }
@@ -114,30 +101,24 @@ internal fun ClinicsContent(
             }
 
             is Resource.Error ->
-                LaunchedEffect(key1 = true) {
+                LaunchedEffect(key1 = clinicsResource) {
+                    showLoading(false)
                     onError(clinicsResource.error)
                 }
         }
 
         when (actionResource) {
-            is Resource.Unspecified -> {}
-            is Resource.Loading ->
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier.constrainAs(
-                            progress,
-                        ) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                        },
-                )
+            is Resource.Unspecified -> LaunchedEffect(key1 = actionResource) { showLoading(false) }
+            is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
 
-            is Resource.Success -> {}
+            is Resource.Success ->
+                LaunchedEffect(key1 = Unit) {
+                    showLoading(false)
+                }
 
             is Resource.Error ->
-                LaunchedEffect(key1 = true) {
+                LaunchedEffect(key1 = actionResource) {
+                    showLoading(false)
                     onError(actionResource.error)
                 }
         }
@@ -176,6 +157,7 @@ internal fun ClinicsContentPreview() {
                         ),
                 ),
             actionResource = Resource.Success(null),
+            showLoading = {},
             onExpandStateChanged = {},
             onItemClicked = {},
         ) {}

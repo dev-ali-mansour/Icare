@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,24 +38,25 @@ import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.UnPaidColor
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 
 @Composable
 fun ClinicView(
-//    modifier: Modifier = Modifier,
     clinic: Clinic,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
     Card(
         onClick = onClick,
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .padding(horizontal = M_PADDING, vertical = XS_PADDING),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                containerColor = cardBackgroundColor,
             ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = XS_PADDING),
         shape = MaterialTheme.shapes.medium,
     ) {
         Row(
@@ -73,11 +75,11 @@ fun ClinicView(
                         .align(Alignment.Top),
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(M_PADDING))
 
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(XS_PADDING),
             ) {
                 Text(
                     text = clinic.name,
@@ -104,7 +106,7 @@ fun ClinicView(
                 }
                 Spacer(modifier = Modifier.height(S_PADDING))
                 Text(
-                    text = if (clinic.isOpen) "Open" else "Closed",
+                    text = stringResource(if (clinic.isOpen)R.string.open else R.string.closed),
                     color = if (clinic.isOpen) PaidColor else UnPaidColor,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium,

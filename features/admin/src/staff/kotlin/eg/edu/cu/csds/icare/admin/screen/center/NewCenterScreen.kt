@@ -16,8 +16,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +34,9 @@ import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
+import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,6 +54,10 @@ internal fun NewCenterScreen(
     var type by centerViewModel.typeState
     var phone by centerViewModel.phoneState
     var address by centerViewModel.addressState
+    var showSuccessDialog by centerViewModel.showSuccessDialog
+    var isRefreshing by centerViewModel.isRefreshing
+    val state = rememberPullToRefreshState()
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -84,7 +94,7 @@ internal fun NewCenterScreen(
                         .background(backgroundColor)
                         .fillMaxWidth(),
             ) {
-                val (line, content) = createRefs()
+                val (refresh, line, content) = createRefs()
                 Box(
                     modifier =
                         Modifier
@@ -113,6 +123,7 @@ internal fun NewCenterScreen(
                     address = address,
                     typesExpanded = typesExpanded,
                     actionResource = actionResource,
+                    showLoading = { isRefreshing = it },
                     onNameChanged = { name = it },
                     onTypesExpandedChange = { typesExpanded = !typesExpanded },
                     onTypesDismissRequest = { typesExpanded = false },
@@ -123,9 +134,28 @@ internal fun NewCenterScreen(
                     onPhoneChanged = { phone = it },
                     onAddressChanged = { address = it },
                     onProceedButtonClicked = { onProceedButtonClicked() },
-                    onSuccess = { onSuccess() },
+                    onSuccess = {
+                        scope.launch {
+                            showSuccessDialog = true
+                            delay(timeMillis = 2000)
+                            showSuccessDialog = false
+                            onSuccess()
+                        }
+                    },
                     onError = { onError(it) },
                 )
+
+                Indicator(
+                    modifier =
+                        Modifier.constrainAs(refresh) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
+                    isRefreshing = isRefreshing,
+                    state = state,
+                )
+                if (showSuccessDialog) SuccessesDialog {}
             }
         }
     }

@@ -108,7 +108,7 @@
     <string name="completed">مكتملة</string>
     <string name="cancelled">ملغاة</string>
     <string name="scan_center">مركز أشعة</string>
-    <string name="book_appointment">حجز موعد</string>
+    <string name="appointment_booking">حجز موعد</string>
     <string name="lab_center">معمل تحاليل</string>
     <string name="pharmacy">صيدلية</string>
     <string name="price">سعر الخدمة</string>
@@ -133,4 +133,9 @@
     <string name="speciality">التخصص</string>
     <string name="total_appointments">عدد مرات الحجز</string>
     <string name="appointment_price">سعر الكشف</string>
-</resources>
+    <string name="imaging_center" >مركز أشعة</string>
+    <string name="search">بحث</string>
+    <string name="book_now">احجز الآن</string>
+    <string name="search_by_doctor_name_or_speciality">ابحث باسم الطبيب أو التخصص</string>
+    <string name="open" >مفتوحة</string>
+    <string name="closed" >مغلقة</string></resources>
