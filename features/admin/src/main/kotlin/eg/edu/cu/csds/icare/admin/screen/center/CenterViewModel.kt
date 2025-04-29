@@ -116,13 +116,13 @@ class CenterViewModel(
         }
     }
 
-    fun listLabCenters() {
+    fun listLabCenters(forceRefresh: Boolean = false) {
         viewModelScope.launch(dispatcher) {
             if (_centersResFlow.value !is Resource.Unspecified) {
                 _centersResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listCentersUseCase().collect { result ->
+            listCentersUseCase(forceUpdate = forceRefresh).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         result.data?.let { centers ->
@@ -175,13 +175,13 @@ class CenterViewModel(
         }
     }
 
-    fun listImagingCenters() {
+    fun listImagingCenters(forceRefresh: Boolean = false) {
         viewModelScope.launch(dispatcher) {
             if (_centersResFlow.value !is Resource.Unspecified) {
                 _centersResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listCentersUseCase().collect { result ->
+            listCentersUseCase(forceUpdate = forceRefresh).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         result.data?.let { centers ->
