@@ -128,12 +128,20 @@ class RemoteCentersDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun listCenterStaff(centerId: Long): Flow<Resource<List<CenterStaff>>> =
+    override fun listCenterStaff(): Flow<Resource<List<CenterStaff>>> =
         flow {
             emit(Resource.Loading())
             auth.currentUser?.let {
+                val token =
+                    runBlocking {
+                        auth.currentUser
+                            ?.getIdToken(false)
+                            ?.await()
+                            ?.token
+                            .toString()
+                    }
                 val map = HashMap<String, String>()
-                map["centerId"] = centerId.toString()
+                map["token"] = token
                 val response = service.listCenterStaff(map)
                 when (response.code()) {
                     HTTP_OK -> {
