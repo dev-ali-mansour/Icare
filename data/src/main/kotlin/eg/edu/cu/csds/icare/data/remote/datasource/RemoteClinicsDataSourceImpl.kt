@@ -290,7 +290,7 @@ class RemoteClinicsDataSourceImpl(
             }
         }
 
-    override fun listClinicStaff(clinicId: Long): Flow<Resource<List<ClinicStaff>>> =
+    override fun listClinicStaff(): Flow<Resource<List<ClinicStaff>>> =
         flow {
             runCatching {
                 emit(Resource.Loading())
@@ -304,7 +304,6 @@ class RemoteClinicsDataSourceImpl(
                                 .toString()
                         }
                     val map = HashMap<String, String>()
-                    map["clinicId"] = clinicId.toString()
                     map["token"] = token
                     val response = service.listClinicStaff(map)
                     when (response.code()) {
