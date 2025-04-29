@@ -171,4 +171,5 @@ Objectives:\n
     <string name="search_by_doctor_name_or_speciality">Search by doctor name or speciality</string>
     <string name="open" >Open</string>
     <string name="closed" >Closed</string>
+    <string name="search_for_pharmacy">Search by pharmacy name</string>
 </resources>
