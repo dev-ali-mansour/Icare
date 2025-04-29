@@ -39,26 +39,18 @@ fun NavGraphBuilder.adminRoute(
             pharmacyViewModel = pharmacyViewModel,
             centerViewModel = centerViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
+            onRefresh = {
+                loadData(
+                    mainViewModel = mainViewModel,
+                    clinicViewModel = clinicViewModel,
+                    pharmacyViewModel = pharmacyViewModel,
+                    centerViewModel = centerViewModel,
+                    forceRefresh = true,
+                )
+            },
             onFabClicked = {
-                when (mainViewModel.selectedCategoryTabIndex.intValue) {
-                    0 ->
-                        when (mainViewModel.selectedSectionTabIndex.intValue) {
-                            0 -> navigateToScreen(Screen.NewClinic)
-                            1 -> navigateToScreen(Screen.NewDoctor)
-                            2 -> navigateToScreen(Screen.NewClinicStaff)
-                        }
-
-                    1 ->
-                        when (mainViewModel.selectedSectionTabIndex.intValue) {
-                            0 -> navigateToScreen(Screen.NewPharmacy)
-                            1 -> navigateToScreen(Screen.NewPharmacist)
-                        }
-
-                    2 ->
-                        when (mainViewModel.selectedSectionTabIndex.intValue) {
-                            0 -> navigateToScreen(Screen.NewCenter)
-                            1 -> navigateToScreen(Screen.NewCenterStaff)
-                        }
+                onFabClicked(mainViewModel = mainViewModel) {
+                    navigateToScreen(it)
                 }
             },
             onCategoryTabClicked = {
@@ -70,26 +62,12 @@ fun NavGraphBuilder.adminRoute(
                 }
             },
             onSectionTabClicked = {
-                when (mainViewModel.selectedCategoryTabIndex.intValue) {
-                    0 ->
-                        when (mainViewModel.selectedSectionTabIndex.intValue) {
-                            0 -> clinicViewModel.listClinics()
-                            1 -> clinicViewModel.listDoctors()
-                            2 -> clinicViewModel.listStaffs()
-                        }
-
-                    1 ->
-                        when (mainViewModel.selectedSectionTabIndex.intValue) {
-                            0 -> pharmacyViewModel.listPharmacies()
-                            1 -> pharmacyViewModel.listPharmacists()
-                        }
-
-                    2 ->
-                        when (mainViewModel.selectedSectionTabIndex.intValue) {
-                            0 -> centerViewModel.listCenters()
-                            1 -> centerViewModel.listStaff()
-                        }
-                }
+                loadData(
+                    mainViewModel = mainViewModel,
+                    clinicViewModel = clinicViewModel,
+                    pharmacyViewModel = pharmacyViewModel,
+                    centerViewModel = centerViewModel,
+                )
             },
             onClinicClicked = { clinic ->
                 clinicViewModel.selectedClinicState.value = clinic
@@ -138,10 +116,7 @@ fun NavGraphBuilder.adminRoute(
             clinicViewModel = clinicViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { clinicViewModel.updateClinic() },
-            onSuccess = {
-                clinicViewModel.listClinics()
-                onNavigationIconClicked()
-            },
+            onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
     }
@@ -264,5 +239,60 @@ fun NavGraphBuilder.adminRoute(
             onSuccess = { onNavigationIconClicked() },
             onError = { onError(it) },
         )
+    }
+}
+
+private fun NavGraphBuilder.onFabClicked(
+    mainViewModel: MainViewModel,
+    navigateToScreen: (Screen) -> Unit,
+) {
+    when (mainViewModel.selectedCategoryTabIndex.intValue) {
+        0 ->
+            when (mainViewModel.selectedSectionTabIndex.intValue) {
+                0 -> navigateToScreen(Screen.NewClinic)
+                1 -> navigateToScreen(Screen.NewDoctor)
+                2 -> navigateToScreen(Screen.NewClinicStaff)
+            }
+
+        1 ->
+            when (mainViewModel.selectedSectionTabIndex.intValue) {
+                0 -> navigateToScreen(Screen.NewPharmacy)
+                1 -> navigateToScreen(Screen.NewPharmacist)
+            }
+
+        2 ->
+            when (mainViewModel.selectedSectionTabIndex.intValue) {
+                0 -> navigateToScreen(Screen.NewCenter)
+                1 -> navigateToScreen(Screen.NewCenterStaff)
+            }
+    }
+}
+
+private fun NavGraphBuilder.loadData(
+    mainViewModel: MainViewModel,
+    clinicViewModel: ClinicViewModel,
+    pharmacyViewModel: PharmacyViewModel,
+    centerViewModel: CenterViewModel,
+    forceRefresh: Boolean = false,
+) {
+    when (mainViewModel.selectedCategoryTabIndex.intValue) {
+        0 ->
+            when (mainViewModel.selectedSectionTabIndex.intValue) {
+                0 -> clinicViewModel.listClinics(forceRefresh = forceRefresh)
+                1 -> clinicViewModel.listDoctors(forceRefresh = forceRefresh)
+                2 -> clinicViewModel.listStaffs()
+            }
+
+        1 ->
+            when (mainViewModel.selectedSectionTabIndex.intValue) {
+                0 -> pharmacyViewModel.listPharmacies(forceRefresh = forceRefresh)
+                1 -> pharmacyViewModel.listPharmacists()
+            }
+
+        2 ->
+            when (mainViewModel.selectedSectionTabIndex.intValue) {
+                0 -> centerViewModel.listCenters(forceRefresh = forceRefresh)
+                1 -> centerViewModel.listStaff()
+            }
     }
 }
