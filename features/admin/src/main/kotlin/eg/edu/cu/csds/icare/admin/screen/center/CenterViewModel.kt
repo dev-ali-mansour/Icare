@@ -81,7 +81,10 @@ class CenterViewModel(
                     address = addressState.value,
                 ),
             ).collect { result ->
-                if (result is Resource.Success) resetStates()
+                if (result is Resource.Success) {
+                    resetStates()
+                    listCenters(forceRefresh = false)
+                }
                 _actionResFlow.emit(result)
             }
         }
@@ -95,7 +98,9 @@ class CenterViewModel(
             }
             selectedCenterState.value?.let {
                 updateCenterUseCase(it).collect { result ->
-                    if (result is Resource.Success) resetStates()
+                    if (result is Resource.Success) {
+                        listCenters(forceRefresh = false)
+                    }
                     _actionResFlow.emit(result)
                 }
             } ?: run {
@@ -249,7 +254,10 @@ class CenterViewModel(
                     phone = phoneState.value,
                 ),
             ).collect { result ->
-                if (result is Resource.Success) resetStates()
+                if (result is Resource.Success) {
+                    resetStates()
+                    listStaff()
+                }
                 _actionResFlow.emit(result)
             }
         }
@@ -263,7 +271,9 @@ class CenterViewModel(
             }
             selectedCenterStaffState.value?.let {
                 updateCenterStaffUseCase(it).collect { result ->
-                    if (result is Resource.Success) resetStates()
+                    if (result is Resource.Success) {
+                        listStaff()
+                    }
                     _actionResFlow.emit(result)
                 }
             } ?: run {
