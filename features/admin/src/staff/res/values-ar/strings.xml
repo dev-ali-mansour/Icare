@@ -15,8 +15,6 @@
     <string name="birth_date">تاريخ الميلاد</string>
     <string name="address">العنوان</string>
     <string name="type">النوع</string>
-    <string name="open" >مفتوحة</string>
-    <string name="closed" >مغلقة</string>
     <string name="clinic" >العيادة</string>
     <string name="pharmacy" >الصيدلية</string>
     <string name="center" >المركز</string>

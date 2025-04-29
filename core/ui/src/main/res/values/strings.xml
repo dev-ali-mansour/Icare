@@ -169,5 +169,6 @@ Objectives:\n
     <string name="search">Search</string>
     <string name="book_now">Book Now</string>
     <string name="search_by_doctor_name_or_speciality">Search by doctor name or speciality</string>
-    <string name="search_for_pharmacy">Search by pharmacy name</string>
+    <string name="open" >Open</string>
+    <string name="closed" >Closed</string>
 </resources>

@@ -16,8 +16,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +38,9 @@ import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
+import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +58,10 @@ internal fun EditDoctorScreen(
     val clinicsResource by clinicViewModel.clinicsResFlow.collectAsStateWithLifecycle()
     var selectedDoctor by clinicViewModel.selectedDoctorState
     var clinicsExpanded by clinicViewModel.clinicsExpandedState
+    var showSuccessDialog by clinicViewModel.showSuccessDialog
+    var isRefreshing by clinicViewModel.isRefreshing
+    val state = rememberPullToRefreshState()
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -79,6 +90,9 @@ internal fun EditDoctorScreen(
             modifier =
                 Modifier
                     .fillMaxSize()
+                    .pullToRefresh(state = state, isRefreshing = isRefreshing, onRefresh = {
+                        clinicViewModel.listDoctors(forceRefresh = true)
+                    })
                     .padding(paddingValues),
         ) {
             ConstraintLayout(
@@ -87,7 +101,7 @@ internal fun EditDoctorScreen(
                         .background(backgroundColor)
                         .fillMaxWidth(),
             ) {
-                val (line, content) = createRefs()
+                val (refresh, line, content) = createRefs()
                 Box(
                     modifier =
                         Modifier
@@ -125,6 +139,7 @@ internal fun EditDoctorScreen(
                             editRating = user.roleId == Role.AdminRole.code,
                             clinicsResource = clinicsResource,
                             actionResource = actionResource,
+                            showLoading = { isRefreshing = it },
                             clinicsExpanded = clinicsExpanded,
                             onFirstNameChanged = { selectedDoctor = doctor.copy(firstName = it) },
                             onLastNameChanged = { selectedDoctor = doctor.copy(lastName = it) },
@@ -142,9 +157,28 @@ internal fun EditDoctorScreen(
                             onPriceChanged = { selectedDoctor = doctor.copy(price = it) },
                             onRatingChanged = { selectedDoctor = doctor.copy(rating = it) },
                             onProceedButtonClicked = { onProceedButtonClicked() },
-                            onSuccess = { onSuccess() },
+                            onSuccess = {
+                                scope.launch {
+                                    showSuccessDialog = true
+                                    delay(timeMillis = 2000)
+                                    showSuccessDialog = false
+                                    onSuccess()
+                                }
+                            },
                             onError = { onError(it) },
                         )
+
+                        Indicator(
+                            modifier =
+                                Modifier.constrainAs(refresh) {
+                                    top.linkTo(parent.top)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                },
+                            isRefreshing = isRefreshing,
+                            state = state,
+                        )
+                        if (showSuccessDialog) SuccessesDialog {}
                     }
                 }
             }

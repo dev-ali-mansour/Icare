@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -59,6 +58,7 @@ internal fun ClinicDetailsContent(
     address: String,
     isOpen: Boolean,
     actionResource: Resource<Nothing?>,
+    showLoading: (Boolean) -> Unit,
     onNameChanged: (String) -> Unit,
     onTypeChanged: (String) -> Unit,
     onPhoneChanged: (String) -> Unit,
@@ -75,7 +75,7 @@ internal fun ClinicDetailsContent(
                 .fillMaxSize()
                 .padding(bottom = XL_PADDING),
     ) {
-        val (card, loading) = createRefs()
+        val (card) = createRefs()
         Surface(
             modifier =
                 Modifier
@@ -226,7 +226,10 @@ internal fun ClinicDetailsContent(
                 )
 
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = XL_PADDING),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = XL_PADDING),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement =
                         Arrangement.spacedBy(
@@ -249,7 +252,7 @@ internal fun ClinicDetailsContent(
                     )
 
                     Text(
-                        text = if (isOpen)stringResource(R.string.open) else stringResource(R.string.closed),
+                        text = if (isOpen) stringResource(CoreR.string.open) else stringResource(CoreR.string.closed),
                         fontFamily = helveticaFamily,
                         color = textColor,
                     )
@@ -269,27 +272,18 @@ internal fun ClinicDetailsContent(
         }
 
         when (actionResource) {
-            is Resource.Unspecified -> {}
-            is Resource.Loading ->
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier
-                            .padding(XL_PADDING)
-                            .constrainAs(loading) {
-                                top.linkTo(parent.top, margin = L_PADDING)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                                bottom.linkTo(parent.bottom)
-                            },
-                )
+            is Resource.Unspecified -> LaunchedEffect(key1 = actionResource) { showLoading(false) }
+            is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
 
             is Resource.Success ->
-                LaunchedEffect(key1 = Unit) {
+                LaunchedEffect(key1 = actionResource) {
+                    showLoading(false)
                     onSuccess()
                 }
 
             is Resource.Error ->
-                LaunchedEffect(key1 = true) {
+                LaunchedEffect(key1 = actionResource) {
+                    showLoading(false)
                     onError(actionResource.error)
                 }
         }
@@ -310,6 +304,7 @@ internal fun ClinicDetailsContentPreview() {
             address = "",
             isOpen = false,
             actionResource = Resource.Success(null),
+            showLoading = {},
             onNameChanged = {},
             onTypeChanged = {},
             onPhoneChanged = {},
