@@ -14,6 +14,9 @@
     <string name="total_appointments">عدد الحالات</string>
     <string name="till_today">حتى اليوم</string>
     <string name="today_appointment">مواعيد اليوم</string>
+    <string name="users">المستخدمين</string>
+    <string name="till_now">حتى الآن</string>
+    <string name="overview">نظرة عامة</string>
 
     <!--Multilingual Resources of Application-->
 </resources>
