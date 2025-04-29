@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,6 +35,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.core.net.toUri
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import eg.edu.cu.csds.icare.core.domain.model.AdminStatistics
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.model.FirebaseUserBasicInfo
@@ -59,6 +59,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.kufamFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.home.R
+import eg.edu.cu.csds.icare.home.screen.admin.AdminContent
 import eg.edu.cu.csds.icare.home.screen.doctor.DoctorContent
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
@@ -67,16 +68,19 @@ internal fun HomeContent(
     firebaseUser: FirebaseUserBasicInfo?,
     userResource: Resource<User>,
     appVersion: String,
+    adminStatsRes: Resource<AdminStatistics>,
     doctorScheduleRes: Resource<DoctorSchedule>,
-    loadContentData: (User) -> Unit,
+    showLoading: (Boolean) -> Unit,
     onUserClicked: () -> Unit,
     onPriceCardClicked: () -> Unit,
     onAppointmentClick: (Appointment) -> Unit,
     onSeeAllClick: () -> Unit,
+    onSectionsAdminClicked: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-        val (progress, titleContainer, line, content, marquee) = createRefs()
+    ConstraintLayout(modifier = modifier.fillMaxSize()) {
+        val (titleContainer, line, content, marquee) = createRefs()
         Surface(
             modifier =
                 Modifier.constrainAs(titleContainer) {
@@ -107,40 +111,67 @@ internal fun HomeContent(
                     .height(XS_PADDING)
                     .background(Yellow500),
         )
+        userResource.data?.let { user ->
+            when (user.roleId) {
+                Role.AdminRole.code -> {
+                    when (adminStatsRes) {
+                        is Resource.Unspecified ->
+                            LaunchedEffect(key1 = adminStatsRes) {
+                                showLoading(false)
+                            }
 
-        when (userResource) {
-            is Resource.Unspecified -> {}
-            is Resource.Loading ->
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier.constrainAs(progress) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                        },
-                )
-
-            is Resource.Success ->
-                userResource.data?.let { user ->
-                    LaunchedEffect(key1 = true) {
-                        loadContentData(user)
-                    }
-                    when (doctorScheduleRes) {
-                        is Resource.Unspecified -> {}
                         is Resource.Loading ->
-                            CircularProgressIndicator(
-                                modifier =
-                                    Modifier.constrainAs(progress) {
-                                        top.linkTo(parent.top, margin = M_PADDING)
-                                        start.linkTo(parent.start)
-                                        end.linkTo(parent.end)
-                                        bottom.linkTo(parent.bottom)
-                                    },
-                            )
+                            LaunchedEffect(key1 = adminStatsRes) {
+                                showLoading(true)
+                            }
 
-                        is Resource.Success ->
+                        is Resource.Success -> {
+                            LaunchedEffect(key1 = adminStatsRes) { showLoading(false) }
+
+                            adminStatsRes.data?.let { stats ->
+                                AdminContent(
+                                    modifier =
+                                        Modifier.constrainAs(content) {
+                                            top.linkTo(line.bottom)
+                                            start.linkTo(parent.start)
+                                            end.linkTo(parent.end)
+                                            bottom.linkTo(marquee.top, margin = M_PADDING)
+                                            width = Dimension.fillToConstraints
+                                            height = Dimension.fillToConstraints
+                                        },
+                                    stats = stats,
+                                    onSectionsAdminClicked = {
+                                        onSectionsAdminClicked()
+                                    },
+                                )
+                            }
+                        }
+
+                        is Resource.Error ->
+                            LaunchedEffect(key1 = adminStatsRes) {
+                                showLoading(false)
+                                onError(adminStatsRes.error)
+                            }
+                    }
+                }
+
+                Role.DoctorRole.code -> {
+                    when (doctorScheduleRes) {
+                        is Resource.Unspecified ->
+                            LaunchedEffect(key1 = doctorScheduleRes) {
+                                showLoading(false)
+                            }
+
+                        is Resource.Loading ->
+                            LaunchedEffect(key1 = doctorScheduleRes) {
+                                showLoading(true)
+                            }
+
+                        is Resource.Success -> {
+                            LaunchedEffect(key1 = doctorScheduleRes) { showLoading(false) }
+
                             doctorScheduleRes.data?.let { schedule ->
+
                                 DoctorContent(
                                     modifier =
                                         Modifier.constrainAs(content) {
@@ -157,18 +188,18 @@ internal fun HomeContent(
                                     onSeeAllClick = { onSeeAllClick() },
                                 )
                             }
+                        }
 
                         is Resource.Error ->
-                            LaunchedEffect(key1 = true) {
+                            LaunchedEffect(key1 = doctorScheduleRes) {
+                                showLoading(false)
                                 onError(doctorScheduleRes.error)
                             }
                     }
                 }
 
-            is Resource.Error ->
-                LaunchedEffect(key1 = true) {
-                    onError(userResource.error)
-                }
+                else -> {}
+            }
         }
 
         Text(
@@ -337,6 +368,20 @@ internal fun HomeContentPreview() {
                 ),
             userResource = Resource.Success(User(roleId = Role.AdminRole.code)),
             appVersion = "1.0.0",
+            adminStatsRes =
+                Resource.Success(
+                    AdminStatistics(
+                        totalUsers = 2500,
+                        doctors = 150,
+                        pharmacies = 35,
+                        scanCenters = 25,
+                        labCenters = 15,
+                        pending = 4590,
+                        confirmed = 178,
+                        completed = 2850,
+                        cancelled = 12,
+                    ),
+                ),
             doctorScheduleRes =
                 Resource.Success(
                     DoctorSchedule(
@@ -365,11 +410,12 @@ internal fun HomeContentPreview() {
                             ),
                     ),
                 ),
+            showLoading = {},
             onUserClicked = {},
-            loadContentData = {},
             onPriceCardClicked = {},
             onAppointmentClick = {},
             onSeeAllClick = {},
+            onSectionsAdminClicked = {},
             onError = {},
         )
     }
