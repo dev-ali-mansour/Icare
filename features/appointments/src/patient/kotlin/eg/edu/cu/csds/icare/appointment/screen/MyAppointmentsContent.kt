@@ -88,7 +88,13 @@ fun MyAppointmentsContent(
                     },
         ) {
             when (appointmentsRes) {
-                is Resource.Unspecified -> LaunchedEffect(key1 = appointmentsRes) { showLoading(false) }
+                is Resource.Unspecified ->
+                    LaunchedEffect(key1 = appointmentsRes) {
+                        showLoading(
+                            false,
+                        )
+                    }
+
                 is Resource.Loading -> LaunchedEffect(key1 = appointmentsRes) { showLoading(true) }
 
                 is Resource.Success -> {
@@ -230,9 +236,10 @@ fun UpcomingAppointmentsContent(
             items(tomorrowAppointments) { appointment ->
                 AppointmentCard(
                     appointment = appointment,
+                    showActions = true,
                     onReschedule = { onReschedule(appointment) },
                     onCancel = { onCancel(appointment.copy(statusId = AppointmentStatus.CancelledStatus.code)) },
-                    showActions = true,
+                    onConfirm = {},
                 )
             }
         }
@@ -250,9 +257,10 @@ fun UpcomingAppointmentsContent(
             items(pendingAppointments) { appointment ->
                 AppointmentCard(
                     appointment = appointment,
+                    showActions = true,
                     onReschedule = { onReschedule(appointment) },
                     onCancel = { onCancel(appointment) },
-                    showActions = true,
+                    onConfirm = {},
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -269,9 +277,10 @@ fun OtherAppointmentsContent(appointments: List<Appointment>) {
         items(appointments) { appointment ->
             AppointmentCard(
                 appointment = appointment,
+                showActions = false,
                 onReschedule = {},
                 onCancel = {},
-                showActions = false,
+                onConfirm = {},
             )
         }
     }
