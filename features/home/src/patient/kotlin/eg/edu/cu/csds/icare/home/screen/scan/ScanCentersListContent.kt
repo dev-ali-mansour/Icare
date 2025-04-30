@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.appointment.screen
+package eg.edu.cu.csds.icare.home.screen.scan
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -18,19 +18,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.appointment.R
-import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
+import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.view.CenterView
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
-import eg.edu.cu.csds.icare.core.ui.view.PharmacyView
 import eg.edu.cu.csds.icare.core.ui.view.SearchTextField
+import eg.edu.cu.csds.icare.home.screen.lab.LabsListContent
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
-fun PharmaciesListContent(
-    pharmacyRes: Resource<List<Pharmacy>>,
+fun ScanCentersListContent(
+    centersRes: Resource<List<LabImagingCenter>>,
     searchQuery: String,
     showLoading: (Boolean) -> Unit,
     onSearchQueryChange: (String) -> Unit,
@@ -59,7 +60,7 @@ fun PharmaciesListContent(
                             end.linkTo(parent.end, M_PADDING)
                             width = Dimension.fillToConstraints
                         },
-                placeholder = stringResource(CoreR.string.search_for_pharmacy),
+                placeholder = stringResource(CoreR.string.search_by_doctor_name_or_speciality),
                 value = searchQuery,
                 focus = false,
                 onValueChange = { onSearchQueryChange(it) },
@@ -67,15 +68,15 @@ fun PharmaciesListContent(
                 onSearch = { onSearch() },
             )
 
-            when (pharmacyRes) {
+            when (centersRes) {
                 is Resource.Unspecified -> LaunchedEffect(key1 = true) { showLoading(false) }
                 is Resource.Loading -> LaunchedEffect(key1 = true) { showLoading(true) }
 
                 is Resource.Success -> {
                     LaunchedEffect(key1 = true) { showLoading(false) }
-                    pharmacyRes.data?.let { pharmacies ->
+                    centersRes.data?.let { centers ->
 
-                        if (pharmacies.isEmpty()) {
+                        if (centers.isEmpty()) {
                             EmptyContentView(
                                 modifier =
                                     Modifier
@@ -90,8 +91,8 @@ fun PharmaciesListContent(
                                 text = stringResource(R.string.no_doctors_available),
                             )
                         } else {
-                            PharmacyListContent(
-                                pharmacies = pharmacies,
+                            CenterListContent(
+                                centers = centers,
                                 modifier =
                                     modifier.constrainAs(details) {
                                         top.linkTo(search.bottom, margin = M_PADDING)
@@ -109,7 +110,7 @@ fun PharmaciesListContent(
                 is Resource.Error ->
                     LaunchedEffect(key1 = true) {
                         showLoading(false)
-                        onError(pharmacyRes.error)
+                        onError(centersRes.error)
                     }
             }
         }
@@ -117,18 +118,19 @@ fun PharmaciesListContent(
 }
 
 @Composable
-private fun PharmacyListContent(
-    pharmacies: List<Pharmacy>,
+private fun CenterListContent(
+    centers: List<LabImagingCenter>,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(S_PADDING),
     ) {
-        items(pharmacies) { pharmacy ->
-            PharmacyView(
-                pharmacy = pharmacy,
+        items(centers) { center ->
+            CenterView(
+                center = center,
                 modifier = modifier,
+                showType = true,
                 onClick = {},
             )
         }
@@ -140,34 +142,39 @@ private fun PharmacyListContent(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
 @Composable
-fun PharmacyListContentPreview() {
+fun ScanCentersListContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
-        PharmaciesListContent(
-            pharmacyRes =
+        LabsListContent(
+            centersRes =
                 Resource.Success(
                     listOf(
-                        Pharmacy(
-                            name = "Pharmacy 1",
-                            address = "Address 1",
-                            phone = "123456789",
+                        LabImagingCenter(
                             id = 1,
+                            name = "Alfa",
+                            type = 2,
+                            phone = "123456789",
+                            address = "Address 1",
                         ),
-                        Pharmacy(
-                            name = "Pharmacy 2",
-                            address = "Address 2",
-                            phone = "987654321",
+                        LabImagingCenter(
+                            id = 1,
+                            name = "Alfa",
+                            type = 2,
+                            phone = "123498789",
+                            address = "Address 1",
+                        ),
+                        LabImagingCenter(
                             id = 2,
+                            name = "El-Borg",
+                            type = 2,
+                            phone = "123456789",
+                            address = "Address 1",
                         ),
-                        Pharmacy(
-                            name = "Pharmacy 3",
-                            address = "Address 3",
-                            phone = "555555555",
+                        LabImagingCenter(
                             id = 3,
-                        ),
-                        Pharmacy(
-                            name = "Pharmacy 4",
-                            address = "Address 4",
-                            phone = "111111111",
+                            name = "El-Shams",
+                            type = 2,
+                            phone = "123456789",
+                            address = "Address 1",
                         ),
                     ),
                 ),

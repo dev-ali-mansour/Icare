@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.appointment.screen
+package eg.edu.cu.csds.icare.home.screen.pharmacy
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -18,19 +18,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.appointment.R
-import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
+import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.view.CenterView
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
+import eg.edu.cu.csds.icare.core.ui.view.PharmacyView
 import eg.edu.cu.csds.icare.core.ui.view.SearchTextField
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
-fun LabsListContent(
-    centersRes: Resource<List<LabImagingCenter>>,
+fun PharmaciesListContent(
+    pharmacyRes: Resource<List<Pharmacy>>,
     searchQuery: String,
     showLoading: (Boolean) -> Unit,
     onSearchQueryChange: (String) -> Unit,
@@ -59,7 +59,7 @@ fun LabsListContent(
                             end.linkTo(parent.end, M_PADDING)
                             width = Dimension.fillToConstraints
                         },
-                placeholder = stringResource(CoreR.string.search_by_doctor_name_or_speciality),
+                placeholder = stringResource(CoreR.string.search_for_pharmacy),
                 value = searchQuery,
                 focus = false,
                 onValueChange = { onSearchQueryChange(it) },
@@ -67,15 +67,15 @@ fun LabsListContent(
                 onSearch = { onSearch() },
             )
 
-            when (centersRes) {
+            when (pharmacyRes) {
                 is Resource.Unspecified -> LaunchedEffect(key1 = true) { showLoading(false) }
                 is Resource.Loading -> LaunchedEffect(key1 = true) { showLoading(true) }
 
                 is Resource.Success -> {
                     LaunchedEffect(key1 = true) { showLoading(false) }
-                    centersRes.data?.let { centers ->
+                    pharmacyRes.data?.let { pharmacies ->
 
-                        if (centers.isEmpty()) {
+                        if (pharmacies.isEmpty()) {
                             EmptyContentView(
                                 modifier =
                                     Modifier
@@ -90,8 +90,8 @@ fun LabsListContent(
                                 text = stringResource(R.string.no_doctors_available),
                             )
                         } else {
-                            CenterListContent(
-                                centers = centers,
+                            PharmacyListContent(
+                                pharmacies = pharmacies,
                                 modifier =
                                     modifier.constrainAs(details) {
                                         top.linkTo(search.bottom, margin = M_PADDING)
@@ -109,7 +109,7 @@ fun LabsListContent(
                 is Resource.Error ->
                     LaunchedEffect(key1 = true) {
                         showLoading(false)
-                        onError(centersRes.error)
+                        onError(pharmacyRes.error)
                     }
             }
         }
@@ -117,19 +117,18 @@ fun LabsListContent(
 }
 
 @Composable
-private fun CenterListContent(
-    centers: List<LabImagingCenter>,
+private fun PharmacyListContent(
+    pharmacies: List<Pharmacy>,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(S_PADDING),
     ) {
-        items(centers) { center ->
-            CenterView(
-                center = center,
+        items(pharmacies) { pharmacy ->
+            PharmacyView(
+                pharmacy = pharmacy,
                 modifier = modifier,
-                showType = true,
                 onClick = {},
             )
         }
@@ -141,39 +140,34 @@ private fun CenterListContent(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
 @Composable
-fun LabListContentPreview() {
+fun PharmacyListContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
-        LabsListContent(
-            centersRes =
+        PharmaciesListContent(
+            pharmacyRes =
                 Resource.Success(
                     listOf(
-                        LabImagingCenter(
-                            id = 1,
-                            name = "Alfa",
-                            type = 1,
+                        Pharmacy(
+                            name = "Pharmacy 1",
+                            address = "Address 1",
                             phone = "123456789",
-                            address = "Address 1",
-                        ),
-                        LabImagingCenter(
                             id = 1,
-                            name = "Alfa",
-                            type = 1,
-                            phone = "123498789",
-                            address = "Address 1",
                         ),
-                        LabImagingCenter(
+                        Pharmacy(
+                            name = "Pharmacy 2",
+                            address = "Address 2",
+                            phone = "987654321",
                             id = 2,
-                            name = "El-Borg",
-                            type = 1,
-                            phone = "123456789",
-                            address = "Address 1",
                         ),
-                        LabImagingCenter(
+                        Pharmacy(
+                            name = "Pharmacy 3",
+                            address = "Address 3",
+                            phone = "555555555",
                             id = 3,
-                            name = "El-Shams",
-                            type = 1,
-                            phone = "123456789",
-                            address = "Address 1",
+                        ),
+                        Pharmacy(
+                            name = "Pharmacy 4",
+                            address = "Address 4",
+                            phone = "111111111",
                         ),
                     ),
                 ),
