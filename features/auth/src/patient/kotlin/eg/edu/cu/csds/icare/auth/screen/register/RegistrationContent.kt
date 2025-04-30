@@ -104,7 +104,7 @@ internal fun RegistrationContent(
     onFirstNameChange: (String) -> Unit,
     onLastNameChanged: (String) -> Unit,
     onEmailChange: (String) -> Unit,
-    onBirthDateChanged: (String) -> Unit,
+    onBirthDateChanged: (Long) -> Unit,
     onGendersExpandedChange: (Boolean) -> Unit,
     onGendersDismissRequest: () -> Unit,
     onGenderClicked: (Short) -> Unit,
@@ -144,7 +144,7 @@ internal fun RegistrationContent(
                         datePickerState.selectedDateMillis?.let {
                             selectedBirthDate = it
                             selectedBirthDateFormatted = it.getFormattedDate(context)
-                            onBirthDateChanged(it.getFormattedDate(context, "yyyy-MM-dd"))
+                            onBirthDateChanged(it)
                         }
                         showDatePicker = false
                     },
