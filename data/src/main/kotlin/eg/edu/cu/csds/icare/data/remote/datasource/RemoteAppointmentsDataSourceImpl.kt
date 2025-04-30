@@ -1,6 +1,7 @@
 package eg.edu.cu.csds.icare.data.remote.datasource
 
 import com.google.firebase.auth.FirebaseAuth
+import eg.edu.cu.csds.icare.core.domain.model.AdminStatistics
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.util.Constants
@@ -193,6 +194,44 @@ class RemoteAppointmentsDataSourceImpl(
                 }
             }.onFailure {
                 Timber.e("updateAppointment() error ${it.javaClass.simpleName}: ${it.message}")
+                emit(Resource.Error(it))
+            }
+        }
+
+    override fun getAdminStatistics(): Flow<Resource<AdminStatistics>> =
+        flow {
+            runCatching {
+                emit(Resource.Loading())
+                auth.currentUser?.let { user ->
+                    val token =
+                        runBlocking {
+                            auth.currentUser
+                                ?.getIdToken(false)
+                                ?.await()
+                                ?.token
+                                .toString()
+                        }
+                    val map = HashMap<String, String>()
+                    map["token"] = token
+                    val response = service.getAdminStatistics(map)
+                    when (response.code()) {
+                        HTTP_OK -> {
+                            response.body()?.let { res ->
+                                when (res.statusCode) {
+                                    Constants.ERROR_CODE_OK ->
+                                        emit(Resource.Success(res.stats))
+
+                                    Constants.ERROR_CODE_SERVER_ERROR ->
+                                        emit(Resource.Error(ConnectException()))
+                                }
+                            }
+                        }
+
+                        else -> emit(Resource.Error(ConnectException(response.code().toString())))
+                    }
+                }
+            }.onFailure {
+                Timber.e("getAdminStatistics() error ${it.javaClass.simpleName}: ${it.message}")
                 emit(Resource.Error(it))
             }
         }

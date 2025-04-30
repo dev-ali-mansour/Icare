@@ -1,6 +1,7 @@
 package eg.edu.cu.csds.icare.data.remote.serivce
 
 import eg.edu.cu.csds.icare.core.domain.model.ActionResultResponse
+import eg.edu.cu.csds.icare.core.domain.model.AdminStatisticsResponse
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.AppointmentsResponse
 import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
@@ -72,7 +73,7 @@ interface ApiService {
         @Body body: HashMap<String, String>,
     ): Response<AppointmentsResponse>
 
-    @POST("appointmentApi/allAppointments")
+    @POST("appointmentApi/getAppointments")
     suspend fun getAppointments(
         @Body body: HashMap<String, String>,
     ): Response<AppointmentsResponse>
@@ -97,12 +98,12 @@ interface ApiService {
         @Body body: HashMap<String, String>,
     ): Response<DoctorScheduleResponse>
 
-    @POST("listClinicStaff")
+    @POST("userApi/getClinicStaff")
     suspend fun listClinicStaff(
         @Body body: HashMap<String, String>,
     ): Response<ClinicStaffResponse>
 
-    @POST("addNewClinicStaff")
+    @POST("userApi/clinicStaffRegister")
     suspend fun upsertClinicStaff(
         @Body body: ClinicStaff,
     ): Response<ActionResultResponse>
@@ -112,7 +113,7 @@ interface ApiService {
         @Body body: Pharmacy,
     ): Response<ActionResultResponse>
 
-    @POST("pharmacyApi/getPharmaciest")
+    @POST("userApi/getPharmacists")
     suspend fun listPharmacists(
         @Body body: HashMap<String, String>,
     ): Response<PharmacistsResponse>
@@ -127,7 +128,7 @@ interface ApiService {
         @Body body: LabImagingCenter,
     ): Response<ActionResultResponse>
 
-    @POST("listCenterStaff")
+    @POST("userApi/getCenterStaff")
     suspend fun listCenterStaff(
         @Body body: HashMap<String, String>,
     ): Response<CenterStaffResponse>
@@ -161,4 +162,9 @@ interface ApiService {
     suspend fun getImagingTestsByStatus(
         @Body body: HashMap<String, String>,
     ): Response<ConsultationsResponse>
+
+    @POST("clinicApi/getAdminStatistics")
+    suspend fun getAdminStatistics(
+        @Body body: HashMap<String, String>,
+    ): Response<AdminStatisticsResponse>
 }

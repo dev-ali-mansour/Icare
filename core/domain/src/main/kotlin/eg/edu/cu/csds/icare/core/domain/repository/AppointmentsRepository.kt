@@ -1,5 +1,6 @@
 package eg.edu.cu.csds.icare.core.domain.repository
 
+import eg.edu.cu.csds.icare.core.domain.model.AdminStatistics
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import kotlinx.coroutines.flow.Flow
@@ -14,4 +15,6 @@ interface AppointmentsRepository {
     fun bookAppointment(appointment: Appointment): Flow<Resource<Nothing?>>
 
     fun updateAppointment(appointment: Appointment): Flow<Resource<Nothing?>>
+
+    fun getAdminStatistics(): Flow<Resource<AdminStatistics>>
 }

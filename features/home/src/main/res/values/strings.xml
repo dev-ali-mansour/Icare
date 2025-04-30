@@ -14,5 +14,8 @@
     <string name="total_appointments">Total Patients</string>
     <string name="till_today">Till Today</string>
     <string name="today_appointment">Today\'s Appointment</string>
+    <string name="users">Users</string>
+    <string name="till_now">till now</string>
+    <string name="overview">Overview</string>
     <!--Multilingual Resources of Application-->
 </resources>

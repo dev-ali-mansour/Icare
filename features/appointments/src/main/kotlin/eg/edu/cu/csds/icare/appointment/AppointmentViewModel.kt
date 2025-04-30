@@ -6,9 +6,12 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import eg.edu.cu.csds.icare.core.domain.model.AdminStatistics
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.BookAppointment
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAdminStatistics
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointments
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointmentsByStatus
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetPatientAppointments
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.UpdateAppointment
@@ -32,6 +35,8 @@ class AppointmentViewModel(
     private val updateAppointmentUseCase: UpdateAppointment,
     private val getAppointmentsByStatusUseCase: GetAppointmentsByStatus,
     private val getPatientAppointmentUseCase: GetPatientAppointments,
+    private val getAdminStatisticsUseCase: GetAdminStatistics,
+    private val getAppointmentUseCase: GetAppointments,
 ) : ViewModel() {
     private val _actionResFlow =
         MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
@@ -46,6 +51,8 @@ class AppointmentViewModel(
         MutableStateFlow<Resource<List<Appointment>>>(Resource.Unspecified())
     val appointmentsResFlow: StateFlow<Resource<List<Appointment>>> =
         _appointmentsResFlow.asStateFlow()
+    private val _adminStatsRes = MutableStateFlow<Resource<AdminStatistics>>(Resource.Unspecified())
+    val adminStatsRes: StateFlow<Resource<AdminStatistics>> = _adminStatsRes.asStateFlow()
     var selectedAppointment: MutableState<Appointment?> = mutableStateOf(null)
     var selectedStatusIdState: MutableState<Short> = mutableStateOf(1)
     var selectedSlotState: MutableLongState = mutableLongStateOf(0)
@@ -61,6 +68,7 @@ class AppointmentViewModel(
 
     var doctorIdState = mutableStateOf("")
     var patientIdState = mutableStateOf("")
+    var isRefreshing = mutableStateOf(false)
 
     fun bookAppointment() {
         viewModelScope.launch(dispatcher) {
@@ -124,6 +132,32 @@ class AppointmentViewModel(
             }
 
             getPatientAppointmentUseCase().collectLatest {
+                _appointmentsResFlow.value = it
+            }
+        }
+    }
+
+    fun getAdminStatistics() {
+        viewModelScope.launch(dispatcher) {
+            if (_adminStatsRes.value !is Resource.Unspecified) {
+                _adminStatsRes.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+
+            getAdminStatisticsUseCase().collect {
+                _adminStatsRes.value = it
+            }
+        }
+    }
+
+    fun getAppointments() {
+        viewModelScope.launch(dispatcher) {
+            if (_appointmentsResFlow.value !is Resource.Unspecified) {
+                _appointmentsResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+
+            getAppointmentUseCase().collectLatest {
                 _appointmentsResFlow.value = it
             }
         }

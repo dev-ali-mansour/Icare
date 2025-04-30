@@ -92,8 +92,7 @@ class PharmaciesRepositoryImpl(
             }
         }
 
-    override fun listPharmacists(pharmacyId: Long): Flow<Resource<List<Pharmacist>>> =
-        remotePharmaciesDataSource.listPharmacists(pharmacyId)
+    override fun listPharmacists(): Flow<Resource<List<Pharmacist>>> = remotePharmaciesDataSource.listPharmacists()
 
     override fun addNewPharmacist(pharmacist: Pharmacist): Flow<Resource<Nothing?>> =
         remotePharmaciesDataSource.addNewPharmacist(pharmacist)

@@ -198,7 +198,7 @@ class ClinicsRepositoryImpl(
             }
         }
 
-    override fun listClinicStaff(clinicId: Long): Flow<Resource<List<ClinicStaff>>> = remoteClinicsDataSource.listClinicStaff(clinicId)
+    override fun listClinicStaff(): Flow<Resource<List<ClinicStaff>>> = remoteClinicsDataSource.listClinicStaff()
 
     override fun addNewClinicStaff(staff: ClinicStaff): Flow<Resource<Nothing?>> = remoteClinicsDataSource.updateClinicStaff(staff)
 

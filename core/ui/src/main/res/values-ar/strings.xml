@@ -139,5 +139,6 @@
     <string name="search_by_doctor_name_or_speciality">ابحث باسم الطبيب أو التخصص</string>
     <string name="open" >مفتوحة</string>
     <string name="closed" >مغلقة</string>
-    <string name="search_for_pharmacy">ابحث باسم الصيدلية</string>
+    <string name="scan_centers">مراكز أشعة</string>
+    <string name="lab_centers">معامل تحاليل</string>
 </resources>
