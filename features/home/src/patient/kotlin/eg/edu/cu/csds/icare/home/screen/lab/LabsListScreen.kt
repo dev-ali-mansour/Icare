@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.appointment.screen
+package eg.edu.cu.csds.icare.home.screen.lab
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -55,7 +55,7 @@ fun LabsListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(CoreR.string.appointment_booking)) },
+                title = { Text(text = stringResource(CoreR.string.lab_centers)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,

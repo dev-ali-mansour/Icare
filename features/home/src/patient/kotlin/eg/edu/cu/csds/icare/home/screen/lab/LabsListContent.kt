@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.appointment.screen
+package eg.edu.cu.csds.icare.home.screen.lab
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -29,7 +29,7 @@ import eg.edu.cu.csds.icare.core.ui.view.SearchTextField
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
-fun ScanCentersListContent(
+fun LabsListContent(
     centersRes: Resource<List<LabImagingCenter>>,
     searchQuery: String,
     showLoading: (Boolean) -> Unit,
@@ -141,7 +141,7 @@ private fun CenterListContent(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
 @Composable
-fun ScanCentersListContentPreview() {
+fun LabListContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         LabsListContent(
             centersRes =
@@ -150,28 +150,28 @@ fun ScanCentersListContentPreview() {
                         LabImagingCenter(
                             id = 1,
                             name = "Alfa",
-                            type = 2,
+                            type = 1,
                             phone = "123456789",
                             address = "Address 1",
                         ),
                         LabImagingCenter(
                             id = 1,
                             name = "Alfa",
-                            type = 2,
+                            type = 1,
                             phone = "123498789",
                             address = "Address 1",
                         ),
                         LabImagingCenter(
                             id = 2,
                             name = "El-Borg",
-                            type = 2,
+                            type = 1,
                             phone = "123456789",
                             address = "Address 1",
                         ),
                         LabImagingCenter(
                             id = 3,
                             name = "El-Shams",
-                            type = 2,
+                            type = 1,
                             phone = "123456789",
                             address = "Address 1",
                         ),

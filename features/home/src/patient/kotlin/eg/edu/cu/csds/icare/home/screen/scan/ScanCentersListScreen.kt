@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.appointment.screen
+package eg.edu.cu.csds.icare.home.screen.scan
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -30,7 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
+import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
@@ -40,22 +40,22 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PharmaciesListScreen(
-    pharmacyViewModel: PharmacyViewModel,
+fun ScanCentersListScreen(
+    centerViewModel: CenterViewModel,
     onNavigationIconClicked: () -> Unit,
     onSearch: () -> Unit,
     onClear: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
 ) {
-    val pharmacyResource by pharmacyViewModel.pharmaciesResFlow.collectAsStateWithLifecycle()
-    var searchQuery: String by pharmacyViewModel.searchQueryState
+    val centerResource by centerViewModel.centersResFlow.collectAsStateWithLifecycle()
+    var searchQuery: String by centerViewModel.searchQueryState
     var isRefreshing by remember { mutableStateOf(false) }
     val state = rememberPullToRefreshState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(CoreR.string.appointment_booking)) },
+                title = { Text(text = stringResource(CoreR.string.scan_centers)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,
@@ -83,7 +83,7 @@ fun PharmaciesListScreen(
                         state = state,
                         isRefreshing = isRefreshing,
                         onRefresh = {
-                            pharmacyViewModel.listPharmacies(true)
+                            centerViewModel.listLabCenters()
                         },
                     ).padding(paddingValues),
         ) {
@@ -107,7 +107,7 @@ fun PharmaciesListScreen(
                             .height(XS_PADDING),
                 )
 
-                PharmaciesListContent(
+                ScanCentersListContent(
                     modifier =
                         Modifier.constrainAs(content) {
                             top.linkTo(line.bottom)
@@ -117,7 +117,7 @@ fun PharmaciesListScreen(
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         },
-                    pharmacyRes = pharmacyResource,
+                    centersRes = centerResource,
                     searchQuery = searchQuery,
                     showLoading = { isRefreshing = it },
                     onSearchQueryChange = { searchQuery = it },
