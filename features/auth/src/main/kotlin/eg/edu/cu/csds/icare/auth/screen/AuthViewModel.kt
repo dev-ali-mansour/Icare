@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -64,7 +65,7 @@ class AuthViewModel(
     var firstNameState = mutableStateOf("")
     var lastNameState = mutableStateOf("")
     var emailState = mutableStateOf("")
-    var birthDateState = mutableStateOf("")
+    var birthDateState = mutableLongStateOf(0)
     var genderState = mutableStateOf("")
         private set
     var nationalIdState = mutableStateOf("")
@@ -198,7 +199,7 @@ class AuthViewModel(
         firstNameState.value = ""
         lastNameState.value = ""
         emailState.value = ""
-        birthDateState.value = ""
+        birthDateState.longValue = 0
         onGenderSelected(0)
         nationalIdState.value = ""
         phoneState.value = ""
