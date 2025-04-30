@@ -136,6 +136,7 @@ class ClinicViewModel(
 
     fun listClinics(forceRefresh: Boolean = false) {
         viewModelScope.launch(dispatcher) {
+            searchQueryState.value = ""
             if (_clinicsResFlow.value !is Resource.Unspecified) {
                 _clinicsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
@@ -238,6 +239,7 @@ class ClinicViewModel(
 
     fun listTopDoctors() {
         viewModelScope.launch(dispatcher) {
+            searchQueryState.value = ""
             if (_topDoctorsResFlow.value !is Resource.Unspecified) {
                 _topDoctorsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
@@ -291,6 +293,7 @@ class ClinicViewModel(
 
     fun listStaffs() {
         viewModelScope.launch(dispatcher) {
+            searchQueryState.value = ""
             if (_clinicStaffsResFlow.value !is Resource.Unspecified) {
                 _clinicStaffsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
@@ -323,8 +326,9 @@ class ClinicViewModel(
         }
     }
 
-    private fun resetStates() {
+    internal fun resetStates() {
         selectedClinicState.value = null
+        searchQueryState.value = ""
         selectedClinicIdState.longValue = 0
         nameState.value = ""
         typeState.value = ""
