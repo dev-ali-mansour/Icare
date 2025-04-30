@@ -13,6 +13,7 @@ data class Appointment(
     val doctorId: String = "",
     val doctorName: String = "",
     val doctorImage: String = "",
+    val clinicName: String = "",
     @SerialName("appointmentTime")
     val dateTime: Long = 0,
     val patientId: String = "",
