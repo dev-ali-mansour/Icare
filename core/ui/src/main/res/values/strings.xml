@@ -173,4 +173,5 @@ Objectives:\n
     <string name="closed" >Closed</string>
     <string name="scan_centers">Scan Centers</string>
     <string name="lab_centers">Lab Centers</string>
+    <string name="search_for_pharmacy">Search by pharmacy name</string>
 </resources>
