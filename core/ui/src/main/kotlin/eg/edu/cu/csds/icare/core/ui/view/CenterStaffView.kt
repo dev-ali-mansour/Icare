@@ -98,7 +98,7 @@ fun CenterStaffView(
                 verticalArrangement = Arrangement.spacedBy(XS_PADDING),
             ) {
                 Text(
-                    text = "${centerStaff.firstName} ${centerStaff.lastName}",
+                    text = centerStaff.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontFamily = helveticaFamily,
                     fontWeight = FontWeight.Bold,
@@ -106,7 +106,7 @@ fun CenterStaffView(
                 )
                 Spacer(modifier = Modifier.width(M_PADDING))
                 Text(
-                    text = centerStaff.centerId.toString(),
+                    text = centerStaff.centerName,
                     style = MaterialTheme.typography.bodyMedium,
                     fontFamily = helveticaFamily,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),

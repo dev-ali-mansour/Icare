@@ -108,7 +108,10 @@ class ClinicViewModel(
                     isOpen = isOpenState.value,
                 ),
             ).collect { result ->
-                if (result is Resource.Success) resetStates()
+                if (result is Resource.Success) {
+                    resetStates()
+                    listClinics(forceRefresh = false)
+                }
                 _actionResFlow.emit(result)
             }
         }
@@ -122,6 +125,7 @@ class ClinicViewModel(
             }
             selectedClinicState.value?.let {
                 updateClinicUseCase(it).collect { result ->
+                    if (result is Resource.Success) listClinics(forceRefresh = false)
                     _actionResFlow.emit(result)
                 }
             } ?: run {
@@ -162,7 +166,10 @@ class ClinicViewModel(
                     rating = ratingState.doubleValue,
                 ),
             ).collect { result ->
-                if (result is Resource.Success) resetStates()
+                if (result is Resource.Success) {
+                    resetStates()
+                    listDoctors(forceRefresh = false)
+                }
                 _actionResFlow.emit(result)
             }
         }
@@ -176,6 +183,7 @@ class ClinicViewModel(
             }
             selectedDoctorState.value?.let {
                 updateDoctorUseCase(it).collect { result ->
+                    if (result is Resource.Success) listDoctors(forceRefresh = false)
                     _actionResFlow.value = result
                 }
             } ?: run {
@@ -255,7 +263,10 @@ class ClinicViewModel(
                     phone = phoneState.value,
                 ),
             ).collect { result ->
-                if (result is Resource.Success) resetStates()
+                if (result is Resource.Success) {
+                    resetStates()
+                    listStaffs()
+                }
                 _actionResFlow.emit(result)
             }
         }
@@ -269,6 +280,7 @@ class ClinicViewModel(
             }
             selectedClinicStaffState.value?.let {
                 updateClinicStaffUseCase(it).collect { result ->
+                    if (result is Resource.Success) listStaffs()
                     _actionResFlow.emit(result)
                 }
             } ?: run {
@@ -283,7 +295,7 @@ class ClinicViewModel(
                 _clinicStaffsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            listClinicStaffUseCase(selectedClinicIdState.longValue).collect { result ->
+            listClinicStaffUseCase().collect { result ->
                 _clinicStaffsResFlow.value = result
             }
         }

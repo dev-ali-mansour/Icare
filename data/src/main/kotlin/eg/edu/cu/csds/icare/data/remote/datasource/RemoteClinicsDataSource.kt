@@ -22,7 +22,7 @@ interface RemoteClinicsDataSource {
 
     fun getDoctorSchedule(uid: String): Flow<Resource<DoctorSchedule>>
 
-    fun listClinicStaff(clinicId: Long): Flow<Resource<List<ClinicStaff>>>
+    fun listClinicStaff(): Flow<Resource<List<ClinicStaff>>>
 
     fun addNewClinicStaff(staff: ClinicStaff): Flow<Resource<Nothing?>>
 
