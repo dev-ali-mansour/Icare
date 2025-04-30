@@ -111,6 +111,7 @@ class CenterViewModel(
 
     fun listCenters(forceRefresh: Boolean = false) {
         viewModelScope.launch(dispatcher) {
+            searchQueryState.value = ""
             if (_centersResFlow.value !is Resource.Unspecified) {
                 _centersResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
@@ -123,6 +124,7 @@ class CenterViewModel(
 
     fun listLabCenters(forceRefresh: Boolean = false) {
         viewModelScope.launch(dispatcher) {
+            searchQueryState.value = ""
             if (_centersResFlow.value !is Resource.Unspecified) {
                 _centersResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
@@ -182,6 +184,7 @@ class CenterViewModel(
 
     fun listImagingCenters(forceRefresh: Boolean = false) {
         viewModelScope.launch(dispatcher) {
+            searchQueryState.value = ""
             if (_centersResFlow.value !is Resource.Unspecified) {
                 _centersResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
@@ -284,6 +287,7 @@ class CenterViewModel(
 
     fun listStaff() {
         viewModelScope.launch(dispatcher) {
+            searchQueryState.value = ""
             if (_centerStaffsResFlow.value !is Resource.Unspecified) {
                 _centerStaffsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
@@ -294,10 +298,11 @@ class CenterViewModel(
         }
     }
 
-    private fun resetStates() {
+    internal fun resetStates() {
         selectedCenterStaffState.value = null
         selectedCenterState.value = null
         selectedCenterState.value = null
+        searchQueryState.value = ""
         nameState.value = ""
         typeState.value = 0.toShort()
         phoneState.value = ""

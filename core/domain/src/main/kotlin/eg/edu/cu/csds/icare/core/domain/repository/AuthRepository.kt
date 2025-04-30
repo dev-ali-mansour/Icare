@@ -9,7 +9,7 @@ interface AuthRepository {
         firstName: String,
         lastName: String,
         email: String,
-        birthDate: String,
+        birthDate: Long,
         gender: String,
         nationalId: String,
         phone: String,

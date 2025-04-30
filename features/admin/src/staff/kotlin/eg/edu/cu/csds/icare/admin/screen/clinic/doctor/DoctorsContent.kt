@@ -114,7 +114,7 @@ fun DoctorsContent(
             is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
 
             is Resource.Success ->
-                LaunchedEffect(key1 = Unit) {
+                LaunchedEffect(key1 = actionResource) {
                     showLoading(false)
                 }
 
