@@ -146,9 +146,9 @@ internal fun CenterDetailsContent(
                                 .menuAnchor(MenuAnchorType.PrimaryNotEditable),
                         readOnly = true,
                         value =
-                            stringResource(
-                                types.first { it.code == type || it.code == 1.toShort() }.textResId,
-                            ),
+                            types.firstOrNull { it.code == type }?.let {
+                                stringResource(it.textResId)
+                            } ?: "",
                         onValueChange = { },
                         label = {
                             Text(
