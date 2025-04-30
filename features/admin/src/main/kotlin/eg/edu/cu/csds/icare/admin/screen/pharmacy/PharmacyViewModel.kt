@@ -106,6 +106,7 @@ class PharmacyViewModel(
 
     fun listPharmacies(forceRefresh: Boolean = false) {
         viewModelScope.launch(dispatcher) {
+            searchQueryState.value = ""
             if (_pharmaciesResFlow.value !is Resource.Unspecified) {
                 _pharmaciesResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
@@ -160,6 +161,7 @@ class PharmacyViewModel(
 
     fun listPharmacists() {
         viewModelScope.launch(dispatcher) {
+            searchQueryState.value = ""
             if (_pharmacistsResFlow.value !is Resource.Unspecified) {
                 _pharmacistsResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
@@ -202,10 +204,11 @@ class PharmacyViewModel(
         }
     }
 
-    private fun resetStates() {
+    internal fun resetStates() {
         viewModelScope.launch {
             _actionResFlow.emit(Resource.Unspecified())
         }
+        searchQueryState.value = ""
         selectedPharmacyState.value = null
         selectedPharmacistState.value = null
         nameState.value = ""
