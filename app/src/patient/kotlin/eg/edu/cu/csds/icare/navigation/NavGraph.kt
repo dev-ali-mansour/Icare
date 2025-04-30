@@ -32,7 +32,7 @@ import eg.edu.cu.csds.icare.core.ui.util.activity
 import eg.edu.cu.csds.icare.core.ui.util.getErrorMessage
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.home.HomeViewModel
-import eg.edu.cu.csds.icare.home.screen.navigation.homeRoute
+import eg.edu.cu.csds.icare.home.navigation.homeRoute
 import eg.edu.cu.csds.icare.onboarding.navigation.onBoardingRoute
 import eg.edu.cu.csds.icare.settings.navigation.settingsRoute
 import kotlinx.coroutines.delay
@@ -169,6 +169,9 @@ fun SetupNavGraph(
                 pharmacyViewModel = pharmacyViewModel,
                 centerViewModel = centerViewModel,
                 navigateToScreen = { screen -> navController.navigate(screen) },
+                onNavigationIconClicked = {
+                    navController.navigateUpSafely()
+                },
                 onError = { error ->
                     exitApp.value = false
                     handleError(
