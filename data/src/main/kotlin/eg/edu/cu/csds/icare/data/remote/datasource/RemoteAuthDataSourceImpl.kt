@@ -58,6 +58,7 @@ class RemoteAuthDataSourceImpl(
                                     when {
                                         res.user.isActive ->
                                             emit(Resource.Success(data = res.user.copy(userId = uid)))
+
                                         else ->
                                             emit(Resource.Error(UserNotAuthorizedException()))
                                     }
@@ -89,7 +90,7 @@ class RemoteAuthDataSourceImpl(
         firstName: String,
         lastName: String,
         email: String,
-        birthDate: String,
+        birthDate: Long,
         gender: String,
         nationalId: String,
         phone: String,
@@ -247,7 +248,7 @@ class RemoteAuthDataSourceImpl(
         firstName: String,
         lastName: String,
         email: String,
-        birthDate: String,
+        birthDate: Long,
         gender: String,
         nationalId: String,
         phone: String,
@@ -264,7 +265,7 @@ class RemoteAuthDataSourceImpl(
             map["fName"] = firstName
             map["lName"] = lastName
             map["email"] = email
-            map["birthDate"] = birthDate
+            map["birthDate"] = birthDate.toString()
             map["gender"] = gender.toString()
             map["nationalId"] = nationalId.toString()
             map["phoneNumber"] = phone
