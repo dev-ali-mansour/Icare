@@ -20,6 +20,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -59,6 +60,10 @@ internal fun NewClinicScreen(
     var isRefreshing by clinicViewModel.isRefreshing
     val state = rememberPullToRefreshState()
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = true) {
+        clinicViewModel.resetStates()
+    }
 
     Scaffold(
         topBar = {
