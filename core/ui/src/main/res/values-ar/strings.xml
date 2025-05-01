@@ -36,6 +36,7 @@
     <string name="user_collision_error">هذا الحساب مسجل لدينا! يمكنك استخدام خاصية استعادة كلمة المرور.</string>
     <string name="authorization_error">عفواً! ليس لديك صلاحية لتنفيذ هذه العملية</string>
     <string name="network_error">فشل في الاتصال بالسيرفر!</string>
+    <string name="account_link_error">فشل في ربط حسابك!</string>
     <string name="invalid_email_error">عفواً لم نعثر على بريدك الإلكتروني في بيانات النظام!</string>
     <string name="email_verification_error">يرجى تأكيد البريد الإلكتروني الخاص بك أولاً! راجع رسالة التفعيل الجديدة المرسلة على بريدك الإلكتروني الآن</string>
     <string name="credentials_error">البريد الإلكتروني أو كلمة المرور غير صحيحة!</string>

@@ -59,6 +59,7 @@ Objectives:\n
     <string name="user_collision_error">This account has already been registered! You can use forget password.</string>
     <string name="authorization_error">Sorry! You don\'t have permission to do this task</string>
     <string name="network_error">Failed to connect to the server!</string>
+    <string name="account_link_error">Failed to link your account!</string>
     <string name="invalid_email_error">We don\'t have your email address in our system!</string>
     <string name="email_verification_error">Please verify your email first! Check the new verification message sent to your email.</string>
     <string name="credentials_error">Username or password is invalid!</string>
