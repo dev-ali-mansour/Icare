@@ -65,7 +65,7 @@ class AuthViewModel(
     var firstNameState = mutableStateOf("")
     var lastNameState = mutableStateOf("")
     var emailState = mutableStateOf("")
-    var birthDateState = mutableLongStateOf(0)
+    var birthDateState = mutableLongStateOf(System.currentTimeMillis())
     var genderState = mutableStateOf("")
         private set
     var nationalIdState = mutableStateOf("")
@@ -94,7 +94,7 @@ class AuthViewModel(
                 firstName = firstNameState.value,
                 lastName = lastNameState.value,
                 email = emailState.value,
-                birthDate = birthDateState.value,
+                birthDate = birthDateState.longValue,
                 gender = genderState.value,
                 nationalId = nationalIdState.value,
                 phone = phoneState.value,
