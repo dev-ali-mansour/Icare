@@ -175,4 +175,5 @@ Objectives:\n
     <string name="scan_centers">Scan Centers</string>
     <string name="lab_centers">Lab Centers</string>
     <string name="search_for_pharmacy">Search by pharmacy name</string>
+    <string name="reschedule">Reschedule</string>
 </resources>

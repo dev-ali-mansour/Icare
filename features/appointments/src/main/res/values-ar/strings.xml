@@ -3,7 +3,6 @@
     <string name="my_appointments">مواعيدي</string>
     <string name="tomorrow">غداً</string>
     <string name="pending_for_confirmation">في انتظار التأكيد</string>
-    <string name="reschedule">إعادة جدولة</string>
     <string name="cancel">إلغاء</string>
     <string name="book_your_appointment_time">احجز ميعاد حجزك</string>
     <string name="no_doctors_available">No doctors available</string>
