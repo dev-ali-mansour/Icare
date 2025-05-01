@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.SettingsItem
 import eg.edu.cu.csds.icare.core.domain.util.Constants
-import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.util.appRate
@@ -32,10 +31,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun SettingsScreen(
-    mainViewModel: MainViewModel,
-    navigateToScreen: (Screen) -> Unit,
     context: Context = LocalContext.current,
     settingsViewModel: SettingsViewModel = koinViewModel(),
+    navigateToScreen: (Screen) -> Unit,
 ) {
     val settings by settingsViewModel.settingsFlow.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
