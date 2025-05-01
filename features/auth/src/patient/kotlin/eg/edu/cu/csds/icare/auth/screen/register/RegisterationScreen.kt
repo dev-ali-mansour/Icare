@@ -97,6 +97,7 @@ internal fun RegistrationScreen(
                 firstName = firstName,
                 lastName = lastName,
                 email = email,
+                birthDate = birthDate,
                 selectedGender = selectedGender,
                 genderExpanded = gendersExpanded,
                 nationalId = nationalId,

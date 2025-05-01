@@ -33,7 +33,6 @@ import org.koin.java.KoinJavaComponent.inject
 fun MainScreen(
     mainViewModel: MainViewModel,
     mediaHelper: MediaHelper,
-    showAppSettings: () -> Unit,
 ) {
     val layoutDirection = LocalLayoutDirection.current
     val navController = rememberNavController()
@@ -82,7 +81,6 @@ fun MainScreen(
                 mainViewModel = mainViewModel,
                 authViewModel = authViewModel,
                 homeViewModel = homeViewModel,
-                showAppSettings = { showAppSettings() },
             )
         }
     }

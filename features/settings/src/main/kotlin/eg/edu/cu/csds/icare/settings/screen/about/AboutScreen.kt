@@ -28,8 +28,8 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AboutScreen(
-    onNavigationIconClicked: () -> Unit,
     context: Context = LocalContext.current,
+    onNavigationIconClicked: () -> Unit,
 ) {
     val appVersion: String =
         context.packageManager

@@ -5,6 +5,8 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,21 +24,26 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.core.net.toUri
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import eg.edu.cu.csds.icare.auth.R
-import eg.edu.cu.csds.icare.core.domain.model.FirebaseUserBasicInfo
+import eg.edu.cu.csds.icare.core.domain.model.Language
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
+import eg.edu.cu.csds.icare.core.ui.theme.Blue700
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.MEDIUM_ICON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
@@ -43,14 +51,16 @@ import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
+import eg.edu.cu.csds.icare.core.ui.util.currentLanguage
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
+import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun ProfileContent(
     userResource: Resource<User>,
     logoutRes: Resource<Nothing?>,
-    user: FirebaseUserBasicInfo?,
     isLoading: Boolean,
+    onGoogleClicked: (Boolean) -> Unit,
     onLogoutClicked: () -> Unit,
     onLogoutSucceed: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
@@ -70,55 +80,53 @@ internal fun ProfileContent(
             )
         }
 
-        user?.let { user ->
-            CurrentUserInfo(
-                modifier =
-                    Modifier.constrainAs(infoContainer) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
-                user = user,
-                context = context,
-            )
+        when (userResource) {
+            is Resource.Unspecified -> {}
+            is Resource.Loading ->
+                CircularProgressIndicator(
+                    modifier =
+                        Modifier.constrainAs(progress) {
+                            top.linkTo(parent.top, margin = S_PADDING)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                        },
+                )
 
-            when (userResource) {
-                is Resource.Unspecified -> {}
-                is Resource.Loading ->
-                    CircularProgressIndicator(
+            is Resource.Success ->
+                userResource.data?.let { user ->
+                    CurrentUserInfo(
                         modifier =
-                            Modifier.constrainAs(progress) {
-                                top.linkTo(parent.top, margin = S_PADDING)
+                            Modifier.constrainAs(infoContainer) {
+                                top.linkTo(parent.top)
                                 start.linkTo(parent.start)
                                 end.linkTo(parent.end)
-                                bottom.linkTo(parent.bottom)
                             },
+                        user = user,
+                        context = context,
+                        onGoogleClicked = { onGoogleClicked(it) },
                     )
+                }
 
-                is Resource.Success ->
-                    userResource.data?.let {
-                    }
-
-                is Resource.Error -> {
-                    LaunchedEffect(key1 = true) {
-                        onError(userResource.error)
-                    }
+            is Resource.Error -> {
+                LaunchedEffect(key1 = true) {
+                    onError(userResource.error)
                 }
             }
-            AnimatedButton(
-                modifier =
-                    Modifier
-                        .constrainAs(logout) {
-                            start.linkTo(parent.start, margin = L_PADDING)
-                            end.linkTo(parent.end, margin = L_PADDING)
-                            bottom.linkTo(parent.bottom, margin = L_PADDING)
-                            width = Dimension.fillToConstraints
-                        },
-                text = stringResource(id = R.string.sign_out),
-                color = Color.Red.copy(alpha = 0.6f),
-                onClick = { onLogoutClicked() },
-            )
         }
+        AnimatedButton(
+            modifier =
+                Modifier
+                    .constrainAs(logout) {
+                        start.linkTo(parent.start, margin = L_PADDING)
+                        end.linkTo(parent.end, margin = L_PADDING)
+                        bottom.linkTo(parent.bottom, margin = L_PADDING)
+                        width = Dimension.fillToConstraints
+                    },
+            text = stringResource(id = R.string.sign_out),
+            color = Color.Red.copy(alpha = 0.6f),
+            onClick = { onLogoutClicked() },
+        )
 
         when (logoutRes) {
             is Resource.Unspecified -> {}
@@ -145,10 +153,11 @@ internal fun ProfileContent(
 }
 
 @Composable
-internal fun CurrentUserInfo(
-    modifier: Modifier,
-    user: FirebaseUserBasicInfo,
-    context: Context,
+fun CurrentUserInfo(
+    user: User,
+    onGoogleClicked: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    context: Context = LocalContext.current,
 ) {
     ConstraintLayout(
         modifier =
@@ -157,7 +166,7 @@ internal fun CurrentUserInfo(
                 .fillMaxWidth()
                 .padding(S_PADDING),
     ) {
-        val (image, name, email) = createRefs()
+        val (image, name, email, socialContainer, verified, google) = createRefs()
 
         Image(
             modifier =
@@ -175,8 +184,8 @@ internal fun CurrentUserInfo(
                     ImageRequest
                         .Builder(context)
                         .data(data = user.photoUrl)
-                        .placeholder(R.drawable.user_placeholder)
-                        .error(R.drawable.user_placeholder)
+                        .placeholder(CoreR.drawable.user_placeholder)
+                        .error(CoreR.drawable.user_placeholder)
                         .build(),
                 ),
             contentDescription = null,
@@ -185,13 +194,12 @@ internal fun CurrentUserInfo(
 
         Text(
             modifier =
-                Modifier
-                    .constrainAs(name) {
-                        top.linkTo(image.top)
-                        start.linkTo(image.end, margin = XS_PADDING)
-                        end.linkTo(parent.end)
-                    },
-            text = user.displayName ?: "",
+                Modifier.constrainAs(name) {
+                    top.linkTo(image.top)
+                    start.linkTo(image.end, margin = XS_PADDING)
+                    end.linkTo(parent.end)
+                },
+            text = user.displayName.toString(),
             color = contentColor,
             fontSize = MaterialTheme.typography.titleLarge.fontSize,
             fontWeight = FontWeight.Bold,
@@ -207,14 +215,84 @@ internal fun CurrentUserInfo(
                     start.linkTo(image.end)
                     end.linkTo(parent.end)
                 },
-            text = user.email ?: "",
+            text = user.email.toString(),
             color = contentColor,
-            fontSize = MaterialTheme.typography.titleSmall.fontSize,
+            fontSize = MaterialTheme.typography.titleMedium.fontSize,
             fontWeight = FontWeight.Bold,
             fontFamily = helveticaFamily,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
+
+        ConstraintLayout(
+            modifier =
+                Modifier.constrainAs(socialContainer) {
+                    top.linkTo(image.bottom, margin = S_PADDING)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                },
+        ) {
+            Box(
+                modifier =
+                    Modifier
+                        .constrainAs(verified) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                        },
+            ) {
+                Icon(
+                    modifier = Modifier.size(MEDIUM_ICON_SIZE),
+                    painter = painterResource(R.drawable.baseline_verified_user_24),
+                    contentDescription = null,
+                    tint = Color.Green,
+                )
+            }
+
+            Box(
+                modifier =
+                    Modifier
+                        .constrainAs(google) {
+                            top.linkTo(verified.top)
+                            start.linkTo(verified.end)
+                        }
+                        .clickable { onGoogleClicked(user.linkedWithGoogle) },
+            ) {
+                if (user.linkedWithGoogle) {
+                    Icon(
+                        modifier = Modifier.size(MEDIUM_ICON_SIZE),
+                        painter = painterResource(CoreR.drawable.ic_social_google),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                    )
+                } else {
+                    Text(
+                        text = stringResource(R.string.link_google),
+                        color = Blue700,
+                        fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = helveticaFamily,
+                        style = TextStyle(textDecoration = TextDecoration.Underline),
+                        maxLines = 1,
+                    )
+                }
+            }
+            when (currentLanguage) {
+                Language.ARABIC ->
+                    createHorizontalChain(
+                        google,
+                        verified,
+                        chainStyle = ChainStyle.Spread,
+                    )
+
+                else ->
+                    createHorizontalChain(
+                        verified,
+                        google,
+                        chainStyle = ChainStyle.Spread,
+                    )
+            }
+        }
     }
 }
 
@@ -226,15 +304,20 @@ internal fun CurrentUserInfo(
 internal fun ProfileContentPreview() {
     Column(modifier = Modifier.background(color = backgroundColor)) {
         ProfileContent(
-            userResource = Resource.Success(data = User()),
-            logoutRes = Resource.Unspecified(),
-            user =
-                FirebaseUserBasicInfo(
-                    displayName = "Ali Mansour",
-                    email = "",
-                    photoUrl = "".toUri(),
+            userResource =
+                Resource.Success(
+                    data =
+                        User(
+                            displayName = "Ali Mansour",
+                            email = "",
+                            photoUrl = "",
+                            isEmailVerified = true,
+                            linkedWithGoogle = true,
+                        ),
                 ),
+            logoutRes = Resource.Unspecified(),
             isLoading = false,
+            onGoogleClicked = {},
             onLogoutClicked = {},
             onLogoutSucceed = {},
             onError = {},

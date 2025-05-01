@@ -53,7 +53,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.dialogTint
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.tintColor
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
-import eg.edu.cu.csds.icare.core.ui.util.getBasicInfo
 import eg.edu.cu.csds.icare.home.HomeViewModel
 import eg.edu.cu.csds.icare.home.R
 import kotlin.system.exitProcess
@@ -231,8 +230,8 @@ internal fun HomeScreen(
                     }
                 }
             }
+
             HomeContent(
-                firebaseUser = firebaseAuth.currentUser.getBasicInfo,
                 userResource = userResource,
                 appVersion = appVersion,
                 adminStatsRes = adminStatsRes,
@@ -250,6 +249,7 @@ internal fun HomeScreen(
                 onError = { onError(it) },
             )
         }
+
         Indicator(
             modifier = Modifier.align(Alignment.TopCenter),
             isRefreshing = isRefreshing,

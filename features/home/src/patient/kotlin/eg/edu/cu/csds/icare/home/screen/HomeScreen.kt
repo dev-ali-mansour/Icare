@@ -34,7 +34,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
@@ -48,14 +47,12 @@ import eg.edu.cu.csds.icare.core.ui.theme.dialogTint
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.tintColor
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
-import eg.edu.cu.csds.icare.core.ui.util.getBasicInfo
 import eg.edu.cu.csds.icare.home.HomeViewModel
 import eg.edu.cu.csds.icare.home.R
 import kotlin.system.exitProcess
 
 @Composable
 internal fun HomeScreen(
-    firebaseAuth: FirebaseAuth,
     mediaHelper: MediaHelper,
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
@@ -210,7 +207,6 @@ internal fun HomeScreen(
             }
         }
         HomeContent(
-            firebaseUser = firebaseAuth.currentUser.getBasicInfo,
             userResource = userResource,
             topDoctorsRes = topDoctorsRes,
             appointmentsRes = appointmentsRes,

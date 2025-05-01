@@ -50,13 +50,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
-import eg.edu.cu.csds.icare.core.domain.model.FirebaseUserBasicInfo
 import eg.edu.cu.csds.icare.core.domain.model.Promotion
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.User
@@ -100,7 +98,6 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun HomeContent(
-    firebaseUser: FirebaseUserBasicInfo?,
     userResource: Resource<User>,
     topDoctorsRes: Resource<List<Doctor>>,
     appointmentsRes: Resource<List<Appointment>>,
@@ -127,12 +124,14 @@ internal fun HomeContent(
             color = backgroundColor,
             tonalElevation = S_PADDING,
         ) {
-            TitleView(
-                modifier = Modifier,
-                appVersion = appVersion,
-                firebaseUser = firebaseUser,
-                onUserClicked = { onUserClicked() },
-            )
+            userResource.data?.let { user ->
+                TitleView(
+                    modifier = Modifier,
+                    appVersion = appVersion,
+                    user = user,
+                    onUserClicked = { onUserClicked() },
+                )
+            }
         }
         Box(
             modifier =
@@ -524,7 +523,7 @@ internal fun HomeContent(
 @Composable
 private fun TitleView(
     appVersion: String,
-    firebaseUser: FirebaseUserBasicInfo?,
+    user: User,
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     onUserClicked: () -> Unit,
@@ -580,50 +579,47 @@ private fun TitleView(
                         .width(HEADER_PROFILE_CARD_WIDTH)
                         .padding(U_PADDING),
             ) {
-                firebaseUser?.let { user ->
+                val (image, name) = createRefs()
 
-                    val (image, name) = createRefs()
-
-                    Image(
-                        modifier =
-                            Modifier
-                                .clip(CircleShape)
-                                .size(CATEGORY_ICON_SIZE)
-                                .constrainAs(image) {
-                                    top.linkTo(parent.top)
-                                    start.linkTo(parent.start)
-                                    bottom.linkTo(parent.bottom)
-                                },
-                        painter =
-                            rememberAsyncImagePainter(
-                                ImageRequest
-                                    .Builder(context)
-                                    .data(data = user.photoUrl)
-                                    .placeholder(R.drawable.user_placeholder)
-                                    .error(R.drawable.user_placeholder)
-                                    .build(),
-                            ),
-                        contentDescription = null,
-                        contentScale = ContentScale.Fit,
-                    )
-
-                    Text(
-                        modifier =
-                            Modifier.constrainAs(name) {
-                                top.linkTo(image.top)
-                                start.linkTo(image.end, margin = XS_PADDING)
-                                bottom.linkTo(image.bottom)
+                Image(
+                    modifier =
+                        Modifier
+                            .clip(CircleShape)
+                            .size(CATEGORY_ICON_SIZE)
+                            .constrainAs(image) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                                bottom.linkTo(parent.bottom)
                             },
-                        text = user.displayName ?: "",
-                        color = contentColor,
-                        fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = helveticaFamily,
-                        maxLines = 1,
-                        textAlign = TextAlign.Center,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
+                    painter =
+                        rememberAsyncImagePainter(
+                            ImageRequest
+                                .Builder(context)
+                                .data(data = user.photoUrl)
+                                .placeholder(R.drawable.user_placeholder)
+                                .error(R.drawable.user_placeholder)
+                                .build(),
+                        ),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                )
+
+                Text(
+                    modifier =
+                        Modifier.constrainAs(name) {
+                            top.linkTo(image.top)
+                            start.linkTo(image.end, margin = XS_PADDING)
+                            bottom.linkTo(image.bottom)
+                        },
+                    text = user.displayName,
+                    color = contentColor,
+                    fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = helveticaFamily,
+                    maxLines = 1,
+                    textAlign = TextAlign.Center,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
         }
 
@@ -659,13 +655,15 @@ internal fun HomeContentPreview() {
                 .padding(XS_PADDING),
     ) {
         HomeContent(
-            firebaseUser =
-                FirebaseUserBasicInfo(
-                    displayName = "Ali Mansour",
-                    email = "",
-                    photoUrl = "".toUri(),
+            userResource =
+                Resource.Success(
+                    User(
+                        roleId = Role.AdminRole.code,
+                        displayName = "Ali Mansour",
+                        email = "",
+                        photoUrl = "",
+                    ),
                 ),
-            userResource = Resource.Success(User(roleId = Role.AdminRole.code)),
             topDoctorsRes =
                 Resource.Success(
                     listOf(

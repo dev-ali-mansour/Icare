@@ -29,7 +29,7 @@ import eg.edu.cu.csds.icare.data.local.db.entity.UserEntity
         SettingsEntity::class, UserEntity::class, BookingMethodEntity::class, ClinicEntity::class,
         CenterEntity::class, DoctorEntity::class, PharmacyEntity::class,
     ],
-    version = 12,
+    version = 13,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -43,6 +43,7 @@ import eg.edu.cu.csds.icare.data.local.db.entity.UserEntity
         AutoMigration(from = 9, to = 10),
         AutoMigration(from = 10, to = 11, spec = AppDatabase.AutoMigrationSpec11::class),
         AutoMigration(from = 11, to = 12, spec = AppDatabase.AutoMigrationSpec12::class),
+        AutoMigration(from = 12, to = 13),
     ],
 )
 abstract class AppDatabase : RoomDatabase() {
