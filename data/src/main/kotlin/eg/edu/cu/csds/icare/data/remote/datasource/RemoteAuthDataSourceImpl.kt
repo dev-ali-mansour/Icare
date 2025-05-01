@@ -57,7 +57,22 @@ class RemoteAuthDataSourceImpl(
                                 Constants.ERROR_CODE_OK ->
                                     when {
                                         res.user.isActive ->
-                                            emit(Resource.Success(data = res.user.copy(userId = uid)))
+                                            emit(
+                                                Resource.Success(
+                                                    data =
+                                                        res.user.copy(
+                                                            userId = uid,
+                                                            displayName = user.displayName.toString(),
+                                                            email = user.email.toString(),
+                                                            photoUrl = user.photoUrl.toString(),
+                                                            isEmailVerified = user.isEmailVerified,
+                                                            linkedWithGoogle =
+                                                                user.providerData.any {
+                                                                    it.providerId == GoogleAuthProvider.PROVIDER_ID
+                                                                },
+                                                        ),
+                                                ),
+                                            )
 
                                         else ->
                                             emit(Resource.Error(UserNotAuthorizedException()))
@@ -228,8 +243,22 @@ class RemoteAuthDataSourceImpl(
                     FacebookAuthProvider.PROVIDER_ID -> FacebookAuthProvider.getCredential(token)
                     else -> throw FirebaseAuthException("17016", "No such provider error")
                 }
-            auth.currentUser!!.linkWithCredential(credential).await()
-            emit(Resource.Success(null))
+            auth.currentUser?.let { currentUser ->
+                val authResult = currentUser.linkWithCredential(credential).await()
+                val providerData =
+                    authResult.user?.providerData?.firstOrNull { it.providerId == providerId }
+                providerData?.photoUrl?.let { newPhotoUrl ->
+                    val profileUpdates =
+                        UserProfileChangeRequest
+                            .Builder()
+                            .setPhotoUri(newPhotoUrl)
+                            .build()
+                    currentUser.updateProfile(profileUpdates).await()
+                }
+                emit(Resource.Success(null))
+            } ?: run {
+                emit(Resource.Error(UserNotAuthorizedException()))
+            }
         }.catch { emit(Resource.Error(it)) }
 
     override fun deleteAccount(): Flow<Resource<Nothing?>> =
