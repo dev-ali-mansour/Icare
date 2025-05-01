@@ -40,7 +40,6 @@ import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import kotlin.system.exitProcess
 
-@Suppress("UnusedParameter")
 @Composable
 fun SetupNavGraph(
     firebaseAuth: FirebaseAuth,
@@ -49,7 +48,6 @@ fun SetupNavGraph(
     mainViewModel: MainViewModel,
     authViewModel: AuthViewModel,
     homeViewModel: HomeViewModel,
-    showAppSettings: () -> Unit,
     context: Context = LocalContext.current,
 ) {
     val onBoardingRes by mainViewModel.onBoardingCompleted.collectAsStateWithLifecycle()
@@ -209,8 +207,9 @@ fun SetupNavGraph(
             )
 
             settingsRoute(
-                mainViewModel = mainViewModel,
-                navigateToScreen = { navController.navigate(it) },
+                navigateToScreen = {
+                    navController.navigate(it)
+                },
                 onNavigationIconClicked = {
                     navController.navigateUpSafely()
                 },
