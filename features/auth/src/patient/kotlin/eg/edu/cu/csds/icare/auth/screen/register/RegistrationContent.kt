@@ -88,6 +88,7 @@ internal fun RegistrationContent(
     firstName: String,
     lastName: String,
     email: String,
+    birthDate: Long,
     selectedGender: Short,
     genderExpanded: Boolean,
     nationalId: String,
@@ -127,8 +128,6 @@ internal fun RegistrationContent(
             GenderItem(code = 1, textResId = CoreR.string.male),
             GenderItem(code = 2, textResId = CoreR.string.female),
         )
-    var selectedBirthDate by remember { mutableStateOf<Long?>(null) }
-    var selectedBirthDateFormatted by remember { mutableStateOf("") }
     val interactionSource = remember { MutableInteractionSource() }
     val scope = rememberCoroutineScope()
     var showDatePicker by remember { mutableStateOf(false) }
@@ -142,8 +141,6 @@ internal fun RegistrationContent(
                 TextButton(
                     onClick = {
                         datePickerState.selectedDateMillis?.let {
-                            selectedBirthDate = it
-                            selectedBirthDateFormatted = it.getFormattedDate(context)
                             onBirthDateChanged(it)
                         }
                         showDatePicker = false
@@ -344,7 +341,7 @@ internal fun RegistrationContent(
                 )
 
                 TextField(
-                    value = selectedBirthDateFormatted,
+                    value = birthDate.getFormattedDate(context),
                     onValueChange = {},
                     readOnly = true,
                     label = {
@@ -832,6 +829,7 @@ internal fun RegistrationContentPreview() {
             lastName = "",
             email = "",
             nationalId = "",
+            birthDate = System.currentTimeMillis(),
             selectedGender = 1,
             genderExpanded = false,
             phone = "",
