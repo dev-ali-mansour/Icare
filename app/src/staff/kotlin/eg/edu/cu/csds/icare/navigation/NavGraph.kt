@@ -183,6 +183,8 @@ fun SetupNavGraph(
                 },
             )
 
+            notificationsRoute()
+
             adminRoute(
                 mainViewModel = mainViewModel,
                 clinicViewModel = clinicViewModel,
