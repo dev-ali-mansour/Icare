@@ -36,6 +36,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.data.util.getFormattedDateTime
+import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 fun AppointmentCard(
@@ -106,7 +107,7 @@ fun AppointmentCard(
                         } else {
                             TextButton(onClick = { onReschedule() }) {
                                 Text(
-                                    text = stringResource(R.string.reschedule),
+                                    text = stringResource(CoreR.string.reschedule),
                                     fontFamily = helveticaFamily,
                                 )
                             }

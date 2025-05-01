@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
+import eg.edu.cu.csds.icare.appointment.screen.AppointmentRescheduleScreen
 import eg.edu.cu.csds.icare.appointment.screen.DoctorProfileScreen
 import eg.edu.cu.csds.icare.appointment.screen.DoctorsListScreen
 import eg.edu.cu.csds.icare.appointment.screen.MyAppointmentsScreen
@@ -22,10 +23,18 @@ fun NavGraphBuilder.appointmentsRoute(
         MyAppointmentsScreen(
             appointmentViewModel = appointmentsViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onReschedule = {},
+            onReschedule = {
+                appointmentsViewModel.selectedAppointmentState.value = it
+                clinicViewModel.getDoctorSchedule(it.doctorId)
+                navigateToScreen(Screen.AppointmentReschedule)
+            },
             onCancel = {
-                appointmentsViewModel.selectedAppointment.value = it
+                appointmentsViewModel.selectedAppointmentState.value = it
                 appointmentsViewModel.updateAppointment()
+            },
+            onSuccess = {
+                appointmentsViewModel.selectedAppointmentState.value = null
+                appointmentsViewModel.getPatientAppointments()
             },
             onError = { onError(it) },
         )
@@ -64,6 +73,25 @@ fun NavGraphBuilder.appointmentsRoute(
                 appointmentsViewModel.bookAppointment()
             },
             onSuccess = {
+                appointmentsViewModel.selectedSlotState.longValue = 0
+                appointmentsViewModel.getPatientAppointments()
+                onNavigationIconClicked()
+            },
+            onError = { onError(it) },
+        )
+    }
+
+    composable<Screen.AppointmentReschedule> {
+        AppointmentRescheduleScreen(
+            clinicViewModel = clinicViewModel,
+            appointmentViewModel = appointmentsViewModel,
+            onNavigationIconClicked = { onNavigationIconClicked() },
+            onRescheduleClicked = {
+                appointmentsViewModel.selectedAppointmentState.value = it
+                appointmentsViewModel.updateAppointment()
+            },
+            onSuccess = {
+                appointmentsViewModel.selectedAppointmentState.value = null
                 appointmentsViewModel.selectedSlotState.longValue = 0
                 appointmentsViewModel.getPatientAppointments()
                 onNavigationIconClicked()
