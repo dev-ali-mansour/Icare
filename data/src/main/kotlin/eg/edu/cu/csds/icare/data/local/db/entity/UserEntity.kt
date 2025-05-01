@@ -11,11 +11,23 @@ data class UserEntity(
     @ColumnInfo(defaultValue = "")
     val userId: String,
     val roleId: Short,
+    @ColumnInfo(defaultValue = "")
+    val displayName: String = "",
     val nationalId: String,
     val birthDate: Long,
     val gender: Char,
     val address: String,
     val phoneNumber: String,
+    @ColumnInfo(defaultValue = "")
+    val email: String = "",
+    @ColumnInfo(defaultValue = "")
+    val photoUrl: String = "",
+    @ColumnInfo(defaultValue = "0")
+    val isEmailVerified: Boolean = false,
+    @ColumnInfo(defaultValue = "0")
+    val linkedWithGoogle: Boolean = false,
+    @ColumnInfo(defaultValue = "0")
+    val isActive: Boolean = true,
 )
 
 fun UserEntity.toModel(): User =
@@ -27,6 +39,12 @@ fun UserEntity.toModel(): User =
         gender = this.gender,
         address = this.address,
         phoneNumber = this.phoneNumber,
+        isActive = this.isActive,
+        displayName = this.displayName,
+        email = this.email,
+        photoUrl = this.photoUrl,
+        isEmailVerified = this.isEmailVerified,
+        linkedWithGoogle = this.linkedWithGoogle,
     )
 
 fun User.toEntity(): UserEntity =
@@ -38,4 +56,10 @@ fun User.toEntity(): UserEntity =
         gender = this.gender,
         address = this.address,
         phoneNumber = this.phoneNumber,
+        isActive = this.isActive,
+        displayName = this.displayName,
+        email = this.email,
+        photoUrl = this.photoUrl,
+        isEmailVerified = this.isEmailVerified,
+        linkedWithGoogle = this.linkedWithGoogle,
     )
