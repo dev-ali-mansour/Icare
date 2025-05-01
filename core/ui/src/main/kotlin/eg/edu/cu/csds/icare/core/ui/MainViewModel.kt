@@ -27,7 +27,7 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class MainViewModel(
-    dispatcher: CoroutineDispatcher,
+    private val dispatcher: CoroutineDispatcher,
     private val readOnBoardingUseCase: ReadOnBoarding,
     private val getUserInfoUseCase: GetUserInfo,
     private val listClinicsUseCase: ListClinics,
@@ -100,11 +100,7 @@ class MainViewModel(
     init {
         viewModelScope.launch(dispatcher) {
             runCatching {
-                getUserInfoUseCase(forceUpdate = true)
-                    .distinctUntilChanged()
-                    .onEach { _currentUserFlow.value = it }
-                    .collect {}
-
+                getUserInfo()
                 readOnBoardingUseCase()
                     .onEach { res ->
                         _onBoardingCompleted.value = res
@@ -166,6 +162,15 @@ class MainViewModel(
             }.onFailure {
                 _resultFlow.value = Resource.Error(it)
             }
+        }
+    }
+
+    fun getUserInfo() {
+        viewModelScope.launch(dispatcher) {
+            getUserInfoUseCase(forceUpdate = true)
+                .distinctUntilChanged()
+                .onEach { _currentUserFlow.value = it }
+                .collect {}
         }
     }
 }
