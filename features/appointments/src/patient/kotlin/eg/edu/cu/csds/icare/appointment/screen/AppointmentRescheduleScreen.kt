@@ -20,7 +20,6 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,8 +31,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import eg.edu.cu.csds.icare.admin.R
+import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
-import eg.edu.cu.csds.icare.appointment.R
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
@@ -46,30 +46,28 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppointmentsScreen(
+internal fun AppointmentRescheduleScreen(
+    clinicViewModel: ClinicViewModel,
     appointmentViewModel: AppointmentViewModel,
     onNavigationIconClicked: () -> Unit,
-    onReschedule: (Appointment) -> Unit,
-    onCancel: (Appointment) -> Unit,
+    onRescheduleClicked: (Appointment) -> Unit,
     onSuccess: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
 ) {
     val actionResource by appointmentViewModel.actionResFlow
         .collectAsStateWithLifecycle(initialValue = Resource.Unspecified())
-    val appointmentsResource by appointmentViewModel.appointmentsResFlow.collectAsStateWithLifecycle()
+    var selectedAppointment by appointmentViewModel.selectedAppointmentState
+    val doctorScheduleResource by clinicViewModel.doctorScheduleResFlow.collectAsStateWithLifecycle()
+    var selectedSlot by appointmentViewModel.selectedSlotState
     var showSuccessDialog by remember { mutableStateOf(false) }
     var isRefreshing by remember { mutableStateOf(false) }
     val state = rememberPullToRefreshState()
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(key1 = Unit) {
-        appointmentViewModel.getPatientAppointments()
-    }
-
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.my_appointments)) },
+                title = { Text(text = stringResource(id = R.string.appointment_reschedule)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,
@@ -94,7 +92,9 @@ fun MyAppointmentsScreen(
                 Modifier
                     .fillMaxSize()
                     .pullToRefresh(state = state, isRefreshing = isRefreshing, onRefresh = {
-                        appointmentViewModel.getPatientAppointments()
+                        selectedAppointment?.let {
+                            clinicViewModel.getDoctorSchedule(it.doctorId)
+                        }
                     })
                     .padding(paddingValues),
         ) {
@@ -116,33 +116,35 @@ fun MyAppointmentsScreen(
                             .fillMaxWidth()
                             .height(XS_PADDING),
                 )
-
-                MyAppointmentsContent(
-                    modifier =
-                        Modifier.constrainAs(content) {
-                            top.linkTo(line.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                            width = Dimension.fillToConstraints
-                            height = Dimension.fillToConstraints
+                selectedAppointment?.let { appointment ->
+                    AppointmentRescheduleContent(
+                        modifier =
+                            Modifier.constrainAs(content) {
+                                top.linkTo(line.bottom)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                bottom.linkTo(parent.bottom)
+                                width = Dimension.fillToConstraints
+                                height = Dimension.fillToConstraints
+                            },
+                        appointment = appointment,
+                        doctorScheduleRes = doctorScheduleResource,
+                        actionResource = actionResource,
+                        showLoading = { isRefreshing = it },
+                        selectedSlot = selectedSlot,
+                        onSlotSelected = { selectedSlot = it },
+                        onRescheduleClicked = { onRescheduleClicked(it) },
+                        onSuccess = {
+                            scope.launch {
+                                showSuccessDialog = true
+                                delay(timeMillis = 2000)
+                                showSuccessDialog = false
+                                onSuccess()
+                            }
                         },
-                    appointmentsRes = appointmentsResource,
-                    actionResource = actionResource,
-                    showLoading = { isRefreshing = it },
-                    onReschedule = { onReschedule(it) },
-                    onCancel = { onCancel(it) },
-                    onSuccess = {
-                        scope.launch {
-                            showSuccessDialog = true
-                            delay(timeMillis = 2000)
-                            showSuccessDialog = false
-                            onSuccess()
-                        }
-                    },
-                    onError = { onError(it) },
-                )
-
+                        onError = { onError(it) },
+                    )
+                }
                 Indicator(
                     modifier =
                         Modifier.constrainAs(refresh) {

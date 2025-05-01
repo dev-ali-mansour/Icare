@@ -263,7 +263,7 @@ class RemoteClinicsDataSourceImpl(
                         }
                     val map = HashMap<String, String>()
                     map["token"] = token
-                    map["uid"] = token
+                    map["uid"] = uid
                     val response = service.getDoctorSchedule(map)
                     when (response.code()) {
                         HTTP_OK -> {
