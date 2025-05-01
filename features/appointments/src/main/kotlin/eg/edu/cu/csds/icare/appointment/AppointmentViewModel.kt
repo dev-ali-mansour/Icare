@@ -53,7 +53,7 @@ class AppointmentViewModel(
         _appointmentsResFlow.asStateFlow()
     private val _adminStatsRes = MutableStateFlow<Resource<AdminStatistics>>(Resource.Unspecified())
     val adminStatsRes: StateFlow<Resource<AdminStatistics>> = _adminStatsRes.asStateFlow()
-    var selectedAppointment: MutableState<Appointment?> = mutableStateOf(null)
+    var selectedAppointmentState: MutableState<Appointment?> = mutableStateOf(null)
     var selectedStatusIdState: MutableState<Short> = mutableStateOf(1)
     var selectedSlotState: MutableLongState = mutableLongStateOf(0)
     val statusListState =
@@ -97,10 +97,10 @@ class AppointmentViewModel(
                 delay(timeMillis = 100)
             }
 
-            selectedAppointment.value?.let {
+            selectedAppointmentState.value?.let {
                 updateAppointmentUseCase(it).collect { result ->
                     if (result is Resource.Success) {
-                        selectedAppointment.value = null
+                        selectedAppointmentState.value = null
                         getPatientAppointments()
                     }
                     _actionResFlow.emit(result)
