@@ -15,6 +15,13 @@ val Yellow700 = Color(color = 0xFFE3880C)
 val PaidColor = Color(color = 0xFF028A02)
 val UnPaidColor = Color(color = 0xFFAA0202)
 val MediumGray = Color(color = 0xFF9C9C9C)
+val LightGreen = Color(color = 0xFFE2EBCD)
+val AiryGreen = Color(color = 0xFFF1F8F5)
+val DeepTeal = Color(color = 0xFF3BDDDF)
+val BurntOrange = Color(color = 0xFFEE6F5C)
+val SkyAccent = Color(color = 0xFF3EBCDF)
+val mintAccent = Color(color = 0xFF82EEA6)
+val trustBlue = Color(color = 0xFF6488D9)
 
 val backgroundColor: Color
     @Composable
@@ -69,7 +76,7 @@ val contentColor: Color
     @Composable
     get() = Color.DarkGray
 
-val totalColor: Color
+val statusColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.5f) else Color.DarkGray
 
@@ -86,6 +93,7 @@ val barBackgroundColor: Color
 val textColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.White else Color.Black
+
 val dropDownTextColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.White else Blue200
@@ -93,3 +101,11 @@ val dropDownTextColor: Color
 val trailIconColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.White else Blue500
+
+val cardBackgroundColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) AiryGreen else SkyAccent.copy(alpha = 0.7f)
+
+val cardTextColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.Black else Color.White

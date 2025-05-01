@@ -1,9 +1,11 @@
 import build.Build
 import build.BuildConfig
+import build.BuildDimensions
 import build.BuildTypes
 import build.BuildVariables
 import extensions.getLocalProperty
 import extensions.osFamily
+import flavors.FlavorTypes
 import signing.SigningTypes
 import test.TestBuildConfig
 
@@ -161,6 +163,16 @@ android {
         }
     }
 
+    flavorDimensions.add(BuildDimensions.APP)
+    productFlavors {
+        create(FlavorTypes.PATIENT) {
+            dimension = BuildDimensions.APP
+        }
+        create(FlavorTypes.STAFF) {
+            dimension = BuildDimensions.APP
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -195,6 +207,7 @@ detekt {
 }
 
 ksp {
+    arg("KOIN_DEFAULT_MODULE", "true")
     arg("KOIN_CONFIG_CHECK", "true")
 }
 

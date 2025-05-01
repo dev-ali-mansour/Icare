@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="diagnosis">التشخيص</string>
+    <string name="Prescription">الروشتة</string>
+    <string name="lab_tests">تحاليل</string>
+    <string name="imaging_tests">أشعة</string>
+    <string name="follow_up_date">تاريخ الاستشارة</string>
+    <string name="edit_consultation">تعديل كشف</string>
+    <string name="new_consultation">إضافة كشف جديد</string>
+    <string name="consultation_date">تاريخ الكشف</string>
+    <string name="prescription_status">حالة الروشتة</string>
+    <string name="imaging_tests_status">حالة الأشعة</string>
+    <string name="lab_tests_status">حالة التحاليل</string>
+    <string name="doctor_profile">بيانات الطبيب</string>
+    <string name="appointment_reschedule">إعادة جدولة موعد</string>
+</resources>

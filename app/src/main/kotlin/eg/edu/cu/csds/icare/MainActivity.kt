@@ -1,9 +1,6 @@
 package eg.edu.cu.csds.icare
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,7 +16,6 @@ import com.google.android.play.core.common.IntentSenderForResultStarter
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
-import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
@@ -35,7 +31,6 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModel()
-    private val firebaseAuth: FirebaseAuth by inject()
     private val mediaHelper: MediaHelper by inject()
     private val appUpdateManager: AppUpdateManager by inject()
     private val updateType = AppUpdateType.IMMEDIATE
@@ -60,16 +55,8 @@ class MainActivity : AppCompatActivity() {
         setContent {
             IcareTheme {
                 MainScreen(
-                    firebaseAuth = firebaseAuth,
                     mainViewModel = mainViewModel,
                     mediaHelper = mediaHelper,
-                    showAppSettings = {
-                        val intent =
-                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                data = Uri.fromParts("package", packageName, null)
-                            }
-                        startActivity(intent)
-                    },
                 )
             }
         }

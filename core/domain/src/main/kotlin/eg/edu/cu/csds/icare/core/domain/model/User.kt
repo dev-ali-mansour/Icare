@@ -1,15 +1,28 @@
 package eg.edu.cu.csds.icare.core.domain.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 data class User(
-    val roleId: Short = 100,
-    val job: String = "",
+    val userId: String = "",
+    @SerialName("roleID")
+    val roleId: Short = 6,
     val nationalId: String = "",
-    val dateOfBirth: Long = 0,
+    val birthDate: Long = 0,
     val gender: Char = 'M',
     val address: String = "",
     val phoneNumber: String = "",
-    val permissions: List<Short> = listOf(),
+    val isActive: Boolean = true,
+    @Transient
+    val displayName: String = "",
+    @Transient
+    val email: String = "",
+    @Transient
+    val photoUrl: String = "",
+    @Transient
+    val isEmailVerified: Boolean = false,
+    @Transient
+    val linkedWithGoogle: Boolean = false,
 )

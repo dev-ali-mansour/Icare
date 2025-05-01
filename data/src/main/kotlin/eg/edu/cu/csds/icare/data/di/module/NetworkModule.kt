@@ -1,10 +1,12 @@
 package eg.edu.cu.csds.icare.data.di.module
 
+import com.google.firebase.auth.FirebaseAuth
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import eg.edu.cu.csds.icare.core.domain.util.hash
 import eg.edu.cu.csds.icare.data.BuildConfig
 import eg.edu.cu.csds.icare.data.remote.serivce.ApiService
 import kotlinx.serialization.json.Json
-import okhttp3.CertificatePinner
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -24,18 +26,42 @@ class NetworkModule {
         }
 
     @Single
-    fun provideHttpClient(): OkHttpClient {
-        val certificatePinner =
+    fun provideAuthInterceptor(auth: FirebaseAuth): Interceptor =
+        Interceptor { chain ->
+            /*val token =
+                runBlocking {
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
+                }*/
+            val request =
+                chain
+                    .request()
+                    .newBuilder()
+//                    .addHeader("Authorization", "Bearer $token")
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Signature", "${BuildConfig.FLAVOR}/${auth.currentUser?.uid}".hash())
+                    .build()
+            chain.proceed(request)
+        }
+
+    @Single
+    fun provideHttpClient(authInterceptor: Interceptor): OkHttpClient {
+        /*val certificatePinner =
             CertificatePinner
                 .Builder()
                 .add(BuildConfig.SERVICE_DOMAIN, BuildConfig.CERTIFICATE_HASH_1)
                 .add(BuildConfig.SERVICE_DOMAIN, BuildConfig.CERTIFICATE_HASH_2)
-                .build()
+                .build()*/
         return OkHttpClient
             .Builder()
-            .certificatePinner(certificatePinner)
-            .readTimeout(timeout = 5, TimeUnit.MINUTES)
-            .connectTimeout(timeout = 5, TimeUnit.MINUTES)
+//            .certificatePinner(certificatePinner)
+            .readTimeout(timeout = 15, TimeUnit.SECONDS)
+            .connectTimeout(timeout = 15, TimeUnit.SECONDS)
+            .pingInterval(interval = 1, TimeUnit.SECONDS)
+            .addInterceptor(authInterceptor)
             .addInterceptor(
                 interceptor =
                     HttpLoggingInterceptor().also {

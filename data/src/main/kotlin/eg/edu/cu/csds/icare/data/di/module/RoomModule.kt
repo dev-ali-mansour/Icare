@@ -5,6 +5,11 @@ import androidx.room.Room
 import eg.edu.cu.csds.icare.data.BuildConfig
 import eg.edu.cu.csds.icare.data.local.db.AppDatabase
 import eg.edu.cu.csds.icare.data.local.db.DbPassPhrase
+import eg.edu.cu.csds.icare.data.local.db.dao.BookingMethodDao
+import eg.edu.cu.csds.icare.data.local.db.dao.CenterDao
+import eg.edu.cu.csds.icare.data.local.db.dao.ClinicDao
+import eg.edu.cu.csds.icare.data.local.db.dao.DoctorDao
+import eg.edu.cu.csds.icare.data.local.db.dao.PharmacyDao
 import eg.edu.cu.csds.icare.data.local.db.dao.SettingsDao
 import eg.edu.cu.csds.icare.data.local.db.dao.UserDao
 import net.sqlcipher.database.SupportFactory
@@ -47,4 +52,19 @@ class RoomModule {
 
     @Single
     fun provideUserDao(db: AppDatabase): UserDao = db.userDao()
+
+    @Single
+    fun provideBookingMethodDao(db: AppDatabase): BookingMethodDao = db.bookingMethodDao()
+
+    @Single
+    fun provideClinicDao(db: AppDatabase): ClinicDao = db.clinicDao()
+
+    @Single
+    fun provideDoctorDao(db: AppDatabase): DoctorDao = db.doctorDao()
+
+    @Single
+    fun provideCenterDao(db: AppDatabase): CenterDao = db.centerDao()
+
+    @Single
+    fun providePharmacyDao(db: AppDatabase): PharmacyDao = db.pharmacyDao()
 }

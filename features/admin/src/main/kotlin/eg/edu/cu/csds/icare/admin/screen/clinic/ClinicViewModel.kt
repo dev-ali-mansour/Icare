@@ -1,0 +1,339 @@
+package eg.edu.cu.csds.icare.admin.screen.clinic
+
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import eg.edu.cu.csds.icare.core.domain.model.Clinic
+import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
+import eg.edu.cu.csds.icare.core.domain.model.Doctor
+import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
+import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.AddNewClinic
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinics
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.UpdateClinic
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.AddNewClinicStaff
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.ListClinicStaff
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.UpdateClinicStaff
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.AddNewDoctor
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.GetDoctorSchedule
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctors
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListTopDoctors
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.UpdateDoctor
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
+
+@KoinViewModel
+class ClinicViewModel(
+    private val dispatcher: CoroutineDispatcher,
+    private val addNewClinicUseCase: AddNewClinic,
+    private val updateClinicUseCase: UpdateClinic,
+    private val listClinicsUseCase: ListClinics,
+    private val addNewDoctorUseCase: AddNewDoctor,
+    private val updateDoctorUseCase: UpdateDoctor,
+    private val listDoctorsUseCase: ListDoctors,
+    private val listTopDoctorsUseCase: ListTopDoctors,
+    private val addNewClinicStaffUseCase: AddNewClinicStaff,
+    private val updateClinicStaffUseCase: UpdateClinicStaff,
+    private val listClinicStaffUseCase: ListClinicStaff,
+    private val getDoctorScheduleUseCase: GetDoctorSchedule,
+) : ViewModel() {
+    private val _actionResFlow =
+        MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
+    val actionResFlow: SharedFlow<Resource<Nothing?>> =
+        _actionResFlow.shareIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+            replay = 0,
+        )
+    private val _clinicsResFlow = MutableStateFlow<Resource<List<Clinic>>>(Resource.Unspecified())
+    val clinicsResFlow: StateFlow<Resource<List<Clinic>>> = _clinicsResFlow
+    private val _doctorsResFlow = MutableStateFlow<Resource<List<Doctor>>>(Resource.Unspecified())
+    val doctorsResFlow: StateFlow<Resource<List<Doctor>>> = _doctorsResFlow
+    private val _topDoctorsResFlow =
+        MutableStateFlow<Resource<List<Doctor>>>(Resource.Unspecified())
+    val topDoctorsResFlow: StateFlow<Resource<List<Doctor>>> = _topDoctorsResFlow
+    private val _doctorScheduleResFlow =
+        MutableStateFlow<Resource<DoctorSchedule>>(Resource.Unspecified())
+    val doctorScheduleResFlow: StateFlow<Resource<DoctorSchedule>> = _doctorScheduleResFlow
+    private val _clinicStaffsResFlow =
+        MutableStateFlow<Resource<List<ClinicStaff>>>(Resource.Unspecified())
+    val clinicStaffsResFlow: StateFlow<Resource<List<ClinicStaff>>> = _clinicStaffsResFlow
+    var selectedClinicState: MutableState<Clinic?> = mutableStateOf(null)
+    var selectedDoctorState: MutableState<Doctor?> = mutableStateOf(null)
+    var selectedClinicStaffState: MutableState<ClinicStaff?> = mutableStateOf(null)
+
+    var showSuccessDialog = mutableStateOf(false)
+    var isRefreshing = mutableStateOf(false)
+    var selectedClinicIdState = mutableLongStateOf(0)
+    var searchQueryState = mutableStateOf("")
+    var nameState = mutableStateOf("")
+    var typeState = mutableStateOf("")
+    var phoneState = mutableStateOf("")
+    var addressState = mutableStateOf("")
+    var isOpenState = mutableStateOf(false)
+    var firstNameState = mutableStateOf("")
+    var lastNameState = mutableStateOf("")
+    var clinicIdState = mutableLongStateOf(0)
+    var emailState = mutableStateOf("")
+    var specialityState = mutableStateOf("")
+    var fromTimeState = mutableLongStateOf(0)
+    var toTimeState = mutableLongStateOf(0)
+    var priceState = mutableDoubleStateOf(0.0)
+    var ratingState = mutableDoubleStateOf(0.0)
+    var clinicsExpandedState = mutableStateOf(false)
+    var expandedFab = mutableStateOf(true)
+
+    fun addNewClinic() {
+        viewModelScope.launch(dispatcher) {
+            if (_actionResFlow.value !is Resource.Unspecified) {
+                _actionResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            addNewClinicUseCase(
+                Clinic(
+                    name = nameState.value,
+                    type = typeState.value,
+                    address = addressState.value,
+                    phone = phoneState.value,
+                    isOpen = isOpenState.value,
+                ),
+            ).collect { result ->
+                if (result is Resource.Success) {
+                    resetStates()
+                    listClinics(forceRefresh = false)
+                }
+                _actionResFlow.emit(result)
+            }
+        }
+    }
+
+    fun updateClinic() {
+        viewModelScope.launch(dispatcher) {
+            if (_actionResFlow.value !is Resource.Unspecified) {
+                _actionResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            selectedClinicState.value?.let {
+                updateClinicUseCase(it).collect { result ->
+                    if (result is Resource.Success) listClinics(forceRefresh = false)
+                    _actionResFlow.emit(result)
+                }
+            } ?: run {
+                _actionResFlow.emit(Resource.Error(Error("No clinic selected!")))
+            }
+        }
+    }
+
+    fun listClinics(forceRefresh: Boolean = false) {
+        viewModelScope.launch(dispatcher) {
+            searchQueryState.value = ""
+            if (_clinicsResFlow.value !is Resource.Unspecified) {
+                _clinicsResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            listClinicsUseCase(forceRefresh).collect { result ->
+                _clinicsResFlow.emit(result)
+            }
+        }
+    }
+
+    fun addNewDoctor() {
+        viewModelScope.launch(dispatcher) {
+            if (_actionResFlow.value !is Resource.Unspecified) {
+                _actionResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            addNewDoctorUseCase(
+                Doctor(
+                    firstName = firstNameState.value,
+                    lastName = lastNameState.value,
+                    clinicId = clinicIdState.longValue,
+                    email = emailState.value,
+                    phone = phoneState.value,
+                    specialty = specialityState.value,
+                    fromTime = fromTimeState.longValue,
+                    toTime = toTimeState.longValue,
+                    price = priceState.doubleValue,
+                    rating = ratingState.doubleValue,
+                ),
+            ).collect { result ->
+                if (result is Resource.Success) {
+                    resetStates()
+                    listDoctors(forceRefresh = false)
+                }
+                _actionResFlow.emit(result)
+            }
+        }
+    }
+
+    fun updateDoctor() {
+        viewModelScope.launch(dispatcher) {
+            if (_actionResFlow.value !is Resource.Unspecified) {
+                _actionResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            selectedDoctorState.value?.let {
+                updateDoctorUseCase(it).collect { result ->
+                    if (result is Resource.Success) listDoctors(forceRefresh = false)
+                    _actionResFlow.value = result
+                }
+            } ?: run {
+                _actionResFlow.emit(Resource.Error(Error("No doctor selected!")))
+            }
+        }
+    }
+
+    fun listDoctors(forceRefresh: Boolean = false) {
+        viewModelScope.launch(dispatcher) {
+            searchQueryState.value = ""
+            if (_doctorsResFlow.value !is Resource.Unspecified) {
+                _doctorsResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            listDoctorsUseCase(forceRefresh).collect { result ->
+                _doctorsResFlow.value = result
+            }
+        }
+    }
+
+    fun searchDoctors() {
+        viewModelScope.launch(dispatcher) {
+            if (_doctorsResFlow.value !is Resource.Unspecified) {
+                _doctorsResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            listDoctorsUseCase().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        result.data?.let { doctors ->
+                            val filtered =
+                                doctors.filter { doctor ->
+                                    doctor.name.contains(
+                                        searchQueryState.value,
+                                        ignoreCase = true,
+                                    ) ||
+                                        doctor.specialty.contains(
+                                            searchQueryState.value,
+                                            ignoreCase = true,
+                                        )
+                                }
+                            _doctorsResFlow.value = Resource.Success(filtered)
+                        }
+                    }
+
+                    else -> _doctorsResFlow.value = result
+                }
+            }
+        }
+    }
+
+    fun listTopDoctors() {
+        viewModelScope.launch(dispatcher) {
+            searchQueryState.value = ""
+            if (_topDoctorsResFlow.value !is Resource.Unspecified) {
+                _topDoctorsResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            listTopDoctorsUseCase().collect { result ->
+                _topDoctorsResFlow.value = result
+            }
+        }
+    }
+
+    fun addNewStaff() {
+        viewModelScope.launch(dispatcher) {
+            if (_actionResFlow.value !is Resource.Unspecified) {
+                _actionResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            addNewClinicStaffUseCase(
+                ClinicStaff(
+                    firstName = firstNameState.value,
+                    lastName = lastNameState.value,
+                    clinicId = clinicIdState.longValue,
+                    email = emailState.value,
+                    phone = phoneState.value,
+                ),
+            ).collect { result ->
+                if (result is Resource.Success) {
+                    resetStates()
+                    listStaffs()
+                }
+                _actionResFlow.emit(result)
+            }
+        }
+    }
+
+    fun updateStaff() {
+        viewModelScope.launch(dispatcher) {
+            if (_actionResFlow.value !is Resource.Unspecified) {
+                _actionResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            selectedClinicStaffState.value?.let {
+                updateClinicStaffUseCase(it).collect { result ->
+                    if (result is Resource.Success) listStaffs()
+                    _actionResFlow.emit(result)
+                }
+            } ?: run {
+                _actionResFlow.emit(Resource.Error(Error("No clinic staff selected!")))
+            }
+        }
+    }
+
+    fun listStaffs() {
+        viewModelScope.launch(dispatcher) {
+            searchQueryState.value = ""
+            if (_clinicStaffsResFlow.value !is Resource.Unspecified) {
+                _clinicStaffsResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            listClinicStaffUseCase().collect { result ->
+                _clinicStaffsResFlow.value = result
+            }
+        }
+    }
+
+    fun getDoctorSchedule(doctorId: String) {
+        viewModelScope.launch(dispatcher) {
+            if (_doctorScheduleResFlow.value !is Resource.Unspecified) {
+                _doctorScheduleResFlow.value = Resource.Unspecified()
+                delay(timeMillis = 100)
+            }
+            getDoctorScheduleUseCase(doctorId).collect { result ->
+                _doctorScheduleResFlow.value = result
+            }
+        }
+    }
+
+    fun selectCurrentDoctor(doctorId: String) {
+        viewModelScope.launch(dispatcher) {
+            listDoctorsUseCase().collect { result ->
+                result.data?.let { doctors ->
+                    selectedDoctorState.value = doctors.find { it.id == doctorId }
+                }
+            }
+        }
+    }
+
+    internal fun resetStates() {
+        selectedClinicState.value = null
+        searchQueryState.value = ""
+        selectedClinicIdState.longValue = 0
+        nameState.value = ""
+        typeState.value = ""
+        addressState.value = ""
+        phoneState.value = ""
+        isOpenState.value = false
+    }
+}

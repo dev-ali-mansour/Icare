@@ -8,13 +8,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.SettingsItem
 import eg.edu.cu.csds.icare.core.domain.util.Constants
+import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.util.appRate
 import eg.edu.cu.csds.icare.core.ui.util.appShare
@@ -30,9 +31,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun SettingsScreen(
-    navigateToAbout: () -> Unit,
     context: Context = LocalContext.current,
     settingsViewModel: SettingsViewModel = koinViewModel(),
+    navigateToScreen: (Screen) -> Unit,
 ) {
     val settings by settingsViewModel.settingsFlow.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
@@ -58,7 +59,7 @@ internal fun SettingsScreen(
                 onItemClicked(
                     settingsItem,
                     context,
-                    navigateToAbout = { navigateToAbout() },
+                    navigateToScreen = { navigateToScreen(it) },
                 )
             }
         }
@@ -68,7 +69,7 @@ internal fun SettingsScreen(
 private fun onItemClicked(
     settingsItem: SettingsItem,
     context: Context,
-    navigateToAbout: () -> Unit,
+    navigateToScreen: (Screen) -> Unit,
 ) {
     when (settingsItem.id) {
         Constants.SHARE_CODE -> context.appShare()
@@ -77,6 +78,6 @@ private fun onItemClicked(
         Constants.ERROR_REPORTING_CODE -> context.reportError()
         Constants.APPS_CODE -> context.showOurApps()
         Constants.POLICY_CODE -> context.showPrivacyPolicy()
-        Constants.ABOUT_CODE -> navigateToAbout()
+        Constants.ABOUT_CODE -> navigateToScreen(Screen.About)
     }
 }

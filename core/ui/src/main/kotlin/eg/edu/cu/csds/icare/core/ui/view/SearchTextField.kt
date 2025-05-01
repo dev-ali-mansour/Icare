@@ -23,10 +23,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
@@ -41,7 +43,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.textColor
 fun SearchTextField(
     modifier: Modifier = Modifier,
     showLeadingIcon: Boolean = true,
-    keyboardType: KeyboardType = KeyboardType.Number,
+    keyboardType: KeyboardType = KeyboardType.Text,
     placeholder: String,
     value: String,
     focus: Boolean,
@@ -50,6 +52,7 @@ fun SearchTextField(
     onSearch: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     OutlinedTextField(
         modifier = modifier.focusRequester(focusRequester),
@@ -64,6 +67,7 @@ fun SearchTextField(
                 fontFamily = helveticaFamily,
                 color = textColor,
                 maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         },
         textStyle =
@@ -89,7 +93,10 @@ fun SearchTextField(
         },
         trailingIcon = {
             if (value.trim().isNotEmpty()) {
-                IconButton(onClick = { onClear() }) {
+                IconButton(onClick = {
+                    keyboardController?.hide()
+                    onClear()
+                }) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = null,
@@ -103,7 +110,11 @@ fun SearchTextField(
                 keyboardType = keyboardType,
                 imeAction = ImeAction.Search,
             ),
-        keyboardActions = KeyboardActions(onSearch = { onSearch() }),
+        keyboardActions =
+            KeyboardActions(onSearch = {
+                if (value.isNotEmpty()) keyboardController?.hide()
+                onSearch()
+            }),
         colors =
             TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,

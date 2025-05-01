@@ -7,17 +7,17 @@ import eg.edu.cu.csds.icare.settings.screen.about.AboutScreen
 import eg.edu.cu.csds.icare.settings.screen.settings.SettingsScreen
 
 fun NavGraphBuilder.settingsRoute(
-    navigateToAbout: () -> Unit,
+    navigateToScreen: (Screen) -> Unit,
     onNavigationIconClicked: () -> Unit,
 ) {
     composable<Screen.Settings> {
-        SettingsScreen(navigateToAbout = {
-            navigateToAbout()
-        })
+        SettingsScreen {
+            navigateToScreen(it)
+        }
     }
     composable<Screen.About> {
-        AboutScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
-        )
+        AboutScreen {
+            onNavigationIconClicked()
+        }
     }
 }

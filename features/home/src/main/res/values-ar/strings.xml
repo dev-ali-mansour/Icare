@@ -3,6 +3,20 @@
     <!--Multilingual General resources-->
     <string name="exit_dialog_title">تسجيل الخروج</string>
     <string name="exit_dialog">هل تود تسجيل الخروج الآن؟</string>
+    <string name="services">الخدمات</string>
+    <string name="next_appointment">الموعد التالي</string>
+    <string name="promotions">العروض</string>
+    <string name="top_doctors">أفضل الأطباء</string>
+    <string name="buy_now">اشتري الآن</string>
+    <string name="cosmetics">مستحضرات التجميل</string>
+    <string name="no_upcoming_appointments">لا توجد مواعيد محجوزة</string>
+    <string name="off">خصم</string>
+    <string name="total_appointments">عدد الحالات</string>
+    <string name="till_today">حتى اليوم</string>
+    <string name="today_appointment">مواعيد اليوم</string>
+    <string name="users">المستخدمين</string>
+    <string name="till_now">حتى الآن</string>
+    <string name="overview">نظرة عامة</string>
 
     <!--Multilingual Resources of Application-->
 </resources>

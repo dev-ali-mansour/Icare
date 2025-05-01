@@ -34,28 +34,32 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.firebase.auth.FirebaseAuth
+import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
+import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
+import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen.Profile
+import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.dialogTint
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.tintColor
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
-import eg.edu.cu.csds.icare.core.ui.util.getBasicInfo
 import eg.edu.cu.csds.icare.home.HomeViewModel
 import eg.edu.cu.csds.icare.home.R
 import kotlin.system.exitProcess
 
 @Composable
 internal fun HomeScreen(
-    firebaseAuth: FirebaseAuth,
     mediaHelper: MediaHelper,
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
+    appointmentViewModel: AppointmentViewModel,
+    clinicViewModel: ClinicViewModel,
     navigateToScreen: (Screen) -> Unit,
+    onDoctorClicked: (Doctor) -> Unit = {},
     onError: suspend (Throwable?) -> Unit,
     context: Context = LocalContext.current,
 ) {
@@ -66,6 +70,10 @@ internal fun HomeScreen(
     var openDialog by homeViewModel.openDialog
     var isPlayed by homeViewModel.isPlayed
     val userResource by mainViewModel.currentUserFlow.collectAsStateWithLifecycle()
+    val topDoctorsRes by clinicViewModel.topDoctorsResFlow.collectAsStateWithLifecycle()
+    val appointmentsRes by appointmentViewModel.appointmentsResFlow.collectAsStateWithLifecycle()
+    val promotionRes by homeViewModel.promotionResFlow.collectAsStateWithLifecycle()
+    val statusList by appointmentViewModel.statusListState
 
     BackHandler {
         openDialog = true
@@ -78,6 +86,11 @@ internal fun HomeScreen(
                 isPlayed = true
             }
         }
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        appointmentViewModel.getPatientAppointments()
+        clinicViewModel.listTopDoctors()
     }
 
     Column(
@@ -98,7 +111,7 @@ internal fun HomeScreen(
                             .wrapContentHeight(),
                     shape = RoundedCornerShape(size = S_PADDING),
                 ) {
-                    Column(modifier = Modifier.padding(all = 16.dp)) {
+                    Column(modifier = Modifier.padding(all = M_PADDING)) {
                         Row(
                             modifier =
                                 Modifier
@@ -138,7 +151,6 @@ internal fun HomeScreen(
                                     alignment = Alignment.End,
                                 ),
                         ) {
-                            // Cancel button
                             Box(
                                 modifier =
                                     Modifier
@@ -161,7 +173,7 @@ internal fun HomeScreen(
                                     fontFamily = helveticaFamily,
                                 )
                             }
-                            // Confirm button
+
                             Box(
                                 modifier =
                                     Modifier
@@ -195,10 +207,16 @@ internal fun HomeScreen(
             }
         }
         HomeContent(
-            firebaseUser = firebaseAuth.currentUser.getBasicInfo,
             userResource = userResource,
+            topDoctorsRes = topDoctorsRes,
+            appointmentsRes = appointmentsRes,
+            promotionsRes = promotionRes,
             appVersion = appVersion,
+            statusList = statusList,
             onUserClicked = { navigateToScreen(Profile) },
+            onPromotionClicked = {},
+            onServiceClicked = { navigateToScreen(it) },
+            onDoctorClicked = { onDoctorClicked(it) },
             onError = { onError(it) },
         )
     }
