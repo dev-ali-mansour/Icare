@@ -31,7 +31,6 @@ fun NavGraphBuilder.homeRoute(
 ) {
     composable<Screen.Home> {
         HomeScreen(
-            firebaseAuth = firebaseAuth,
             mediaHelper = mediaHelper,
             mainViewModel = mainViewModel,
             homeViewModel = homeViewModel,

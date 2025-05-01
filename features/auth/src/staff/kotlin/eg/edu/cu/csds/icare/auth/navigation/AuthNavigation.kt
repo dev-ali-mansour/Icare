@@ -43,7 +43,6 @@ fun NavGraphBuilder.authenticationRoute(
 
     composable<Screen.Profile> {
         ProfileScreen(
-            firebaseAuth = firebaseAuth,
             mainViewModel = mainViewModel,
             authViewModel = authViewModel,
             onError = { onError(it) },
