@@ -5,14 +5,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
@@ -31,7 +32,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.appointment.R
@@ -50,6 +50,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
+import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 
 @Composable
 fun MyAppointmentsContent(
@@ -161,7 +162,7 @@ fun MyAppointmentsContent(
                                     UpcomingAppointmentsContent(
                                         appointments = appointments,
                                         onReschedule = { onReschedule(it) },
-                                        onCancel = { onCancel(it) },
+                                        onCancel = { onCancel(it.copy(statusId = AppointmentStatus.CancelledStatus.code)) },
                                     )
 
                                 statusList.indexOf(AppointmentStatus.ConfirmedStatus),
@@ -169,9 +170,11 @@ fun MyAppointmentsContent(
                                 statusList.indexOf(AppointmentStatus.CancelledStatus),
                                 ->
                                     OtherAppointmentsContent(
-                                        appointments.filter {
-                                            it.statusId == statusList[selectedTabIndex].code
-                                        },
+                                        status = statusList[selectedTabIndex],
+                                        appointments =
+                                            appointments.filter {
+                                                it.statusId == statusList[selectedTabIndex].code
+                                            },
                                     )
                             }
                         }
@@ -210,6 +213,19 @@ fun UpcomingAppointmentsContent(
     onReschedule: (Appointment) -> Unit,
     onCancel: (Appointment) -> Unit,
 ) {
+    if (appointments.none { it.statusId == AppointmentStatus.PendingStatus.code }) {
+        val message =
+            "${stringResource(R.string.no_appointments_data)}: ${stringResource(AppointmentStatus.PendingStatus.textResId)}"
+        EmptyContentView(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(M_PADDING)
+                    .verticalScroll(rememberScrollState()),
+            text = message,
+        )
+        return
+    }
     val tomorrowAppointments =
         appointments.filter {
             it.statusId == AppointmentStatus.PendingStatus.code &&
@@ -238,7 +254,7 @@ fun UpcomingAppointmentsContent(
                     appointment = appointment,
                     showActions = true,
                     onReschedule = { onReschedule(appointment) },
-                    onCancel = { onCancel(appointment.copy(statusId = AppointmentStatus.CancelledStatus.code)) },
+                    onCancel = { onCancel(appointment) },
                     onConfirm = {},
                 )
             }
@@ -250,7 +266,7 @@ fun UpcomingAppointmentsContent(
                     text = stringResource(R.string.pending_for_confirmation),
                     fontFamily = helveticaFamily,
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(vertical = 8.dp),
+                    modifier = Modifier.padding(vertical = S_PADDING),
                 )
             }
 
@@ -262,14 +278,29 @@ fun UpcomingAppointmentsContent(
                     onCancel = { onCancel(appointment) },
                     onConfirm = {},
                 )
-                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
 }
 
 @Composable
-fun OtherAppointmentsContent(appointments: List<Appointment>) {
+fun OtherAppointmentsContent(
+    status: AppointmentStatus,
+    appointments: List<Appointment>,
+) {
+    if (appointments.isEmpty()) {
+        val message =
+            "${stringResource(R.string.no_appointments_data)}: ${stringResource(status.textResId)}"
+        EmptyContentView(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(M_PADDING)
+                    .verticalScroll(rememberScrollState()),
+            text = message,
+        )
+        return
+    }
     LazyColumn(
         modifier = Modifier.padding(M_PADDING),
         verticalArrangement = Arrangement.spacedBy(S_PADDING),
