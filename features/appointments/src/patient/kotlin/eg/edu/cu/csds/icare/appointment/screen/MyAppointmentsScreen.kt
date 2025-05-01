@@ -51,6 +51,7 @@ fun MyAppointmentsScreen(
     onNavigationIconClicked: () -> Unit,
     onReschedule: (Appointment) -> Unit,
     onCancel: (Appointment) -> Unit,
+    onSuccess: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
 ) {
     val actionResource by appointmentViewModel.actionResFlow
@@ -136,6 +137,7 @@ fun MyAppointmentsScreen(
                             showSuccessDialog = true
                             delay(timeMillis = 2000)
                             showSuccessDialog = false
+                            onSuccess()
                         }
                     },
                     onError = { onError(it) },
