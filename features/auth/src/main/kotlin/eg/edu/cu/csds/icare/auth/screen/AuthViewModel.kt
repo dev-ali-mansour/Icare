@@ -1,7 +1,10 @@
 package eg.edu.cu.csds.icare.auth.screen
 
 import android.content.Intent
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -55,37 +58,30 @@ class AuthViewModel(
     val deleteAccountResFlow: StateFlow<Resource<Nothing?>> = _deleteAccountResFlow
     private val _isLoading = mutableStateOf(false)
     var isLoading: State<Boolean> = _isLoading
+    private val _selectedGenderState: MutableState<Short> = mutableStateOf(0)
+    var selectedGenderState: State<Short> = _selectedGenderState
+    var gendersExpanded = mutableStateOf(false)
 
-    var nameState = mutableStateOf("")
-        private set
+    var firstNameState = mutableStateOf("")
+    var lastNameState = mutableStateOf("")
     var emailState = mutableStateOf("")
+    var birthDateState = mutableLongStateOf(System.currentTimeMillis())
+    var genderState = mutableStateOf("")
         private set
     var nationalIdState = mutableStateOf("")
-        private set
     var phoneState = mutableStateOf("")
-        private set
+    var addressState = mutableStateOf("")
+    var weightState = mutableDoubleStateOf(0.0)
+    var chronicDiseasesState = mutableStateOf("")
+    var currentMedicationsState = mutableStateOf("")
+    var allergiesState = mutableStateOf("")
+    var pastSurgeriesState = mutableStateOf("")
     var passwordState = mutableStateOf("")
-        private set
     var passwordVisibility = mutableStateOf(false)
 
-    fun onNameChanged(newValue: String) {
-        nameState.value = newValue
-    }
-
-    fun onEmailChanged(newValue: String) {
-        emailState.value = newValue
-    }
-
-    fun onNationalIdChanged(newValue: String) {
-        nationalIdState.value = newValue
-    }
-
-    fun onPhoneChanged(newValue: String) {
-        phoneState.value = newValue
-    }
-
-    fun onPasswordChanged(newValue: String) {
-        passwordState.value = newValue
+    fun onGenderSelected(newValue: Short) {
+        _selectedGenderState.value = newValue
+        genderState.value = if (newValue.toInt() == 1) "M" else "F"
     }
 
     fun onRegisterClicked() {
@@ -95,10 +91,19 @@ class AuthViewModel(
                 delay(timeMillis = 100)
             }
             register(
-                name = nameState.value,
+                firstName = firstNameState.value,
+                lastName = lastNameState.value,
                 email = emailState.value,
+                birthDate = birthDateState.longValue,
+                gender = genderState.value,
                 nationalId = nationalIdState.value,
                 phone = phoneState.value,
+                address = addressState.value,
+                weight = weightState.doubleValue,
+                chronicDiseases = chronicDiseasesState.value,
+                currentMedications = currentMedicationsState.value,
+                allergies = allergiesState.value,
+                pastSurgeries = pastSurgeriesState.value,
                 password = passwordState.value,
             ).collectLatest {
                 _isLoading.value = it is Resource.Loading
@@ -128,6 +133,7 @@ class AuthViewModel(
                 account.idToken?.let { token ->
                     signInWithGoogle(token).collectLatest {
                         _isLoading.value = it is Resource.Loading
+                        if (it is Resource.Success) clearData()
                         _loginResFlow.value = it
                     }
                 }
@@ -158,12 +164,14 @@ class AuthViewModel(
             }
             sendRecoveryMail(emailState.value).collect {
                 _isLoading.value = it is Resource.Loading
+                if (it is Resource.Success) clearData()
                 _recoveryResFlow.value = it
             }
         }
     }
 
     fun onLogOutClick() {
+        clearData()
         viewModelScope.launch(dispatcher) {
             if (_logoutResFlow.value !is Resource.Unspecified) {
                 _logoutResFlow.value = Resource.Unspecified()
@@ -185,5 +193,22 @@ class AuthViewModel(
                 _deleteAccountResFlow.value = it
             }
         }
+    }
+
+    fun clearData() {
+        firstNameState.value = ""
+        lastNameState.value = ""
+        emailState.value = ""
+        birthDateState.longValue = 0
+        onGenderSelected(0)
+        nationalIdState.value = ""
+        phoneState.value = ""
+        addressState.value = ""
+        weightState.doubleValue = 0.0
+        chronicDiseasesState.value = ""
+        currentMedicationsState.value = ""
+        allergiesState.value = ""
+        pastSurgeriesState.value = ""
+        passwordState.value = ""
     }
 }

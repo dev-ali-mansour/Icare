@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="email">البريد الإلكتروني</string>
+    <string name="password">كلمة المرور</string>
+    <string name="last_name">الاسم الأخير</string>
+    <string name="national_id">الرقم القومي</string>
+    <string name="first_name_error">يرجى إدخال اسمك الأول بشكل صحيح.</string>
+    <string name="last_name_error">يرجى إدخال اسمك الأخير بشكل صحيح.</string>
+    <string name="email_error">يرجى إدخال بريدك الإلكتروني بشكل صحيح.</string>
+    <string name="gender_error">يرجى تحديد النوع بشكل صحيح.</string>
+    <string name="phone_error">يرجى إدخال رقم الهاتف صحيح.</string>
+    <string name="try_again">إعادة المحاولة</string>
+    <string name="first_name">الاسم الأول</string>
+    <string name="phone_number">رقم الموبايل</string>
+    <string name="birth_date">تاريخ الميلاد</string>
+    <string name="address">العنوان</string>
+    <string name="type">النوع</string>
+    <string name="clinic" >العيادة</string>
+    <string name="pharmacy" >الصيدلية</string>
+    <string name="center" >المركز</string>
+    <string name="new_clinic" >إضافة عيادة</string>
+    <string name="edit_clinic" >تعديل بيانات عيادة</string>
+    <string name="new_doctor" >إضافة دكتور</string>
+    <string name="edit_doctor" >تعديل بيانات دكتور</string>
+    <string name="new_clinic_staff" >إضافة مسئول طبي</string>
+    <string name="edit_clinic_staff" >تعديل بيانات مسئول طبي</string>
+    <string name="new_pharmacy" >إضافة صيدلية</string>
+    <string name="edit_pharmacy" >تعديل بيانات صيدلية</string>
+    <string name="new_pharmacist" >إضافة صيدلي</string>
+    <string name="edit_pharmacist" >تعديل بيانات صيدلي</string>
+    <string name="new_center" >إضافة مركز</string>
+    <string name="edit_center" >تعديل بيانات مركز</string>
+    <string name="new_center_staff" >إضافة مسئول مركز</string>
+    <string name="edit_center_staff" >تعديل بيانات مسئول مركز</string>
+    <string name="from_time" >من الساعة</string>
+    <string name="to_time" >حتى الساعة</string>
+    <string name="lab_center" >مركز تحاليل</string>
+</resources>

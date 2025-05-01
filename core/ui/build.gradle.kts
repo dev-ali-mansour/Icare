@@ -115,6 +115,7 @@ detekt {
 }
 
 ksp {
+    arg("KOIN_DEFAULT_MODULE", "true")
     arg("KOIN_CONFIG_CHECK", "true")
 }
 

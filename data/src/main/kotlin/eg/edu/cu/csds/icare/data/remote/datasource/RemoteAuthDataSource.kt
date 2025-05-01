@@ -8,10 +8,19 @@ interface RemoteAuthDataSource {
     fun getUserInfo(): Flow<Resource<User>>
 
     fun register(
-        name: String,
+        firstName: String,
+        lastName: String,
         email: String,
-        address: String,
+        birthDate: Long,
+        gender: String,
+        nationalId: String,
         phone: String,
+        address: String,
+        weight: Double,
+        chronicDiseases: String,
+        currentMedications: String,
+        allergies: String,
+        pastSurgeries: String,
         password: String,
     ): Flow<Resource<Nothing?>>
 

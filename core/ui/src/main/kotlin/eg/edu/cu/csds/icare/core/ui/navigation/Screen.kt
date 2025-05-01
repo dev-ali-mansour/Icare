@@ -39,4 +39,82 @@ sealed class Screen {
 
     @Serializable
     data object About : Screen()
+
+    @Serializable
+    data object Admin : Screen()
+
+    @Serializable
+    data object NewClinic : Screen()
+
+    @Serializable
+    data object EditClinic : Screen()
+
+    @Serializable
+    data object NewPharmacy : Screen()
+
+    @Serializable
+    data object EditPharmacy : Screen()
+
+    @Serializable
+    data object NewCenter : Screen()
+
+    @Serializable
+    data object EditCenter : Screen()
+
+    @Serializable
+    data object NewDoctor : Screen()
+
+    @Serializable
+    data object EditDoctor : Screen()
+
+    @Serializable
+    data object NewClinicStaff : Screen()
+
+    @Serializable
+    data object EditClinicStaff : Screen()
+
+    @Serializable
+    data object NewPharmacist : Screen()
+
+    @Serializable
+    data object EditPharmacist : Screen()
+
+    @Serializable
+    data object NewCenterStaff : Screen()
+
+    @Serializable
+    data object EditCenterStaff : Screen()
+
+    @Serializable
+    data object MyAppointments : Screen()
+
+    @Serializable
+    data object ScanCenters : Screen()
+
+    @Serializable
+    data object DoctorList : Screen()
+
+    @Serializable
+    data object DoctorProfile : Screen()
+
+    @Serializable
+    data object AppointmentReschedule : Screen()
+
+    @Serializable
+    data object LabCenters : Screen()
+
+    @Serializable
+    data object Pharmacies : Screen()
+
+    @Serializable
+    data object Appointments : Screen()
+
+    @Serializable
+    data object PatientMedicalRecord : Screen()
+
+    @Serializable
+    data object NewConsultation : Screen()
+
+    @Serializable
+    data object EditConsultation : Screen()
 }

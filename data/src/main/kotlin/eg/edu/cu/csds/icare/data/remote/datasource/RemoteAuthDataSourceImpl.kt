@@ -21,6 +21,7 @@ import eg.edu.cu.csds.icare.data.remote.serivce.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.koin.core.annotation.Single
 import timber.log.Timber
@@ -35,61 +36,85 @@ class RemoteAuthDataSourceImpl(
 ) : RemoteAuthDataSource {
     override fun getUserInfo(): Flow<Resource<User>> =
         flow {
-            runCatching {
-                emit(Resource.Loading())
-                auth.currentUser?.let { user ->
-                    val token =
-                        user
-                            .getIdToken(false)
-                            .await()
-                            .token
+            emit(Resource.Loading())
+            auth.currentUser?.let { user ->
+                val token =
+                    runBlocking {
+                        auth.currentUser
+                            ?.getIdToken(false)
+                            ?.await()
+                            ?.token
                             .toString()
-                    val map = HashMap<String, String>()
-                    map["uid"] = user.uid
-                    map["token"] = token
-                    val response = service.getLoginInfo(map)
-                    when (response.code()) {
-                        HTTP_OK -> {
-                            response.body()?.let { res ->
-                                when (res.errorCode) {
-                                    Constants.ERROR_CODE_OK ->
-                                        res.role?.let { role ->
-                                            val employee =
-                                                User(
-                                                    roleId = role.roleId,
-                                                    job = res.job,
-                                                    permissions = role.permissions,
-                                                )
-                                            emit(Resource.Success(data = employee))
-                                        } ?: emit(Resource.Error(UserNotAuthorizedException()))
+                    }
+                val uid = user.uid
+                val map = HashMap<String, String>()
+                map["token"] = token
+                val response = service.getLoginInfo(map)
+                when (response.code()) {
+                    HTTP_OK -> {
+                        response.body()?.let { res ->
+                            when (res.statusCode) {
+                                Constants.ERROR_CODE_OK ->
+                                    when {
+                                        res.user.isActive ->
+                                            emit(
+                                                Resource.Success(
+                                                    data =
+                                                        res.user.copy(
+                                                            userId = uid,
+                                                            displayName = user.displayName.toString(),
+                                                            email = user.email.toString(),
+                                                            photoUrl = user.photoUrl.toString(),
+                                                            isEmailVerified = user.isEmailVerified,
+                                                            linkedWithGoogle =
+                                                                user.providerData.any {
+                                                                    it.providerId == GoogleAuthProvider.PROVIDER_ID
+                                                                },
+                                                        ),
+                                                ),
+                                            )
 
-                                    Constants.ERROR_CODE_USER_COLLISION -> {
-                                        user.delete()
-                                        emit(Resource.Error(UserNotAuthorizedException()))
+                                        else ->
+                                            emit(Resource.Error(UserNotAuthorizedException()))
                                     }
 
-                                    Constants.ERROR_CODE_SERVER_ERROR ->
-                                        emit(Resource.Error(ConnectException()))
-
-                                    else -> emit(Resource.Error(UserNotAuthorizedException()))
+                                Constants.ERROR_CODE_USER_COLLISION,
+                                Constants.ERROR_CODE_INVALID_USER_IDENTITY,
+                                -> {
+                                    user.delete()
+                                    emit(Resource.Error(UserNotAuthorizedException()))
                                 }
+
+                                Constants.ERROR_CODE_SERVER_ERROR ->
+                                    emit(Resource.Error(ConnectException()))
+
+                                else -> emit(Resource.Error(UserNotAuthorizedException()))
                             }
                         }
-
-                        else -> emit(Resource.Error(UserNotAuthorizedException()))
                     }
-                } ?: run { emit(Resource.Error(UserNotAuthenticatedException())) }
-            }.onFailure {
-                Timber.e("getUserInfo() Error ${it.javaClass.simpleName}: ${it.message}")
-                emit(Resource.Error(it))
-            }
+
+                    else -> emit(Resource.Error(UserNotAuthorizedException()))
+                }
+            } ?: run { emit(Resource.Error(UserNotAuthenticatedException())) }
+        }.catch {
+            Timber.e("getUserInfo() Error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Resource.Error(it))
         }
 
     override fun register(
-        name: String,
+        firstName: String,
+        lastName: String,
         email: String,
-        address: String,
+        birthDate: Long,
+        gender: String,
+        nationalId: String,
         phone: String,
+        address: String,
+        weight: Double,
+        chronicDiseases: String,
+        currentMedications: String,
+        allergies: String,
+        pastSurgeries: String,
         password: String,
     ): Flow<Resource<Nothing?>> =
         flow {
@@ -99,7 +124,7 @@ class RemoteAuthDataSourceImpl(
                 val profileUpdates =
                     UserProfileChangeRequest
                         .Builder()
-                        .setDisplayName(name)
+                        .setDisplayName("$firstName $lastName")
                         .build()
                 user.updateProfile(profileUpdates).await()
                 val token =
@@ -109,11 +134,19 @@ class RemoteAuthDataSourceImpl(
                         .token
                         .toString()
                 registerOnDB(
-                    user.uid,
-                    user.displayName.toString(),
-                    user.email.toString(),
+                    firstName,
+                    lastName,
+                    email,
+                    birthDate,
+                    gender,
+                    nationalId,
                     phone,
                     address,
+                    weight,
+                    chronicDiseases,
+                    currentMedications,
+                    allergies,
+                    pastSurgeries,
                     token,
                 ).collect { resource ->
                     if (resource is Resource.Error) {
@@ -210,8 +243,22 @@ class RemoteAuthDataSourceImpl(
                     FacebookAuthProvider.PROVIDER_ID -> FacebookAuthProvider.getCredential(token)
                     else -> throw FirebaseAuthException("17016", "No such provider error")
                 }
-            auth.currentUser!!.linkWithCredential(credential).await()
-            emit(Resource.Success(null))
+            auth.currentUser?.let { currentUser ->
+                val authResult = currentUser.linkWithCredential(credential).await()
+                val providerData =
+                    authResult.user?.providerData?.firstOrNull { it.providerId == providerId }
+                providerData?.photoUrl?.let { newPhotoUrl ->
+                    val profileUpdates =
+                        UserProfileChangeRequest
+                            .Builder()
+                            .setPhotoUri(newPhotoUrl)
+                            .build()
+                    currentUser.updateProfile(profileUpdates).await()
+                }
+                emit(Resource.Success(null))
+            } ?: run {
+                emit(Resource.Error(UserNotAuthorizedException()))
+            }
         }.catch { emit(Resource.Error(it)) }
 
     override fun deleteAccount(): Flow<Resource<Nothing?>> =
@@ -227,31 +274,47 @@ class RemoteAuthDataSourceImpl(
         }
 
     private fun registerOnDB(
-        uid: String,
-        displayName: String,
+        firstName: String,
+        lastName: String,
         email: String,
+        birthDate: Long,
+        gender: String,
+        nationalId: String,
         phone: String,
         address: String,
+        weight: Double,
+        chronicDiseases: String,
+        currentMedications: String,
+        allergies: String,
+        pastSurgeries: String,
         token: String,
     ): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
             val map = HashMap<String, String>()
-            map["uid"] = uid
-            map["username"] = displayName
+            map["fName"] = firstName
+            map["lName"] = lastName
             map["email"] = email
+            map["birthDate"] = birthDate.toString()
+            map["gender"] = gender.toString()
+            map["nationalId"] = nationalId.toString()
+            map["phoneNumber"] = phone
             map["address"] = address
-            map["mobile"] = phone
+            map["chronicDiseases"] = chronicDiseases
+            map["currentMedications"] = currentMedications
+            map["allergies"] = allergies
+            map["pastSurgeries"] = pastSurgeries
+            map["weight"] = weight.toString()
             map["token"] = token
             val response = service.register(map)
             when (response.code()) {
                 HTTP_OK ->
                     response.body()?.let { res ->
-                        when (res.errorCode) {
+                        when (res.statusCode) {
                             Constants.ERROR_CODE_OK -> emit(Resource.Success(null))
                             Constants.ERROR_CODE_USER_COLLISION ->
                                 emit(Resource.Error(FirebaseAuthUserCollisionException("", "")))
 
-                            Constants.ERROR_CODE_INVALID_EMPLOYEE_IDENTITY ->
+                            Constants.ERROR_CODE_INVALID_USER_IDENTITY ->
                                 emit(Resource.Error(InvalidUserIdentityException()))
 
                             Constants.ERROR_CODE_EXPIRED_TOKEN ->

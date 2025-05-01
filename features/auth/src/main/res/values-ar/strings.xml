@@ -2,11 +2,13 @@
 <resources>
     <string name="email">البريد الإلكتروني</string>
     <string name="password">كلمة المرور</string>
-    <string name="alpha_number">الرقم الأبجدي</string>
+    <string name="last_name">الاسم الأخير</string>
     <string name="national_id">الرقم القومي</string>
     <string name="generic_error">لقد حدث خطأ ما. برجاء إعادة المحاولة.</string>
-    <string name="name_error">يرجى إدخال اسمك الكامل بشكل صحيح.</string>
+    <string name="first_name_error">يرجى إدخال اسمك الأول بشكل صحيح.</string>
+    <string name="last_name_error">يرجى إدخال اسمك الأخير بشكل صحيح.</string>
     <string name="email_error">يرجى إدخال بريدك الإلكتروني بشكل صحيح.</string>
+    <string name="gender_error">يرجى تحديد النوع بشكل صحيح.</string>
     <string name="phone_error">يرجى إدخال رقم الهاتف صحيح.</string>
     <string name="try_again">إعادة المحاولة</string>
     <string name="login">تسجيل الدخول</string>
@@ -23,8 +25,21 @@
     <string name="complete_registration">استكمال التسجيل</string>
     <string name="register">تسجيل</string>
     <string name="login_instead">لديك حساب بالفعل؟</string>
-    <string name="full_name">الاسم الكامل</string>
+    <string name="first_name">الاسم الأول</string>
     <string name="phone_number">رقم الموبايل</string>
     <string name="register_message">تم إنشاء حسابك بنجاح! برجاء مراجعة بريدك الإلكتروني لتأكيده وتفعيل حسابك.</string>
     <string name="complete_message">تم استكمال بيانات تسجيل حسابك بنجاح!</string>
+    <string name="choose_gender">اختر النوع</string>
+    <string name="chronic_diseases_hint">إذا لم يكن لديك أمراض مزمنة مثل السكري أو الضغط برجاء كتابة لا يوجد</string>
+    <string name="current_medications_hint">إذا لم تكن تتناول أدوية حالية اكتب لا يوجد</string>
+    <string name="allergies_hint">إذا لم تكن لديك أي نوع حساسية اكتب لا يوجد</string>
+    <string name="past_surgeries_hint">إذا لم تكن قد خضعت لأي عمليات جراحية اكتب لا يوجد</string>
+    <string name="current_medications">الأدوية الحالية</string>
+    <string name="chronic_diseases_error">يرجى إدخال الأمراض المزمنة أو اكتب \"لايوجد\".</string>
+    <string name="current_medications_error">يرجى إدخال الأدوية الحالية أو اكتب \"لايوجد\".</string>
+    <string name="allergies_error">يرجى إدخال الحساسية أو اكتب \"لايوجد\".</string>
+    <string name="past_surgeries_error">يرجى إدخال العمليات السابقة أو اكتب \"لايوجد\".</string>
+    <string name="address">العنوان</string>
+    <string name="verify_email">تأكيد البريد الإلكترني</string>
+    <string name="link_google">ربط Google</string>
 </resources>
