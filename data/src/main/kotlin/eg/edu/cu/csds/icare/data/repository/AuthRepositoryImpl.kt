@@ -131,7 +131,26 @@ class AuthRepositoryImpl(
     override fun linkTokenAccount(
         providerId: String,
         token: String,
-    ): Flow<Resource<Nothing?>> = remoteAuthDataSource.linkTokenAccount(providerId, token)
+    ): Flow<Resource<Nothing?>> =
+        flow {
+            remoteAuthDataSource.linkTokenAccount(providerId, token).collect { res ->
+                when (res) {
+                    is Resource.Success -> {
+                        localAuthDataSource.getUser()?.let { cachedUser ->
+                            localAuthDataSource.saveEmployee(
+                                cachedUser.copy(
+                                    linkedWithGoogle = true,
+                                    photoUrl = auth.currentUser?.photoUrl.toString(),
+                                ),
+                            )
+                            emit(Resource.Success(null))
+                        }
+                    }
+
+                    else -> emit(res)
+                }
+            }
+        }
 
     override fun deleteAccount(): Flow<Resource<Nothing?>> = remoteAuthDataSource.deleteAccount()
 

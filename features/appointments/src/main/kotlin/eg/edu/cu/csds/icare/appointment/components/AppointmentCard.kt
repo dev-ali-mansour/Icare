@@ -35,7 +35,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
-import eg.edu.cu.csds.icare.data.util.getFormattedTime
+import eg.edu.cu.csds.icare.data.util.getFormattedDateTime
 
 @Composable
 fun AppointmentCard(
@@ -89,7 +89,7 @@ fun AppointmentCard(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
-                    text = appointment.dateTime.getFormattedTime(context),
+                    text = appointment.dateTime.getFormattedDateTime(context),
                     fontFamily = helveticaFamily,
                     modifier = Modifier.weight(weight = 1f),
                 )
