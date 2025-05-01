@@ -62,7 +62,7 @@ fun NavGraphBuilder.homeRoute(
             },
             onSectionsAdminClicked = { navigateToScreen(Screen.Admin) },
             onConfirm = {
-                appointmentViewModel.selectedAppointment.value =
+                appointmentViewModel.selectedAppointmentState.value =
                     it.copy(statusId = AppointmentStatus.ConfirmedStatus.code)
                 appointmentViewModel.updateAppointment()
                 appointmentViewModel.getAppointments()

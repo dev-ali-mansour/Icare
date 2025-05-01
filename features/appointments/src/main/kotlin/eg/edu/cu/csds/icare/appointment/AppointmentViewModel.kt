@@ -98,8 +98,12 @@ class AppointmentViewModel(
             }
 
             selectedAppointmentState.value?.let {
-                updateAppointmentUseCase(it).collect {
-                    _actionResFlow.emit(it)
+                updateAppointmentUseCase(it).collect { result ->
+                    if (result is Resource.Success) {
+                        selectedAppointmentState.value = null
+                        getPatientAppointments()
+                    }
+                    _actionResFlow.emit(result)
                 }
             } ?: run {
                 _actionResFlow.emit(Resource.Error(Error("No appointment selected!")))
