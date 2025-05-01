@@ -7,4 +7,5 @@
     <string name="book_your_appointment_time">Book your appointment time</string>
     <string name="no_doctors_available">No doctors available</string>
     <string name="confirm">Confirm</string>
+    <string name="no_appointments_data">No appointments data available</string>
 </resources>
