@@ -20,6 +20,13 @@
     <string name="service_price_error">Please enter  a valid service price.</string>
     <string name="rating_error">Please enter a valid rating.</string>
     <string name="doctor_times_error">Please enter valid doctor working times.</string>
+    <string name="diagnosis_error">Please enter diagnosis.</string>
+    <string name="medications_error">Please enter medications.</string>
+    <string name="lab_center_error">Please choose a lab center.</string>
+    <string name="lab_tests_error">Please enter lab tests.</string>
+    <string name="imaging_center_error">Please choose an imaging center.</string>
+    <string name="imaging_tests_error">Please enter imaging tests.</string>
+    <string name="follow_up_date_error">Please choose a valid follow up date.</string>
     <string name="try_again">Try again</string>
     <string name="first_name">First Name</string>
     <string name="phone_number">Phone Number</string>
