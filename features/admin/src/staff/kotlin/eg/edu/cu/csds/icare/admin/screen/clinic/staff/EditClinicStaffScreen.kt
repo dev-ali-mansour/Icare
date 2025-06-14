@@ -1,5 +1,6 @@
 package eg.edu.cu.csds.icare.admin.screen.clinic.staff
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,10 +22,13 @@ import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -32,11 +36,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.admin.R
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.util.Constants
+import eg.edu.cu.csds.icare.core.domain.util.isValidEmail
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
+import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -48,6 +56,7 @@ internal fun EditClinicStaffScreen(
     onProceedButtonClicked: () -> Unit,
     onSuccess: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
+    context: Context = LocalContext.current,
 ) {
     val actionResource by clinicViewModel.actionResFlow
         .collectAsStateWithLifecycle(initialValue = Resource.Unspecified())
@@ -57,7 +66,9 @@ internal fun EditClinicStaffScreen(
     var showSuccessDialog by clinicViewModel.showSuccessDialog
     var isRefreshing by clinicViewModel.isRefreshing
     val state = rememberPullToRefreshState()
-    val scope = rememberCoroutineScope()
+    val scope: CoroutineScope = rememberCoroutineScope()
+    var alertMessage by remember { mutableStateOf("") }
+    var showAlert by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -141,7 +152,48 @@ internal fun EditClinicStaffScreen(
                         },
                         onEmailChanged = { selectedStaff = staff.copy(email = it) },
                         onPhoneChanged = { selectedStaff = staff.copy(phone = it) },
-                        onProceedButtonClicked = { onProceedButtonClicked() },
+                        onProceedButtonClicked = {
+                            scope.launch {
+                                when {
+                                    staff.firstName.isBlank() -> {
+                                        alertMessage = context.getString(R.string.first_name_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    staff.lastName.isBlank() -> {
+                                        alertMessage = context.getString(R.string.last_name_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    staff.clinicId == 0.toLong() -> {
+                                        alertMessage = context.getString(R.string.clinic_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    !staff.email.isValidEmail -> {
+                                        alertMessage = context.getString(R.string.email_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    staff.phone.isBlank() || staff.phone.length < Constants.PHONE_LENGTH -> {
+                                        alertMessage = context.getString(R.string.phone_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    else -> onProceedButtonClicked()
+                                }
+                            }
+                        },
                         onSuccess = {
                             scope.launch {
                                 showSuccessDialog = true
@@ -164,6 +216,7 @@ internal fun EditClinicStaffScreen(
                         state = state,
                     )
                     if (showSuccessDialog) SuccessesDialog {}
+                    if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
                 }
             }
         }
