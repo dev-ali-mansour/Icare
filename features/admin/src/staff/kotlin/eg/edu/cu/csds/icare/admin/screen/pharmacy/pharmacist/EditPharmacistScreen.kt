@@ -1,5 +1,6 @@
 package eg.edu.cu.csds.icare.admin.screen.pharmacy.pharmacist
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,10 +21,13 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -31,11 +35,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.admin.R
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
 import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.util.Constants
+import eg.edu.cu.csds.icare.core.domain.util.isValidEmail
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
+import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -47,6 +55,7 @@ internal fun EditPharmacistScreen(
     onProceedButtonClicked: () -> Unit,
     onSuccess: () -> Unit,
     onError: suspend (Throwable?) -> Unit,
+    context: Context = LocalContext.current,
 ) {
     val actionResource by pharmacyViewModel.actionResFlow
         .collectAsStateWithLifecycle(initialValue = Resource.Unspecified())
@@ -56,7 +65,10 @@ internal fun EditPharmacistScreen(
     var showSuccessDialog by pharmacyViewModel.showSuccessDialog
     var isRefreshing by pharmacyViewModel.isRefreshing
     val state = rememberPullToRefreshState()
-    val scope = rememberCoroutineScope()
+    val scope: CoroutineScope = rememberCoroutineScope()
+    var alertMessage by remember { mutableStateOf("") }
+    var showAlert by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -126,7 +138,9 @@ internal fun EditPharmacistScreen(
                         actionResource = actionResource,
                         pharmaciesExpanded = pharmaciesExpanded,
                         showLoading = { isRefreshing = it },
-                        onFirstNameChanged = { selectedPharmacist = pharmacist.copy(firstName = it) },
+                        onFirstNameChanged = {
+                            selectedPharmacist = pharmacist.copy(firstName = it)
+                        },
                         onLastNameChanged = { selectedPharmacist = pharmacist.copy(lastName = it) },
                         onPharmaciesExpandedChange = { pharmaciesExpanded = !pharmaciesExpanded },
                         onPharmaciesDismissRequest = { pharmaciesExpanded = false },
@@ -136,7 +150,48 @@ internal fun EditPharmacistScreen(
                         },
                         onEmailChanged = { selectedPharmacist = pharmacist.copy(email = it) },
                         onPhoneChanged = { selectedPharmacist = pharmacist.copy(phone = it) },
-                        onProceedButtonClicked = { onProceedButtonClicked() },
+                        onProceedButtonClicked = {
+                            scope.launch {
+                                when {
+                                    pharmacist.firstName.isBlank() -> {
+                                        alertMessage = context.getString(R.string.first_name_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    pharmacist.lastName.isBlank() -> {
+                                        alertMessage = context.getString(R.string.last_name_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    pharmacist.pharmacyId == 0.toLong() -> {
+                                        alertMessage = context.getString(R.string.pharmacy_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    !pharmacist.email.isValidEmail -> {
+                                        alertMessage = context.getString(R.string.email_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    pharmacist.phone.isBlank() || pharmacist.phone.length < Constants.PHONE_LENGTH -> {
+                                        alertMessage = context.getString(R.string.phone_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    else -> onProceedButtonClicked()
+                                }
+                            }
+                        },
                         onSuccess = {
                             scope.launch {
                                 showSuccessDialog = true
@@ -159,6 +214,7 @@ internal fun EditPharmacistScreen(
                         state = state,
                     )
                     if (showSuccessDialog) SuccessesDialog {}
+                    if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
                 }
             }
         }
