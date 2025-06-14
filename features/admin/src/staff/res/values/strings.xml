@@ -10,6 +10,9 @@
     <string name="email_error">Please enter a valid email.</string>
     <string name="gender_error">Please choose your gender.</string>
     <string name="phone_error">Please enter a valid phone number.</string>
+    <string name="name_error">Please enter a valid name.</string>
+    <string name="type_error">Please enter a valid type.</string>
+    <string name="address_error">Please enter a valid address.</string>
     <string name="try_again">Try again</string>
     <string name="first_name">First Name</string>
     <string name="phone_number">Phone Number</string>
