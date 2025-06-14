@@ -14,6 +14,8 @@
     <string name="type_error">Please enter a valid type.</string>
     <string name="address_error">Please enter a valid address.</string>
     <string name="clinic_error">Please choose a clinic.</string>
+    <string name="pharmacy_error">Please choose a pharmacy.</string>
+    <string name="center_error">Please choose a center.</string>
     <string name="speciality_error">Please enter doctor\'s speciality.</string>
     <string name="service_price_error">Please enter  a valid service price.</string>
     <string name="rating_error">Please enter a valid rating.</string>
