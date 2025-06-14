@@ -5,7 +5,6 @@ import androidx.room.Room
 import eg.edu.cu.csds.icare.data.BuildConfig
 import eg.edu.cu.csds.icare.data.local.db.AppDatabase
 import eg.edu.cu.csds.icare.data.local.db.DbPassPhrase
-import eg.edu.cu.csds.icare.data.local.db.dao.BookingMethodDao
 import eg.edu.cu.csds.icare.data.local.db.dao.CenterDao
 import eg.edu.cu.csds.icare.data.local.db.dao.ClinicDao
 import eg.edu.cu.csds.icare.data.local.db.dao.DoctorDao
@@ -52,9 +51,6 @@ class RoomModule {
 
     @Single
     fun provideUserDao(db: AppDatabase): UserDao = db.userDao()
-
-    @Single
-    fun provideBookingMethodDao(db: AppDatabase): BookingMethodDao = db.bookingMethodDao()
 
     @Single
     fun provideClinicDao(db: AppDatabase): ClinicDao = db.clinicDao()
