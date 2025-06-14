@@ -254,7 +254,7 @@ internal fun CenterDetailsContent(
                         KeyboardOptions.Default.copy(
                             autoCorrectEnabled = false,
                             keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next,
+                            imeAction = ImeAction.Done,
                         ),
                 )
 
