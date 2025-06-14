@@ -43,8 +43,6 @@ detekt="1.23.7"
 googleServices = "4.4.2"
 crashlyticsPlugin = "3.0.3"
 
-
-
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "appcompat" }
