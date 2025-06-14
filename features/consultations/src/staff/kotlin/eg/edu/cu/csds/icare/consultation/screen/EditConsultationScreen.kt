@@ -1,5 +1,6 @@
 package eg.edu.cu.csds.icare.consultation.screen
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,10 +22,13 @@ import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -39,7 +43,9 @@ import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
+import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -54,6 +60,7 @@ internal fun EditConsultationScreen(
     onProceedButtonClicked: () -> Unit,
     navigateToScreen: (Screen) -> Unit,
     onError: suspend (Throwable?) -> Unit,
+    context: Context = LocalContext.current,
 ) {
     val pharmaciesRes by pharmacyViewModel.pharmaciesResFlow.collectAsStateWithLifecycle()
     val centersRes by centerViewModel.centersResFlow.collectAsStateWithLifecycle()
@@ -66,7 +73,9 @@ internal fun EditConsultationScreen(
     var showSuccessDialog by consultationViewModel.showSuccessDialog
     var isRefreshing by consultationViewModel.isRefreshing
     val state = rememberPullToRefreshState()
-    val scope = rememberCoroutineScope()
+    val scope: CoroutineScope = rememberCoroutineScope()
+    var alertMessage by remember { mutableStateOf("") }
+    var showAlert by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -178,7 +187,70 @@ internal fun EditConsultationScreen(
                             imagingCentersExpanded = false
                         },
                         onFollowUpDateChanged = { consultation.copy(followUpdDate = it) },
-                        onProceedButtonClicked = { onProceedButtonClicked() },
+                        onProceedButtonClicked = {
+                            scope.launch {
+                                when {
+                                    consultation.diagnosis.trim().isEmpty() -> {
+                                        alertMessage = context.getString(R.string.diagnosis_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    consultation.medications.trim().isNotEmpty() &&
+                                        consultation.pharmacyId == 0.toLong() -> {
+                                        alertMessage = context.getString(R.string.pharmacy_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    consultation.medications.trim().isEmpty() &&
+                                        consultation.pharmacyId > 0.toLong() -> {
+                                        alertMessage = context.getString(R.string.medications_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    consultation.labTests.trim().isNotEmpty() &&
+                                        consultation.labCenterId == 0.toLong() -> {
+                                        alertMessage = context.getString(R.string.lab_center_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    consultation.labTests.trim().isEmpty() &&
+                                        consultation.labCenterId > 0.toLong() -> {
+                                        alertMessage = context.getString(R.string.lab_tests_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    consultation.imagingTests.trim().isNotEmpty() &&
+                                        consultation.imagingCenterId == 0.toLong() -> {
+                                        alertMessage =
+                                            context.getString(R.string.imaging_center_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    consultation.imagingTests.trim().isEmpty() &&
+                                        consultation.imagingCenterId > 0.toLong() -> {
+                                        alertMessage =
+                                            context.getString(R.string.imaging_tests_error)
+                                        showAlert = true
+                                        delay(timeMillis = 3000)
+                                        showAlert = false
+                                    }
+
+                                    else -> onProceedButtonClicked()
+                                }
+                            }
+                        },
                         onSuccess = {
                             scope.launch {
                                 showSuccessDialog = true
@@ -202,6 +274,7 @@ internal fun EditConsultationScreen(
                         state = state,
                     )
                     if (showSuccessDialog) SuccessesDialog {}
+                    if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
                 }
             }
         }

@@ -688,7 +688,7 @@ internal fun ConsultationDetailsContent(
                                 KeyboardOptions.Default.copy(
                                     autoCorrectEnabled = false,
                                     keyboardType = KeyboardType.Text,
-                                    imeAction = ImeAction.Default,
+                                    imeAction = ImeAction.Done,
                                 ),
                         )
 
@@ -743,7 +743,7 @@ internal fun ConsultationDetailsContent(
                                 KeyboardOptions.Default.copy(
                                     autoCorrectEnabled = false,
                                     keyboardType = KeyboardType.Text,
-                                    imeAction = ImeAction.Next,
+                                    imeAction = ImeAction.Done,
                                 ),
                             trailingIcon = {
                                 Icon(
