@@ -9,14 +9,12 @@ import androidx.room.RenameTable
 import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
 import androidx.sqlite.db.SupportSQLiteDatabase
-import eg.edu.cu.csds.icare.data.local.db.dao.BookingMethodDao
 import eg.edu.cu.csds.icare.data.local.db.dao.CenterDao
 import eg.edu.cu.csds.icare.data.local.db.dao.ClinicDao
 import eg.edu.cu.csds.icare.data.local.db.dao.DoctorDao
 import eg.edu.cu.csds.icare.data.local.db.dao.PharmacyDao
 import eg.edu.cu.csds.icare.data.local.db.dao.SettingsDao
 import eg.edu.cu.csds.icare.data.local.db.dao.UserDao
-import eg.edu.cu.csds.icare.data.local.db.entity.BookingMethodEntity
 import eg.edu.cu.csds.icare.data.local.db.entity.CenterEntity
 import eg.edu.cu.csds.icare.data.local.db.entity.ClinicEntity
 import eg.edu.cu.csds.icare.data.local.db.entity.DoctorEntity
@@ -26,10 +24,10 @@ import eg.edu.cu.csds.icare.data.local.db.entity.UserEntity
 
 @Database(
     entities = [
-        SettingsEntity::class, UserEntity::class, BookingMethodEntity::class, ClinicEntity::class,
+        SettingsEntity::class, UserEntity::class, ClinicEntity::class,
         CenterEntity::class, DoctorEntity::class, PharmacyEntity::class,
     ],
-    version = 13,
+    version = 14,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -44,11 +42,10 @@ import eg.edu.cu.csds.icare.data.local.db.entity.UserEntity
         AutoMigration(from = 10, to = 11, spec = AppDatabase.AutoMigrationSpec11::class),
         AutoMigration(from = 11, to = 12, spec = AppDatabase.AutoMigrationSpec12::class),
         AutoMigration(from = 12, to = 13),
+        AutoMigration(from = 13, to = 14, spec = AppDatabase.AutoMigrationSpec14::class),
     ],
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun bookingMethodDao(): BookingMethodDao
-
     abstract fun settingsDao(): SettingsDao
 
     abstract fun userDao(): UserDao
@@ -115,6 +112,12 @@ abstract class AppDatabase : RoomDatabase() {
 
     @RenameTable.Entries(RenameTable(fromTableName = "user", toTableName = "users"))
     class AutoMigrationSpec12 : AutoMigrationSpec {
+        @Override
+        override fun onPostMigrate(db: SupportSQLiteDatabase) = Unit
+    }
+
+    @DeleteTable.Entries(DeleteTable(tableName = "booking_methods"))
+    class AutoMigrationSpec14 : AutoMigrationSpec {
         @Override
         override fun onPostMigrate(db: SupportSQLiteDatabase) = Unit
     }
