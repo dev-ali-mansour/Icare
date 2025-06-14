@@ -12,6 +12,11 @@
     <string name="name_error">يرجى كتابة الاسم بشكل صحيح.</string>
     <string name="type_error">يرجى كتابة النوع بشكل صحيح.</string>
     <string name="address_error">يرجى كتابة العنوان بشكل صحيح.</string>
+    <string name="clinic_error">يرجى اختيار العيادة.</string>
+    <string name="speciality_error">يرجى كتابة تخصص الطبيب.</string>
+    <string name="service_price_error">يرجى كتابة سعر الخدمة بشكل صحيح.</string>
+    <string name="rating_error">يرجى كتابة التقييم بشكل صحيح.</string>
+    <string name="doctor_times_error">يرجى تحديد مدة عمل الطبيب بشكل صحيح.</string>
     <string name="try_again">إعادة المحاولة</string>
     <string name="first_name">الاسم الأول</string>
     <string name="phone_number">رقم الموبايل</string>
