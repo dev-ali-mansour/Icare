@@ -41,7 +41,7 @@ rootbeer = "0.1.1"
 ktlint = "13.0.0"
 detekt="1.23.8"
 googleServices = "4.4.3"
-crashlyticsPlugin = "3.0.4"
+crashlyticsPlugin = "3.0.5"
 
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
