@@ -1,21 +1,21 @@
 [versions]
-agp = "8.10.1"
-kotlin = "2.1.10"
-ksp = "2.1.10-1.0.29"
+androidGradlePlugin = "8.11.1"
+kotlin = "2.2.0"
+ksp = "2.2.0-2.0.2"
 appcompat = "1.7.1"
 coreKtx = "1.16.0"
 junit = "4.13.2"
-robolectric = "4.14.1"
+robolectric = "4.15.1"
 truth = "1.4.4"
 mockito = "5.2.0"
-mockWebServer = "5.0.0-alpha.16"
+mockWebServer = "5.1.0"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.9.1"
+lifecycleRuntimeKtx = "2.9.2"
 activityCompose = "1.10.1"
 constrainLayout = "1.1.1"
-navigationCompose = "2.9.0"
-composeBom = "2025.06.00"
+navigationCompose = "2.9.2"
+composeBom = "2025.07.00"
 coilCompose = "2.7.0"
 appUpdates = "2.1.0"
 androidxBrowser = "1.8.0"
@@ -24,24 +24,24 @@ koinBom = "4.1.0"
 koinAnnotations = "2.1.0"
 splashScreen = "1.0.1"
 coroutine = "1.10.2"
-ktxSerialization = "1.8.1"
-firebaseBom = "33.15.0"
-googleAuth = "21.3.0"
+ktxSerialization = "1.9.0"
+firebaseBom = "34.0.0"
+googleAuth = "21.4.0"
 timber = "5.0.1"
 retrofit = "3.0.0"
 ktxSerConverter = "1.0.0"
-okhttp3 = "4.12.0"
-room = "2.7.1"
+okhttp3 = "5.1.0"
+room = "2.7.2"
 crypto = "1.1.0-beta01"
 sqlcipher = "4.5.4"
 safetynet = "18.1.0"
 integrity = "1.4.0"
 jose4j = "0.9.6"
-rootbeer = "0.1.0"
-ktlint = "12.1.2"
-detekt="1.23.7"
-googleServices = "4.4.2"
-crashlyticsPlugin = "3.0.3"
+rootbeer = "0.1.1"
+ktlint = "13.0.0"
+detekt="1.23.8"
+googleServices = "4.4.3"
+crashlyticsPlugin = "3.0.5"
 
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
@@ -125,14 +125,14 @@ data-test = ["mockito-inline", "google-truth", "mockwebserver"]
 app-test = ["androidx-junit", "androidx-espresso-core", "mockito-inline", "google-truth"]
 
 [plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsPlugin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-android-library = { id = "com.android.library", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 androidx-room = { id = "androidx.room", version.ref = "room" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
