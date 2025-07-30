@@ -4,7 +4,6 @@ import build.BuildConfig
 import build.BuildDimensions
 import build.BuildTypes
 import extensions.getLocalProperty
-import extensions.osFamily
 import flavors.FlavorTypes
 import signing.SigningTypes
 import test.TestBuildConfig
@@ -32,7 +31,7 @@ android {
 
     signingConfigs {
         create(SigningTypes.RELEASE) {
-            storeFile = file(project.getLocalProperty("release_key.store.$osFamily"))
+            storeFile = file(project.getLocalProperty("release_key.store"))
             storePassword = project.getLocalProperty("release_key.store_password")
             keyAlias = project.getLocalProperty("release_key.alias")
             keyPassword = project.getLocalProperty("release_key.key_password")
@@ -40,7 +39,7 @@ android {
             enableV2Signing = true
         }
         create(SigningTypes.RELEASE_EXTERNAL_QA) {
-            storeFile = file(project.getLocalProperty("qa_key.store.$osFamily"))
+            storeFile = file(project.getLocalProperty("qa_key.store"))
             storePassword = project.getLocalProperty("qa_key.store_password")
             keyAlias = project.getLocalProperty("qa_key.alias")
             keyPassword = project.getLocalProperty("qa_key.key_password")
