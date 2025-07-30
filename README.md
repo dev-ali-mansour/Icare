@@ -144,4 +144,4 @@ This project uses:
 - [Firebase](https://firebase.google.com/)
 - [Koin](https://insert-koin.io/)
 - [Jetpack Compose](https://developer.android.com/jetpack/compose)
-- [DrwaIo](https://www.drawio.com/) for diagrams
+- [DrawIo](https://www.drawio.com/) for diagrams
