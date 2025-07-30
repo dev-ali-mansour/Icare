@@ -1,6 +1,7 @@
 package eg.edu.cu.csds.icare.data.remote.datasource
 
 import android.os.Trace
+import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -8,8 +9,7 @@ import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.auth
 import eg.edu.cu.csds.icare.core.domain.model.EmailVerificationException
 import eg.edu.cu.csds.icare.core.domain.model.InvalidUserIdentityException
 import eg.edu.cu.csds.icare.core.domain.model.Resource
