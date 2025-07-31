@@ -137,7 +137,7 @@ ksp {
 
 dependencies {
 
-    implementation(project(":core:domain"))
+    implementation(projects.core.domain)
 
     implementation(libs.androidx.core.ktx)
     implementation(platform(libs.koin.bom))

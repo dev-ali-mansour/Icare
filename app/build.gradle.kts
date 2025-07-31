@@ -134,12 +134,12 @@ ksp {
 }
 
 dependencies {
-    implementation(project(":core:ui"))
-    implementation(project(":features:on_boarding"))
-    implementation(project(":features:auth"))
-    implementation(project(":features:home"))
-    implementation(project(":features:notifications"))
-    implementation(project(":features:settings"))
+    implementation(projects.core.ui)
+    implementation(projects.features.onBoarding)
+    implementation(projects.features.auth)
+    implementation(projects.features.home)
+    implementation(projects.features.notifications)
+    implementation(projects.features.settings)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.lifecycle)
