@@ -1,8 +1,9 @@
 package eg.edu.cu.csds.icare.core.data.repository
 
 import eg.edu.cu.csds.icare.core.data.local.datasource.LocalCentersDataSource
-import eg.edu.cu.csds.icare.core.data.local.db.entity.toEntity
-import eg.edu.cu.csds.icare.core.data.local.db.entity.toModel
+import eg.edu.cu.csds.icare.core.data.mappers.toCenterDto
+import eg.edu.cu.csds.icare.core.data.mappers.toCenterEntity
+import eg.edu.cu.csds.icare.core.data.mappers.toLabImagingCenter
 import eg.edu.cu.csds.icare.core.data.remote.datasource.RemoteCentersDataSource
 import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
@@ -18,14 +19,14 @@ class CentersRepositoryImpl(
     private val remoteCentersDataSource: RemoteCentersDataSource,
     private val localCentersDataSource: LocalCentersDataSource,
 ) : CentersRepository {
-    override fun listCenters(forceRefresh: Boolean): Flow<Resource<List<LabImagingCenter>>> =
+    override fun listCenters(forceUpdate: Boolean): Flow<Resource<List<LabImagingCenter>>> =
         flow {
-            if (!forceRefresh) {
+            if (!forceUpdate) {
                 localCentersDataSource
                     .listCenters()
                     .distinctUntilChanged()
                     .collect { entities ->
-                        emit(Resource.Success(data = entities.map { it.toModel() }))
+                        emit(Resource.Success(data = entities.map { it.toLabImagingCenter() }))
                     }
                 return@flow
             }
@@ -37,13 +38,13 @@ class CentersRepositoryImpl(
 
                     is Resource.Success -> {
                         res.data?.let { centers ->
-                            localCentersDataSource.persistCenters(centers.map { it.toEntity() })
+                            localCentersDataSource.persistCenters(centers.map { it.toCenterEntity() })
                         }
                         localCentersDataSource
                             .listCenters()
                             .distinctUntilChanged()
                             .collect { entities ->
-                                emit(Resource.Success(data = entities.map { it.toModel() }))
+                                emit(Resource.Success(data = entities.map { it.toLabImagingCenter() }))
                             }
                     }
 
@@ -55,7 +56,7 @@ class CentersRepositoryImpl(
     override fun addNewCenter(center: LabImagingCenter): Flow<Resource<Nothing?>> =
         flow {
             emit(Resource.Loading())
-            remoteCentersDataSource.addNewCenter(center).collect { res ->
+            remoteCentersDataSource.addNewCenter(center.toCenterDto()).collect { res ->
                 when (res) {
                     is Resource.Unspecified<*> -> emit(Resource.Unspecified())
                     is Resource.Loading<*> -> emit(Resource.Loading())
@@ -76,7 +77,7 @@ class CentersRepositoryImpl(
     override fun updateCenter(center: LabImagingCenter): Flow<Resource<Nothing?>> =
         flow {
             emit(Resource.Loading())
-            remoteCentersDataSource.updateCenter(center).collect { res ->
+            remoteCentersDataSource.updateCenter(center.toCenterDto()).collect { res ->
                 when (res) {
                     is Resource.Unspecified<*> -> emit(Resource.Unspecified())
                     is Resource.Loading<*> -> emit(Resource.Loading())
@@ -96,7 +97,13 @@ class CentersRepositoryImpl(
 
     override fun listCenterStaff(): Flow<Resource<List<CenterStaff>>> = remoteCentersDataSource.listCenterStaff()
 
-    override fun addNewCenterStaff(staff: CenterStaff): Flow<Resource<Nothing?>> = remoteCentersDataSource.addNewCenterStaff(staff)
+    override fun addNewCenterStaff(staff: CenterStaff): Flow<Resource<Nothing?>> =
+        remoteCentersDataSource.addNewCenterStaff(
+            staff,
+        )
 
-    override fun updateCenterStaff(staff: CenterStaff): Flow<Resource<Nothing?>> = remoteCentersDataSource.updateCenterStaff(staff)
+    override fun updateCenterStaff(staff: CenterStaff): Flow<Resource<Nothing?>> =
+        remoteCentersDataSource.updateCenterStaff(
+            staff,
+        )
 }

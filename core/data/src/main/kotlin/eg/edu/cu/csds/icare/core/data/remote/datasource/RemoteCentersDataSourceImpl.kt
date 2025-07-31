@@ -1,13 +1,13 @@
 package eg.edu.cu.csds.icare.core.data.remote.datasource
 
 import com.google.firebase.auth.FirebaseAuth
+import eg.edu.cu.csds.icare.core.data.dto.CenterDto
+import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
-import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
 import eg.edu.cu.csds.icare.core.domain.util.Constants
-import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -24,7 +24,7 @@ class RemoteCentersDataSourceImpl(
     private val auth: FirebaseAuth,
     private val service: ApiService,
 ) : RemoteCentersDataSource {
-    override fun fetchCenters(): Flow<Resource<List<LabImagingCenter>>> =
+    override fun fetchCenters(): Flow<Resource<List<CenterDto>>> =
         flow {
             emit(Resource.Loading())
             auth.currentUser?.let {
@@ -60,7 +60,7 @@ class RemoteCentersDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun addNewCenter(center: LabImagingCenter): Flow<Resource<Nothing?>> =
+    override fun addNewCenter(center: CenterDto): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
             val token =
                 runBlocking {
@@ -94,7 +94,7 @@ class RemoteCentersDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun updateCenter(center: LabImagingCenter): Flow<Resource<Nothing?>> =
+    override fun updateCenter(center: CenterDto): Flow<Resource<Nothing?>> =
         flow<Resource<Nothing?>> {
             val token =
                 runBlocking {

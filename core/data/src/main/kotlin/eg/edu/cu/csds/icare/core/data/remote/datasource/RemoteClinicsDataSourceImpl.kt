@@ -1,15 +1,15 @@
 package eg.edu.cu.csds.icare.core.data.remote.datasource
 
 import com.google.firebase.auth.FirebaseAuth
+import eg.edu.cu.csds.icare.core.data.dto.DoctorDto
+import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
-import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
 import eg.edu.cu.csds.icare.core.domain.util.Constants
-import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -146,7 +146,7 @@ class RemoteClinicsDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun fetchDoctors(): Flow<Resource<List<Doctor>>> =
+    override fun fetchDoctors(): Flow<Resource<List<DoctorDto>>> =
         flow {
             emit(Resource.Loading())
             val token =
@@ -180,16 +180,14 @@ class RemoteClinicsDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun addNewDoctor(doctor: Doctor): Flow<Resource<Nothing?>> =
-        flow<Resource<Nothing?>> {
+    override fun addNewDoctor(doctor: DoctorDto): Flow<Resource<Nothing?>> =
+        flow {
             val token =
-                runBlocking {
-                    auth.currentUser
-                        ?.getIdToken(false)
-                        ?.await()
-                        ?.token
-                        .toString()
-                }
+                auth.currentUser
+                    ?.getIdToken(false)
+                    ?.await()
+                    ?.token
+                    .toString()
             val response = service.upsertDoctor(doctor.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
@@ -214,16 +212,14 @@ class RemoteClinicsDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun updateDoctor(doctor: Doctor): Flow<Resource<Nothing?>> =
-        flow<Resource<Nothing?>> {
+    override fun updateDoctor(doctor: DoctorDto): Flow<Resource<Nothing?>> =
+        flow {
             val token =
-                runBlocking {
-                    auth.currentUser
-                        ?.getIdToken(false)
-                        ?.await()
-                        ?.token
-                        .toString()
-                }
+                auth.currentUser
+                    ?.getIdToken(false)
+                    ?.await()
+                    ?.token
+                    .toString()
             val response = service.upsertDoctor(doctor.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
