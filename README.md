@@ -35,6 +35,7 @@ icare/
 ├── app/                      # Main application
 ├── core/                     # Shared utilities, UI components, and domain models
 │   ├── domain/               # Data models and business logic
+│   ├──data/                  # Local DB (Room) and remote repositories
 │   └── ui/                   # Shared Compose UI components
 ├── features/                 # Feature-specific modules
 │   ├── admin/                # Admin dashboard and management
@@ -45,7 +46,6 @@ icare/
 │   ├── notifications/        # push notifications and alerts
 │   ├── on_boarding/          # On boarding screens
 │   └── settings/             # User settings and preferences
-├── data/                     # Local DB (Room) and remote repositories
 └── build.gradle.kts          # Modular Gradle configuration
 
 ```
