@@ -1,8 +1,5 @@
 package eg.edu.cu.csds.icare.core.domain.model
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class AdminStatistics(
     val totalUsers: Long = 0,
     val doctors: Long = 0,
