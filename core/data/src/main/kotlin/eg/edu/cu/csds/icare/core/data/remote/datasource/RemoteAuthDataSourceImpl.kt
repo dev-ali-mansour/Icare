@@ -10,18 +10,17 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.auth
+import eg.edu.cu.csds.icare.core.data.dto.UserDto
+import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import eg.edu.cu.csds.icare.core.domain.model.EmailVerificationException
 import eg.edu.cu.csds.icare.core.domain.model.InvalidUserIdentityException
 import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
 import eg.edu.cu.csds.icare.core.domain.util.Constants
-import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.koin.core.annotation.Single
 import timber.log.Timber
@@ -34,18 +33,16 @@ class RemoteAuthDataSourceImpl(
     private val auth: FirebaseAuth,
     private val service: ApiService,
 ) : RemoteAuthDataSource {
-    override fun getUserInfo(): Flow<Resource<User>> =
+    override fun getUserInfo(): Flow<Resource<UserDto>> =
         flow {
             emit(Resource.Loading())
             auth.currentUser?.let { user ->
                 val token =
-                    runBlocking {
-                        auth.currentUser
-                            ?.getIdToken(false)
-                            ?.await()
-                            ?.token
-                            .toString()
-                    }
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
                 val uid = user.uid
                 val map = HashMap<String, String>()
                 map["token"] = token
