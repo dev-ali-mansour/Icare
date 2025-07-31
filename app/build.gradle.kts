@@ -1,9 +1,8 @@
-
 import build.Build
 import build.BuildConfig
 import build.BuildDimensions
 import build.BuildTypes
-import extensions.getLocalProperty
+import extensions.getSecret
 import flavors.FlavorTypes
 import signing.SigningTypes
 import test.TestBuildConfig
@@ -38,19 +37,11 @@ android {
 
     signingConfigs {
         create(SigningTypes.RELEASE) {
-            storeFile = file(project.getLocalProperty("release_key.store"))
-            storePassword = project.getLocalProperty("release_key.store_password")
-            keyAlias = project.getLocalProperty("release_key.alias")
-            keyPassword = project.getLocalProperty("release_key.key_password")
-            enableV1Signing = true
-            enableV2Signing = true
-        }
-
-        create(SigningTypes.RELEASE_EXTERNAL_QA) {
-            storeFile = file(project.getLocalProperty("qa_key.store"))
-            storePassword = project.getLocalProperty("qa_key.store_password")
-            keyAlias = project.getLocalProperty("qa_key.alias")
-            keyPassword = project.getLocalProperty("qa_key.key_password")
+            val keystoreFile = rootProject.file("release-key.jks")
+            storeFile = keystoreFile
+            storePassword = project.getSecret("KEYSTORE_PASSWORD")
+            keyAlias = project.getSecret("KEY_ALIAS")
+            keyPassword = project.getSecret("KEY_PASSWORD")
             enableV1Signing = true
             enableV2Signing = true
         }
@@ -86,15 +77,6 @@ android {
             applicationIdSuffix = Build.Debug.applicationIdSuffix
             signingConfig = signingConfigs.getByName(BuildTypes.DEBUG)
         }
-
-        create(BuildTypes.RELEASE_EXTERNAL_QA) {
-            isMinifyEnabled = Build.ReleaseExternalQA.isMinifyEnabled
-            isDebuggable = Build.ReleaseExternalQA.isDebuggable
-            enableUnitTestCoverage = Build.ReleaseExternalQA.enableUnitTestCoverage
-            versionNameSuffix = Build.ReleaseExternalQA.versionNameSuffix
-            applicationIdSuffix = Build.ReleaseExternalQA.applicationIdSuffix
-            signingConfig = signingConfigs.getByName(BuildTypes.RELEASE_EXTERNAL_QA)
-        }
     }
 
     flavorDimensions.add(BuildDimensions.APP)
@@ -114,10 +96,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    kotlinOptions {
-        JavaVersion.VERSION_21
     }
 
     buildFeatures {
@@ -177,4 +155,8 @@ dependencies {
     testImplementation(libs.bundles.app.test)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.junit4)
+}
+
+kotlin {
+    jvmToolchain(JavaVersion.VERSION_21.majorVersion.toInt())
 }
