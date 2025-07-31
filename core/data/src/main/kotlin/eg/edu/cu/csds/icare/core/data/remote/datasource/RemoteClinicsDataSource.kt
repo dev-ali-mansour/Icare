@@ -1,8 +1,8 @@
 package eg.edu.cu.csds.icare.core.data.remote.datasource
 
 import eg.edu.cu.csds.icare.core.data.dto.ClinicDto
+import eg.edu.cu.csds.icare.core.data.dto.ClinicStaffDto
 import eg.edu.cu.csds.icare.core.data.dto.DoctorDto
-import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import kotlinx.coroutines.flow.Flow
@@ -22,9 +22,9 @@ interface RemoteClinicsDataSource {
 
     fun getDoctorSchedule(uid: String): Flow<Resource<DoctorSchedule>>
 
-    fun listClinicStaff(): Flow<Resource<List<ClinicStaff>>>
+    fun listClinicStaff(): Flow<Resource<List<ClinicStaffDto>>>
 
-    fun addNewClinicStaff(staff: ClinicStaff): Flow<Resource<Nothing?>>
+    fun addNewClinicStaff(staff: ClinicStaffDto): Flow<Resource<Nothing?>>
 
-    fun updateClinicStaff(staff: ClinicStaff): Flow<Resource<Nothing?>>
+    fun updateClinicStaff(staff: ClinicStaffDto): Flow<Resource<Nothing?>>
 }

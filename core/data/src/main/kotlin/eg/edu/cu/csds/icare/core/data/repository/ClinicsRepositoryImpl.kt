@@ -6,6 +6,8 @@ import eg.edu.cu.csds.icare.core.data.local.datasource.LocalDoctorDataSource
 import eg.edu.cu.csds.icare.core.data.mappers.toClinic
 import eg.edu.cu.csds.icare.core.data.mappers.toClinicDto
 import eg.edu.cu.csds.icare.core.data.mappers.toClinicEntity
+import eg.edu.cu.csds.icare.core.data.mappers.toClinicStaff
+import eg.edu.cu.csds.icare.core.data.mappers.toClinicStaffDto
 import eg.edu.cu.csds.icare.core.data.mappers.toDoctor
 import eg.edu.cu.csds.icare.core.data.mappers.toDoctorDto
 import eg.edu.cu.csds.icare.core.data.mappers.toDoctorEntity
@@ -205,15 +207,31 @@ class ClinicsRepositoryImpl(
             }
         }
 
-    override fun listClinicStaff(): Flow<Resource<List<ClinicStaff>>> = remoteClinicsDataSource.listClinicStaff()
+    override fun listClinicStaff(): Flow<Resource<List<ClinicStaff>>> =
+        flow {
+            remoteClinicsDataSource.listClinicStaff().collect { res ->
+                when (res) {
+                    is Resource.Unspecified -> emit(Resource.Unspecified())
+
+                    is Resource.Loading -> emit(Resource.Loading())
+
+                    is Resource.Success ->
+                        res.data?.let { doctors ->
+                            emit(Resource.Success(data = doctors.map { it.toClinicStaff() }))
+                        }
+
+                    is Resource.Error -> emit(Resource.Error(res.error))
+                }
+            }
+        }
 
     override fun addNewClinicStaff(staff: ClinicStaff): Flow<Resource<Nothing?>> =
         remoteClinicsDataSource.updateClinicStaff(
-            staff,
+            staff.toClinicStaffDto(),
         )
 
     override fun updateClinicStaff(staff: ClinicStaff): Flow<Resource<Nothing?>> =
         remoteClinicsDataSource.updateClinicStaff(
-            staff,
+            staff.toClinicStaffDto(),
         )
 }
