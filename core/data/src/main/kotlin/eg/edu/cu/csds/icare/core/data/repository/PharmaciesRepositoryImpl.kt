@@ -1,6 +1,8 @@
 package eg.edu.cu.csds.icare.core.data.repository
 
 import eg.edu.cu.csds.icare.core.data.local.datasource.LocalPharmaciesDataSource
+import eg.edu.cu.csds.icare.core.data.mappers.toPharmacist
+import eg.edu.cu.csds.icare.core.data.mappers.toPharmacistDto
 import eg.edu.cu.csds.icare.core.data.mappers.toPharmacy
 import eg.edu.cu.csds.icare.core.data.mappers.toPharmacyDto
 import eg.edu.cu.csds.icare.core.data.mappers.toPharmacyEntity
@@ -95,11 +97,27 @@ class PharmaciesRepositoryImpl(
             }
         }
 
-    override fun listPharmacists(): Flow<Resource<List<Pharmacist>>> = remotePharmaciesDataSource.listPharmacists()
+    override fun listPharmacists(): Flow<Resource<List<Pharmacist>>> =
+        flow {
+            remotePharmaciesDataSource.listPharmacists().collect { res ->
+                when (res) {
+                    is Resource.Unspecified -> emit(Resource.Unspecified())
+
+                    is Resource.Loading -> emit(Resource.Loading())
+
+                    is Resource.Success ->
+                        res.data?.let { doctors ->
+                            emit(Resource.Success(data = doctors.map { it.toPharmacist() }))
+                        }
+
+                    is Resource.Error -> emit(Resource.Error(res.error))
+                }
+            }
+        }
 
     override fun addNewPharmacist(pharmacist: Pharmacist): Flow<Resource<Nothing?>> =
-        remotePharmaciesDataSource.addNewPharmacist(pharmacist)
+        remotePharmaciesDataSource.addNewPharmacist(pharmacist.toPharmacistDto())
 
     override fun updatePharmacist(pharmacist: Pharmacist): Flow<Resource<Nothing?>> =
-        remotePharmaciesDataSource.updatePharmacist(pharmacist)
+        remotePharmaciesDataSource.updatePharmacist(pharmacist.toPharmacistDto())
 }

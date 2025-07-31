@@ -1,9 +1,9 @@
 package eg.edu.cu.csds.icare.core.data.remote.datasource
 
 import com.google.firebase.auth.FirebaseAuth
+import eg.edu.cu.csds.icare.core.data.dto.PharmacistDto
 import eg.edu.cu.csds.icare.core.data.dto.PharmacyDto
 import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
-import eg.edu.cu.csds.icare.core.domain.model.Pharmacist
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
@@ -119,7 +119,7 @@ class RemotePharmaciesDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun listPharmacists(): Flow<Resource<List<Pharmacist>>> =
+    override fun listPharmacists(): Flow<Resource<List<PharmacistDto>>> =
         flow {
             emit(Resource.Loading())
             auth.currentUser?.let {
@@ -153,7 +153,7 @@ class RemotePharmaciesDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun addNewPharmacist(pharmacist: Pharmacist): Flow<Resource<Nothing?>> =
+    override fun addNewPharmacist(pharmacist: PharmacistDto): Flow<Resource<Nothing?>> =
         flow {
             val token =
                 auth.currentUser
@@ -185,7 +185,7 @@ class RemotePharmaciesDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun updatePharmacist(pharmacist: Pharmacist): Flow<Resource<Nothing?>> =
+    override fun updatePharmacist(pharmacist: PharmacistDto): Flow<Resource<Nothing?>> =
         flow {
             val token =
                 auth.currentUser

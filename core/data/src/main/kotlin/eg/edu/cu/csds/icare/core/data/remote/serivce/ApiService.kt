@@ -10,6 +10,8 @@ import eg.edu.cu.csds.icare.core.data.dto.ClinicsResponse
 import eg.edu.cu.csds.icare.core.data.dto.DoctorDto
 import eg.edu.cu.csds.icare.core.data.dto.DoctorsResponse
 import eg.edu.cu.csds.icare.core.data.dto.PharmaciesResponse
+import eg.edu.cu.csds.icare.core.data.dto.PharmacistDto
+import eg.edu.cu.csds.icare.core.data.dto.PharmacistsResponse
 import eg.edu.cu.csds.icare.core.data.dto.PharmacyDto
 import eg.edu.cu.csds.icare.core.domain.model.AdminStatisticsResponse
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
@@ -20,8 +22,6 @@ import eg.edu.cu.csds.icare.core.domain.model.Consultation
 import eg.edu.cu.csds.icare.core.domain.model.ConsultationsResponse
 import eg.edu.cu.csds.icare.core.domain.model.DoctorScheduleResponse
 import eg.edu.cu.csds.icare.core.domain.model.MedicalRecordResponse
-import eg.edu.cu.csds.icare.core.domain.model.Pharmacist
-import eg.edu.cu.csds.icare.core.domain.model.PharmacistsResponse
 import eg.edu.cu.csds.icare.core.domain.model.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -120,7 +120,7 @@ interface ApiService {
 
     @POST("userApi/pharmacistRegister")
     suspend fun upsertPharmacist(
-        @Body body: Pharmacist,
+        @Body body: PharmacistDto,
     ): Response<ActionResultResponse>
 
     @POST("imagingCentersApi/addImagingCenter")
