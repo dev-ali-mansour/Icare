@@ -1,17 +1,16 @@
 package eg.edu.cu.csds.icare.core.data.remote.datasource
 
 import com.google.firebase.auth.FirebaseAuth
+import eg.edu.cu.csds.icare.core.data.dto.PharmacyDto
+import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacist
-import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
 import eg.edu.cu.csds.icare.core.domain.util.Constants
-import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.koin.core.annotation.Single
 import timber.log.Timber
@@ -24,17 +23,15 @@ class RemotePharmaciesDataSourceImpl(
     private val auth: FirebaseAuth,
     private val service: ApiService,
 ) : RemotePharmaciesDataSource {
-    override fun fetchPharmacies(): Flow<Resource<List<Pharmacy>>> =
+    override fun fetchPharmacies(): Flow<Resource<List<PharmacyDto>>> =
         flow {
             emit(Resource.Loading())
             val token =
-                runBlocking {
-                    auth.currentUser
-                        ?.getIdToken(false)
-                        ?.await()
-                        ?.token
-                        .toString()
-                }
+                auth.currentUser
+                    ?.getIdToken(false)
+                    ?.await()
+                    ?.token
+                    .toString()
             val map = HashMap<String, String>()
             map["token"] = token
             val response = service.fetchPharmacies(map)
@@ -58,16 +55,14 @@ class RemotePharmaciesDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun addNewPharmacy(pharmacy: Pharmacy): Flow<Resource<Nothing?>> =
-        flow<Resource<Nothing?>> {
+    override fun addNewPharmacy(pharmacy: PharmacyDto): Flow<Resource<Nothing?>> =
+        flow {
             val token =
-                runBlocking {
-                    auth.currentUser
-                        ?.getIdToken(false)
-                        ?.await()
-                        ?.token
-                        .toString()
-                }
+                auth.currentUser
+                    ?.getIdToken(false)
+                    ?.await()
+                    ?.token
+                    .toString()
             val response = service.upsertPharmacy(pharmacy.copy(token))
             when (response.code()) {
                 HTTP_OK ->
@@ -92,16 +87,14 @@ class RemotePharmaciesDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun updatePharmacy(pharmacy: Pharmacy): Flow<Resource<Nothing?>> =
-        flow<Resource<Nothing?>> {
+    override fun updatePharmacy(pharmacy: PharmacyDto): Flow<Resource<Nothing?>> =
+        flow {
             val token =
-                runBlocking {
-                    auth.currentUser
-                        ?.getIdToken(false)
-                        ?.await()
-                        ?.token
-                        .toString()
-                }
+                auth.currentUser
+                    ?.getIdToken(false)
+                    ?.await()
+                    ?.token
+                    .toString()
             val response = service.upsertPharmacy(pharmacy.copy(token))
             when (response.code()) {
                 HTTP_OK ->
@@ -131,13 +124,11 @@ class RemotePharmaciesDataSourceImpl(
             emit(Resource.Loading())
             auth.currentUser?.let {
                 val token =
-                    runBlocking {
-                        auth.currentUser
-                            ?.getIdToken(false)
-                            ?.await()
-                            ?.token
-                            .toString()
-                    }
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
                 val map = HashMap<String, String>()
                 map["token"] = token
                 val response = service.listPharmacists(map)
@@ -163,15 +154,13 @@ class RemotePharmaciesDataSourceImpl(
         }
 
     override fun addNewPharmacist(pharmacist: Pharmacist): Flow<Resource<Nothing?>> =
-        flow<Resource<Nothing?>> {
+        flow {
             val token =
-                runBlocking {
-                    auth.currentUser
-                        ?.getIdToken(false)
-                        ?.await()
-                        ?.token
-                        .toString()
-                }
+                auth.currentUser
+                    ?.getIdToken(false)
+                    ?.await()
+                    ?.token
+                    .toString()
             val response = service.upsertPharmacist(pharmacist.copy(token))
             when (response.code()) {
                 HTTP_OK ->
@@ -197,15 +186,13 @@ class RemotePharmaciesDataSourceImpl(
         }
 
     override fun updatePharmacist(pharmacist: Pharmacist): Flow<Resource<Nothing?>> =
-        flow<Resource<Nothing?>> {
+        flow {
             val token =
-                runBlocking {
-                    auth.currentUser
-                        ?.getIdToken(false)
-                        ?.await()
-                        ?.token
-                        .toString()
-                }
+                auth.currentUser
+                    ?.getIdToken(false)
+                    ?.await()
+                    ?.token
+                    .toString()
             val response = service.upsertPharmacist(pharmacist.copy(token))
             when (response.code()) {
                 HTTP_OK ->

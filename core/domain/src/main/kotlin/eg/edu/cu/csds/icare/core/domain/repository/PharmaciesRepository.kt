@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface PharmaciesRepository {
     fun listPharmacies(forceUpdate: Boolean): Flow<Resource<List<Pharmacy>>>
 
-    fun addNewPharmacy(center: Pharmacy): Flow<Resource<Nothing?>>
+    fun addNewPharmacy(pharmacy: Pharmacy): Flow<Resource<Nothing?>>
 
     fun updatePharmacy(pharmacy: Pharmacy): Flow<Resource<Nothing?>>
 

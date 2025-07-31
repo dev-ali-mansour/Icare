@@ -9,6 +9,8 @@ import eg.edu.cu.csds.icare.core.data.dto.ClinicStaffResponse
 import eg.edu.cu.csds.icare.core.data.dto.ClinicsResponse
 import eg.edu.cu.csds.icare.core.data.dto.DoctorDto
 import eg.edu.cu.csds.icare.core.data.dto.DoctorsResponse
+import eg.edu.cu.csds.icare.core.data.dto.PharmaciesResponse
+import eg.edu.cu.csds.icare.core.data.dto.PharmacyDto
 import eg.edu.cu.csds.icare.core.domain.model.AdminStatisticsResponse
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.AppointmentsResponse
@@ -18,10 +20,8 @@ import eg.edu.cu.csds.icare.core.domain.model.Consultation
 import eg.edu.cu.csds.icare.core.domain.model.ConsultationsResponse
 import eg.edu.cu.csds.icare.core.domain.model.DoctorScheduleResponse
 import eg.edu.cu.csds.icare.core.domain.model.MedicalRecordResponse
-import eg.edu.cu.csds.icare.core.domain.model.PharmaciesResponse
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacist
 import eg.edu.cu.csds.icare.core.domain.model.PharmacistsResponse
-import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 import eg.edu.cu.csds.icare.core.domain.model.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -110,7 +110,7 @@ interface ApiService {
 
     @POST("pharmacyApi/addPharmacy")
     suspend fun upsertPharmacy(
-        @Body body: Pharmacy,
+        @Body body: PharmacyDto,
     ): Response<ActionResultResponse>
 
     @POST("userApi/getPharmacists")
