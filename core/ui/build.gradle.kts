@@ -111,7 +111,7 @@ kotlin {
 dependencies {
     api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     api(projects.core.domain)
-    api(projects.data)
+    api(projects.core.data)
 
     api(libs.timber)
     api(platform(libs.androidx.compose.bom))

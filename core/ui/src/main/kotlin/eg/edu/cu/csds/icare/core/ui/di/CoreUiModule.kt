@@ -1,6 +1,6 @@
 package eg.edu.cu.csds.icare.core.ui.di
 
-import eg.edu.cu.csds.icare.data.di.module.UseCaseModule
+import eg.edu.cu.csds.icare.core.data.di.module.UseCaseModule
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.annotation.Module
