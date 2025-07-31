@@ -61,7 +61,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import eg.edu.cu.csds.icare.core.ui.view.DoubleTextField
-import eg.edu.cu.csds.icare.data.util.getFormattedTime
+import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
 import java.util.Calendar
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
