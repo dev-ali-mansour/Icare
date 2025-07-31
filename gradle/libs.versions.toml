@@ -77,9 +77,9 @@ splashScreen = { module = "androidx.core:core-splashscreen", version.ref = "spla
 coroutine-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutine" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "ktxSerialization" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
-firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
-firebase-auth = { module = "com.google.firebase:firebase-auth-ktx" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
+firebase-auth = { module = "com.google.firebase:firebase-auth" }
 google-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "googleAuth" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
