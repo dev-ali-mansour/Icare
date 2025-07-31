@@ -5,6 +5,7 @@ import build.BuildTypes
 import build.BuildVariables
 import extensions.getSecret
 import flavors.FlavorTypes
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import signing.SigningTypes
 import test.TestBuildConfig
 
@@ -135,6 +136,12 @@ ksp {
     arg("KOIN_CONFIG_CHECK", "true")
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_21
+    }
+}
+
 dependencies {
 
     implementation(projects.core.domain)
@@ -152,8 +159,4 @@ dependencies {
     testImplementation(libs.bundles.data.test)
     testImplementation(libs.room.testing)
     androidTestImplementation(libs.androidx.junit)
-}
-
-kotlin {
-    jvmToolchain(JavaVersion.VERSION_21.majorVersion.toInt())
 }

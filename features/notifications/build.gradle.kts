@@ -4,6 +4,7 @@ import build.BuildDimensions
 import build.BuildTypes
 import extensions.getSecret
 import flavors.FlavorTypes
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import signing.SigningTypes
 import test.TestBuildConfig
 
@@ -82,10 +83,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
-    kotlinOptions {
-        JavaVersion.VERSION_21
-    }
-
     buildFeatures {
         compose = true
     }
@@ -109,6 +106,12 @@ detekt {
 ksp {
     arg("KOIN_DEFAULT_MODULE", "true")
     arg("KOIN_CONFIG_CHECK", "true")
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_21
+    }
 }
 
 dependencies {
