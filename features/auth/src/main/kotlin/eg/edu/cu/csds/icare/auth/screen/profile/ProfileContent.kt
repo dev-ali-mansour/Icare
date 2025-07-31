@@ -255,8 +255,7 @@ fun CurrentUserInfo(
                         .constrainAs(google) {
                             top.linkTo(verified.top)
                             start.linkTo(verified.end)
-                        }
-                        .clickable { onGoogleClicked(user.linkedWithGoogle) },
+                        }.clickable { onGoogleClicked(user.linkedWithGoogle) },
             ) {
                 if (user.linkedWithGoogle) {
                     Icon(
