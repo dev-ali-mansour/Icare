@@ -4,8 +4,8 @@ import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.data.dto.ClinicDto
 import eg.edu.cu.csds.icare.core.data.dto.ClinicStaffDto
 import eg.edu.cu.csds.icare.core.data.dto.DoctorDto
+import eg.edu.cu.csds.icare.core.data.dto.DoctorScheduleDto
 import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
-import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
@@ -239,19 +239,17 @@ class RemoteClinicsDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun getDoctorSchedule(uid: String): Flow<Resource<DoctorSchedule>> =
+    override fun getDoctorSchedule(uid: String): Flow<Resource<DoctorScheduleDto>> =
         flow {
             runCatching {
                 emit(Resource.Loading())
                 auth.currentUser?.let {
                     val token =
-                        runBlocking {
-                            auth.currentUser
-                                ?.getIdToken(false)
-                                ?.await()
-                                ?.token
-                                .toString()
-                        }
+                        auth.currentUser
+                            ?.getIdToken(false)
+                            ?.await()
+                            ?.token
+                            .toString()
                     val map = HashMap<String, String>()
                     map["token"] = token
                     map["uid"] = uid

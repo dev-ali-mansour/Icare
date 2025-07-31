@@ -1,35 +1,23 @@
 package eg.edu.cu.csds.icare.core.domain.model
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
-
-@Serializable
 data class Consultation(
     val token: String = "",
     val id: Long = 0,
     val appointment: Appointment = Appointment(),
-    @SerialName("date")
     val dateTime: Long = 0,
     val diagnosis: String = "",
     val pharmacyId: Long = 1,
     val medications: String = "",
-    @SerialName("prescriptionsStatus")
     val prescriptionStatusId: Short = 1,
-    @Transient
     val prescriptionStatus: String = "",
     val labCenterId: Long = 1,
     val labTests: String = "",
     val labTestStatusId: Short = 1,
-    @Transient
     val labTestStatus: String = "",
     val imagingCenterId: Long = 1,
     val imagingTests: String = "",
-    @SerialName("imagingCenterStatus")
     val imgTestStatusId: Short = 1,
-    @Transient
     val imgTestStatus: String = "",
     val followUpdDate: Long = 0,
-    @Transient
     val readOnly: Boolean = true,
 )

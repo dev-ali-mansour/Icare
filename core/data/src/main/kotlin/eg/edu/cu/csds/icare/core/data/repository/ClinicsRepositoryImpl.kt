@@ -11,6 +11,7 @@ import eg.edu.cu.csds.icare.core.data.mappers.toClinicStaffDto
 import eg.edu.cu.csds.icare.core.data.mappers.toDoctor
 import eg.edu.cu.csds.icare.core.data.mappers.toDoctorDto
 import eg.edu.cu.csds.icare.core.data.mappers.toDoctorEntity
+import eg.edu.cu.csds.icare.core.data.mappers.toDoctorSchedule
 import eg.edu.cu.csds.icare.core.data.remote.datasource.RemoteClinicsDataSource
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
@@ -151,9 +152,22 @@ class ClinicsRepositoryImpl(
         }
 
     override fun getDoctorSchedule(uid: String): Flow<Resource<DoctorSchedule>> =
-        remoteClinicsDataSource.getDoctorSchedule(
-            uid,
-        )
+        flow {
+            remoteClinicsDataSource.getDoctorSchedule(uid).collect { res ->
+                when (res) {
+                    is Resource.Unspecified -> emit(Resource.Unspecified())
+
+                    is Resource.Loading -> emit(Resource.Loading())
+
+                    is Resource.Success ->
+                        res.data?.let { scheduleDto ->
+                            emit(Resource.Success(data = scheduleDto.toDoctorSchedule()))
+                        }
+
+                    is Resource.Error -> emit(Resource.Error(res.error))
+                }
+            }
+        }
 
     override fun listTopDoctors(): Flow<Resource<List<Doctor>>> =
         flow {

@@ -2,13 +2,12 @@ package eg.edu.cu.csds.icare.core.data.remote.datasource
 
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.data.dto.AdminStatisticsDto
+import eg.edu.cu.csds.icare.core.data.dto.AppointmentDto
 import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
-import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.koin.core.annotation.Single
 import timber.log.Timber
@@ -20,19 +19,17 @@ class RemoteAppointmentsDataSourceImpl(
     private val auth: FirebaseAuth,
     private val service: ApiService,
 ) : RemoteAppointmentsDataSource {
-    override fun getPatientAppointments(): Flow<Resource<List<Appointment>>> =
+    override fun getPatientAppointments(): Flow<Resource<List<AppointmentDto>>> =
         flow {
             runCatching {
                 emit(Resource.Loading())
                 auth.currentUser?.let { user ->
                     val token =
-                        runBlocking {
-                            auth.currentUser
-                                ?.getIdToken(false)
-                                ?.await()
-                                ?.token
-                                .toString()
-                        }
+                        auth.currentUser
+                            ?.getIdToken(false)
+                            ?.await()
+                            ?.token
+                            .toString()
                     val map = HashMap<String, String>()
                     map["token"] = token
                     val response = service.getPatientAppointments(map)
@@ -58,19 +55,17 @@ class RemoteAppointmentsDataSourceImpl(
             }
         }
 
-    override fun getAppointments(): Flow<Resource<List<Appointment>>> =
+    override fun getAppointments(): Flow<Resource<List<AppointmentDto>>> =
         flow {
             runCatching {
                 emit(Resource.Loading())
                 auth.currentUser?.let { user ->
                     val token =
-                        runBlocking {
-                            auth.currentUser
-                                ?.getIdToken(false)
-                                ?.await()
-                                ?.token
-                                .toString()
-                        }
+                        auth.currentUser
+                            ?.getIdToken(false)
+                            ?.await()
+                            ?.token
+                            .toString()
                     val map = HashMap<String, String>()
                     map["token"] = token
                     val response = service.getAppointments(map)
@@ -96,7 +91,7 @@ class RemoteAppointmentsDataSourceImpl(
             }
         }
 
-    override fun getAppointments(statusId: Short): Flow<Resource<List<Appointment>>> =
+    override fun getAppointments(statusId: Short): Flow<Resource<List<AppointmentDto>>> =
         flow {
             runCatching {
                 emit(Resource.Loading())
@@ -126,20 +121,19 @@ class RemoteAppointmentsDataSourceImpl(
             }
         }
 
-    override fun bookAppointment(appointment: Appointment): Flow<Resource<Nothing?>> =
+    override fun bookAppointment(appointment: AppointmentDto): Flow<Resource<Nothing?>> =
         flow {
             runCatching {
                 emit(Resource.Loading())
                 auth.currentUser?.let { user ->
                     val token =
-                        runBlocking {
-                            auth.currentUser
-                                ?.getIdToken(false)
-                                ?.await()
-                                ?.token
-                                .toString()
-                        }
-                    val response = service.bookAppointment(appointment.copy(token = token))
+                        auth.currentUser
+                            ?.getIdToken(false)
+                            ?.await()
+                            ?.token
+                            .toString()
+                    val response =
+                        service.bookAppointment(appointment.copy(token = token))
                     when (response.code()) {
                         HTTP_OK -> {
                             response.body()?.let { res ->
@@ -162,19 +156,17 @@ class RemoteAppointmentsDataSourceImpl(
             }
         }
 
-    override fun updateAppointment(appointment: Appointment): Flow<Resource<Nothing?>> =
+    override fun updateAppointment(appointment: AppointmentDto): Flow<Resource<Nothing?>> =
         flow {
             runCatching {
                 emit(Resource.Loading())
                 auth.currentUser?.let { user ->
                     val token =
-                        runBlocking {
-                            auth.currentUser
-                                ?.getIdToken(false)
-                                ?.await()
-                                ?.token
-                                .toString()
-                        }
+                        auth.currentUser
+                            ?.getIdToken(false)
+                            ?.await()
+                            ?.token
+                            .toString()
                     val response = service.updateAppointment(appointment.copy(token = token))
                     when (response.code()) {
                         HTTP_OK -> {

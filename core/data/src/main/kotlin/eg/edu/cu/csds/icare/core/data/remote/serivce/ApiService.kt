@@ -2,6 +2,8 @@ package eg.edu.cu.csds.icare.core.data.remote.serivce
 
 import eg.edu.cu.csds.icare.core.data.dto.ActionResultResponse
 import eg.edu.cu.csds.icare.core.data.dto.AdminStatisticsResponse
+import eg.edu.cu.csds.icare.core.data.dto.AppointmentDto
+import eg.edu.cu.csds.icare.core.data.dto.AppointmentsResponse
 import eg.edu.cu.csds.icare.core.data.dto.CenterDto
 import eg.edu.cu.csds.icare.core.data.dto.CenterStaffDto
 import eg.edu.cu.csds.icare.core.data.dto.CenterStaffResponse
@@ -10,18 +12,16 @@ import eg.edu.cu.csds.icare.core.data.dto.ClinicDto
 import eg.edu.cu.csds.icare.core.data.dto.ClinicStaffDto
 import eg.edu.cu.csds.icare.core.data.dto.ClinicStaffResponse
 import eg.edu.cu.csds.icare.core.data.dto.ClinicsResponse
+import eg.edu.cu.csds.icare.core.data.dto.ConsultationDto
+import eg.edu.cu.csds.icare.core.data.dto.ConsultationsResponse
 import eg.edu.cu.csds.icare.core.data.dto.DoctorDto
+import eg.edu.cu.csds.icare.core.data.dto.DoctorScheduleResponse
 import eg.edu.cu.csds.icare.core.data.dto.DoctorsResponse
+import eg.edu.cu.csds.icare.core.data.dto.MedicalRecordResponse
 import eg.edu.cu.csds.icare.core.data.dto.PharmaciesResponse
 import eg.edu.cu.csds.icare.core.data.dto.PharmacistDto
 import eg.edu.cu.csds.icare.core.data.dto.PharmacistsResponse
 import eg.edu.cu.csds.icare.core.data.dto.PharmacyDto
-import eg.edu.cu.csds.icare.core.domain.model.Appointment
-import eg.edu.cu.csds.icare.core.domain.model.AppointmentsResponse
-import eg.edu.cu.csds.icare.core.domain.model.Consultation
-import eg.edu.cu.csds.icare.core.domain.model.ConsultationsResponse
-import eg.edu.cu.csds.icare.core.domain.model.DoctorScheduleResponse
-import eg.edu.cu.csds.icare.core.domain.model.MedicalRecordResponse
 import eg.edu.cu.csds.icare.core.domain.model.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -60,12 +60,12 @@ interface ApiService {
 
     @POST("appointmentApi/bookAppointment")
     suspend fun bookAppointment(
-        @Body body: Appointment,
+        @Body body: AppointmentDto,
     ): Response<ActionResultResponse>
 
     @POST("appointmentApi/bookAppointment")
     suspend fun updateAppointment(
-        @Body body: Appointment,
+        @Body body: AppointmentDto,
     ): Response<ActionResultResponse>
 
     @POST("appointmentApi/patientAppointment")
@@ -140,7 +140,7 @@ interface ApiService {
 
     @POST("clinicApi/consultation")
     suspend fun upsertConsultation(
-        @Body body: Consultation,
+        @Body body: ConsultationDto,
     ): Response<ActionResultResponse>
 
     @POST("clinicApi/medicalRecord")
