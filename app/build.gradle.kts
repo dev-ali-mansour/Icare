@@ -4,6 +4,7 @@ import build.BuildDimensions
 import build.BuildTypes
 import extensions.getSecret
 import flavors.FlavorTypes
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import signing.SigningTypes
 import test.TestBuildConfig
 
@@ -29,8 +30,8 @@ android {
         targetSdk = BuildConfig.TARGET_SDK_VERSION
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = project.findProperty("VERSION_CODE")?.toString()?.toInt() ?: 1
+        versionName = project.findProperty("VERSION_NAME")?.toString() ?: "1.0.0"
 
         testInstrumentationRunner = TestBuildConfig.TEST_INSTRUMENTATION_RUNNER
     }
@@ -133,6 +134,12 @@ ksp {
     arg("KOIN_CONFIG_CHECK", "true")
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_21
+    }
+}
+
 dependencies {
     implementation(projects.core.ui)
     implementation(projects.features.onBoarding)
@@ -155,8 +162,4 @@ dependencies {
     testImplementation(libs.bundles.app.test)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.junit4)
-}
-
-kotlin {
-    jvmToolchain(JavaVersion.VERSION_21.majorVersion.toInt())
 }
