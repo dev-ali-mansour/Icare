@@ -3,7 +3,7 @@ import build.BuildConfig
 import build.BuildDimensions
 import build.BuildTypes
 import build.BuildVariables
-import extensions.getLocalProperty
+import extensions.getSecret
 import flavors.FlavorTypes
 import signing.SigningTypes
 import test.TestBuildConfig
@@ -28,28 +28,24 @@ android {
         testInstrumentationRunner = TestBuildConfig.TEST_INSTRUMENTATION_RUNNER
         consumerProguardFiles("consumer-rules.pro")
 
-        room {
-            schemaDirectory("$projectDir/schemas")
-        }
+        buildConfigField(
+            "String",
+            BuildVariables.WEB_CLIENT_ID,
+            project.getSecret("WEB_CLIENT_ID"),
+        )
     }
 
     signingConfigs {
         create(SigningTypes.RELEASE) {
-            storeFile = file(project.getLocalProperty("release_key.store"))
-            storePassword = project.getLocalProperty("release_key.store_password")
-            keyAlias = project.getLocalProperty("release_key.alias")
-            keyPassword = project.getLocalProperty("release_key.key_password")
+            val keystoreFile = rootProject.file("release-key.jks")
+            storeFile = keystoreFile
+            storePassword = project.getSecret("KEYSTORE_PASSWORD")
+            keyAlias = project.getSecret("KEY_ALIAS")
+            keyPassword = project.getSecret("KEY_PASSWORD")
             enableV1Signing = true
             enableV2Signing = true
         }
-        create(SigningTypes.RELEASE_EXTERNAL_QA) {
-            storeFile = file(project.getLocalProperty("qa_key.store"))
-            storePassword = project.getLocalProperty("qa_key.store_password")
-            keyAlias = project.getLocalProperty("qa_key.alias")
-            keyPassword = project.getLocalProperty("qa_key.key_password")
-            enableV1Signing = true
-            enableV2Signing = true
-        }
+
         getByName(SigningTypes.DEBUG) {
             storeFile = File(project.rootProject.rootDir, "debug.keystore")
             storePassword = "android"
@@ -73,27 +69,7 @@ android {
             buildConfigField(
                 "String",
                 BuildVariables.BASE_URL,
-                project.getLocalProperty("prod_endpoint"),
-            )
-            buildConfigField(
-                "String",
-                BuildVariables.SERVICE_DOMAIN,
-                project.getLocalProperty("service_domain"),
-            )
-            buildConfigField(
-                "String",
-                BuildVariables.CERTIFICATE_HASH_1,
-                project.getLocalProperty("certificate_hash1"),
-            )
-            buildConfigField(
-                "String",
-                BuildVariables.CERTIFICATE_HASH_2,
-                project.getLocalProperty("certificate_hash2"),
-            )
-            buildConfigField(
-                "String",
-                BuildVariables.WEB_CLIENT_ID,
-                project.getLocalProperty("web_client_id"),
+                project.getSecret("RELEASE_BASE_URL"),
             )
         }
 
@@ -105,59 +81,7 @@ android {
             buildConfigField(
                 "String",
                 BuildVariables.BASE_URL,
-                project.getLocalProperty("debug_endpoint"),
-            )
-            buildConfigField(
-                "String",
-                BuildVariables.SERVICE_DOMAIN,
-                project.getLocalProperty("service_domain"),
-            )
-            buildConfigField(
-                "String",
-                BuildVariables.CERTIFICATE_HASH_1,
-                project.getLocalProperty("certificate_hash1"),
-            )
-            buildConfigField(
-                "String",
-                BuildVariables.CERTIFICATE_HASH_2,
-                project.getLocalProperty("certificate_hash2"),
-            )
-            buildConfigField(
-                "String",
-                BuildVariables.WEB_CLIENT_ID,
-                project.getLocalProperty("web_client_id"),
-            )
-        }
-
-        create(BuildTypes.RELEASE_EXTERNAL_QA) {
-            isMinifyEnabled = Build.ReleaseExternalQA.isLibraryMinifyEnabled
-            enableUnitTestCoverage = Build.ReleaseExternalQA.enableUnitTestCoverage
-            signingConfig = signingConfigs.getByName(BuildTypes.RELEASE_EXTERNAL_QA)
-
-            buildConfigField(
-                "String",
-                BuildVariables.BASE_URL,
-                project.getLocalProperty("qa_endpoint"),
-            )
-            buildConfigField(
-                "String",
-                BuildVariables.SERVICE_DOMAIN,
-                project.getLocalProperty("service_domain"),
-            )
-            buildConfigField(
-                "String",
-                BuildVariables.CERTIFICATE_HASH_1,
-                project.getLocalProperty("certificate_hash1"),
-            )
-            buildConfigField(
-                "String",
-                BuildVariables.CERTIFICATE_HASH_2,
-                project.getLocalProperty("certificate_hash2"),
-            )
-            buildConfigField(
-                "String",
-                BuildVariables.WEB_CLIENT_ID,
-                project.getLocalProperty("web_client_id"),
+                project.getSecret("DEBUG_BASE_URL"),
             )
         }
     }
@@ -177,10 +101,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
-    kotlinOptions {
-        JavaVersion.VERSION_21
-    }
-
     buildFeatures {
         buildConfig = true
     }
@@ -189,10 +109,15 @@ android {
         isIncludeAndroidResources = true
         isReturnDefaultValues = true
     }
+
     sourceSets {
         getByName("test") {
             resources.srcDir("src/test/resources")
         }
+    }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 }
 
@@ -227,4 +152,8 @@ dependencies {
     testImplementation(libs.bundles.data.test)
     testImplementation(libs.room.testing)
     androidTestImplementation(libs.androidx.junit)
+}
+
+kotlin {
+    jvmToolchain(JavaVersion.VERSION_21.majorVersion.toInt())
 }

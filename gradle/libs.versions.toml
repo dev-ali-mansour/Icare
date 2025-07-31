@@ -39,7 +39,7 @@ integrity = "1.4.0"
 jose4j = "0.9.6"
 rootbeer = "0.1.1"
 ktlint = "13.0.0"
-detekt="1.23.8"
+detekt = "1.23.8"
 googleServices = "4.4.3"
 crashlyticsPlugin = "3.0.5"
 
@@ -115,7 +115,7 @@ appcompat = ["appcompat", "appcompat-resources"]
 compose = ["androidx-activity-compose", "androidx-compose-foundation", "androidx-ui", "androidx-ui-tooling", "androidx-ui-tooling-preview", "androidx-ui-graphics", "compose-runtime", "compose-animation", "androidx-material3", "androidx-constraintlayout", "androidx-navigation"]
 koin-android = ["koin-androidx-compose", "koin-androidx-compose-navigation", "koin-androidx-workmanager"]
 coil = ["coil-compose", "coil-gif"]
-firebase = ["firebase-crashlytics", "firebase-messaging", "firebase-auth","google-auth"]
+firebase = ["firebase-crashlytics", "firebase-messaging", "firebase-auth", "google-auth"]
 lifecycle = ["androidx-lifecycle-runtime-ktx", "androidx-lifecycle-process"]
 retrofit = ["retrofit", "retrofit-converter", "retrofit-interceptor"]
 room = ["room", "room-ktx", "sqlcipher", "security-crypto-ktx"]

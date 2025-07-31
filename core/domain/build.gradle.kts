@@ -1,7 +1,7 @@
 import build.Build
 import build.BuildConfig
 import build.BuildTypes
-import extensions.getLocalProperty
+import extensions.getSecret
 import signing.SigningTypes
 import test.TestBuildConfig
 
@@ -26,21 +26,15 @@ android {
 
     signingConfigs {
         create(SigningTypes.RELEASE) {
-            storeFile = file(project.getLocalProperty("release_key.store"))
-            storePassword = project.getLocalProperty("release_key.store_password")
-            keyAlias = project.getLocalProperty("release_key.alias")
-            keyPassword = project.getLocalProperty("release_key.key_password")
+            val keystoreFile = rootProject.file("release-key.jks")
+            storeFile = keystoreFile
+            storePassword = project.getSecret("KEYSTORE_PASSWORD")
+            keyAlias = project.getSecret("KEY_ALIAS")
+            keyPassword = project.getSecret("KEY_PASSWORD")
             enableV1Signing = true
             enableV2Signing = true
         }
-        create(SigningTypes.RELEASE_EXTERNAL_QA) {
-            storeFile = file(project.getLocalProperty("qa_key.store"))
-            storePassword = project.getLocalProperty("qa_key.store_password")
-            keyAlias = project.getLocalProperty("qa_key.alias")
-            keyPassword = project.getLocalProperty("qa_key.key_password")
-            enableV1Signing = true
-            enableV2Signing = true
-        }
+
         getByName(SigningTypes.DEBUG) {
             storeFile = File(project.rootProject.rootDir, "debug.keystore")
             storePassword = "android"
@@ -67,21 +61,11 @@ android {
             enableUnitTestCoverage = Build.Debug.enableUnitTestCoverage
             signingConfig = signingConfigs.getByName(BuildTypes.DEBUG)
         }
-
-        create(BuildTypes.RELEASE_EXTERNAL_QA) {
-            isMinifyEnabled = Build.ReleaseExternalQA.isLibraryMinifyEnabled
-            enableUnitTestCoverage = Build.ReleaseExternalQA.enableUnitTestCoverage
-            signingConfig = signingConfigs.getByName(BuildTypes.RELEASE_EXTERNAL_QA)
-        }
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    kotlinOptions {
-        JavaVersion.VERSION_21
     }
 }
 
@@ -102,4 +86,8 @@ dependencies {
     api(libs.kotlinx.serialization.json)
 
     testApi(libs.bundles.domain.test)
+}
+
+kotlin {
+    jvmToolchain(JavaVersion.VERSION_21.majorVersion.toInt())
 }

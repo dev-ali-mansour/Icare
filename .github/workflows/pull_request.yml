@@ -9,15 +9,27 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
 
+    env:
+      DEBUG_BASE_URL: ${{ secrets.DEBUG_BASE_URL }}
+      RELEASE_BASE_URL: ${{ secrets.RELEASE_BASE_URL }}
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      WEB_CLIENT_ID: ${{ secrets.WEB_CLIENT_ID }}
+
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup JDK 17
+      - name: Setup JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: 21
           cache: 'gradle'
+
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > release-key.jks
 
       - name: Grant execution permission for gradlew
         run: chmod +x gradlew
