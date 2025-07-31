@@ -1,6 +1,9 @@
-package eg.edu.cu.csds.icare.core.domain.model
+package eg.edu.cu.csds.icare.core.data.dto
 
-data class AdminStatistics(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class AdminStatisticsDto(
     val totalUsers: Long = 0,
     val doctors: Long = 0,
     val pharmacies: Long = 0,

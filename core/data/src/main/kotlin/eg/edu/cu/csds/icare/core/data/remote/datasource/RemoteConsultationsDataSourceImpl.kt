@@ -1,17 +1,16 @@
 package eg.edu.cu.csds.icare.core.data.remote.datasource
 
 import com.google.firebase.auth.FirebaseAuth
-import eg.edu.cu.csds.icare.core.domain.model.Consultation
-import eg.edu.cu.csds.icare.core.domain.model.MedicalRecord
+import eg.edu.cu.csds.icare.core.data.dto.ConsultationDto
+import eg.edu.cu.csds.icare.core.data.dto.MedicalRecordDto
+import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
 import eg.edu.cu.csds.icare.core.domain.util.Constants
-import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.koin.core.annotation.Single
 import timber.log.Timber
@@ -24,16 +23,14 @@ class RemoteConsultationsDataSourceImpl(
     private val auth: FirebaseAuth,
     private val service: ApiService,
 ) : RemoteConsultationsDataSource {
-    override fun addNewConsultation(consultation: Consultation): Flow<Resource<Nothing?>> =
-        flow<Resource<Nothing?>> {
+    override fun addNewConsultation(consultation: ConsultationDto): Flow<Resource<Nothing?>> =
+        flow {
             val token =
-                runBlocking {
-                    auth.currentUser
-                        ?.getIdToken(false)
-                        ?.await()
-                        ?.token
-                        .toString()
-                }
+                auth.currentUser
+                    ?.getIdToken(false)
+                    ?.await()
+                    ?.token
+                    .toString()
             val response = service.upsertConsultation(consultation.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
@@ -60,16 +57,14 @@ class RemoteConsultationsDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun updateConsultation(consultation: Consultation): Flow<Resource<Nothing?>> =
-        flow<Resource<Nothing?>> {
+    override fun updateConsultation(consultation: ConsultationDto): Flow<Resource<Nothing?>> =
+        flow {
             val token =
-                runBlocking {
-                    auth.currentUser
-                        ?.getIdToken(false)
-                        ?.await()
-                        ?.token
-                        .toString()
-                }
+                auth.currentUser
+                    ?.getIdToken(false)
+                    ?.await()
+                    ?.token
+                    .toString()
             val response = service.upsertConsultation(consultation.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
@@ -94,18 +89,16 @@ class RemoteConsultationsDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun getMedicalRecord(patientId: String): Flow<Resource<MedicalRecord>> =
+    override fun getMedicalRecord(patientId: String): Flow<Resource<MedicalRecordDto>> =
         flow {
             emit(Resource.Loading())
             auth.currentUser?.let {
                 val token =
-                    runBlocking {
-                        auth.currentUser
-                            ?.getIdToken(false)
-                            ?.await()
-                            ?.token
-                            .toString()
-                    }
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
                 val map = HashMap<String, String>()
                 map["token"] = token
                 map["uid"] = patientId
@@ -134,18 +127,16 @@ class RemoteConsultationsDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun getMedicationsByStatus(statusId: Short): Flow<Resource<List<Consultation>>> =
+    override fun getMedicationsByStatus(statusId: Short): Flow<Resource<List<ConsultationDto>>> =
         flow {
             emit(Resource.Loading())
             auth.currentUser?.let {
                 val token =
-                    runBlocking {
-                        auth.currentUser
-                            ?.getIdToken(false)
-                            ?.await()
-                            ?.token
-                            .toString()
-                    }
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
                 val map = HashMap<String, String>()
                 map["token"] = token
                 map["status"] = statusId.toString()
@@ -174,18 +165,16 @@ class RemoteConsultationsDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun getLabTestsByStatus(statusId: Short): Flow<Resource<List<Consultation>>> =
+    override fun getLabTestsByStatus(statusId: Short): Flow<Resource<List<ConsultationDto>>> =
         flow {
             emit(Resource.Loading())
             auth.currentUser?.let {
                 val token =
-                    runBlocking {
-                        auth.currentUser
-                            ?.getIdToken(false)
-                            ?.await()
-                            ?.token
-                            .toString()
-                    }
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
                 val map = HashMap<String, String>()
                 map["token"] = token
                 map["status"] = statusId.toString()
@@ -214,18 +203,16 @@ class RemoteConsultationsDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun getImagingTestsByStatus(statusId: Short): Flow<Resource<List<Consultation>>> =
+    override fun getImagingTestsByStatus(statusId: Short): Flow<Resource<List<ConsultationDto>>> =
         flow {
             emit(Resource.Loading())
             auth.currentUser?.let {
                 val token =
-                    runBlocking {
-                        auth.currentUser
-                            ?.getIdToken(false)
-                            ?.await()
-                            ?.token
-                            .toString()
-                    }
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
                 val map = HashMap<String, String>()
                 map["token"] = token
                 map["status"] = statusId.toString()
