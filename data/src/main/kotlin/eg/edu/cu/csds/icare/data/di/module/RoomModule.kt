@@ -11,7 +11,7 @@ import eg.edu.cu.csds.icare.data.local.db.dao.DoctorDao
 import eg.edu.cu.csds.icare.data.local.db.dao.PharmacyDao
 import eg.edu.cu.csds.icare.data.local.db.dao.SettingsDao
 import eg.edu.cu.csds.icare.data.local.db.dao.UserDao
-import net.sqlcipher.database.SupportFactory
+import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -20,12 +20,12 @@ import org.koin.core.annotation.Single
 @ComponentScan
 class RoomModule {
     @Single
-    fun provideSupportFactory(passphrase: DbPassPhrase): SupportFactory = SupportFactory(passphrase.getPassphrase())
+    fun provideSupportFactory(passphrase: DbPassPhrase): SupportOpenHelperFactory = SupportOpenHelperFactory(passphrase.getPassphrase())
 
     @Single
     fun provideAppDatabase(
         context: Context,
-        supportFactory: SupportFactory,
+        supportFactory: SupportOpenHelperFactory,
     ): AppDatabase =
         when {
             BuildConfig.DEBUG ->

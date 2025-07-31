@@ -32,7 +32,8 @@ ktxSerConverter = "1.0.0"
 okhttp3 = "5.1.0"
 room = "2.7.2"
 crypto = "1.1.0"
-sqlcipher = "4.5.4"
+sqlcipher = "4.9.0"
+sqlite = "2.5.2"
 safetynet = "18.1.0"
 integrity = "1.4.0"
 jose4j = "0.9.6"
@@ -88,7 +89,8 @@ room = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 security-crypto-ktx = { module = "androidx.security:security-crypto-ktx", version.ref = "crypto" }
-sqlcipher = { module = "net.zetetic:android-database-sqlcipher", version.ref = "sqlcipher" }
+sqlcipher = { module = "net.zetetic:sqlcipher-android", version.ref = "sqlcipher" }
+sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
 safetynet = { module = "com.google.android.gms:play-services-safetynet", version.ref = "safetynet" }
 play-integrity = { module = "com.google.android.play:integrity", version.ref = "integrity" }
 jose4j = { group = "org.bitbucket.b_c", name = "jose4j", version.ref = "jose4j" }
@@ -116,7 +118,7 @@ coil = ["coil-compose", "coil-gif"]
 firebase = ["firebase-crashlytics", "firebase-messaging", "firebase-auth", "google-auth"]
 lifecycle = ["androidx-lifecycle-runtime-ktx", "androidx-lifecycle-process"]
 retrofit = ["retrofit", "retrofit-converter", "retrofit-interceptor"]
-room = ["room", "room-ktx", "sqlcipher", "security-crypto-ktx"]
+room = ["room", "room-ktx", "sqlcipher", "sqlite", "security-crypto-ktx"]
 security = ["safetynet", "play-integrity", "jose4j", "rootbeer"]
 domain-test = ["junit", "coroutines-android", "coroutines-test", "robolectric", "google-truth", "mockito-inline"]
 data-test = ["mockito-inline", "google-truth", "mockwebserver"]
