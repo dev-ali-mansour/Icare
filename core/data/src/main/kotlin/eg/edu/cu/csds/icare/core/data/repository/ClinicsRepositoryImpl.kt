@@ -3,8 +3,11 @@ package eg.edu.cu.csds.icare.core.data.repository
 import android.content.Context
 import eg.edu.cu.csds.icare.core.data.local.datasource.LocalClinicsDataSource
 import eg.edu.cu.csds.icare.core.data.local.datasource.LocalDoctorDataSource
-import eg.edu.cu.csds.icare.core.data.local.db.entity.toEntity
-import eg.edu.cu.csds.icare.core.data.local.db.entity.toModel
+import eg.edu.cu.csds.icare.core.data.mappers.toClinic
+import eg.edu.cu.csds.icare.core.data.mappers.toClinicDto
+import eg.edu.cu.csds.icare.core.data.mappers.toClinicEntity
+import eg.edu.cu.csds.icare.core.data.mappers.toClinicStaff
+import eg.edu.cu.csds.icare.core.data.mappers.toClinicStaffDto
 import eg.edu.cu.csds.icare.core.data.mappers.toDoctor
 import eg.edu.cu.csds.icare.core.data.mappers.toDoctorDto
 import eg.edu.cu.csds.icare.core.data.mappers.toDoctorEntity
@@ -34,7 +37,7 @@ class ClinicsRepositoryImpl(
                     .listClinics()
                     .distinctUntilChanged()
                     .collect { entities ->
-                        emit(Resource.Success(data = entities.map { it.toModel() }))
+                        emit(Resource.Success(data = entities.map { it.toClinic() }))
                     }
                 return@flow
             }
@@ -46,13 +49,13 @@ class ClinicsRepositoryImpl(
 
                     is Resource.Success -> {
                         res.data?.let { clinics ->
-                            localClinicsDataSource.persistClinics(clinics.map { it.toEntity() })
+                            localClinicsDataSource.persistClinics(clinics.map { it.toClinicEntity() })
                         }
                         localClinicsDataSource
                             .listClinics()
                             .distinctUntilChanged()
                             .collect { entities ->
-                                emit(Resource.Success(data = entities.map { it.toModel() }))
+                                emit(Resource.Success(data = entities.map { it.toClinic() }))
                             }
                     }
 
@@ -64,7 +67,7 @@ class ClinicsRepositoryImpl(
     override fun addNewClinic(clinic: Clinic): Flow<Resource<Nothing?>> =
         flow {
             emit(Resource.Loading())
-            remoteClinicsDataSource.addNewClinic(clinic).collect { res ->
+            remoteClinicsDataSource.addNewClinic(clinic.toClinicDto()).collect { res ->
                 when (res) {
                     is Resource.Unspecified<*> -> emit(Resource.Unspecified())
                     is Resource.Loading<*> -> emit(Resource.Loading())
@@ -85,7 +88,7 @@ class ClinicsRepositoryImpl(
     override fun updateClinic(clinic: Clinic): Flow<Resource<Nothing?>> =
         flow {
             emit(Resource.Loading())
-            remoteClinicsDataSource.updateClinic(clinic).collect { res ->
+            remoteClinicsDataSource.updateClinic(clinic.toClinicDto()).collect { res ->
                 when (res) {
                     is Resource.Unspecified<*> -> emit(Resource.Unspecified())
                     is Resource.Loading<*> -> emit(Resource.Loading())
@@ -204,15 +207,31 @@ class ClinicsRepositoryImpl(
             }
         }
 
-    override fun listClinicStaff(): Flow<Resource<List<ClinicStaff>>> = remoteClinicsDataSource.listClinicStaff()
+    override fun listClinicStaff(): Flow<Resource<List<ClinicStaff>>> =
+        flow {
+            remoteClinicsDataSource.listClinicStaff().collect { res ->
+                when (res) {
+                    is Resource.Unspecified -> emit(Resource.Unspecified())
+
+                    is Resource.Loading -> emit(Resource.Loading())
+
+                    is Resource.Success ->
+                        res.data?.let { doctors ->
+                            emit(Resource.Success(data = doctors.map { it.toClinicStaff() }))
+                        }
+
+                    is Resource.Error -> emit(Resource.Error(res.error))
+                }
+            }
+        }
 
     override fun addNewClinicStaff(staff: ClinicStaff): Flow<Resource<Nothing?>> =
         remoteClinicsDataSource.updateClinicStaff(
-            staff,
+            staff.toClinicStaffDto(),
         )
 
     override fun updateClinicStaff(staff: ClinicStaff): Flow<Resource<Nothing?>> =
         remoteClinicsDataSource.updateClinicStaff(
-            staff,
+            staff.toClinicStaffDto(),
         )
 }
