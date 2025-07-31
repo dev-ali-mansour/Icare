@@ -48,16 +48,9 @@ class NetworkModule {
         }
 
     @Single
-    fun provideHttpClient(authInterceptor: Interceptor): OkHttpClient {
-        /*val certificatePinner =
-            CertificatePinner
-                .Builder()
-                .add(BuildConfig.SERVICE_DOMAIN, BuildConfig.CERTIFICATE_HASH_1)
-                .add(BuildConfig.SERVICE_DOMAIN, BuildConfig.CERTIFICATE_HASH_2)
-                .build()*/
-        return OkHttpClient
+    fun provideHttpClient(authInterceptor: Interceptor): OkHttpClient =
+        OkHttpClient
             .Builder()
-//            .certificatePinner(certificatePinner)
             .readTimeout(timeout = 15, TimeUnit.SECONDS)
             .connectTimeout(timeout = 15, TimeUnit.SECONDS)
             .pingInterval(interval = 1, TimeUnit.SECONDS)
@@ -72,7 +65,6 @@ class NetworkModule {
                             }
                     },
             ).build()
-    }
 
     @Single
     fun provideRetrofitInstance(okHttpClient: OkHttpClient): Retrofit =
