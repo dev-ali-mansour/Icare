@@ -1,11 +1,11 @@
 package eg.edu.cu.csds.icare.core.data.remote.datasource
 
+import eg.edu.cu.csds.icare.core.data.dto.UserDto
 import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface RemoteAuthDataSource {
-    fun getUserInfo(): Flow<Resource<User>>
+    fun getUserInfo(): Flow<Resource<UserDto>>
 
     fun register(
         firstName: String,
