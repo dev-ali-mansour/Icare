@@ -38,23 +38,6 @@ fun UserEntity.toUser(): User =
         linkedWithGoogle = this.linkedWithGoogle,
     )
 
-fun User.toUserDto(): UserDto =
-    UserDto(
-        userId = this.userId,
-        roleId = this.roleId,
-        nationalId = this.nationalId,
-        birthDate = this.birthDate,
-        gender = this.gender,
-        address = this.address,
-        phoneNumber = this.phoneNumber,
-        isActive = this.isActive,
-        displayName = this.displayName,
-        email = this.email,
-        photoUrl = this.photoUrl,
-        isEmailVerified = this.isEmailVerified,
-        linkedWithGoogle = this.linkedWithGoogle,
-    )
-
 fun UserDto.toUser(): User =
     User(
         userId = this.userId,
