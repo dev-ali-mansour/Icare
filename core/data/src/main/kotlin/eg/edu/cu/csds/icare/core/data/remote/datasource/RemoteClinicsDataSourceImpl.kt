@@ -1,9 +1,9 @@
 package eg.edu.cu.csds.icare.core.data.remote.datasource
 
 import com.google.firebase.auth.FirebaseAuth
+import eg.edu.cu.csds.icare.core.data.dto.ClinicDto
 import eg.edu.cu.csds.icare.core.data.dto.DoctorDto
 import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
-import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.model.Resource
@@ -26,17 +26,15 @@ class RemoteClinicsDataSourceImpl(
     private val auth: FirebaseAuth,
     private val service: ApiService,
 ) : RemoteClinicsDataSource {
-    override fun fetchClinics(): Flow<Resource<List<Clinic>>> =
+    override fun fetchClinics(): Flow<Resource<List<ClinicDto>>> =
         flow {
             emit(Resource.Loading())
             val token =
-                runBlocking {
-                    auth.currentUser
-                        ?.getIdToken(false)
-                        ?.await()
-                        ?.token
-                        .toString()
-                }
+                auth.currentUser
+                    ?.getIdToken(false)
+                    ?.await()
+                    ?.token
+                    .toString()
             val map = HashMap<String, String>()
             map["token"] = token
             val response = service.fetchClinics(map)
@@ -65,16 +63,15 @@ class RemoteClinicsDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun addNewClinic(clinic: Clinic): Flow<Resource<Nothing?>> =
-        flow<Resource<Nothing?>> {
+    override fun addNewClinic(clinic: ClinicDto): Flow<Resource<Nothing?>> =
+        flow {
             val token =
-                runBlocking {
-                    auth.currentUser
-                        ?.getIdToken(false)
-                        ?.await()
-                        ?.token
-                        .toString()
-                }
+                auth.currentUser
+                    ?.getIdToken(false)
+                    ?.await()
+                    ?.token
+                    .toString()
+
             val response = service.upsertClinic(clinic.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
@@ -112,16 +109,14 @@ class RemoteClinicsDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun updateClinic(clinic: Clinic): Flow<Resource<Nothing?>> =
-        flow<Resource<Nothing?>> {
+    override fun updateClinic(clinic: ClinicDto): Flow<Resource<Nothing?>> =
+        flow {
             val token =
-                runBlocking {
-                    auth.currentUser
-                        ?.getIdToken(false)
-                        ?.await()
-                        ?.token
-                        .toString()
-                }
+                auth.currentUser
+                    ?.getIdToken(false)
+                    ?.await()
+                    ?.token
+                    .toString()
             val response = service.upsertClinic(clinic.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
