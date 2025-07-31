@@ -1,8 +1,8 @@
 package eg.edu.cu.csds.icare.core.data.remote.serivce
 
+import eg.edu.cu.csds.icare.core.data.dto.ActionResultResponse
 import eg.edu.cu.csds.icare.core.data.dto.CenterDto
 import eg.edu.cu.csds.icare.core.data.dto.CentersResponse
-import eg.edu.cu.csds.icare.core.domain.model.ActionResultResponse
 import eg.edu.cu.csds.icare.core.domain.model.AdminStatisticsResponse
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.AppointmentsResponse

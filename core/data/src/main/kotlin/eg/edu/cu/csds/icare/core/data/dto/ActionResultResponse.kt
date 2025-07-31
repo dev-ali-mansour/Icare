@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.core.domain.model
+package eg.edu.cu.csds.icare.core.data.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
