@@ -3,6 +3,8 @@ package eg.edu.cu.csds.icare.core.data.remote.serivce
 import eg.edu.cu.csds.icare.core.data.dto.ActionResultResponse
 import eg.edu.cu.csds.icare.core.data.dto.CenterDto
 import eg.edu.cu.csds.icare.core.data.dto.CentersResponse
+import eg.edu.cu.csds.icare.core.data.dto.DoctorDto
+import eg.edu.cu.csds.icare.core.data.dto.DoctorsResponse
 import eg.edu.cu.csds.icare.core.domain.model.AdminStatisticsResponse
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.AppointmentsResponse
@@ -14,9 +16,7 @@ import eg.edu.cu.csds.icare.core.domain.model.ClinicStaffResponse
 import eg.edu.cu.csds.icare.core.domain.model.ClinicsResponse
 import eg.edu.cu.csds.icare.core.domain.model.Consultation
 import eg.edu.cu.csds.icare.core.domain.model.ConsultationsResponse
-import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.DoctorScheduleResponse
-import eg.edu.cu.csds.icare.core.domain.model.DoctorsResponse
 import eg.edu.cu.csds.icare.core.domain.model.MedicalRecordResponse
 import eg.edu.cu.csds.icare.core.domain.model.PharmaciesResponse
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacist
@@ -90,7 +90,7 @@ interface ApiService {
 
     @POST("userApi/doctorRegister")
     suspend fun upsertDoctor(
-        @Body body: Doctor,
+        @Body body: DoctorDto,
     ): Response<ActionResultResponse>
 
     @POST("clinicApi/doctorSchedule")
