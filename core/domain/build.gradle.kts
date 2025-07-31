@@ -2,6 +2,7 @@ import build.Build
 import build.BuildConfig
 import build.BuildTypes
 import extensions.getSecret
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import signing.SigningTypes
 import test.TestBuildConfig
 
@@ -78,6 +79,12 @@ detekt {
     ignoredBuildTypes = listOf("release")
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_21
+    }
+}
+
 dependencies {
     api(platform(libs.koin.bom))
     api(libs.koin.core)
@@ -86,8 +93,4 @@ dependencies {
     api(libs.kotlinx.serialization.json)
 
     testApi(libs.bundles.domain.test)
-}
-
-kotlin {
-    jvmToolchain(JavaVersion.VERSION_21.majorVersion.toInt())
 }
