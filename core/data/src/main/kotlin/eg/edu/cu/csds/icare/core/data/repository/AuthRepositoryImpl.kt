@@ -2,8 +2,8 @@ package eg.edu.cu.csds.icare.core.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.data.local.datasource.LocalAuthDataSource
-import eg.edu.cu.csds.icare.core.data.local.db.entity.toEntity
-import eg.edu.cu.csds.icare.core.data.local.db.entity.toModel
+import eg.edu.cu.csds.icare.core.data.mappers.toUser
+import eg.edu.cu.csds.icare.core.data.mappers.toUserEntity
 import eg.edu.cu.csds.icare.core.data.remote.datasource.RemoteAuthDataSource
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.User
@@ -103,21 +103,23 @@ class AuthRepositoryImpl(
                 emit(Resource.Loading())
                 localAuthDataSource.getUser()?.let { userEntity ->
                     if (!forceUpdate) {
-                        val currentUser = userEntity.toModel()
+                        val currentUser = userEntity.toUser()
                         emit(Resource.Success(currentUser))
                         return@flow
                     }
                 }
                 remoteAuthDataSource.getUserInfo().collect { res ->
                     when (res) {
+                        is Resource.Unspecified -> emit(Resource.Unspecified())
+                        is Resource.Loading -> emit(Resource.Loading())
                         is Resource.Success -> {
                             res.data?.let { user ->
-                                localAuthDataSource.saveEmployee(entity = user.toEntity())
-                                emit(Resource.Success(data = user))
+                                localAuthDataSource.saveEmployee(entity = user.toUserEntity())
+                                emit(Resource.Success(data = user.toUser()))
                             } ?: emit(Resource.Error(UserNotAuthorizedException()))
                         }
 
-                        else -> emit(res)
+                        is Resource.Error -> emit(Resource.Error(res.error))
                     }
                 }
             }.onFailure { emit(Resource.Error(it)) }

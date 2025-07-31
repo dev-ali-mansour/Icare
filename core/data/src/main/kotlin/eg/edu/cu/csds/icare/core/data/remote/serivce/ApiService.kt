@@ -22,7 +22,7 @@ import eg.edu.cu.csds.icare.core.data.dto.PharmaciesResponse
 import eg.edu.cu.csds.icare.core.data.dto.PharmacistDto
 import eg.edu.cu.csds.icare.core.data.dto.PharmacistsResponse
 import eg.edu.cu.csds.icare.core.data.dto.PharmacyDto
-import eg.edu.cu.csds.icare.core.domain.model.UserResponse
+import eg.edu.cu.csds.icare.core.data.dto.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
