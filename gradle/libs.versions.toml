@@ -120,7 +120,7 @@ room = ["room", "room-ktx", "sqlcipher", "security-crypto-ktx"]
 security = ["safetynet", "play-integrity", "jose4j", "rootbeer"]
 domain-test = ["junit", "coroutines-android", "coroutines-test", "robolectric", "google-truth", "mockito-inline"]
 data-test = ["mockito-inline", "google-truth", "mockwebserver"]
-app-test = ["androidx-junit", "androidx-espresso-core", "mockito-inline", "google-truth"]
+app-test = ["androidx-junit", "mockito-inline", "google-truth"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
