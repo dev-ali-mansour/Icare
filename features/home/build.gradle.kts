@@ -108,8 +108,8 @@ ksp {
 }
 
 dependencies {
-    implementation(project(":core:ui"))
-    api(project(":features:consultations"))
+    implementation(projects.core.ui)
+    api(projects.features.consultations)
 
     ksp(libs.koin.ksp.compiler)
     testImplementation(libs.bundles.domain.test)
