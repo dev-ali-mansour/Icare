@@ -110,7 +110,7 @@ Each ViewModel exposes functions that interact with UseCases and hold UI state.
 - **Coroutines & Flow**
 - **Firebase Auth** for secure login
 - **KSP/Annotation processing** for compile-time wiring
-- **PlantUML** for diagram modeling
+- **DrawIo** for diagram modeling
 
 ---
 
