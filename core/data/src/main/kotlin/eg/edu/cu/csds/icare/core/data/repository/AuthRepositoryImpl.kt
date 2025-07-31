@@ -60,10 +60,10 @@ class AuthRepositoryImpl(
         remoteAuthDataSource.signInWithEmailAndPassword(email, password).map { res ->
             when {
                 res is Resource.Success && res.data == true ->
-                    getUserInfo(true)
+                    getUserInfo(true).collect {}
 
                 res is Resource.Error ->
-                    signOut()
+                    signOut().collect { }
             }
             res
         }
@@ -95,7 +95,10 @@ class AuthRepositoryImpl(
             }
         }
 
-    override fun sendRecoveryEmail(email: String): Flow<Resource<Nothing?>> = remoteAuthDataSource.sendRecoveryEmail(email)
+    override fun sendRecoveryEmail(email: String): Flow<Resource<Nothing?>> =
+        remoteAuthDataSource.sendRecoveryEmail(
+            email,
+        )
 
     override fun getUserInfo(forceUpdate: Boolean): Flow<Resource<User>> =
         flow {

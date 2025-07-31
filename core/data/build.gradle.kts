@@ -149,6 +149,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(platform(libs.koin.bom))
     api(libs.timber)
+    api(libs.kotlinx.serialization.json)
     api(platform(libs.firebase.bom))
     api(libs.bundles.firebase)
     implementation(libs.bundles.retrofit)

@@ -1,6 +1,5 @@
 package eg.edu.cu.csds.icare.core.data.remote.datasource
 
-import android.os.Trace
 import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FacebookAuthProvider
@@ -57,17 +56,17 @@ class RemoteAuthDataSourceImpl(
                                             emit(
                                                 Resource.Success(
                                                     data =
-                                                        res.user.copy(
-                                                            userId = uid,
-                                                            displayName = user.displayName.toString(),
-                                                            email = user.email.toString(),
-                                                            photoUrl = user.photoUrl.toString(),
-                                                            isEmailVerified = user.isEmailVerified,
-                                                            linkedWithGoogle =
-                                                                user.providerData.any {
-                                                                    it.providerId == GoogleAuthProvider.PROVIDER_ID
-                                                                },
-                                                        ),
+                                                    res.user.copy(
+                                                        userId = uid,
+                                                        displayName = user.displayName.toString(),
+                                                        email = user.email.toString(),
+                                                        photoUrl = user.photoUrl.toString(),
+                                                        isEmailVerified = user.isEmailVerified,
+                                                        linkedWithGoogle =
+                                                        user.providerData.any {
+                                                            it.providerId == GoogleAuthProvider.PROVIDER_ID
+                                                        },
+                                                    ),
                                                 ),
                                             )
 
@@ -156,7 +155,7 @@ class RemoteAuthDataSourceImpl(
             }
         }.catch {
             Timber.e("register() Error ${it.javaClass.simpleName}: ${it.message}")
-            deleteAccount()
+            auth.currentUser?.delete()?.await()
             emit(Resource.Error(it))
         }
 
@@ -164,7 +163,7 @@ class RemoteAuthDataSourceImpl(
         email: String,
         password: String,
     ): Flow<Resource<Boolean>> =
-        flow<Resource<Boolean>> {
+        flow {
             emit(Resource.Loading())
             val result = auth.signInWithEmailAndPassword(email, password).await()
             result.user?.let {
@@ -182,7 +181,7 @@ class RemoteAuthDataSourceImpl(
         }
 
     override fun signInWithGoogle(token: String): Flow<Resource<Boolean>> =
-        flow<Resource<Boolean>> {
+        flow {
             emit(Resource.Loading())
             val credential = GoogleAuthProvider.getCredential(token, null)
             val result = Firebase.auth.signInWithCredential(credential).await()
@@ -215,11 +214,8 @@ class RemoteAuthDataSourceImpl(
     ): Flow<Resource<Nothing?>> =
         flow {
             emit(Resource.Loading())
-            Trace.beginSection(LINK_ACCOUNT_TRACE)
             val credential = EmailAuthProvider.getCredential(email, password)
             auth.currentUser?.linkWithCredential(credential)?.await()
-
-            Trace.endSection()
             emit(Resource.Success(null))
         }.catch { emit(Resource.Error(it)) }
 
@@ -286,14 +282,14 @@ class RemoteAuthDataSourceImpl(
         pastSurgeries: String,
         token: String,
     ): Flow<Resource<Nothing?>> =
-        flow<Resource<Nothing?>> {
+        flow {
             val map = HashMap<String, String>()
             map["fName"] = firstName
             map["lName"] = lastName
             map["email"] = email
             map["birthDate"] = birthDate.toString()
-            map["gender"] = gender.toString()
-            map["nationalId"] = nationalId.toString()
+            map["gender"] = gender
+            map["nationalId"] = nationalId
             map["phoneNumber"] = phone
             map["address"] = address
             map["chronicDiseases"] = chronicDiseases
@@ -331,8 +327,4 @@ class RemoteAuthDataSourceImpl(
                 else -> emit(Resource.Error(ConnectException(response.code().toString())))
             }
         }.catch { emit(Resource.Error(it)) }
-
-    companion object {
-        private const val LINK_ACCOUNT_TRACE = "linkAccount"
-    }
 }
