@@ -1,6 +1,7 @@
 package eg.edu.cu.csds.icare.core.data.remote.serivce
 
 import eg.edu.cu.csds.icare.core.data.dto.ActionResultResponse
+import eg.edu.cu.csds.icare.core.data.dto.AdminStatisticsResponse
 import eg.edu.cu.csds.icare.core.data.dto.CenterDto
 import eg.edu.cu.csds.icare.core.data.dto.CenterStaffDto
 import eg.edu.cu.csds.icare.core.data.dto.CenterStaffResponse
@@ -15,7 +16,6 @@ import eg.edu.cu.csds.icare.core.data.dto.PharmaciesResponse
 import eg.edu.cu.csds.icare.core.data.dto.PharmacistDto
 import eg.edu.cu.csds.icare.core.data.dto.PharmacistsResponse
 import eg.edu.cu.csds.icare.core.data.dto.PharmacyDto
-import eg.edu.cu.csds.icare.core.domain.model.AdminStatisticsResponse
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.AppointmentsResponse
 import eg.edu.cu.csds.icare.core.domain.model.Consultation

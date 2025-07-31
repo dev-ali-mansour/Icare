@@ -1,11 +1,13 @@
 package eg.edu.cu.csds.icare.core.data.repository
 
+import eg.edu.cu.csds.icare.core.data.mappers.toAdminStatistics
 import eg.edu.cu.csds.icare.core.data.remote.datasource.RemoteAppointmentsDataSource
 import eg.edu.cu.csds.icare.core.domain.model.AdminStatistics
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.repository.AppointmentsRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Single
 
 @Single
@@ -25,5 +27,21 @@ class AppointmentsRepositoryImpl(
     override fun updateAppointment(appointment: Appointment): Flow<Resource<Nothing?>> =
         remoteAppointmentsDataSource.updateAppointment(appointment)
 
-    override fun getAdminStatistics(): Flow<Resource<AdminStatistics>> = remoteAppointmentsDataSource.getAdminStatistics()
+    override fun getAdminStatistics(): Flow<Resource<AdminStatistics>> =
+        flow {
+            remoteAppointmentsDataSource.getAdminStatistics().collect { res ->
+                when (res) {
+                    is Resource.Unspecified -> emit(Resource.Unspecified())
+
+                    is Resource.Loading -> emit(Resource.Loading())
+
+                    is Resource.Success ->
+                        res.data?.let { statisticsDto ->
+                            emit(Resource.Success(data = statisticsDto.toAdminStatistics()))
+                        }
+
+                    is Resource.Error -> emit(Resource.Error(res.error))
+                }
+            }
+        }
 }

@@ -1,11 +1,11 @@
 package eg.edu.cu.csds.icare.core.data.remote.datasource
 
 import com.google.firebase.auth.FirebaseAuth
-import eg.edu.cu.csds.icare.core.domain.model.AdminStatistics
+import eg.edu.cu.csds.icare.core.data.dto.AdminStatisticsDto
+import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.util.Constants
-import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
@@ -198,19 +198,17 @@ class RemoteAppointmentsDataSourceImpl(
             }
         }
 
-    override fun getAdminStatistics(): Flow<Resource<AdminStatistics>> =
+    override fun getAdminStatistics(): Flow<Resource<AdminStatisticsDto>> =
         flow {
             runCatching {
                 emit(Resource.Loading())
                 auth.currentUser?.let { user ->
                     val token =
-                        runBlocking {
-                            auth.currentUser
-                                ?.getIdToken(false)
-                                ?.await()
-                                ?.token
-                                .toString()
-                        }
+                        auth.currentUser
+                            ?.getIdToken(false)
+                            ?.await()
+                            ?.token
+                            .toString()
                     val map = HashMap<String, String>()
                     map["token"] = token
                     val response = service.getAdminStatistics(map)

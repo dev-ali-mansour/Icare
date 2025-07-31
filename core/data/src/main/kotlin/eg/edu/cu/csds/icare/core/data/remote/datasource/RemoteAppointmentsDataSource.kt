@@ -1,6 +1,6 @@
 package eg.edu.cu.csds.icare.core.data.remote.datasource
 
-import eg.edu.cu.csds.icare.core.domain.model.AdminStatistics
+import eg.edu.cu.csds.icare.core.data.dto.AdminStatisticsDto
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import kotlinx.coroutines.flow.Flow
@@ -16,5 +16,5 @@ interface RemoteAppointmentsDataSource {
 
     fun updateAppointment(appointment: Appointment): Flow<Resource<Nothing?>>
 
-    fun getAdminStatistics(): Flow<Resource<AdminStatistics>>
+    fun getAdminStatistics(): Flow<Resource<AdminStatisticsDto>>
 }
