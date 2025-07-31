@@ -9,7 +9,6 @@ import test.TestBuildConfig
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
 }
@@ -90,7 +89,6 @@ dependencies {
     api(libs.koin.core)
     api(libs.koin.annotations)
     api(libs.coroutine.core)
-    api(libs.kotlinx.serialization.json)
 
     testApi(libs.bundles.domain.test)
 }
