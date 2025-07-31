@@ -1,12 +1,12 @@
-package eg.edu.cu.csds.icare.core.domain.model
+package eg.edu.cu.csds.icare.core.data.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PharmaciesResponse(
+data class PharmacistsResponse(
     @SerialName("status")
     val statusCode: Short,
     @SerialName("data")
-    val pharmacies: List<Pharmacy>,
+    val pharmacists: List<PharmacistDto>,
 )

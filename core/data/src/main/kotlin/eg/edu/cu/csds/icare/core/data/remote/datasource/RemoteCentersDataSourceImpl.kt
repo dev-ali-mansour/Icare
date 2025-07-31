@@ -2,8 +2,8 @@ package eg.edu.cu.csds.icare.core.data.remote.datasource
 
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.data.dto.CenterDto
+import eg.edu.cu.csds.icare.core.data.dto.CenterStaffDto
 import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
-import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
@@ -128,18 +128,16 @@ class RemoteCentersDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun listCenterStaff(): Flow<Resource<List<CenterStaff>>> =
+    override fun listCenterStaff(): Flow<Resource<List<CenterStaffDto>>> =
         flow {
             emit(Resource.Loading())
             auth.currentUser?.let {
                 val token =
-                    runBlocking {
-                        auth.currentUser
-                            ?.getIdToken(false)
-                            ?.await()
-                            ?.token
-                            .toString()
-                    }
+                    auth.currentUser
+                        ?.getIdToken(false)
+                        ?.await()
+                        ?.token
+                        .toString()
                 val map = HashMap<String, String>()
                 map["token"] = token
                 val response = service.listCenterStaff(map)
@@ -164,16 +162,14 @@ class RemoteCentersDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun addNewCenterStaff(staff: CenterStaff): Flow<Resource<Nothing?>> =
-        flow<Resource<Nothing?>> {
+    override fun addNewCenterStaff(staff: CenterStaffDto): Flow<Resource<Nothing?>> =
+        flow {
             val token =
-                runBlocking {
-                    auth.currentUser
-                        ?.getIdToken(false)
-                        ?.await()
-                        ?.token
-                        .toString()
-                }
+                auth.currentUser
+                    ?.getIdToken(false)
+                    ?.await()
+                    ?.token
+                    .toString()
             val response = service.upsertCenterStaff(staff.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->
@@ -198,16 +194,14 @@ class RemoteCentersDataSourceImpl(
             emit(Resource.Error(it))
         }
 
-    override fun updateCenterStaff(staff: CenterStaff): Flow<Resource<Nothing?>> =
-        flow<Resource<Nothing?>> {
+    override fun updateCenterStaff(staff: CenterStaffDto): Flow<Resource<Nothing?>> =
+        flow {
             val token =
-                runBlocking {
-                    auth.currentUser
-                        ?.getIdToken(false)
-                        ?.await()
-                        ?.token
-                        .toString()
-                }
+                auth.currentUser
+                    ?.getIdToken(false)
+                    ?.await()
+                    ?.token
+                    .toString()
             val response = service.upsertCenterStaff(staff.copy(token = token))
             when (response.code()) {
                 HTTP_OK ->

@@ -3,6 +3,8 @@ package eg.edu.cu.csds.icare.core.data.repository
 import eg.edu.cu.csds.icare.core.data.local.datasource.LocalCentersDataSource
 import eg.edu.cu.csds.icare.core.data.mappers.toCenterDto
 import eg.edu.cu.csds.icare.core.data.mappers.toCenterEntity
+import eg.edu.cu.csds.icare.core.data.mappers.toCenterStaff
+import eg.edu.cu.csds.icare.core.data.mappers.toCenterStaffDto
 import eg.edu.cu.csds.icare.core.data.mappers.toLabImagingCenter
 import eg.edu.cu.csds.icare.core.data.remote.datasource.RemoteCentersDataSource
 import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
@@ -95,15 +97,31 @@ class CentersRepositoryImpl(
             }
         }
 
-    override fun listCenterStaff(): Flow<Resource<List<CenterStaff>>> = remoteCentersDataSource.listCenterStaff()
+    override fun listCenterStaff(): Flow<Resource<List<CenterStaff>>> =
+        flow {
+            remoteCentersDataSource.listCenterStaff().collect { res ->
+                when (res) {
+                    is Resource.Unspecified -> emit(Resource.Unspecified())
+
+                    is Resource.Loading -> emit(Resource.Loading())
+
+                    is Resource.Success ->
+                        res.data?.let { doctors ->
+                            emit(Resource.Success(data = doctors.map { it.toCenterStaff() }))
+                        }
+
+                    is Resource.Error -> emit(Resource.Error(res.error))
+                }
+            }
+        }
 
     override fun addNewCenterStaff(staff: CenterStaff): Flow<Resource<Nothing?>> =
         remoteCentersDataSource.addNewCenterStaff(
-            staff,
+            staff.toCenterStaffDto(),
         )
 
     override fun updateCenterStaff(staff: CenterStaff): Flow<Resource<Nothing?>> =
         remoteCentersDataSource.updateCenterStaff(
-            staff,
+            staff.toCenterStaffDto(),
         )
 }
