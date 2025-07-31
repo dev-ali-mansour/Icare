@@ -30,8 +30,8 @@ android {
         targetSdk = BuildConfig.TARGET_SDK_VERSION
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = project.findProperty("VERSION_CODE")?.toString()?.toInt() ?: 1
+        versionName = project.findProperty("VERSION_NAME")?.toString() ?: "1.0.0"
 
         testInstrumentationRunner = TestBuildConfig.TEST_INSTRUMENTATION_RUNNER
     }
