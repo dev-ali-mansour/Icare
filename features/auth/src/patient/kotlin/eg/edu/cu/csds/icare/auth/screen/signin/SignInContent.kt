@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.auth.screen.login
+package eg.edu.cu.csds.icare.auth.screen.signin
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +46,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.auth.R
+import eg.edu.cu.csds.icare.auth.screen.SignInAction
+import eg.edu.cu.csds.icare.auth.screen.SignInUIState
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
@@ -63,17 +66,10 @@ import eg.edu.cu.csds.icare.core.ui.view.SocialSignInButton
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
-internal fun LoginContent(
-    email: String,
-    password: String,
-    passwordVisibility: Boolean,
-    isLoading: Boolean,
-    onEmailChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
-    onPasswordVisibilityChanged: () -> Unit,
-    onRecoveryClicked: () -> Unit,
-    onLoginButtonClicked: () -> Unit,
-    onGoogleButtonClicked: () -> Unit,
+internal fun SignInContent(
+    state: SignInUIState,
+    onAction: (SignInAction) -> Unit,
+    onError: (String) -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize(),
@@ -159,8 +155,8 @@ internal fun LoginContent(
                 ) {
                     Column {
                         TextField(
-                            value = email,
-                            onValueChange = { onEmailChanged(it) },
+                            value = state.email,
+                            onValueChange = { onAction(SignInAction.UpdateEmail(it)) },
                             label = {
                                 Text(
                                     text = stringResource(id = R.string.email),
@@ -196,8 +192,8 @@ internal fun LoginContent(
                                     .background(Color.LightGray),
                         )
                         TextField(
-                            value = password,
-                            onValueChange = { onPasswordChanged(it) },
+                            value = state.password,
+                            onValueChange = { onAction(SignInAction.UpdatePassword(it)) },
                             colors =
                                 TextFieldDefaults.colors(
                                     focusedContainerColor = Color.Transparent,
@@ -209,11 +205,11 @@ internal fun LoginContent(
                                     unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
                                 ),
                             trailingIcon = {
-                                IconButton(onClick = { onPasswordVisibilityChanged() }) {
+                                IconButton(onClick = { onAction(SignInAction.TogglePasswordVisibility) }) {
                                     Icon(
                                         painter = painterResource(R.drawable.ic_baseline_remove_red_eye_24),
                                         contentDescription = null,
-                                        tint = if (passwordVisibility) Blue500 else Color.Gray,
+                                        tint = if (state.isPasswordVisible) Blue500 else Color.Gray,
                                     )
                                 }
                             },
@@ -225,7 +221,12 @@ internal fun LoginContent(
                                 )
                             },
                             singleLine = true,
-                            visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                            visualTransformation =
+                                if (state.isPasswordVisible) {
+                                    VisualTransformation.None
+                                } else {
+                                    PasswordVisualTransformation()
+                                },
                             modifier = Modifier.fillMaxWidth(),
                             keyboardOptions =
                                 KeyboardOptions.Default.copy(
@@ -248,7 +249,7 @@ internal fun LoginContent(
                         Modifier
                             .fillMaxWidth()
                             .padding(horizontal = XL_PADDING)
-                            .clickable { onRecoveryClicked() },
+                            .clickable { onAction(SignInAction.ResetPassword) },
                 )
 
                 Spacer(modifier = Modifier.height(S_PADDING))
@@ -257,7 +258,18 @@ internal fun LoginContent(
                     modifier = Modifier.fillMaxWidth(fraction = 0.6f),
                     text = stringResource(id = R.string.login),
                     color = buttonBackgroundColor,
-                    onClick = { onLoginButtonClicked() },
+                    onClick = { onAction(SignInAction.SubmitSignIn) },
+                )
+
+                Text(
+                    text = stringResource(id = R.string.do_not_have_account),
+                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                    fontFamily = helveticaFamily,
+                    color = textColor,
+                    modifier =
+                        Modifier
+                            .padding(L_PADDING)
+                            .clickable { onAction(SignInAction.CreateAccount) },
                 )
 
                 Spacer(modifier = Modifier.height(S_PADDING))
@@ -271,7 +283,7 @@ internal fun LoginContent(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = XL_PADDING),
+                            .padding(horizontal = L_PADDING),
                 )
 
                 Row(
@@ -285,14 +297,20 @@ internal fun LoginContent(
                         modifier = Modifier.fillMaxWidth(fraction = 0.8f),
                         iconId = CoreR.drawable.ic_social_google,
                     ) {
-                        onGoogleButtonClicked()
+                        onAction(SignInAction.SignInWithGoogle)
                     }
                 }
-                Spacer(modifier = Modifier.height(S_PADDING))
             }
         }
 
-        if (isLoading) {
+        val errorMessage = state.errorMessage?.asString()
+        LaunchedEffect(errorMessage) {
+            errorMessage?.let { message ->
+                onError(message)
+            }
+        }
+
+        if (state.isLoading) {
             CircularProgressIndicator(
                 modifier =
                     Modifier.constrainAs(loading) {
@@ -313,17 +331,10 @@ internal fun LoginContent(
 @Composable
 internal fun LoginContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
-        LoginContent(
-            email = "",
-            password = "",
-            passwordVisibility = false,
-            isLoading = false,
-            onEmailChanged = {},
-            onPasswordChanged = {},
-            onPasswordVisibilityChanged = {},
-            onRecoveryClicked = {},
-            onLoginButtonClicked = {},
-            onGoogleButtonClicked = {},
+        SignInContent(
+            state = SignInUIState(),
+            onAction = {},
+            onError = {},
         )
     }
 }
