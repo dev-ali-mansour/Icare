@@ -61,9 +61,9 @@ Objectives:\n
     <string name="error_server">Failed to connect to the server!</string>
     <string name="account_link_error">Failed to link your account!</string>
     <string name="error_invalid_email">We don\'t have your email address in our system!</string>
-    <string name="email_verification_error">Please verify your email first! Check the new verification message sent to your email.</string>
+    <string name="error_email_not_verified">Please verify your email first! Check the new verification message sent to your email.</string>
     <string name="credentials_error">Username or password is invalid!</string>
-    <string name="error_email_not_verified">Failed to send verification email.</string>
+    <string name="error_email_verification">Failed to send verification email.</string>
     <string name="error_national_id">Please enter a valid national id.</string>
     <string name="error_disk_full">Oops, it seems like your disk is full.</string>
     <string name="error_unknown">Oops, something went wrong.</string>
