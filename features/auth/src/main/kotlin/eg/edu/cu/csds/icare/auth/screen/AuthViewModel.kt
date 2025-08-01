@@ -12,13 +12,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.DeleteAccount
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkTokenAccount
+import eg.edu.cu.csds.icare.core.domain.model.Result
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkTokenAccountUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.Register
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.SendRecoveryMail
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithEmailAndPassword
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithGoogle
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOut
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.SendRecoveryMailUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOutUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,24 +25,19 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
+import java.net.ConnectException
 
 @KoinViewModel
 class AuthViewModel(
     private val dispatcher: CoroutineDispatcher,
     private val register: Register,
-    private val signInWithEmailAndPassword: SignInWithEmailAndPassword,
-    private val signInWithGoogle: SignInWithGoogle,
-    private val sendRecoveryMail: SendRecoveryMail,
-    private val linkTokenAccount: LinkTokenAccount,
-    private val signOut: SignOut,
-    private val deleteAccount: DeleteAccount,
+    private val sendRecoveryMailUseCase: SendRecoveryMailUseCase,
+    private val linkTokenAccountUseCase: LinkTokenAccountUseCase,
+    private val signOutUseCase: SignOutUseCase,
 ) : ViewModel() {
     private val _registerResFlow =
         MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
     val registerResFlow: StateFlow<Resource<Nothing?>> = _registerResFlow
-    private val _loginResFlow =
-        MutableStateFlow<Resource<Boolean>>(Resource.Unspecified())
-    val loginResFlow: StateFlow<Resource<Boolean>> = _loginResFlow
     private val _recoveryResFlow =
         MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
     val recoveryResFlow: StateFlow<Resource<Nothing?>> = _recoveryResFlow
@@ -53,9 +46,6 @@ class AuthViewModel(
     private val _logoutResFlow =
         MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
     val logoutResFlow: StateFlow<Resource<Nothing?>> = _logoutResFlow
-    private val _deleteAccountResFlow =
-        MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
-    val deleteAccountResFlow: StateFlow<Resource<Nothing?>> = _deleteAccountResFlow
     private val _isLoading = mutableStateOf(false)
     var isLoading: State<Boolean> = _isLoading
     private val _selectedGenderState: MutableState<Short> = mutableStateOf(0)
@@ -106,66 +96,56 @@ class AuthViewModel(
                 pastSurgeries = pastSurgeriesState.value,
                 password = passwordState.value,
             ).collectLatest {
-                _isLoading.value = it is Resource.Loading
-                _registerResFlow.value = it
-            }
-        }
-    }
-
-    fun onLogInClicked() {
-        viewModelScope.launch(dispatcher) {
-            if (_loginResFlow.value !is Resource.Unspecified) {
-                _loginResFlow.value = Resource.Unspecified()
-                delay(timeMillis = 100)
-            }
-            signInWithEmailAndPassword(emailState.value, passwordState.value).collectLatest {
-                _isLoading.value = it is Resource.Loading
-                _loginResFlow.value = it
-            }
-        }
-    }
-
-    fun signInWithGoogle(data: Intent?) {
-        runCatching {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            val account = task.getResult(ApiException::class.java)
-            viewModelScope.launch(dispatcher) {
-                account.idToken?.let { token ->
-                    signInWithGoogle(token).collectLatest {
-                        _isLoading.value = it is Resource.Loading
-                        if (it is Resource.Success) clearData()
-                        _loginResFlow.value = it
-                    }
+                when (it) {
+                    is Result.Success -> _registerResFlow.value = Resource.Success(null)
+                    is Result.Error -> _registerResFlow.value = Resource.Error(ConnectException())
                 }
             }
-        }.onFailure { _loginResFlow.value = Resource.Error(it) }
+        }
     }
 
     fun linkGoogleAccount(data: Intent?) {
         runCatching {
+            _isLoading.value = true
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             val account = task.getResult(ApiException::class.java)
             viewModelScope.launch(dispatcher) {
                 account.idToken?.let { token ->
-                    linkTokenAccount(GoogleAuthProvider.PROVIDER_ID, token).collectLatest {
-                        _isLoading.value = it is Resource.Loading
-                        _linkResFlow.value = it
+                    linkTokenAccountUseCase(GoogleAuthProvider.PROVIDER_ID, token).collectLatest {
+                        _isLoading.value = false
+                        when (it) {
+                            is Result.Success -> _linkResFlow.value = Resource.Success(null)
+                            is Result.Error ->
+                                _linkResFlow.value =
+                                    Resource.Error(ConnectException())
+                        }
                     }
                 }
             }
-        }.onFailure { _linkResFlow.value = Resource.Error(it) }
+        }.onFailure {
+            _isLoading.value = false
+            _linkResFlow.value = Resource.Error(it)
+        }
     }
 
     fun onResetPasswordClicked() {
         viewModelScope.launch(dispatcher) {
+            _isLoading.value = true
             if (_recoveryResFlow.value !is Resource.Unspecified) {
                 _recoveryResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            sendRecoveryMail(emailState.value).collect {
-                _isLoading.value = it is Resource.Loading
-                if (it is Resource.Success) clearData()
-                _recoveryResFlow.value = it
+            sendRecoveryMailUseCase(emailState.value).collect {
+                _isLoading.value = false
+                when (it) {
+                    is Result.Success -> {
+                        clearData()
+                        _recoveryResFlow.value = Resource.Success(null)
+                    }
+
+                    is Result.Error ->
+                        _recoveryResFlow.value = Resource.Error(ConnectException())
+                }
             }
         }
     }
@@ -177,20 +157,17 @@ class AuthViewModel(
                 _logoutResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            signOut().distinctUntilChanged().collect {
-                _logoutResFlow.value = it
-            }
-        }
-    }
+            signOutUseCase().distinctUntilChanged().collect {
+                _isLoading.value = false
+                when (it) {
+                    is Result.Success -> {
+                        clearData()
+                        _logoutResFlow.value = Resource.Success(null)
+                    }
 
-    fun onDeleteAccountClicked() {
-        viewModelScope.launch(dispatcher) {
-            if (_deleteAccountResFlow.value !is Resource.Unspecified) {
-                _deleteAccountResFlow.value = Resource.Unspecified()
-                delay(timeMillis = 100)
-            }
-            deleteAccount().distinctUntilChanged().collect {
-                _deleteAccountResFlow.value = it
+                    is Result.Error ->
+                        _logoutResFlow.value = Resource.Error(ConnectException())
+                }
             }
         }
     }
