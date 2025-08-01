@@ -11,7 +11,7 @@ sealed class Screen {
     data object OnBoarding : Screen()
 
     @Serializable
-    data object Login : Screen()
+    data object SignIn : Screen()
 
     @Serializable
     data object PasswordRecovery : Screen()
