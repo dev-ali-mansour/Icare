@@ -7,8 +7,8 @@ import com.google.android.gms.common.api.ApiException
 import eg.edu.cu.csds.icare.auth.R
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithEmailAndPassword
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithGoogle
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithGoogleUseCase
 import eg.edu.cu.csds.icare.core.domain.util.isValidEmail
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
@@ -28,8 +28,8 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 @KoinViewModel
 class SignInViewModel(
     private val dispatcher: CoroutineDispatcher,
-    private val signInWithEmailAndPassword: SignInWithEmailAndPassword,
-    private val signInWithGoogle: SignInWithGoogle,
+    private val signInUseCase: SignInUseCase,
+    private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
 ) : ViewModel() {
     private var loginJob: Job? = null
 
@@ -121,7 +121,7 @@ class SignInViewModel(
             _state.update {
                 it.copy(isLoading = true)
             }
-            signInWithEmailAndPassword(_state.value.email, _state.value.password)
+            signInUseCase(_state.value.email, _state.value.password)
                 .onEach { result ->
                     result
                         .onSuccess {
@@ -154,7 +154,7 @@ class SignInViewModel(
                     GoogleSignIn.getSignedInAccountFromIntent(_state.value.googleSignInIntent)
                 val account = task.getResult(ApiException::class.java)
                 account.idToken?.let { token ->
-                    signInWithGoogle(token)
+                    signInWithGoogleUseCase(token)
                         .onEach { result ->
                             result
                                 .onSuccess {

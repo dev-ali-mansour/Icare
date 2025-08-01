@@ -5,7 +5,7 @@ import eg.edu.cu.csds.icare.core.domain.model.Result
 import eg.edu.cu.csds.icare.core.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 
-class SignInWithEmailAndPassword(
+class SignInUseCase(
     private val repository: AuthRepository,
 ) {
     operator fun invoke(

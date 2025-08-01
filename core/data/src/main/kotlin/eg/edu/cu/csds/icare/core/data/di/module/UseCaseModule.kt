@@ -13,14 +13,14 @@ import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointments
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointmentsByStatus
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetPatientAppointments
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.UpdateAppointment
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.DeleteAccount
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfo
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkTokenAccount
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.Register
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.SendRecoveryMail
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithEmailAndPassword
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithGoogle
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOut
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.DeleteAccountUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfoUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkTokenAccountUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.SendRecoveryMailUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithGoogleUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOutUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignUpUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.center.AddNewCenter
 import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCenters
 import eg.edu.cu.csds.icare.core.domain.usecase.center.UpdateCenter
@@ -64,28 +64,28 @@ class UseCaseModule {
     fun provideSaveOnBoarding(appRepository: AppRepository) = SaveOnBoarding(appRepository)
 
     @Single
-    fun provideRegister(repository: AuthRepository) = Register(repository)
+    fun provideRegister(repository: AuthRepository) = SignUpUseCase(repository)
 
     @Single
-    fun provideSendRecoveryMail(repository: AuthRepository) = SendRecoveryMail(repository)
+    fun provideSendRecoveryMail(repository: AuthRepository) = SendRecoveryMailUseCase(repository)
 
     @Single
-    fun provideDeleteAccount(repository: AuthRepository) = DeleteAccount(repository)
+    fun provideDeleteAccount(repository: AuthRepository) = DeleteAccountUseCase(repository)
 
     @Single
-    fun provideGetUserInfo(repository: AuthRepository) = GetUserInfo(repository)
+    fun provideGetUserInfo(repository: AuthRepository) = GetUserInfoUseCase(repository)
 
     @Single
-    fun provideSignInWithEmailAndPassword(repository: AuthRepository) = SignInWithEmailAndPassword(repository)
+    fun provideSignInWithEmailAndPassword(repository: AuthRepository) = SignInUseCase(repository)
 
     @Single
-    fun provideSignInWithGoogle(repository: AuthRepository) = SignInWithGoogle(repository)
+    fun provideSignInWithGoogle(repository: AuthRepository) = SignInWithGoogleUseCase(repository)
 
     @Single
-    fun provideSignOut(repository: AuthRepository) = SignOut(repository)
+    fun provideSignOut(repository: AuthRepository) = SignOutUseCase(repository)
 
     @Single
-    fun provideLinkTokenAccount(repository: AuthRepository) = LinkTokenAccount(repository)
+    fun provideLinkTokenAccount(repository: AuthRepository) = LinkTokenAccountUseCase(repository)
 
     @Single
     fun provideListClinics(repository: ClinicsRepository) = ListClinics(repository)

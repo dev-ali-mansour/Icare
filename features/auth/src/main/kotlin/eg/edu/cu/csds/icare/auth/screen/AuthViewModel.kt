@@ -14,9 +14,9 @@ import com.google.firebase.auth.GoogleAuthProvider
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.Result
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkTokenAccountUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.Register
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SendRecoveryMailUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOutUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignUpUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +30,7 @@ import java.net.ConnectException
 @KoinViewModel
 class AuthViewModel(
     private val dispatcher: CoroutineDispatcher,
-    private val register: Register,
+    private val signUpUseCase: SignUpUseCase,
     private val sendRecoveryMailUseCase: SendRecoveryMailUseCase,
     private val linkTokenAccountUseCase: LinkTokenAccountUseCase,
     private val signOutUseCase: SignOutUseCase,
@@ -80,7 +80,7 @@ class AuthViewModel(
                 _registerResFlow.value = Resource.Unspecified()
                 delay(timeMillis = 100)
             }
-            register(
+            signUpUseCase(
                 firstName = firstNameState.value,
                 lastName = lastNameState.value,
                 email = emailState.value,
