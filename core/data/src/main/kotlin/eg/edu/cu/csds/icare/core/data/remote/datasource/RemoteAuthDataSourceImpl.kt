@@ -56,17 +56,17 @@ class RemoteAuthDataSourceImpl(
                                             emit(
                                                 Resource.Success(
                                                     data =
-                                                    res.user.copy(
-                                                        userId = uid,
-                                                        displayName = user.displayName.toString(),
-                                                        email = user.email.toString(),
-                                                        photoUrl = user.photoUrl.toString(),
-                                                        isEmailVerified = user.isEmailVerified,
-                                                        linkedWithGoogle =
-                                                        user.providerData.any {
-                                                            it.providerId == GoogleAuthProvider.PROVIDER_ID
-                                                        },
-                                                    ),
+                                                        res.user.copy(
+                                                            userId = uid,
+                                                            displayName = user.displayName.toString(),
+                                                            email = user.email.toString(),
+                                                            photoUrl = user.photoUrl.toString(),
+                                                            isEmailVerified = user.isEmailVerified,
+                                                            linkedWithGoogle =
+                                                                user.providerData.any {
+                                                                    it.providerId == GoogleAuthProvider.PROVIDER_ID
+                                                                },
+                                                        ),
                                                 ),
                                             )
 
