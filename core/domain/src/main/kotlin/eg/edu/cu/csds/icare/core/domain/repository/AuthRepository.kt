@@ -1,6 +1,7 @@
 package eg.edu.cu.csds.icare.core.domain.repository
 
-import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.model.DataError
+import eg.edu.cu.csds.icare.core.domain.model.Result
 import eg.edu.cu.csds.icare.core.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
@@ -20,30 +21,30 @@ interface AuthRepository {
         allergies: String,
         pastSurgeries: String,
         password: String,
-    ): Flow<Resource<Nothing?>>
+    ): Flow<Result<Unit, DataError.Remote>>
 
     fun signInWithEmailAndPassword(
         email: String,
         password: String,
-    ): Flow<Resource<Boolean>>
+    ): Flow<Result<Unit, DataError.Remote>>
 
-    fun signInWithGoogle(token: String): Flow<Resource<Boolean>>
+    fun signInWithGoogle(token: String): Flow<Result<Unit, DataError.Remote>>
 
-    fun sendRecoveryEmail(email: String): Flow<Resource<Nothing?>>
+    fun sendRecoveryEmail(email: String): Flow<Result<Unit, DataError.Remote>>
 
-    fun getUserInfo(forceUpdate: Boolean): Flow<Resource<User>>
+    fun getUserInfo(forceUpdate: Boolean): Flow<Result<User, DataError.Remote>>
 
     fun linkEmailAccount(
         email: String,
         password: String,
-    ): Flow<Resource<Nothing?>>
+    ): Flow<Result<Unit, DataError.Remote>>
 
     fun linkTokenAccount(
         providerId: String,
         token: String,
-    ): Flow<Resource<Nothing?>>
+    ): Flow<Result<Unit, DataError.Remote>>
 
-    fun signOut(): Flow<Resource<Nothing?>>
+    fun signOut(): Flow<Result<Unit, DataError>>
 
-    fun deleteAccount(): Flow<Resource<Nothing?>>
+    fun deleteAccount(): Flow<Result<Unit, DataError.Remote>>
 }
