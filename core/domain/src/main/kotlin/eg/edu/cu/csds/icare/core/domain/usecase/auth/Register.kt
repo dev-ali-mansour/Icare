@@ -1,6 +1,7 @@
 package eg.edu.cu.csds.icare.core.domain.usecase.auth
 
-import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.model.DataError
+import eg.edu.cu.csds.icare.core.domain.model.Result
 import eg.edu.cu.csds.icare.core.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 
@@ -22,7 +23,7 @@ class Register(
         allergies: String,
         pastSurgeries: String,
         password: String,
-    ): Flow<Resource<Nothing?>> =
+    ): Flow<Result<Unit, DataError.Remote>> =
         repository.register(
             firstName,
             lastName,
