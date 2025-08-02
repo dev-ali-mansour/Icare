@@ -89,6 +89,10 @@ subprojects {
         }.configureEach {
             finalizedBy(reportMerge)
         }
+
+        withType<Test>().configureEach {
+            jvmArgs("-XX:+EnableDynamicAgentLoading")
+        }
     }
 
     reportMerge {
