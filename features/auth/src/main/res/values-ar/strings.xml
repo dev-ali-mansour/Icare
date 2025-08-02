@@ -11,8 +11,8 @@
     <string name="gender_error">يرجى تحديد النوع بشكل صحيح.</string>
     <string name="phone_error">يرجى كتابة رقم الهاتف بشكل صحيح.</string>
     <string name="try_again">إعادة المحاولة</string>
-    <string name="login">تسجيل الدخول</string>
-    <string name="login_details">يرجى إدخال بيانات حسابك</string>
+    <string name="sign_in">تسجيل الدخول</string>
+    <string name="sign_in_details">يرجى إدخال بيانات حسابك</string>
     <string name="forgot_password">استرجاع كلمة المرور</string>
     <string name="reset">استرجاع</string>
     <string name="forgot_your_password">هل نسيت كلمة المرور؟</string>
@@ -24,7 +24,7 @@
     <string name="create_account">تسجيل حساب</string>
     <string name="complete_registration">استكمال التسجيل</string>
     <string name="register">تسجيل</string>
-    <string name="login_instead">لديك حساب بالفعل؟</string>
+    <string name="sign_in_instead">لديك حساب بالفعل؟</string>
     <string name="first_name">الاسم الأول</string>
     <string name="phone_number">رقم الموبايل</string>
     <string name="register_message">تم إنشاء حسابك بنجاح! برجاء مراجعة بريدك الإلكتروني لتأكيده وتفعيل حسابك.</string>
