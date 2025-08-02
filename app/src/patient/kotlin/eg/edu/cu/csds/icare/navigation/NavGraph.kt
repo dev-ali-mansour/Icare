@@ -87,7 +87,7 @@ fun SetupNavGraph(
                         }
                     },
                     navigateToLogin = {
-                        navController.navigate(Screen.Login) {
+                        navController.navigate(Screen.SignIn) {
                             popUpTo(navController.graph.id) { inclusive = true }
                         }
                     },
@@ -107,7 +107,7 @@ fun SetupNavGraph(
             }
 
             onBoardingRoute(onCompleted = {
-                navController.navigate(Screen.Login) {
+                navController.navigate(Screen.SignIn) {
                     popUpTo(navController.graph.id) { inclusive = true }
                 }
             })
@@ -117,9 +117,9 @@ fun SetupNavGraph(
                 mainViewModel = mainViewModel,
                 authViewModel = authViewModel,
                 onRecoveryClicked = { navController.navigate(Screen.PasswordRecovery) },
-                onCreateAccountClicked = { navController.navigate(Screen.Register) },
+                onCreateAccountClicked = { navController.navigate(Screen.SignUp) },
                 onLoginClicked = {
-                    navController.navigate(Screen.Login) {
+                    navController.navigate(Screen.SignIn) {
                         popUpTo(navController.graph.id) {
                             inclusive = true
                         }
@@ -131,14 +131,14 @@ fun SetupNavGraph(
                     context.startActivity(intent)
                 },
                 onRecoveryCompleted = {
-                    navController.navigate(Screen.Login) {
+                    navController.navigate(Screen.SignIn) {
                         popUpTo(navController.graph.id) {
                             inclusive = true
                         }
                     }
                 },
                 onRegisterCompleted = {
-                    navController.navigate(Screen.Login) {
+                    navController.navigate(Screen.SignIn) {
                         popUpTo(navController.graph.id) {
                             inclusive = true
                         }
@@ -257,7 +257,7 @@ private suspend fun handleError(
     when (error) {
         is UserNotAuthenticatedException -> {
             authViewModel.onLogOutClick()
-            navController.navigate(Screen.Login) {
+            navController.navigate(Screen.SignIn) {
                 popUpTo(navController.graph.id) { inclusive = true }
             }
         }

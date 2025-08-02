@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.auth.screen.register
+package eg.edu.cu.csds.icare.auth.screen.signup
 
 import android.content.Context
 import android.content.res.Configuration
@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.auth.R
+import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
 import eg.edu.cu.csds.icare.core.ui.common.GenderItem
 import eg.edu.cu.csds.icare.core.ui.theme.Blue200
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
@@ -78,13 +79,12 @@ import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
-import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
 import kotlinx.coroutines.launch
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun RegistrationContent(
+internal fun SignUpContent(
     firstName: String,
     lastName: String,
     email: String,
@@ -792,7 +792,7 @@ internal fun RegistrationContent(
                 Spacer(modifier = Modifier.height(L_PADDING))
 
                 Text(
-                    text = stringResource(R.string.login_instead),
+                    text = stringResource(R.string.sign_in_instead),
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
                     fontFamily = helveticaFamily,
                     color = textColor,
@@ -822,9 +822,9 @@ internal fun RegistrationContent(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
 @Composable
-internal fun RegistrationContentPreview() {
+internal fun SignUpContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
-        RegistrationContent(
+        SignUpContent(
             firstName = "",
             lastName = "",
             email = "",

@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.auth.screen.register
+package eg.edu.cu.csds.icare.auth.screen.signup
 
 import android.content.Context
 import androidx.compose.foundation.background
@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
-internal fun RegistrationScreen(
+internal fun SignUpScreen(
     firebaseAuth: FirebaseAuth,
     authViewModel: AuthViewModel,
     onLoginClicked: () -> Unit,
@@ -93,7 +93,7 @@ internal fun RegistrationScreen(
                     .padding(paddingValues),
             contentAlignment = Alignment.BottomCenter,
         ) {
-            RegistrationContent(
+            SignUpContent(
                 firstName = firstName,
                 lastName = lastName,
                 email = email,
@@ -158,7 +158,7 @@ internal fun RegistrationScreen(
                             }
 
                             nationalId.isBlank() || nationalId.length < Constants.NATIONAL_ID_LENGTH -> {
-                                alertMessage = context.getString(CoreR.string.national_id_error)
+                                alertMessage = context.getString(CoreR.string.error_national_id)
                                 showAlert = true
                                 delay(timeMillis = 3000)
                                 showAlert = false
