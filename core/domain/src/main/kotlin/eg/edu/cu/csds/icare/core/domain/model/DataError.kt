@@ -7,7 +7,7 @@ sealed interface DataError : Error {
         NO_INTERNET,
         SERVER,
         SERIALIZATION,
-        USER_NOT_AUTHENTICATED,
+        INVALID_CREDENTIALS,
         EMAIL_NOT_VERIFIED,
         ACCESS_TOKEN_EXPIRED,
         USER_NOT_AUTHORIZED,
