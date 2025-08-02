@@ -1,6 +1,9 @@
-package eg.edu.cu.csds.icare.auth.screen.login
+package eg.edu.cu.csds.icare.auth.screen.signin
 
+import android.content.Context
 import android.content.res.Configuration
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,16 +25,24 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,7 +55,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.auth.R
+import eg.edu.cu.csds.icare.auth.screen.SignInAction
+import eg.edu.cu.csds.icare.auth.screen.SignInUIState
+import eg.edu.cu.csds.icare.auth.screen.SignInViewModel
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
@@ -58,23 +73,90 @@ import eg.edu.cu.csds.icare.core.ui.theme.buttonBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
+import eg.edu.cu.csds.icare.core.ui.util.signInWithGoogle
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
+import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.SocialSignInButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
-internal fun LoginContent(
-    email: String,
-    password: String,
-    passwordVisibility: Boolean,
-    isLoading: Boolean,
-    onEmailChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
-    onPasswordVisibilityChanged: () -> Unit,
+internal fun SignInScreen(
+    viewModel: SignInViewModel = koinViewModel(),
     onRecoveryClicked: () -> Unit,
-    onLoginButtonClicked: () -> Unit,
-    onGoogleButtonClicked: () -> Unit,
-    onCreateAnAccountClicked: () -> Unit,
+    onLoginSuccess: () -> Unit,
+    onCreateAnAccountClicked: () -> Unit = {},
+    context: Context = LocalContext.current,
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val scope: CoroutineScope = rememberCoroutineScope()
+    var alertMessage by remember { mutableStateOf("") }
+    var showAlert by remember { mutableStateOf(false) }
+    val launcher =
+        rememberLauncherForActivityResult(StartActivityForResult()) {
+            viewModel.onAction(SignInAction.UpdateGoogleSignInIntent(it.data))
+            viewModel.onAction(SignInAction.SignInWithGoogle)
+        }
+
+    LaunchedEffect(state.signInSuccess) {
+        if (state.signInSuccess) {
+            onLoginSuccess()
+        }
+    }
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+    ) { paddingValues ->
+        Box(
+            modifier =
+                Modifier
+                    .background(color = backgroundColor)
+                    .fillMaxSize()
+                    .padding(paddingValues),
+            contentAlignment = Alignment.Center,
+        ) {
+            SignInContent(
+                state = state,
+                onAction = { action ->
+                    when (action) {
+                        is SignInAction.SignInWithGoogle ->
+                            context.signInWithGoogle(launcher = launcher)
+
+                        is SignInAction.ResetPassword -> {
+                            onRecoveryClicked()
+                        }
+
+                        is SignInAction.CreateAccount -> {
+                            onCreateAnAccountClicked()
+                        }
+
+                        else -> {
+                            viewModel.onAction(action = action)
+                        }
+                    }
+                },
+                onError = {
+                    alertMessage = it
+                    scope.launch {
+                        showAlert = true
+                        delay(timeMillis = 3000)
+                        showAlert = false
+                    }
+                },
+            )
+
+            if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
+        }
+    }
+}
+
+@Composable
+private fun SignInContent(
+    state: SignInUIState,
+    onAction: (SignInAction) -> Unit,
+    onError: (String) -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize(),
@@ -106,7 +188,7 @@ internal fun LoginContent(
             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                 val (txtLogin, image) = createRefs()
                 Text(
-                    text = stringResource(id = R.string.login),
+                    text = stringResource(id = R.string.sign_in),
                     modifier =
                         Modifier.constrainAs(txtLogin) {
                             top.linkTo(parent.top)
@@ -160,8 +242,8 @@ internal fun LoginContent(
                 ) {
                     Column {
                         TextField(
-                            value = email,
-                            onValueChange = { onEmailChanged(it) },
+                            value = state.email,
+                            onValueChange = { onAction(SignInAction.UpdateEmail(it)) },
                             label = {
                                 Text(
                                     text = stringResource(id = R.string.email),
@@ -197,8 +279,8 @@ internal fun LoginContent(
                                     .background(Color.LightGray),
                         )
                         TextField(
-                            value = password,
-                            onValueChange = { onPasswordChanged(it) },
+                            value = state.password,
+                            onValueChange = { onAction(SignInAction.UpdatePassword(it)) },
                             colors =
                                 TextFieldDefaults.colors(
                                     focusedContainerColor = Color.Transparent,
@@ -210,11 +292,11 @@ internal fun LoginContent(
                                     unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
                                 ),
                             trailingIcon = {
-                                IconButton(onClick = { onPasswordVisibilityChanged() }) {
+                                IconButton(onClick = { onAction(SignInAction.TogglePasswordVisibility) }) {
                                     Icon(
                                         painter = painterResource(R.drawable.ic_baseline_remove_red_eye_24),
                                         contentDescription = null,
-                                        tint = if (passwordVisibility) Blue500 else Color.Gray,
+                                        tint = if (state.isPasswordVisible) Blue500 else Color.Gray,
                                     )
                                 }
                             },
@@ -226,7 +308,12 @@ internal fun LoginContent(
                                 )
                             },
                             singleLine = true,
-                            visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                            visualTransformation =
+                                if (state.isPasswordVisible) {
+                                    VisualTransformation.None
+                                } else {
+                                    PasswordVisualTransformation()
+                                },
                             modifier = Modifier.fillMaxWidth(),
                             keyboardOptions =
                                 KeyboardOptions.Default.copy(
@@ -249,27 +336,16 @@ internal fun LoginContent(
                         Modifier
                             .fillMaxWidth()
                             .padding(horizontal = XL_PADDING)
-                            .clickable { onRecoveryClicked() },
+                            .clickable { onAction(SignInAction.ResetPassword) },
                 )
 
                 Spacer(modifier = Modifier.height(S_PADDING))
 
                 AnimatedButton(
                     modifier = Modifier.fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(id = R.string.login),
+                    text = stringResource(id = R.string.sign_in),
                     color = buttonBackgroundColor,
-                    onClick = { onLoginButtonClicked() },
-                )
-
-                Text(
-                    text = stringResource(id = R.string.do_not_have_account),
-                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                    fontFamily = helveticaFamily,
-                    color = textColor,
-                    modifier =
-                        Modifier
-                            .padding(L_PADDING)
-                            .clickable { onCreateAnAccountClicked() },
+                    onClick = { onAction(SignInAction.SubmitSignIn) },
                 )
 
                 Spacer(modifier = Modifier.height(S_PADDING))
@@ -283,7 +359,7 @@ internal fun LoginContent(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = L_PADDING),
+                            .padding(horizontal = XL_PADDING),
                 )
 
                 Row(
@@ -297,13 +373,21 @@ internal fun LoginContent(
                         modifier = Modifier.fillMaxWidth(fraction = 0.8f),
                         iconId = CoreR.drawable.ic_social_google,
                     ) {
-                        onGoogleButtonClicked()
+                        onAction(SignInAction.SignInWithGoogle)
                     }
                 }
+                Spacer(modifier = Modifier.height(S_PADDING))
             }
         }
 
-        if (isLoading) {
+        val errorMessage = state.errorMessage?.asString()
+        LaunchedEffect(errorMessage) {
+            errorMessage?.let { message ->
+                onError(message)
+            }
+        }
+
+        if (state.isLoading) {
             CircularProgressIndicator(
                 modifier =
                     Modifier.constrainAs(loading) {
@@ -322,20 +406,12 @@ internal fun LoginContent(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
 @Composable
-internal fun LoginContentPreview() {
+private fun SignInContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
-        LoginContent(
-            email = "",
-            password = "",
-            passwordVisibility = false,
-            isLoading = false,
-            onEmailChanged = {},
-            onPasswordChanged = {},
-            onPasswordVisibilityChanged = {},
-            onRecoveryClicked = {},
-            onLoginButtonClicked = {},
-            onGoogleButtonClicked = {},
-            onCreateAnAccountClicked = {},
+        SignInContent(
+            state = SignInUIState(),
+            onAction = {},
+            onError = {},
         )
     }
 }

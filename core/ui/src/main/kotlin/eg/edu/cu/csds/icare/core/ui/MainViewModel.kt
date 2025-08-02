@@ -4,8 +4,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.model.Result
 import eg.edu.cu.csds.icare.core.domain.model.User
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfo
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfoUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCenters
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinics
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctors
@@ -24,12 +25,13 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
+import java.net.ConnectException
 
 @KoinViewModel
 class MainViewModel(
     private val dispatcher: CoroutineDispatcher,
     private val readOnBoardingUseCase: ReadOnBoarding,
-    private val getUserInfoUseCase: GetUserInfo,
+    private val getUserInfoUseCase: GetUserInfoUseCase,
     private val listClinicsUseCase: ListClinics,
     private val listDoctorsUseCase: ListDoctors,
     private val listPharmaciesUseCase: ListPharmacies,
@@ -169,8 +171,17 @@ class MainViewModel(
         viewModelScope.launch(dispatcher) {
             getUserInfoUseCase(forceUpdate = true)
                 .distinctUntilChanged()
-                .onEach { _currentUserFlow.value = it }
-                .collect {}
+                .onEach {
+                    when (it) {
+                        is Result.Success -> {
+                            _currentUserFlow.value = Resource.Success(it.data)
+                        }
+
+                        is Result.Error -> {
+                            _currentUserFlow.value = Resource.Error(ConnectException())
+                        }
+                    }
+                }.collect {}
         }
     }
 }

@@ -31,12 +31,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import eg.edu.cu.csds.icare.core.data.BuildConfig
 import eg.edu.cu.csds.icare.core.domain.model.AccessTokenExpiredException
 import eg.edu.cu.csds.icare.core.domain.model.SettingsItem
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.ui.R
-import eg.edu.cu.csds.icare.core.data.BuildConfig
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -86,13 +86,13 @@ fun Context.getSettingsItems(): ArrayList<SettingsItem> =
 fun Context.getErrorMessage(error: Throwable?): String =
     when (error) {
         is SocketTimeoutException, is ConnectException, is UnknownHostException, is FirebaseNetworkException ->
-            getString(R.string.network_error)
+            getString(R.string.error_server)
 
         is UserNotAuthorizedException, is AccessTokenExpiredException ->
-            getString(R.string.authorization_error)
+            getString(R.string.error_user_not_authorized)
 
-        is FirebaseAuthUserCollisionException -> getString(R.string.user_collision_error)
-        is FirebaseAuthInvalidUserException -> getString(R.string.invalid_email_error)
+        is FirebaseAuthUserCollisionException -> getString(R.string.error_user_collision)
+        is FirebaseAuthInvalidUserException -> getString(R.string.error_invalid_email)
 //        is CustomerNotFoundException -> getString(R.string.customer_error)
 
         else -> error?.message.toString()
