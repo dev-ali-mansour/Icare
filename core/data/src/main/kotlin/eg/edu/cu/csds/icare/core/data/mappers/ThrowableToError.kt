@@ -19,7 +19,7 @@ fun Throwable.toRemoteError(): DataError.Remote =
             DataError.Remote.TOO_MANY_REQUESTS
 
         is FirebaseAuthInvalidCredentialsException, is FirebaseAuthInvalidUserException ->
-            DataError.Remote.USER_NOT_AUTHENTICATED
+            DataError.Remote.INVALID_CREDENTIALS
 
         is FirebaseAuthUserCollisionException -> DataError.Remote.FirebaseAuthUserCollision
         else -> DataError.Remote.UNKNOWN

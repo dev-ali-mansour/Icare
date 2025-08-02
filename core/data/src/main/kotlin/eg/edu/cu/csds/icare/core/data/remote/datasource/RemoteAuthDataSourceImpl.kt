@@ -84,7 +84,7 @@ class RemoteAuthDataSourceImpl(
 
                     else -> emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
                 }
-            } ?: run { emit(Result.Error(DataError.Remote.USER_NOT_AUTHENTICATED)) }
+            } ?: run { emit(Result.Error(DataError.Remote.INVALID_CREDENTIALS)) }
         }.catch {
             Timber.e("getUserInfo() Error ${it.javaClass.simpleName}: ${it.message}")
             emit(Result.Error(it.toRemoteError()))
@@ -209,7 +209,7 @@ class RemoteAuthDataSourceImpl(
                 currentUser.linkWithCredential(credential).await()
                 emit(Result.Success(Unit))
             } ?: run {
-                emit(Result.Error(DataError.Remote.USER_NOT_AUTHENTICATED))
+                emit(Result.Error(DataError.Remote.INVALID_CREDENTIALS))
             }
         }.catch {
             Timber.e("linkEmailAccount() Error ${it.javaClass.simpleName}: ${it.message}")
