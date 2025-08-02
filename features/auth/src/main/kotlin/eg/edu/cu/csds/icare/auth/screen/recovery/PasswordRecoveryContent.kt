@@ -191,7 +191,7 @@ internal fun PasswordRecoveryContent(
                             )
 
                             Text(
-                                text = stringResource(R.string.login),
+                                text = stringResource(R.string.sign_in),
                                 fontSize = MaterialTheme.typography.titleLarge.fontSize,
                                 fontFamily = helveticaFamily,
                                 color = textColor,

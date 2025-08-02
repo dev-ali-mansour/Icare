@@ -792,7 +792,7 @@ internal fun SignUpContent(
                 Spacer(modifier = Modifier.height(L_PADDING))
 
                 Text(
-                    text = stringResource(R.string.login_instead),
+                    text = stringResource(R.string.sign_in_instead),
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
                     fontFamily = helveticaFamily,
                     color = textColor,
