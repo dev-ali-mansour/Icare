@@ -14,8 +14,8 @@
     <string name="allergies_hint">If there is no allergies please enter "None"</string>
     <string name="past_surgeries_hint">If there is no past surgeries please enter "None"</string>
     <string name="try_again">Try again</string>
-    <string name="login">Login</string>
-    <string name="login_details">Enter your login details</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_in_details">Enter your sign in details</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="reset">Reset</string>
     <string name="forgot_your_password">Forgot your password?</string>
@@ -26,7 +26,7 @@
     <string name="create_account">Create Account</string>
     <string name="complete_registration">Complete Your Registration</string>
     <string name="register">Register</string>
-    <string name="login_instead">Login Instead?</string>
+    <string name="sign_in_instead">Sign in Instead?</string>
     <string name="sign_out">Sign out</string>
     <string name="first_name">First Name</string>
     <string name="phone_number">Phone Number</string>

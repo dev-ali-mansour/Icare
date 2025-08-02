@@ -5,17 +5,14 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.auth
 import eg.edu.cu.csds.icare.core.data.dto.UserDto
+import eg.edu.cu.csds.icare.core.data.mappers.toRemoteError
 import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
-import eg.edu.cu.csds.icare.core.domain.model.EmailVerificationException
-import eg.edu.cu.csds.icare.core.domain.model.InvalidUserIdentityException
-import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
-import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
+import eg.edu.cu.csds.icare.core.domain.model.DataError
+import eg.edu.cu.csds.icare.core.domain.model.Result
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -23,7 +20,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import org.koin.core.annotation.Single
 import timber.log.Timber
-import java.net.ConnectException
 import java.net.HttpURLConnection
 import java.net.HttpURLConnection.HTTP_OK
 
@@ -32,9 +28,8 @@ class RemoteAuthDataSourceImpl(
     private val auth: FirebaseAuth,
     private val service: ApiService,
 ) : RemoteAuthDataSource {
-    override fun getUserInfo(): Flow<Resource<UserDto>> =
+    override fun getUserInfo(): Flow<Result<UserDto, DataError.Remote>> =
         flow {
-            emit(Resource.Loading())
             auth.currentUser?.let { user ->
                 val token =
                     auth.currentUser
@@ -54,7 +49,7 @@ class RemoteAuthDataSourceImpl(
                                     when {
                                         res.user.isActive ->
                                             emit(
-                                                Resource.Success(
+                                                Result.Success(
                                                     data =
                                                         res.user.copy(
                                                             userId = uid,
@@ -71,30 +66,28 @@ class RemoteAuthDataSourceImpl(
                                             )
 
                                         else ->
-                                            emit(Resource.Error(UserNotAuthorizedException()))
+                                            emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
                                     }
 
-                                Constants.ERROR_CODE_USER_COLLISION,
-                                Constants.ERROR_CODE_INVALID_USER_IDENTITY,
-                                -> {
+                                Constants.ERROR_CODE_USER_COLLISION -> {
                                     user.delete()
-                                    emit(Resource.Error(UserNotAuthorizedException()))
+                                    emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
                                 }
 
                                 Constants.ERROR_CODE_SERVER_ERROR ->
-                                    emit(Resource.Error(ConnectException()))
+                                    emit(Result.Error(DataError.Remote.SERVER))
 
-                                else -> emit(Resource.Error(UserNotAuthorizedException()))
+                                else -> emit(Result.Error(DataError.Remote.UNKNOWN))
                             }
                         }
                     }
 
-                    else -> emit(Resource.Error(UserNotAuthorizedException()))
+                    else -> emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
                 }
-            } ?: run { emit(Resource.Error(UserNotAuthenticatedException())) }
+            } ?: run { emit(Result.Error(DataError.Remote.USER_NOT_AUTHENTICATED)) }
         }.catch {
             Timber.e("getUserInfo() Error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Resource.Error(it))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun register(
@@ -112,9 +105,8 @@ class RemoteAuthDataSourceImpl(
         allergies: String,
         pastSurgeries: String,
         password: String,
-    ): Flow<Resource<Nothing?>> =
+    ): Flow<Result<Unit, DataError.Remote>> =
         flow {
-            emit(Resource.Loading())
             val result = auth.createUserWithEmailAndPassword(email, password).await()
             result.user?.let { user ->
                 val profileUpdates =
@@ -145,7 +137,7 @@ class RemoteAuthDataSourceImpl(
                     pastSurgeries,
                     token,
                 ).collect { resource ->
-                    if (resource is Resource.Error) {
+                    if (resource is Result.Error) {
                         user.delete().await()
                     } else {
                         user.sendEmailVerification().await()
@@ -156,82 +148,83 @@ class RemoteAuthDataSourceImpl(
         }.catch {
             Timber.e("register() Error ${it.javaClass.simpleName}: ${it.message}")
             auth.currentUser?.delete()?.await()
-            emit(Resource.Error(it))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun signInWithEmailAndPassword(
         email: String,
         password: String,
-    ): Flow<Resource<Boolean>> =
+    ): Flow<Result<Unit, DataError.Remote>> =
         flow {
-            emit(Resource.Loading())
+            Timber.e("email: $email, password: $password")
             val result = auth.signInWithEmailAndPassword(email, password).await()
             result.user?.let {
                 it.reload()
                 if (it.isEmailVerified) {
-                    emit(Resource.Success(true))
+                    emit(Result.Success(Unit))
                 } else {
                     it.sendEmailVerification().await()
-                    emit(Resource.Error(EmailVerificationException()))
+                    emit(Result.Error(DataError.Remote.EMAIL_NOT_VERIFIED))
                 }
             }
         }.catch {
             Timber.e("signInWithEmailAndPassword() Error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Resource.Error(it))
+            Timber.e("signInWithEmailAndPassword() Error ${it.toRemoteError()}")
+            emit(Result.Error(it.toRemoteError()))
         }
 
-    override fun signInWithGoogle(token: String): Flow<Resource<Boolean>> =
+    override fun signInWithGoogle(token: String): Flow<Result<Unit, DataError.Remote>> =
         flow {
-            emit(Resource.Loading())
             val credential = GoogleAuthProvider.getCredential(token, null)
             val result = Firebase.auth.signInWithCredential(credential).await()
             result.user
                 ?.let {
-                    emit(Resource.Success(true))
+                    emit(Result.Success(Unit))
                 } ?: run {
-                emit(Resource.Error(UserNotAuthorizedException()))
+                emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
             }
         }.catch {
             Timber.e("signInWithToken() Error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Resource.Error(it))
+            emit(Result.Error(it.toRemoteError()))
         }
 
-    override fun sendRecoveryEmail(email: String): Flow<Resource<Nothing?>> =
+    override fun sendRecoveryEmail(email: String): Flow<Result<Unit, DataError.Remote>> =
         flow {
             runCatching {
-                emit(Resource.Loading())
                 auth.sendPasswordResetEmail(email).await()
-                emit(Resource.Success(null))
+                emit(Result.Success(Unit))
             }.onFailure {
                 Timber.e("sendRecoveryEmail() Error ${it.javaClass.simpleName}: ${it.message}")
-                emit(Resource.Error(it))
+                emit(Result.Error(it.toRemoteError()))
             }
         }
 
     override fun linkEmailAccount(
         email: String,
         password: String,
-    ): Flow<Resource<Nothing?>> =
+    ): Flow<Result<Unit, DataError.Remote>> =
         flow {
-            emit(Resource.Loading())
-            val credential = EmailAuthProvider.getCredential(email, password)
-            auth.currentUser?.linkWithCredential(credential)?.await()
-            emit(Resource.Success(null))
-        }.catch { emit(Resource.Error(it)) }
+            auth.currentUser?.let { currentUser ->
+                val credential = EmailAuthProvider.getCredential(email, password)
+                currentUser.linkWithCredential(credential).await()
+                emit(Result.Success(Unit))
+            } ?: run {
+                emit(Result.Error(DataError.Remote.USER_NOT_AUTHENTICATED))
+            }
+        }.catch {
+            Timber.e("linkEmailAccount() Error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Result.Error(it.toRemoteError()))
+        }
 
     override fun linkTokenAccount(
         providerId: String,
         token: String,
-    ): Flow<Resource<Nothing?>> =
+    ): Flow<Result<Unit, DataError.Remote>> =
         flow {
-            emit(Resource.Loading())
             val credential =
                 when (providerId) {
                     GoogleAuthProvider.PROVIDER_ID ->
-                        GoogleAuthProvider.getCredential(
-                            token,
-                            null,
-                        )
+                        GoogleAuthProvider.getCredential(token, null)
 
                     FacebookAuthProvider.PROVIDER_ID -> FacebookAuthProvider.getCredential(token)
                     else -> throw FirebaseAuthException("17016", "No such provider error")
@@ -248,21 +241,23 @@ class RemoteAuthDataSourceImpl(
                             .build()
                     currentUser.updateProfile(profileUpdates).await()
                 }
-                emit(Resource.Success(null))
+                emit(Result.Success(Unit))
             } ?: run {
-                emit(Resource.Error(UserNotAuthorizedException()))
+                emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
             }
-        }.catch { emit(Resource.Error(it)) }
+        }.catch {
+            Timber.e("linkTokenAccount() Error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Result.Error(it.toRemoteError()))
+        }
 
-    override fun deleteAccount(): Flow<Resource<Nothing?>> =
+    override fun deleteAccount(): Flow<Result<Unit, DataError.Remote>> =
         flow {
             runCatching {
-                emit(Resource.Loading())
                 auth.currentUser!!.delete().await()
-                emit(Resource.Success(null))
+                emit(Result.Success(Unit))
             }.onFailure {
                 Timber.e("deleteAccount() Error ${it.javaClass.simpleName}: ${it.message}")
-                emit(Resource.Error(it))
+                emit(Result.Error(it.toRemoteError()))
             }
         }
 
@@ -281,7 +276,7 @@ class RemoteAuthDataSourceImpl(
         allergies: String,
         pastSurgeries: String,
         token: String,
-    ): Flow<Resource<Nothing?>> =
+    ): Flow<Result<Unit, DataError.Remote>> =
         flow {
             val map = HashMap<String, String>()
             map["fName"] = firstName
@@ -303,28 +298,24 @@ class RemoteAuthDataSourceImpl(
                 HTTP_OK ->
                     response.body()?.let { res ->
                         when (res.statusCode) {
-                            Constants.ERROR_CODE_OK -> emit(Resource.Success(null))
+                            Constants.ERROR_CODE_OK -> emit(Result.Success(Unit))
                             Constants.ERROR_CODE_USER_COLLISION ->
-                                emit(Resource.Error(FirebaseAuthUserCollisionException("", "")))
-
-                            Constants.ERROR_CODE_INVALID_USER_IDENTITY ->
-                                emit(Resource.Error(InvalidUserIdentityException()))
+                                emit(Result.Error(DataError.Remote.FirebaseAuthUserCollision))
 
                             Constants.ERROR_CODE_EXPIRED_TOKEN ->
-                                emit(Resource.Error(UserNotAuthenticatedException()))
+                                emit(Result.Error(DataError.Remote.ACCESS_TOKEN_EXPIRED))
 
-                            else -> emit(Resource.Error(ConnectException()))
+                            else -> emit(Result.Error(DataError.Remote.UNKNOWN))
                         }
-                    } ?: run { emit(Resource.Error(ConnectException())) }
+                    } ?: run { emit(Result.Error(DataError.Remote.UNKNOWN)) }
 
                 HttpURLConnection.HTTP_UNAUTHORIZED ->
-                    emit(
-                        Resource.Error(
-                            UserNotAuthorizedException(),
-                        ),
-                    )
+                    emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
 
-                else -> emit(Resource.Error(ConnectException(response.code().toString())))
+                else -> emit(Result.Error(DataError.Remote.UNKNOWN))
             }
-        }.catch { emit(Resource.Error(it)) }
+        }.catch {
+            Timber.e("registerOnDB() Error ${it.javaClass.simpleName}: ${it.message}")
+            emit(Result.Error(it.toRemoteError()))
+        }
 }

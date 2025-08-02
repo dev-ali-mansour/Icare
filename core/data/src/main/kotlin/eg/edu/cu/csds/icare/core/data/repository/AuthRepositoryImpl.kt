@@ -5,9 +5,9 @@ import eg.edu.cu.csds.icare.core.data.local.datasource.LocalAuthDataSource
 import eg.edu.cu.csds.icare.core.data.mappers.toUser
 import eg.edu.cu.csds.icare.core.data.mappers.toUserEntity
 import eg.edu.cu.csds.icare.core.data.remote.datasource.RemoteAuthDataSource
-import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.model.DataError
+import eg.edu.cu.csds.icare.core.domain.model.Result
 import eg.edu.cu.csds.icare.core.domain.model.User
-import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
 import eg.edu.cu.csds.icare.core.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -35,7 +35,7 @@ class AuthRepositoryImpl(
         allergies: String,
         pastSurgeries: String,
         password: String,
-    ): Flow<Resource<Nothing?>> =
+    ): Flow<Result<Unit, DataError.Remote>> =
         remoteAuthDataSource.register(
             firstName,
             lastName,
@@ -56,91 +56,76 @@ class AuthRepositoryImpl(
     override fun signInWithEmailAndPassword(
         email: String,
         password: String,
-    ): Flow<Resource<Boolean>> =
-        remoteAuthDataSource.signInWithEmailAndPassword(email, password).map { res ->
-            when {
-                res is Resource.Success && res.data == true ->
-                    getUserInfo(true).collect {}
-
-                res is Resource.Error ->
-                    signOut().collect { }
+    ): Flow<Result<Unit, DataError.Remote>> =
+        remoteAuthDataSource.signInWithEmailAndPassword(email, password).map { result ->
+            when (result) {
+                is Result.Success -> getUserInfo(true).collect {}
+                is Result.Error -> signOut().collect { }
             }
-            res
+            result
         }
 
-    override fun signInWithGoogle(token: String): Flow<Resource<Boolean>> =
+    override fun signInWithGoogle(token: String): Flow<Result<Unit, DataError.Remote>> =
         flow {
-            remoteAuthDataSource.signInWithGoogle(token).collect { res ->
-                when {
-                    res is Resource.Success && res.data == true ->
-                        getUserInfo(true).collect { infoRes ->
-                            when (infoRes) {
-                                is Resource.Unspecified -> emit(Resource.Unspecified())
-                                is Resource.Loading -> emit(Resource.Loading())
-                                is Resource.Success -> emit(Resource.Success(true))
-                                is Resource.Error -> emit(Resource.Error(infoRes.error))
+            remoteAuthDataSource.signInWithGoogle(token).collect { result ->
+                when (result) {
+                    is Result.Success ->
+                        getUserInfo(true).collect { result ->
+                            when (result) {
+                                is Result.Success -> emit(Result.Success(Unit))
+                                is Result.Error -> emit(Result.Error(result.error))
                             }
                         }
 
-                    res is Resource.Error ->
+                    is Result.Error ->
                         signOut().collect { signOutRes ->
                             when (signOutRes) {
-                                is Resource.Unspecified -> emit(Resource.Unspecified())
-                                is Resource.Loading -> emit(Resource.Loading())
-                                is Resource.Success -> emit(Resource.Success(false))
-                                is Resource.Error -> emit(Resource.Error(signOutRes.error))
+                                is Result.Success -> emit(Result.Success(Unit))
+                                is Result.Error -> emit(Result.Error(signOutRes.error))
                             }
                         }
                 }
             }
         }
 
-    override fun sendRecoveryEmail(email: String): Flow<Resource<Nothing?>> =
-        remoteAuthDataSource.sendRecoveryEmail(
-            email,
-        )
+    override fun sendRecoveryEmail(email: String): Flow<Result<Unit, DataError.Remote>> = remoteAuthDataSource.sendRecoveryEmail(email)
 
-    override fun getUserInfo(forceUpdate: Boolean): Flow<Resource<User>> =
+    override fun getUserInfo(forceUpdate: Boolean): Flow<Result<User, DataError.Remote>> =
         flow {
             runCatching {
-                emit(Resource.Loading())
                 localAuthDataSource.getUser()?.let { userEntity ->
                     if (!forceUpdate) {
                         val currentUser = userEntity.toUser()
-                        emit(Resource.Success(currentUser))
+                        emit(Result.Success(currentUser))
                         return@flow
                     }
                 }
-                remoteAuthDataSource.getUserInfo().collect { res ->
-                    when (res) {
-                        is Resource.Unspecified -> emit(Resource.Unspecified())
-                        is Resource.Loading -> emit(Resource.Loading())
-                        is Resource.Success -> {
-                            res.data?.let { user ->
-                                localAuthDataSource.saveEmployee(entity = user.toUserEntity())
-                                emit(Resource.Success(data = user.toUser()))
-                            } ?: emit(Resource.Error(UserNotAuthorizedException()))
+                remoteAuthDataSource.getUserInfo().collect { result ->
+                    when (result) {
+                        is Result.Success -> {
+                            localAuthDataSource.saveEmployee(entity = result.data.toUserEntity())
+                            emit(Result.Success(data = result.data.toUser()))
                         }
 
-                        is Resource.Error -> emit(Resource.Error(res.error))
+                        is Result.Error -> emit(Result.Error(result.error))
                     }
                 }
-            }.onFailure { emit(Resource.Error(it)) }
+            }.onFailure { emit(Result.Error(DataError.Remote.UNKNOWN)) }
         }
 
     override fun linkEmailAccount(
         email: String,
         password: String,
-    ): Flow<Resource<Nothing?>> = remoteAuthDataSource.linkEmailAccount(email, password)
+    ): Flow<Result<Unit, DataError.Remote>> = remoteAuthDataSource.linkEmailAccount(email, password)
 
     override fun linkTokenAccount(
         providerId: String,
         token: String,
-    ): Flow<Resource<Nothing?>> =
+    ): Flow<Result<Unit, DataError.Remote>> =
         flow {
             remoteAuthDataSource.linkTokenAccount(providerId, token).collect { res ->
                 when (res) {
-                    is Resource.Success -> {
+                    is Result.Success -> {
                         localAuthDataSource.getUser()?.let { cachedUser ->
                             localAuthDataSource.saveEmployee(
                                 cachedUser.copy(
@@ -148,7 +133,7 @@ class AuthRepositoryImpl(
                                     photoUrl = auth.currentUser?.photoUrl.toString(),
                                 ),
                             )
-                            emit(Resource.Success(null))
+                            emit(Result.Success(Unit))
                         }
                     }
 
@@ -157,14 +142,14 @@ class AuthRepositoryImpl(
             }
         }
 
-    override fun deleteAccount(): Flow<Resource<Nothing?>> = remoteAuthDataSource.deleteAccount()
+    override fun deleteAccount(): Flow<Result<Unit, DataError.Remote>> = remoteAuthDataSource.deleteAccount()
 
-    override fun signOut(): Flow<Resource<Nothing?>> =
+    override fun signOut(): Flow<Result<Unit, DataError.Remote>> =
         flow {
             localAuthDataSource.clearEmployee()
             auth.signOut()
             if (auth.currentUser == null) {
-                emit(Resource.Success(data = null))
+                emit(Result.Success(Unit))
             }
         }
 }
