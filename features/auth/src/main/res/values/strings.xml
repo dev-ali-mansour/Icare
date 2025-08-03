@@ -24,7 +24,7 @@
     <string name="error_invalid_password">Your password should have at least 8 characters and include one digit, one lower case letter and one upper case letter.</string>
     <string name="create_account">Create Account</string>
     <string name="complete_registration">Complete Your Registration</string>
-    <string name="register">Register</string>
+    <string name="sign_up">Sign Up</string>
     <string name="sign_in_instead">Sign in Instead?</string>
     <string name="sign_out">Sign out</string>
     <string name="first_name">First Name</string>

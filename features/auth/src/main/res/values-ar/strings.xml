@@ -22,7 +22,7 @@
     <string name="sign_out">تسجيل الخروج</string>
     <string name="create_account">تسجيل حساب</string>
     <string name="complete_registration">استكمال التسجيل</string>
-    <string name="register">تسجيل</string>
+    <string name="sign_up">تسجيل</string>
     <string name="sign_in_instead">لديك حساب بالفعل؟</string>
     <string name="first_name">الاسم الأول</string>
     <string name="phone_number">رقم الموبايل</string>
