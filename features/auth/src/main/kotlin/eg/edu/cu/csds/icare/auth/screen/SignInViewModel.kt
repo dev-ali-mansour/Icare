@@ -44,35 +44,19 @@ class SignInViewModel(
     fun onAction(action: SignInAction) {
         when (action) {
             is SignInAction.UpdateGoogleSignInIntent -> {
-                _state.update {
-                    it.copy(
-                        googleSignInIntent = action.intent,
-                    )
-                }
+                _state.update { it.copy(googleSignInIntent = action.intent) }
             }
 
             is SignInAction.UpdateEmail -> {
-                _state.update {
-                    it.copy(
-                        email = action.email,
-                    )
-                }
+                _state.update { it.copy(email = action.email) }
             }
 
             is SignInAction.UpdatePassword -> {
-                _state.update {
-                    it.copy(
-                        password = action.password,
-                    )
-                }
+                _state.update { it.copy(password = action.password) }
             }
 
             is SignInAction.TogglePasswordVisibility -> {
-                _state.update {
-                    it.copy(
-                        isPasswordVisible = !it.isPasswordVisible,
-                    )
-                }
+                _state.update { it.copy(isPasswordVisible = !it.isPasswordVisible) }
             }
 
             is SignInAction.SignInWithGoogle -> {
