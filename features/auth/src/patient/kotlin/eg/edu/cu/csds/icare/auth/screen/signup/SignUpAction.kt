@@ -14,16 +14,14 @@ sealed interface SignUpAction {
     ) : SignUpAction
 
     data class UpdateBirthDate(
-        val birthDate: String,
+        val birthDate: Long,
     ) : SignUpAction
 
     data class UpdateGender(
         val gender: Short,
     ) : SignUpAction
 
-    data class UpdateIsGenderExpanded(
-        val isGenderExpanded: Boolean,
-    ) : SignUpAction
+    object ToggleGenderExpanded : SignUpAction
 
     data class UpdateNationalId(
         val nationalId: String,
@@ -62,6 +60,8 @@ sealed interface SignUpAction {
     ) : SignUpAction
 
     object TogglePasswordVisibility : SignUpAction
+
+    object SubmitSignUp : SignUpAction
 
     object NavigateToSignInScreen : SignUpAction
 }
