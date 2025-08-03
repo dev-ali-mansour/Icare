@@ -156,7 +156,6 @@ class RemoteAuthDataSourceImpl(
         password: String,
     ): Flow<Result<Unit, DataError.Remote>> =
         flow {
-            Timber.e("email: $email, password: $password")
             val result = auth.signInWithEmailAndPassword(email, password).await()
             result.user?.let {
                 it.reload()
