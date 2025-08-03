@@ -1,7 +1,6 @@
 *.iml
 .gradle
 /local.properties
-/dev_credentials.properties
 /debug.keystore
 /release-key.jks
 /.idea/caches
