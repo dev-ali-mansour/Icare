@@ -6,7 +6,21 @@ on:
       - main
 
 jobs:
+  restrict_pr_sources:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check source branch
+        id: source_check
+        run: |
+          echo "Source branch is: ${{ github.head_ref }}"
+          if [[ "${{ github.head_ref }}" != "develop" ]]; then
+            echo "::error::❌ PRs to main are only allowed from develop branch."
+            exit 1
+          else
+            echo "✅ Pull request source is valid."
+          fi
   run-tests:
+    needs: restrict_pr_sources
     runs-on: ubuntu-latest
 
     env:

@@ -1,5 +1,9 @@
 # ICare - Integrated Medical Services System
 
+# ICare App
+
+[![Run Tests](https://github.com/dev-ali-mansour/Icare/actions/workflows/pull_request.yml/badge.svg)](https://github.com/dev-ali-mansour/Icare/actions/workflows/pull_request.yml)
+
 **ICare** is a modular Android application built with **Jetpack Compose** and **Kotlin Multiplatform
 principles**, aimed at delivering an efficient, scalable, and user-friendly healthcare experience
 for patients, doctors, clinics, pharmacies, imaging/lab centers, and administrators.
