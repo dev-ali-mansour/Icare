@@ -90,5 +90,5 @@ dependencies {
     api(libs.koin.annotations)
     api(libs.coroutine.core)
 
-    testApi(libs.bundles.domain.test)
+    testImplementation(libs.bundles.domain.test)
 }
