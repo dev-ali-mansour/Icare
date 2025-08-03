@@ -21,7 +21,9 @@ sealed interface SignUpAction {
         val gender: Short,
     ) : SignUpAction
 
-    object ToggleGenderExpanded : SignUpAction
+    data class UpdateGenderExpanded(
+        val isExpanded: Boolean,
+    ) : SignUpAction
 
     data class UpdateNationalId(
         val nationalId: String,
