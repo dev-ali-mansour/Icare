@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
-import timber.log.Timber
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @KoinViewModel
@@ -31,64 +30,45 @@ class SignInViewModel(
     private val signInUseCase: SignInUseCase,
     private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
 ) : ViewModel() {
-    private var loginJob: Job? = null
+    private var signInJob: Job? = null
 
     private val _state = MutableStateFlow(SignInUIState())
     val state =
-        _state
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
-                _state.value,
-            )
+        _state.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
+            initialValue = _state.value,
+        )
 
     fun onAction(action: SignInAction) {
         when (action) {
             is SignInAction.UpdateGoogleSignInIntent -> {
-                _state.update {
-                    it.copy(
-                        googleSignInIntent = action.intent,
-                    )
-                }
+                _state.update { it.copy(googleSignInIntent = action.intent) }
             }
 
             is SignInAction.UpdateEmail -> {
-                _state.update {
-                    it.copy(
-                        email = action.email,
-                    )
-                }
+                _state.update { it.copy(email = action.email) }
             }
 
             is SignInAction.UpdatePassword -> {
-                _state.update {
-                    it.copy(
-                        password = action.password,
-                    )
-                }
+                _state.update { it.copy(password = action.password) }
             }
 
             is SignInAction.TogglePasswordVisibility -> {
-                _state.update {
-                    it.copy(
-                        isPasswordVisible = !it.isPasswordVisible,
-                    )
-                }
+                _state.update { it.copy(isPasswordVisible = !it.isPasswordVisible) }
             }
 
             is SignInAction.SignInWithGoogle -> {
-                loginJob?.cancel()
-                loginJob = onLoginWithGoogle()
+                signInJob?.cancel()
+                signInJob = onLoginWithGoogle()
             }
 
             is SignInAction.SubmitSignIn -> {
-                Timber.e("Call SubmitSignIn")
-
                 when {
                     !_state.value.email.isValidEmail -> {
                         _state.update {
                             it.copy(
-                                errorMessage = StringResourceId(R.string.email_error),
+                                errorMessage = StringResourceId(R.string.error_invalid_email),
                                 isLoading = false,
                             )
                         }
@@ -104,23 +84,20 @@ class SignInViewModel(
                     }
 
                     else -> {
-                        loginJob?.cancel()
-                        loginJob = onLogIn()
+                        signInJob?.cancel()
+                        signInJob = onLogIn()
                     }
                 }
             }
 
-            is SignInAction.ResetPassword -> Unit
-            is SignInAction.CreateAccount -> Unit
+            is SignInAction.NavigateToPasswordRecoveryScreen -> Unit
+            is SignInAction.NavigateToSignUpScreen -> Unit
         }
     }
 
     private fun onLogIn() =
         viewModelScope.launch(dispatcher) {
-            Timber.e("Call onLogin")
-            _state.update {
-                it.copy(isLoading = true)
-            }
+            _state.update { it.copy(isLoading = true) }
             signInUseCase(_state.value.email, _state.value.password)
                 .onEach { result ->
                     result
@@ -146,9 +123,7 @@ class SignInViewModel(
 
     private fun onLoginWithGoogle() =
         viewModelScope.launch(dispatcher) {
-            _state.update {
-                it.copy(isLoading = true)
-            }
+            _state.update { it.copy(isLoading = true) }
             runCatching {
                 val task =
                     GoogleSignIn.getSignedInAccountFromIntent(_state.value.googleSignInIntent)
@@ -181,7 +156,7 @@ class SignInViewModel(
                     it.copy(
                         isLoading = false,
                         signInSuccess = false,
-                        errorMessage = StringResourceId(CoreR.string.error_invalid_email),
+                        errorMessage = StringResourceId(CoreR.string.error_invalid_credentials),
                     )
                 }
             }

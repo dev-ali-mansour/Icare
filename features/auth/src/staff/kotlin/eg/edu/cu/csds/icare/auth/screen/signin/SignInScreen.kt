@@ -124,11 +124,11 @@ internal fun SignInScreen(
                         is SignInAction.SignInWithGoogle ->
                             context.signInWithGoogle(launcher = launcher)
 
-                        is SignInAction.ResetPassword -> {
+                        is SignInAction.NavigateToPasswordRecoveryScreen -> {
                             onRecoveryClicked()
                         }
 
-                        is SignInAction.CreateAccount -> {
+                        is SignInAction.NavigateToSignUpScreen -> {
                             onCreateAnAccountClicked()
                         }
 
@@ -336,7 +336,7 @@ private fun SignInContent(
                         Modifier
                             .fillMaxWidth()
                             .padding(horizontal = XL_PADDING)
-                            .clickable { onAction(SignInAction.ResetPassword) },
+                            .clickable { onAction(SignInAction.NavigateToPasswordRecoveryScreen) },
                 )
 
                 Spacer(modifier = Modifier.height(S_PADDING))

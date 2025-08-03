@@ -21,7 +21,7 @@ sealed interface SignInAction {
 
     object SubmitSignIn : SignInAction
 
-    object ResetPassword : SignInAction
+    object NavigateToPasswordRecoveryScreen : SignInAction
 
-    object CreateAccount : SignInAction
+    object NavigateToSignUpScreen : SignInAction
 }
