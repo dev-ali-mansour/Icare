@@ -61,6 +61,8 @@ sealed interface SignUpAction {
         val password: String,
     ) : SignUpAction
 
+    object ToggleShowAlert : SignUpAction
+
     object TogglePasswordVisibility : SignUpAction
 
     object SubmitSignUp : SignUpAction
