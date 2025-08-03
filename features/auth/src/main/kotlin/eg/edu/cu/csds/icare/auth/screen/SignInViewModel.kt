@@ -35,12 +35,11 @@ class SignInViewModel(
 
     private val _state = MutableStateFlow(SignInUIState())
     val state =
-        _state
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
-                _state.value,
-            )
+        _state.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
+            initialValue = _state.value,
+        )
 
     fun onAction(action: SignInAction) {
         when (action) {
