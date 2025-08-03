@@ -1,7 +1,6 @@
 package eg.edu.cu.csds.icare.auth.screen
 
 import android.content.Intent
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -16,7 +15,6 @@ import eg.edu.cu.csds.icare.core.domain.model.Result
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkTokenAccountUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SendRecoveryMailUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOutUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignUpUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,14 +28,10 @@ import java.net.ConnectException
 @KoinViewModel
 class AuthViewModel(
     private val dispatcher: CoroutineDispatcher,
-    private val signUpUseCase: SignUpUseCase,
     private val sendRecoveryMailUseCase: SendRecoveryMailUseCase,
     private val linkTokenAccountUseCase: LinkTokenAccountUseCase,
     private val signOutUseCase: SignOutUseCase,
 ) : ViewModel() {
-    private val _registerResFlow =
-        MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
-    val registerResFlow: StateFlow<Resource<Nothing?>> = _registerResFlow
     private val _recoveryResFlow =
         MutableStateFlow<Resource<Nothing?>>(Resource.Unspecified())
     val recoveryResFlow: StateFlow<Resource<Nothing?>> = _recoveryResFlow
@@ -48,15 +42,11 @@ class AuthViewModel(
     val logoutResFlow: StateFlow<Resource<Nothing?>> = _logoutResFlow
     private val _isLoading = mutableStateOf(false)
     var isLoading: State<Boolean> = _isLoading
-    private val _selectedGenderState: MutableState<Short> = mutableStateOf(0)
-    var selectedGenderState: State<Short> = _selectedGenderState
-    var gendersExpanded = mutableStateOf(false)
 
     var firstNameState = mutableStateOf("")
     var lastNameState = mutableStateOf("")
     var emailState = mutableStateOf("")
     var birthDateState = mutableLongStateOf(System.currentTimeMillis())
-    var genderState = mutableStateOf("")
         private set
     var nationalIdState = mutableStateOf("")
     var phoneState = mutableStateOf("")
@@ -67,42 +57,6 @@ class AuthViewModel(
     var allergiesState = mutableStateOf("")
     var pastSurgeriesState = mutableStateOf("")
     var passwordState = mutableStateOf("")
-    var passwordVisibility = mutableStateOf(false)
-
-    fun onGenderSelected(newValue: Short) {
-        _selectedGenderState.value = newValue
-        genderState.value = if (newValue.toInt() == 1) "M" else "F"
-    }
-
-    fun onRegisterClicked() {
-        viewModelScope.launch(dispatcher) {
-            if (_registerResFlow.value !is Resource.Unspecified) {
-                _registerResFlow.value = Resource.Unspecified()
-                delay(timeMillis = 100)
-            }
-            signUpUseCase(
-                firstName = firstNameState.value,
-                lastName = lastNameState.value,
-                email = emailState.value,
-                birthDate = birthDateState.longValue,
-                gender = genderState.value,
-                nationalId = nationalIdState.value,
-                phone = phoneState.value,
-                address = addressState.value,
-                weight = weightState.doubleValue,
-                chronicDiseases = chronicDiseasesState.value,
-                currentMedications = currentMedicationsState.value,
-                allergies = allergiesState.value,
-                pastSurgeries = pastSurgeriesState.value,
-                password = passwordState.value,
-            ).collectLatest {
-                when (it) {
-                    is Result.Success -> _registerResFlow.value = Resource.Success(null)
-                    is Result.Error -> _registerResFlow.value = Resource.Error(ConnectException())
-                }
-            }
-        }
-    }
 
     fun linkGoogleAccount(data: Intent?) {
         runCatching {
@@ -177,7 +131,6 @@ class AuthViewModel(
         lastNameState.value = ""
         emailState.value = ""
         birthDateState.longValue = 0
-        onGenderSelected(0)
         nationalIdState.value = ""
         phoneState.value = ""
         addressState.value = ""
