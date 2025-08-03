@@ -4,6 +4,5 @@ import androidx.annotation.StringRes
 
 data class GenderItem(
     val code: Short,
-    @StringRes
-    val textResId: Int,
+    @param:StringRes val textResId: Int,
 )
