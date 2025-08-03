@@ -97,9 +97,7 @@ class SignInViewModel(
 
     private fun onLogIn() =
         viewModelScope.launch(dispatcher) {
-            _state.update {
-                it.copy(isLoading = true)
-            }
+            _state.update { it.copy(isLoading = true) }
             signInUseCase(_state.value.email, _state.value.password)
                 .onEach { result ->
                     result
@@ -125,9 +123,7 @@ class SignInViewModel(
 
     private fun onLoginWithGoogle() =
         viewModelScope.launch(dispatcher) {
-            _state.update {
-                it.copy(isLoading = true)
-            }
+            _state.update { it.copy(isLoading = true) }
             runCatching {
                 val task =
                     GoogleSignIn.getSignedInAccountFromIntent(_state.value.googleSignInIntent)
