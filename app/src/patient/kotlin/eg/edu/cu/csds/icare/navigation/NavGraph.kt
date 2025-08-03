@@ -113,7 +113,6 @@ fun SetupNavGraph(
             })
 
             authenticationRoute(
-                firebaseAuth = firebaseAuth,
                 mainViewModel = mainViewModel,
                 authViewModel = authViewModel,
                 onRecoveryClicked = { navController.navigate(Screen.PasswordRecovery) },
