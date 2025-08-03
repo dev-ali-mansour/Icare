@@ -110,8 +110,8 @@ class SignInViewModel(
                 }
             }
 
-            is SignInAction.ResetPassword -> Unit
-            is SignInAction.CreateAccount -> Unit
+            is SignInAction.NavigateToPasswordRecoveryScreen -> Unit
+            is SignInAction.NavigateToSignUpScreen -> Unit
         }
     }
 
