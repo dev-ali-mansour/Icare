@@ -73,7 +73,7 @@ internal fun PasswordRecoveryScreen(
                     when {
                         !email.isValidEmail ->
                             scope.launch {
-                                onError(Throwable(context.getString(R.string.email_error)))
+                                onError(Throwable(context.getString(R.string.error_invalid_email)))
                             }
 
                         else -> authViewModel.onResetPasswordClicked()

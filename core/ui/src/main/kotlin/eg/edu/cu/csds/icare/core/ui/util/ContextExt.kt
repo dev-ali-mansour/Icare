@@ -92,7 +92,7 @@ fun Context.getErrorMessage(error: Throwable?): String =
             getString(R.string.error_user_not_authorized)
 
         is FirebaseAuthUserCollisionException -> getString(R.string.error_user_collision)
-        is FirebaseAuthInvalidUserException -> getString(R.string.error_invalid_email)
+        is FirebaseAuthInvalidUserException -> getString(R.string.error_invalid_credentials)
 //        is CustomerNotFoundException -> getString(R.string.customer_error)
 
         else -> error?.message.toString()

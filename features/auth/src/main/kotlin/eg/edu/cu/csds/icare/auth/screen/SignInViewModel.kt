@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
-import timber.log.Timber
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @KoinViewModel
@@ -65,13 +64,11 @@ class SignInViewModel(
             }
 
             is SignInAction.SubmitSignIn -> {
-                Timber.e("Call SubmitSignIn")
-
                 when {
                     !_state.value.email.isValidEmail -> {
                         _state.update {
                             it.copy(
-                                errorMessage = StringResourceId(R.string.email_error),
+                                errorMessage = StringResourceId(R.string.error_invalid_email),
                                 isLoading = false,
                             )
                         }
@@ -100,7 +97,6 @@ class SignInViewModel(
 
     private fun onLogIn() =
         viewModelScope.launch(dispatcher) {
-            Timber.e("Call onLogin")
             _state.update {
                 it.copy(isLoading = true)
             }
@@ -164,7 +160,7 @@ class SignInViewModel(
                     it.copy(
                         isLoading = false,
                         signInSuccess = false,
-                        errorMessage = StringResourceId(CoreR.string.error_invalid_email),
+                        errorMessage = StringResourceId(CoreR.string.error_invalid_credentials),
                     )
                 }
             }
