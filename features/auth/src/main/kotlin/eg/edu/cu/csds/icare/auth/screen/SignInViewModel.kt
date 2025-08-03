@@ -31,7 +31,7 @@ class SignInViewModel(
     private val signInUseCase: SignInUseCase,
     private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
 ) : ViewModel() {
-    private var loginJob: Job? = null
+    private var signInJob: Job? = null
 
     private val _state = MutableStateFlow(SignInUIState())
     val state =
@@ -77,8 +77,8 @@ class SignInViewModel(
             }
 
             is SignInAction.SignInWithGoogle -> {
-                loginJob?.cancel()
-                loginJob = onLoginWithGoogle()
+                signInJob?.cancel()
+                signInJob = onLoginWithGoogle()
             }
 
             is SignInAction.SubmitSignIn -> {
@@ -104,8 +104,8 @@ class SignInViewModel(
                     }
 
                     else -> {
-                        loginJob?.cancel()
-                        loginJob = onLogIn()
+                        signInJob?.cancel()
+                        signInJob = onLogIn()
                     }
                 }
             }
