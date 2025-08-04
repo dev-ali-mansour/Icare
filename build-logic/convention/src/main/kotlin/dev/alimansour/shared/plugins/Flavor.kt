@@ -33,10 +33,19 @@ enum class FlavorDimension {
 // These two product flavors reflect this behaviour.
 enum class Flavor(
     val dimension: FlavorDimension,
-    val suffix: String? = null,
+    val applicationIdSuffix: String? = null,
+    val versionNameSuffix: String? = null,
 ) {
-    Patient(FlavorDimension.App, suffix = ".patient"),
-    Staff(FlavorDimension.App, suffix = ".staff"),
+    Patient(
+        dimension = FlavorDimension.App,
+        applicationIdSuffix = ".patient",
+        versionNameSuffix = "-patient",
+    ),
+    Staff(
+        dimension = FlavorDimension.App,
+        applicationIdSuffix = ".staff",
+        versionNameSuffix = "-staff",
+    ),
 }
 
 fun configureFlavors(
@@ -49,14 +58,16 @@ fun configureFlavors(
         }
 
         productFlavors {
-            Flavor.values().forEach { niaFlavor ->
-                register(niaFlavor.name.lowercase()) {
-                    dimension = niaFlavor.dimension.name.lowercase()
-                    flavorConfigurationBlock(this, niaFlavor)
+            Flavor.values().forEach { flavor ->
+                register(flavor.name.lowercase()) {
+                    dimension = flavor.dimension.name.lowercase()
+                    flavorConfigurationBlock(this, flavor)
                     if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {
-                        if (niaFlavor.suffix != null) {
-                            applicationIdSuffix = niaFlavor.suffix
-                            versionNameSuffix = niaFlavor.suffix
+                        flavor.applicationIdSuffix?.let { suffix ->
+                            applicationIdSuffix = suffix
+                        }
+                        flavor.versionNameSuffix?.let { suffix ->
+                            versionNameSuffix = suffix
                         }
                     }
                 }
