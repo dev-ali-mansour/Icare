@@ -5,7 +5,7 @@ import eg.edu.cu.csds.icare.core.ui.R
 
 sealed class AppointmentStatus(
     val code: Short,
-    @StringRes
+    @param:StringRes
     val textResId: Int,
 ) {
     data object PendingStatus : AppointmentStatus(code = 1, textResId = R.string.pending)
