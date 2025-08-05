@@ -12,6 +12,7 @@
     <string name="current_medications_hint">If there is no current medications please enter "None"</string>
     <string name="allergies_hint">If there is no allergies please enter "None"</string>
     <string name="past_surgeries_hint">If there is no past surgeries please enter "None"</string>
+    <string name="current_medications">Current Medications</string>
     <string name="try_again">Try again</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_in_details">Enter your sign in details</string>

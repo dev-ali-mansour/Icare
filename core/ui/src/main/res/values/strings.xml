@@ -163,7 +163,6 @@ Objectives:\n
     <string name="weight">Weight</string>
     <string name="kgm">KGM</string>
     <string name="birth_date">Birth Date</string>
-    <string name="current_medications">Current Medications</string>
     <string name="allergies">Allergies</string>
     <string name="past_surgeries">Past Surgeries</string>
     <string name="chronic_diseases">Chronic Diseases</string>
