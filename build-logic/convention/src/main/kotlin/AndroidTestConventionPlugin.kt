@@ -18,6 +18,7 @@
  */
 
 import com.android.build.gradle.TestExtension
+import dev.alimansour.shared.plugins.TARGET_SDK_VERSION
 import dev.alimansour.shared.plugins.configureKotlinAndroid
 import dev.alimansour.shared.plugins.libs
 import org.gradle.api.Plugin
@@ -44,7 +45,7 @@ class AndroidTestConventionPlugin : Plugin<Project> {
 
             extensions.configure<TestExtension> {
                 configureKotlinAndroid(this)
-                defaultConfig.targetSdk = 36
+                defaultConfig.targetSdk = TARGET_SDK_VERSION
             }
         }
     }

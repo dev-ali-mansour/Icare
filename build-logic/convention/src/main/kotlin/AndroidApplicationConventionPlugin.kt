@@ -19,6 +19,7 @@
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.google.devtools.ksp.gradle.KspExtension
+import dev.alimansour.shared.plugins.TARGET_SDK_VERSION
 import dev.alimansour.shared.plugins.configureKotlinAndroid
 import dev.alimansour.shared.plugins.getSecret
 import dev.alimansour.shared.plugins.libs
@@ -80,12 +81,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
-                defaultConfig.targetSdk =
-                    libs
-                        .findVersion("targetSdk")
-                        .get()
-                        .requiredVersion
-                        .toInt()
+                defaultConfig.targetSdk = TARGET_SDK_VERSION
                 testOptions.animationsDisabled = true
                 signingConfigs {
                     create("release") {
