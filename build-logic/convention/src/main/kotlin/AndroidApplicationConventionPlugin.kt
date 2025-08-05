@@ -114,7 +114,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
             project.plugins.withId("com.google.devtools.ksp") {
                 project.extensions.configure<KspExtension> {
-                    arg("KOIN_DEFAULT_MODULE", "true")
                     arg("KOIN_CONFIG_CHECK", "true")
                 }
             }
