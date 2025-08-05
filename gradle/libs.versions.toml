@@ -196,6 +196,6 @@ convention-android-library-jacoco = { id = "convention.android.library.jacoco" }
 convention-android-lint = { id = "convention.android.lint" }
 convention-android-room = { id = "convention.android.room" }
 convention-android-test = { id = "convention.android.test" }
-convention-hilt = { id = "convention.hilt" }
+convention-koin = { id = "convention.koin" }
 convention-jvm-library = { id = "convention.jvm.library" }
 
