@@ -26,7 +26,6 @@ import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.Delete
-import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.invoke
@@ -65,20 +64,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             )
             pluginManager.apply(
                 libs
-                    .findPlugin("ktlint")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
-            pluginManager.apply(
-                libs
-                    .findPlugin("detekt")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
-            pluginManager.apply(
-                libs
                     .findPlugin("dependency-guard")
                     .get()
                     .get()
@@ -91,7 +76,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     .get()
                     .pluginId,
             )
-            apply(plugin = "convention.android.lint")
+            pluginManager.apply("convention.android.lint")
 
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)

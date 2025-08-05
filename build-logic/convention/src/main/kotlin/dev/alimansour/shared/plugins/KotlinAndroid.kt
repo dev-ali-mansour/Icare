@@ -36,6 +36,21 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
  */
 internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension<*, *, *, *, *, *>) {
     commonExtension.apply {
+        pluginManager.apply(
+            libs
+                .findPlugin("ktlint")
+                .get()
+                .get()
+                .pluginId,
+        )
+        pluginManager.apply(
+            libs
+                .findPlugin("detekt")
+                .get()
+                .get()
+                .pluginId,
+        )
+
         defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         compileSdk =
