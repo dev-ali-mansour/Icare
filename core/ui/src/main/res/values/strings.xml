@@ -166,6 +166,7 @@ Objectives:\n
     <string name="allergies">Allergies</string>
     <string name="past_surgeries">Past Surgeries</string>
     <string name="chronic_diseases">Chronic Diseases</string>
+    <string name="current_medications">Current Medications</string>
     <string name="view_medical_record">Click to view medical record</string>
     <string name="name">Name</string>
     <string name="speciality">Speciality</string>
