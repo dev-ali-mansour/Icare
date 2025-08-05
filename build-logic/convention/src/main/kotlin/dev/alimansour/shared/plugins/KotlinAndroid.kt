@@ -53,20 +53,10 @@ internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension<*, 
 
         defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        compileSdk =
-            libs
-                .findVersion("compileSdk")
-                .get()
-                .requiredVersion
-                .toInt()
+        compileSdk = COMPILE_SDK_VERSION
 
         defaultConfig {
-            minSdk =
-                libs
-                    .findVersion("minSdk")
-                    .get()
-                    .requiredVersion
-                    .toInt()
+            minSdk = MIN_SDK_VERSION
         }
 
         compileOptions {
