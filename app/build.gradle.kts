@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.convention.android.application.flavors)
     alias(libs.plugins.convention.android.application.jacoco)
     alias(libs.plugins.convention.android.application.firebase)
+    alias(libs.plugins.convention.koin)
 }
 
 android {

@@ -20,9 +20,11 @@
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import dev.alimansour.shared.plugins.configureJacoco
+import dev.alimansour.shared.plugins.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 
 class AndroidLibraryJacocoConventionPlugin : Plugin<Project> {
@@ -38,6 +40,14 @@ class AndroidLibraryJacocoConventionPlugin : Plugin<Project> {
             }
 
             configureJacoco(extensions.getByType<LibraryAndroidComponentsExtension>())
+
+            dependencies {
+                "testImplementation"(libs.findLibrary("junit").get())
+                "testImplementation"(libs.findLibrary("coroutines.test").get())
+                "testImplementation"(libs.findLibrary("truth").get())
+                "testImplementation"(libs.findLibrary("mockk").get())
+                "testImplementation"(libs.findLibrary("turbine").get())
+            }
         }
     }
 }

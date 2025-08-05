@@ -121,12 +121,12 @@ gradlePlugin {
                     .pluginId
             implementationClass = "AndroidTestConventionPlugin"
         }
-        register("hilt") {
+        register("koin") {
             id =
-                libs.plugins.convention.hilt
+                libs.plugins.convention.koin
                     .get()
                     .pluginId
-            implementationClass = "HiltConventionPlugin"
+            implementationClass = "KoinConventionPlugin"
         }
         register("androidRoom") {
             id =
