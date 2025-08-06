@@ -31,13 +31,7 @@ import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginE
  */
 internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*, *, *, *, *, *>) {
     commonExtension.apply {
-        pluginManager.apply(
-            libs
-                .findPlugin("kotlin-compose")
-                .get()
-                .get()
-                .pluginId,
-        )
+        pluginManager.apply(findPlugin("kotlin-compose"))
 
         buildFeatures {
             compose = true
@@ -49,11 +43,11 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
             "implementation"(libs.findBundle("compose").get())
             "implementation"(libs.findBundle("coil").get())
             "implementation"(libs.findBundle("appcompat").get())
-
-            "testImplementation"(libs.findBundle("app.test").get())
-            "androidTestImplementation"(platform(bom))
-            "androidTestImplementation"(libs.findLibrary("androidx.ui.test.manifest").get())
             "implementation"(libs.findLibrary("androidx-compose-ui-tooling-preview").get())
+
+            "testImplementation"(libs.findBundle("domain.test").get())
+            "androidTestImplementation"(platform(bom))
+            "androidTestImplementation"(libs.findBundle("app.test").get())
             "debugImplementation"(libs.findLibrary("androidx.compose.ui.tooling").get())
             "debugImplementation"(libs.findLibrary("androidx.ui.test.junit4").get())
         }
