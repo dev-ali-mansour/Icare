@@ -31,6 +31,14 @@ import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginE
  */
 internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*, *, *, *, *, *>) {
     commonExtension.apply {
+        pluginManager.apply(
+            libs
+                .findPlugin("kotlin-compose")
+                .get()
+                .get()
+                .pluginId,
+        )
+
         buildFeatures {
             compose = true
         }
@@ -38,9 +46,16 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
         dependencies {
             val bom = libs.findLibrary("androidx-compose-bom").get()
             "implementation"(platform(bom))
+            "implementation"(libs.findBundle("compose").get())
+            "implementation"(libs.findBundle("coil").get())
+            "implementation"(libs.findBundle("appcompat").get())
+
+            "testImplementation"(libs.findBundle("app.test").get())
             "androidTestImplementation"(platform(bom))
+            "androidTestImplementation"(libs.findLibrary("androidx.ui.test.manifest").get())
             "implementation"(libs.findLibrary("androidx-compose-ui-tooling-preview").get())
-            "debugImplementation"(libs.findLibrary("androidx-compose-ui-tooling").get())
+            "debugImplementation"(libs.findLibrary("androidx.compose.ui.tooling").get())
+            "debugImplementation"(libs.findLibrary("androidx.ui.test.junit4").get())
         }
 
         testOptions {
