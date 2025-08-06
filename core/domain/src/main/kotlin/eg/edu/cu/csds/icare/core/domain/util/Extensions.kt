@@ -1,9 +1,5 @@
 package eg.edu.cu.csds.icare.core.domain.util
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Base64
-import android.util.Patterns
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.TimeSlot
 import eg.edu.cu.csds.icare.core.domain.util.Constants.MAX_PARTS_LENGTH
@@ -18,22 +14,17 @@ import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
 private const val MIN_PASS_LENGTH = 8
+private const val EMAIL_PATTERN = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$"
 private const val PASS_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{4,}$"
 
 val String.isValidEmail: Boolean
-    get() = this.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(this).matches()
+    get() = this.isNotBlank() && Pattern.compile(EMAIL_PATTERN).matcher(this).matches()
 
 val String.isValidPassword: Boolean
     get() =
         this.isNotBlank() &&
             this.length >= MIN_PASS_LENGTH &&
             Pattern.compile(PASS_PATTERN).matcher(this).matches()
-
-fun String.toBitmap(): Bitmap? =
-    runCatching {
-        val decodedBytes: ByteArray = Base64.decode(this, Base64.DEFAULT)
-        BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-    }.getOrNull()
 
 fun String.hash(): String {
     val bytes = MessageDigest.getInstance("SHA-256").digest(this.toByteArray())
