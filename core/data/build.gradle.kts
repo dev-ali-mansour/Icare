@@ -15,7 +15,7 @@ android {
         buildConfigField(
             "String",
             "WEB_CLIENT_ID",
-            project.getSecret("WEB_CLIENT_ID"),
+            "\"${project.getSecret("WEB_CLIENT_ID")}\"",
         )
     }
 
@@ -31,7 +31,7 @@ android {
             buildConfigField(
                 "String",
                 "BASE_URL",
-                project.getSecret("RELEASE_BASE_URL"),
+                "\"${project.getSecret("RELEASE_BASE_URL")}\"",
             )
         }
 
@@ -42,7 +42,7 @@ android {
             buildConfigField(
                 "String",
                 "BASE_URL",
-                project.getSecret("DEBUG_BASE_URL"),
+                "\"${project.getSecret("DEBUG_BASE_URL")}\"",
             )
         }
     }
