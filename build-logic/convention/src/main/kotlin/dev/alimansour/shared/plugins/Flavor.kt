@@ -53,12 +53,12 @@ fun configureFlavors(
     flavorConfigurationBlock: ProductFlavor.(flavor: Flavor) -> Unit = {},
 ) {
     commonExtension.apply {
-        FlavorDimension.values().forEach { flavorDimension ->
+        FlavorDimension.entries.forEach { flavorDimension ->
             flavorDimensions += flavorDimension.name.lowercase()
         }
 
         productFlavors {
-            Flavor.values().forEach { flavor ->
+            Flavor.entries.forEach { flavor ->
                 register(flavor.name.lowercase()) {
                     dimension = flavor.dimension.name.lowercase()
                     flavorConfigurationBlock(this, flavor)
