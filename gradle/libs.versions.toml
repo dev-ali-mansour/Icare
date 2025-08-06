@@ -31,6 +31,8 @@ coroutine = "1.10.2"
 ktxSerialization = "1.9.0"
 firebaseBom = "34.0.0"
 firebaseCrashlyticsPlugin = "3.0.5"
+androidxCredentials = "1.3.0"
+googleid = "1.1.1"
 googleAuth = "21.4.0"
 timber = "5.0.1"
 retrofit = "3.0.0"
@@ -100,6 +102,9 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-performance = { group = "com.google.firebase", name = "firebase-perf" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "androidxCredentials" }
+credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "androidxCredentials" }
+identity-googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 
 # Retrofit
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
@@ -119,7 +124,6 @@ splashScreen = { module = "androidx.core:core-splashscreen", version.ref = "spla
 lint-api = { group = "com.android.tools.lint", name = "lint-api", version.ref = "androidTools" }
 lint-checks = { group = "com.android.tools.lint", name = "lint-checks", version.ref = "androidTools" }
 lint-tests = { group = "com.android.tools.lint", name = "lint-tests", version.ref = "androidTools" }
-google-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "googleAuth" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
 androidx-tracing-ktx = { group = "androidx.tracing", name = "tracing-ktx", version.ref = "androidxTracing" }
@@ -157,7 +161,7 @@ appcompat = ["appcompat", "appcompat-resources"]
 compose = ["androidx-activity-compose", "androidx-compose-foundation", "androidx-ui", "androidx-compose-ui-tooling", "androidx-compose-ui-tooling-preview", "androidx-ui-graphics", "compose-runtime", "compose-animation", "androidx-material3", "androidx-constraintlayout", "androidx-navigation"]
 koin-android = ["koin-androidx-compose", "koin-androidx-compose-navigation", "koin-androidx-workmanager"]
 coil = ["coil-compose", "coil-gif"]
-firebase = ["firebase-crashlytics", "firebase-messaging", "firebase-auth", "google-auth"]
+firebase = ["firebase-crashlytics", "firebase-messaging", "firebase-auth", "androidx-credentials", "credentials-play-services-auth", "identity-googleid"]
 lifecycle = ["androidx-lifecycle-runtimeCompose", "androidx-lifecycle-viewModelCompose"]
 retrofit = ["retrofit", "retrofit-converter", "retrofit-interceptor"]
 room = ["room", "room-ktx", "sqlcipher", "sqlite", "security-crypto-ktx"]
