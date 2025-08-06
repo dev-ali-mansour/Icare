@@ -18,31 +18,19 @@
  */
 
 import com.android.build.gradle.LibraryExtension
+import dev.alimansour.shared.plugins.findPlugin
 import dev.alimansour.shared.plugins.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
 class AndroidFeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply(
-                libs
-                    .findPlugin("android-library")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
-            pluginManager.apply(
-                libs
-                    .findPlugin("kotlin-serialization")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
-            apply(plugin = "convention.hilt")
+            pluginManager.apply(findPlugin("android-library"))
+            pluginManager.apply(findPlugin("kotlin-serialization"))
+            pluginManager.apply("convention.hilt")
 
             extensions.configure<LibraryExtension> {
                 testOptions.animationsDisabled = true

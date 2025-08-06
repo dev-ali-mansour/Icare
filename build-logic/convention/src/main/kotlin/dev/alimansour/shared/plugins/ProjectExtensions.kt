@@ -28,6 +28,13 @@ import java.util.Properties
 val Project.libs
     get(): VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
+fun Project.findPlugin(alias: String): String =
+    libs
+        .findPlugin(alias)
+        .get()
+        .get()
+        .pluginId
+
 fun Project.getSecret(key: String): String {
     val localProperties =
         Properties().apply {

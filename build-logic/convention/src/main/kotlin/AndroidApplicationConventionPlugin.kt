@@ -21,8 +21,8 @@ import com.android.build.api.dsl.ApplicationExtension
 import com.google.devtools.ksp.gradle.KspExtension
 import dev.alimansour.shared.plugins.TARGET_SDK_VERSION
 import dev.alimansour.shared.plugins.configureKotlinAndroid
+import dev.alimansour.shared.plugins.findPlugin
 import dev.alimansour.shared.plugins.getSecret
-import dev.alimansour.shared.plugins.libs
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -35,48 +35,12 @@ import java.io.File
 class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply(
-                libs
-                    .findPlugin("android-application")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
-            pluginManager.apply(
-                libs
-                    .findPlugin("kotlin-android")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
-            pluginManager.apply(
-                libs
-                    .findPlugin("gms")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
-            pluginManager.apply(
-                libs
-                    .findPlugin("ksp")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
-            pluginManager.apply(
-                libs
-                    .findPlugin("dependency-guard")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
-            pluginManager.apply(
-                libs
-                    .findPlugin("kotlin-serialization")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
+            pluginManager.apply(findPlugin("android-application"))
+            pluginManager.apply(findPlugin("kotlin-android"))
+            pluginManager.apply(findPlugin("gms"))
+            pluginManager.apply(findPlugin("ksp"))
+            pluginManager.apply(findPlugin("dependency-guard"))
+            pluginManager.apply(findPlugin("kotlin-serialization"))
             pluginManager.apply("convention.android.lint")
 
             extensions.configure<ApplicationExtension> {

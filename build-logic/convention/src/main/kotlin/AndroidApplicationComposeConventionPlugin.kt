@@ -19,7 +19,7 @@
 
 import com.android.build.api.dsl.ApplicationExtension
 import dev.alimansour.shared.plugins.configureAndroidCompose
-import dev.alimansour.shared.plugins.libs
+import dev.alimansour.shared.plugins.findPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType
@@ -27,13 +27,7 @@ import org.gradle.kotlin.dsl.getByType
 class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply(
-                libs
-                    .findPlugin("android-application")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
+            pluginManager.apply(findPlugin("android-application"))
 
             val extension = extensions.getByType<ApplicationExtension>()
             configureAndroidCompose(extension)
