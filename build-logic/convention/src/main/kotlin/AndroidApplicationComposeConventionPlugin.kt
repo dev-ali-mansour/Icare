@@ -34,13 +34,6 @@ class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
                     .get()
                     .pluginId,
             )
-            pluginManager.apply(
-                libs
-                    .findPlugin("compose")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
 
             val extension = extensions.getByType<ApplicationExtension>()
             configureAndroidCompose(extension)
