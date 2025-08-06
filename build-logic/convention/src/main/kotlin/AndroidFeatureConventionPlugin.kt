@@ -22,15 +22,16 @@ import dev.alimansour.shared.plugins.findPlugin
 import dev.alimansour.shared.plugins.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
 class AndroidFeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply(findPlugin("android-library"))
+            apply(plugin = "convention.android.library")
+            apply(plugin = "convention.koin")
             pluginManager.apply(findPlugin("kotlin-serialization"))
-            pluginManager.apply("convention.hilt")
 
             extensions.configure<LibraryExtension> {
                 testOptions.animationsDisabled = true
@@ -40,17 +41,20 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 "implementation"(project(":core:ui"))
                 // "implementation"(project(":core:designsystem"))
 
-                "implementation"(libs.findLibrary("androidx.hilt.navigation.compose").get())
-                "implementation"(libs.findLibrary("androidx.lifecycle.runtimeCompose").get())
-                "implementation"(libs.findLibrary("androidx.lifecycle.viewModelCompose").get())
-                "implementation"(libs.findLibrary("androidx.navigation.compose").get())
+                val bom = libs.findLibrary("androidx-compose-bom").get()
+                "implementation"(platform(bom))
+                "implementation"(libs.findBundle("compose").get())
+                "implementation"(libs.findBundle("coil").get())
+                "implementation"(libs.findBundle("appcompat").get())
                 "implementation"(libs.findLibrary("androidx.tracing.ktx").get())
                 "implementation"(libs.findLibrary("kotlinx.serialization.json").get())
+                "implementation"(libs.findLibrary("androidx-compose-ui-tooling-preview").get())
 
-                "testImplementation"(libs.findLibrary("androidx.navigation.testing").get())
-                "androidTestImplementation"(
-                    libs.findLibrary("androidx.lifecycle.runtimeTesting").get(),
-                )
+                "testImplementation"(libs.findBundle("domain.test").get())
+                "androidTestImplementation"(platform(bom))
+                "androidTestImplementation"(libs.findBundle("app.test").get())
+                "debugImplementation"(libs.findLibrary("androidx.compose.ui.tooling").get())
+                "debugImplementation"(libs.findLibrary("androidx.ui.test.junit4").get())
             }
         }
     }
