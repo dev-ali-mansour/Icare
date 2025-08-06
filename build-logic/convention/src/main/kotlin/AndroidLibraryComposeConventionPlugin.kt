@@ -34,13 +34,6 @@ class AndroidLibraryComposeConventionPlugin : Plugin<Project> {
                     .get()
                     .pluginId,
             )
-            pluginManager.apply(
-                libs
-                    .findPlugin("kotlin-compose")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
 
             val extension = extensions.getByType<LibraryExtension>()
             configureAndroidCompose(extension)
