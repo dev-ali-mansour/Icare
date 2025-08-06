@@ -1,6 +1,5 @@
 package eg.edu.cu.csds.icare.auth.screen
 
-import android.content.Intent
 import eg.edu.cu.csds.icare.core.ui.util.UiText
 
 data class SignInUIState(
@@ -9,6 +8,6 @@ data class SignInUIState(
     val email: String = "",
     val password: String = "",
     val isPasswordVisible: Boolean = false,
-    val googleSignInIntent: Intent? = null,
+    val googleSignInToken: String = "",
     val errorMessage: UiText? = null,
 )
