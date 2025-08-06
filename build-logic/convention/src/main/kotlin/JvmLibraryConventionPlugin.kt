@@ -32,6 +32,7 @@ class JvmLibraryConventionPlugin : Plugin<Project> {
 
             configureKotlinJvm()
             dependencies {
+                "implementation"(libs.findLibrary("coroutine.core").get())
                 "testImplementation"(libs.findBundle("domain.test").get())
             }
         }
