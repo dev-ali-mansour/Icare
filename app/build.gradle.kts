@@ -1,5 +1,4 @@
 import dev.alimansour.shared.plugins.BuildType
-import test.TestBuildConfig
 
 plugins {
     alias(libs.plugins.convention.android.application)
@@ -17,8 +16,6 @@ android {
         vectorDrawables.useSupportLibrary = true
         versionCode = project.findProperty("VERSION_CODE")?.toString()?.toInt() ?: 1
         versionName = project.findProperty("VERSION_NAME")?.toString() ?: "1.0.0"
-
-        testInstrumentationRunner = TestBuildConfig.TEST_INSTRUMENTATION_RUNNER
     }
 
     buildTypes {
@@ -59,17 +56,9 @@ dependencies {
     implementation(projects.features.notifications)
     implementation(projects.features.settings)
 
+    implementation(projects.core.domain)
+    implementation(projects.core.data)
     implementation(projects.core.ui)
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.bundles.lifecycle)
-    implementation(libs.multidex)
-    implementation(libs.splashScreen)
-    implementation(libs.app.update)
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase)
-    implementation(libs.timber)
-    ksp(libs.koin.ksp.compiler)
 
     testImplementation(libs.bundles.app.test)
     debugImplementation(libs.androidx.compose.ui.tooling)
