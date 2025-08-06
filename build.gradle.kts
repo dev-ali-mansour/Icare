@@ -4,22 +4,11 @@ import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import org.jlleitschuh.gradle.ktlint.KtlintPlugin
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.kotlin.compose) apply false
-    alias(libs.plugins.kotlin.ksp) apply false
-    alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.google.services) apply false
-    alias(libs.plugins.ktlint) apply false
-    alias(libs.plugins.detekt) apply false
-}
-val reportMerge by tasks.registering(io.gitlab.arturbosch.detekt.report.ReportMergeTask::class) {
-    output = project.layout.buildDirectory.file("reports/detekt/merge.xml")
-}
-
 subprojects {
+    val reportMerge by tasks.registering(io.gitlab.arturbosch.detekt.report.ReportMergeTask::class) {
+        output = project.layout.buildDirectory.file("reports/detekt/merge.xml")
+    }
+
     apply<DetektPlugin>()
     apply<KtlintPlugin>()
 
@@ -98,4 +87,39 @@ subprojects {
     reportMerge {
         input.from(tasks.withType<Detekt>().map { it.xmlReportFile }) // or .sarifReportFile
     }
+}
+
+buildscript {
+    repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath(libs.google.oss.licenses.plugin) {
+            exclude(group = "com.google.protobuf")
+        }
+    }
+}
+
+plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.gms) apply false
+    alias(libs.plugins.dependency.guard) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.firebase.perf) apply false
+    alias(libs.plugins.secrets) apply false
+    alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.detekt) apply false
 }

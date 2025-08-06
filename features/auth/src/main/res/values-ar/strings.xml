@@ -33,7 +33,6 @@
     <string name="current_medications_hint">إذا لم تكن تتناول أدوية حالية اكتب لا يوجد</string>
     <string name="allergies_hint">إذا لم تكن لديك أي نوع حساسية اكتب لا يوجد</string>
     <string name="past_surgeries_hint">إذا لم تكن قد خضعت لأي عمليات جراحية اكتب لا يوجد</string>
-    <string name="current_medications">الأدوية الحالية</string>
     <string name="error_blank_chronic_diseases">يرجى إدخال الأمراض المزمنة أو اكتب \"لايوجد\".</string>
     <string name="error_blank_current_medications">يرجى إدخال الأدوية الحالية أو اكتب \"لايوجد\".</string>
     <string name="error_blank_allergies">يرجى إدخال الحساسية أو اكتب \"لايوجد\".</string>
