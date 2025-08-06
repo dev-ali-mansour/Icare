@@ -36,6 +36,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
  */
 internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension<*, *, *, *, *, *>) {
     commonExtension.apply {
+        pluginManager.apply(findPlugin("kotlin-serialization"))
         pluginManager.apply(findPlugin("ktlint"))
         pluginManager.apply(findPlugin("detekt"))
 
@@ -59,7 +60,9 @@ internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension<*, 
     configureKotlin<KotlinAndroidProjectExtension>()
 
     dependencies {
+        "implementation"(libs.findLibrary("coroutine.core").get())
         "implementation"(libs.findLibrary("timber").get())
+        "implementation"(libs.findLibrary("kotlinx.serialization.json").get())
         "coreLibraryDesugaring"(libs.findLibrary("android.desugarJdkLibs").get())
     }
 }
