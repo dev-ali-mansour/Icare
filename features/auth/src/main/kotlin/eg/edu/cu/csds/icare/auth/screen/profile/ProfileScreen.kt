@@ -1,11 +1,6 @@
 package eg.edu.cu.csds.icare.auth.screen.profile
 
 import android.content.Context
-import android.content.Intent
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,22 +17,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.auth
 import eg.edu.cu.csds.icare.auth.screen.AuthViewModel
-import eg.edu.cu.csds.icare.core.data.BuildConfig
+import eg.edu.cu.csds.icare.auth.util.handleSignIn
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import timber.log.Timber
 import kotlin.system.exitProcess
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
@@ -54,10 +50,8 @@ internal fun ProfileScreen(
     val isLoading by authViewModel.isLoading
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val launcher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            authViewModel.linkGoogleAccount(it.data)
-        }
+    val request: GetCredentialRequest = koinInject()
+    val credentialManager: CredentialManager = koinInject()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -79,7 +73,22 @@ internal fun ProfileScreen(
                             mainViewModel.getUserInfo()
                         }
                     } else {
-                        onGoogleClicked(context, launcher)
+                        scope.launch {
+                            runCatching {
+                                val result =
+                                    credentialManager.getCredential(
+                                        request = request,
+                                        context = context,
+                                    )
+                                handleSignIn(result, onSuccess = { token ->
+                                    authViewModel.linkGoogleAccount(token)
+                                }, onError = { error ->
+                                    Timber.e("Google Sign-In failed: $error")
+                                })
+                            }.onFailure { error ->
+                                Timber.e(error.toString())
+                            }
+                        }
                     }
                 },
                 onLogoutClicked = { authViewModel.onLogOutClick() },
@@ -132,21 +141,6 @@ private fun HandleLinkResult(
             }
         }
     }
-}
-
-private fun onGoogleClicked(
-    context: Context,
-    launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
-) {
-    val gso =
-        GoogleSignInOptions
-            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(BuildConfig.WEB_CLIENT_ID)
-            .requestEmail()
-            .build()
-    val googleSignInClient = GoogleSignIn.getClient(context, gso)
-    googleSignInClient.revokeAccess()
-    launcher.launch(googleSignInClient.signInIntent)
 }
 
 private fun unLinkGoogleAccount(

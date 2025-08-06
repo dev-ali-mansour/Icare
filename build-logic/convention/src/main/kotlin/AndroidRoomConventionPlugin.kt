@@ -48,7 +48,6 @@ class AndroidRoomConventionPlugin : Plugin<Project> {
                 "ksp"(libs.findLibrary("room.compiler").get())
 
                 "testImplementation"(libs.findBundle("data.test").get())
-                "testImplementation"(libs.findLibrary("room.testing").get())
                 "androidTestImplementation"(libs.findLibrary("androidx.test.ext").get())
             }
         }
