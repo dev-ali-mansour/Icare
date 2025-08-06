@@ -2,8 +2,6 @@ package eg.edu.cu.csds.icare.auth.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.common.api.ApiException
 import eg.edu.cu.csds.icare.auth.R
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
@@ -42,8 +40,8 @@ class SignInViewModel(
 
     fun onAction(action: SignInAction) {
         when (action) {
-            is SignInAction.UpdateGoogleSignInIntent -> {
-                _state.update { it.copy(googleSignInIntent = action.intent) }
+            is SignInAction.UpdateGoogleSignInToken -> {
+                _state.update { it.copy(googleSignInToken = action.token) }
             }
 
             is SignInAction.UpdateEmail -> {
@@ -125,32 +123,27 @@ class SignInViewModel(
         viewModelScope.launch(dispatcher) {
             _state.update { it.copy(isLoading = true) }
             runCatching {
-                val task =
-                    GoogleSignIn.getSignedInAccountFromIntent(_state.value.googleSignInIntent)
-                val account = task.getResult(ApiException::class.java)
-                account.idToken?.let { token ->
-                    signInWithGoogleUseCase(token)
-                        .onEach { result ->
-                            result
-                                .onSuccess {
-                                    _state.update {
-                                        it.copy(
-                                            isLoading = false,
-                                            signInSuccess = true,
-                                            errorMessage = null,
-                                        )
-                                    }
-                                }.onError { error ->
-                                    _state.update {
-                                        it.copy(
-                                            isLoading = false,
-                                            signInSuccess = false,
-                                            errorMessage = error.toUiText(),
-                                        )
-                                    }
+                signInWithGoogleUseCase(_state.value.googleSignInToken)
+                    .onEach { result ->
+                        result
+                            .onSuccess {
+                                _state.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        signInSuccess = true,
+                                        errorMessage = null,
+                                    )
                                 }
-                        }.launchIn(viewModelScope)
-                }
+                            }.onError { error ->
+                                _state.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        signInSuccess = false,
+                                        errorMessage = error.toUiText(),
+                                    )
+                                }
+                            }
+                    }.launchIn(viewModelScope)
             }.onFailure {
                 _state.update {
                     it.copy(
