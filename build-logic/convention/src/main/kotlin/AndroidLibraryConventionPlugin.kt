@@ -23,32 +23,19 @@ import dev.alimansour.shared.plugins.TARGET_SDK_VERSION
 import dev.alimansour.shared.plugins.configureFlavors
 import dev.alimansour.shared.plugins.configureKotlinAndroid
 import dev.alimansour.shared.plugins.disableUnnecessaryAndroidTests
+import dev.alimansour.shared.plugins.findPlugin
 import dev.alimansour.shared.plugins.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply(
-                libs
-                    .findPlugin("android-library")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
-            pluginManager.apply(
-                libs
-                    .findPlugin("kotlin-android")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
-
-            apply(plugin = "convention.android.lint")
+            pluginManager.apply(findPlugin("android-library"))
+            pluginManager.apply(findPlugin("kotlin-android"))
+            pluginManager.apply("convention.android.lint")
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
@@ -70,7 +57,6 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 disableUnnecessaryAndroidTests(target)
             }
             dependencies {
-                "implementation"(libs.findLibrary("coroutine.core").get())
                 "implementation"(libs.findLibrary("androidx.tracing.ktx").get())
 
                 "testImplementation"(libs.findLibrary("kotlin.test").get())

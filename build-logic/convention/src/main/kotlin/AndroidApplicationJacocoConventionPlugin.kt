@@ -22,13 +22,12 @@ import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import dev.alimansour.shared.plugins.configureJacoco
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.getByType
 
 class AndroidApplicationJacocoConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            apply(plugin = "jacoco")
+            pluginManager.apply("jacoco")
 
             val androidExtension = extensions.getByType<ApplicationExtension>()
 

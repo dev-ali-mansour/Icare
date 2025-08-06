@@ -20,7 +20,7 @@
 import com.android.build.gradle.TestExtension
 import dev.alimansour.shared.plugins.TARGET_SDK_VERSION
 import dev.alimansour.shared.plugins.configureKotlinAndroid
-import dev.alimansour.shared.plugins.libs
+import dev.alimansour.shared.plugins.findPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -28,20 +28,8 @@ import org.gradle.kotlin.dsl.configure
 class AndroidTestConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply(
-                libs
-                    .findPlugin("android-test")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
-            pluginManager.apply(
-                libs
-                    .findPlugin("kotlin-android")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
+            pluginManager.apply(findPlugin("android-test"))
+            pluginManager.apply(findPlugin("kotlin-android"))
 
             extensions.configure<TestExtension> {
                 configureKotlinAndroid(this)

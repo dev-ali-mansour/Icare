@@ -18,27 +18,22 @@
  */
 
 import dev.alimansour.shared.plugins.configureKotlinJvm
+import dev.alimansour.shared.plugins.findPlugin
 import dev.alimansour.shared.plugins.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.dependencies
 
 class JvmLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply(
-                libs
-                    .findPlugin("kotlin-jvm")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
-            apply(plugin = "convention.android.lint")
+            pluginManager.apply(findPlugin("kotlin-jvm"))
+            pluginManager.apply("convention.android.lint")
 
             configureKotlinJvm()
             dependencies {
-                "testImplementation"(libs.findLibrary("kotlin.test").get())
+                "implementation"(libs.findLibrary("coroutine.core").get())
+                "testImplementation"(libs.findBundle("domain.test").get())
             }
         }
     }

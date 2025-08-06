@@ -36,20 +36,9 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
  */
 internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension<*, *, *, *, *, *>) {
     commonExtension.apply {
-        pluginManager.apply(
-            libs
-                .findPlugin("ktlint")
-                .get()
-                .get()
-                .pluginId,
-        )
-        pluginManager.apply(
-            libs
-                .findPlugin("detekt")
-                .get()
-                .get()
-                .pluginId,
-        )
+        pluginManager.apply(findPlugin("kotlin-serialization"))
+        pluginManager.apply(findPlugin("ktlint"))
+        pluginManager.apply(findPlugin("detekt"))
 
         defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -71,6 +60,9 @@ internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension<*, 
     configureKotlin<KotlinAndroidProjectExtension>()
 
     dependencies {
+        "implementation"(libs.findLibrary("coroutine.core").get())
+        "implementation"(libs.findLibrary("timber").get())
+        "implementation"(libs.findLibrary("kotlinx.serialization.json").get())
         "coreLibraryDesugaring"(libs.findLibrary("android.desugarJdkLibs").get())
     }
 }

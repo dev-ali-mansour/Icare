@@ -19,7 +19,7 @@
 
 import com.android.build.gradle.LibraryExtension
 import dev.alimansour.shared.plugins.configureAndroidCompose
-import dev.alimansour.shared.plugins.libs
+import dev.alimansour.shared.plugins.findPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType
@@ -27,20 +27,7 @@ import org.gradle.kotlin.dsl.getByType
 class AndroidLibraryComposeConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply(
-                libs
-                    .findPlugin("android-library")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
-            pluginManager.apply(
-                libs
-                    .findPlugin("kotlin-compose")
-                    .get()
-                    .get()
-                    .pluginId,
-            )
+            pluginManager.apply(findPlugin("android-library"))
 
             val extension = extensions.getByType<LibraryExtension>()
             configureAndroidCompose(extension)
