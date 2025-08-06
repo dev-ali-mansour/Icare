@@ -1,14 +1,11 @@
 package eg.edu.cu.csds.icare.auth.screen
 
-import android.content.Intent
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.Result
@@ -58,21 +55,17 @@ class AuthViewModel(
     var pastSurgeriesState = mutableStateOf("")
     var passwordState = mutableStateOf("")
 
-    fun linkGoogleAccount(data: Intent?) {
+    fun linkGoogleAccount(token: String) {
         runCatching {
             _isLoading.value = true
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            val account = task.getResult(ApiException::class.java)
             viewModelScope.launch(dispatcher) {
-                account.idToken?.let { token ->
-                    linkTokenAccountUseCase(GoogleAuthProvider.PROVIDER_ID, token).collectLatest {
-                        _isLoading.value = false
-                        when (it) {
-                            is Result.Success -> _linkResFlow.value = Resource.Success(null)
-                            is Result.Error ->
-                                _linkResFlow.value =
-                                    Resource.Error(ConnectException())
-                        }
+                linkTokenAccountUseCase(GoogleAuthProvider.PROVIDER_ID, token).collectLatest {
+                    _isLoading.value = false
+                    when (it) {
+                        is Result.Success -> _linkResFlow.value = Resource.Success(null)
+                        is Result.Error ->
+                            _linkResFlow.value =
+                                Resource.Error(ConnectException())
                     }
                 }
             }
