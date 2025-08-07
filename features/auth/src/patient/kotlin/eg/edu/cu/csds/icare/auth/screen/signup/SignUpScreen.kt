@@ -140,13 +140,13 @@ internal fun SignUpScreen(
         ) {
             SignUpContent(
                 state = state,
-                onAction = { action ->
-                    when (action) {
+                onIntent = { intent ->
+                    when (intent) {
                         is SignUpIntent.NavigateToSignInScreen -> {
                             navigateToScreen(Screen.SignIn)
                         }
 
-                        else -> viewModel.onAction(action)
+                        else -> viewModel.processIntent(intent)
                     }
                 },
                 context = context,
@@ -161,7 +161,7 @@ internal fun SignUpScreen(
 @Composable
 private fun SignUpContent(
     state: SignUpState,
-    onAction: (SignUpIntent) -> Unit,
+    onIntent: (SignUpIntent) -> Unit,
     context: Context = LocalContext.current,
 ) {
     val genders =
@@ -182,7 +182,7 @@ private fun SignUpContent(
                 TextButton(
                     onClick = {
                         datePickerState.selectedDateMillis?.let {
-                            onAction(SignUpIntent.UpdateBirthDate(it))
+                            onIntent(SignUpIntent.UpdateBirthDate(it))
                         }
                         showDatePicker = false
                     },
@@ -286,7 +286,7 @@ private fun SignUpContent(
             ) {
                 TextField(
                     value = state.firstName,
-                    onValueChange = { onAction(SignUpIntent.UpdateFirstName(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateFirstName(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.first_name),
@@ -319,7 +319,7 @@ private fun SignUpContent(
 
                 TextField(
                     value = state.lastName,
-                    onValueChange = { onAction(SignUpIntent.UpdateLastName(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateLastName(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.last_name),
@@ -351,7 +351,7 @@ private fun SignUpContent(
 
                 TextField(
                     value = state.email,
-                    onValueChange = { onAction(SignUpIntent.UpdateEmail(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateEmail(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.email),
@@ -431,7 +431,7 @@ private fun SignUpContent(
                 ExposedDropdownMenuBox(
                     modifier = Modifier.fillMaxWidth(fraction = 0.8f),
                     expanded = state.isGenderExpanded,
-                    onExpandedChange = { onAction(SignUpIntent.UpdateGenderExpanded(it)) },
+                    onExpandedChange = { onIntent(SignUpIntent.UpdateGenderExpanded(it)) },
                 ) {
                     OutlinedTextField(
                         modifier =
@@ -471,7 +471,7 @@ private fun SignUpContent(
                     ExposedDropdownMenu(
                         expanded = state.isGenderExpanded,
                         onDismissRequest = {
-                            onAction(SignUpIntent.UpdateGenderExpanded(false))
+                            onIntent(SignUpIntent.UpdateGenderExpanded(false))
                         },
                     ) {
                         genders.forEach {
@@ -483,8 +483,8 @@ private fun SignUpContent(
                                     )
                                 },
                                 onClick = {
-                                    onAction(SignUpIntent.UpdateGender(it.code))
-                                    onAction(SignUpIntent.UpdateGenderExpanded(false))
+                                    onIntent(SignUpIntent.UpdateGender(it.code))
+                                    onIntent(SignUpIntent.UpdateGenderExpanded(false))
                                 },
                             )
                         }
@@ -493,7 +493,7 @@ private fun SignUpContent(
 
                 TextField(
                     value = state.nationalId,
-                    onValueChange = { if (it.length < 15) onAction(SignUpIntent.UpdateNationalId(it)) },
+                    onValueChange = { if (it.length < 15) onIntent(SignUpIntent.UpdateNationalId(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.national_id),
@@ -524,7 +524,7 @@ private fun SignUpContent(
                 )
                 TextField(
                     value = state.phone,
-                    onValueChange = { if (it.length < 14) onAction(SignUpIntent.UpdatePhone(it)) },
+                    onValueChange = { if (it.length < 14) onIntent(SignUpIntent.UpdatePhone(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.phone_number),
@@ -556,7 +556,7 @@ private fun SignUpContent(
 
                 TextField(
                     value = state.address,
-                    onValueChange = { onAction(SignUpIntent.UpdateAddress(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateAddress(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.address),
@@ -590,7 +590,7 @@ private fun SignUpContent(
                     value = state.weight.toString(),
                     onValueChange = {
                         runCatching {
-                            onAction(SignUpIntent.UpdateWeight(if (it.isEmpty()) 0.0 else it.toDouble()))
+                            onIntent(SignUpIntent.UpdateWeight(if (it.isEmpty()) 0.0 else it.toDouble()))
                         }
                     },
                     label = {
@@ -625,7 +625,7 @@ private fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.chronicDiseases,
-                    onValueChange = { onAction(SignUpIntent.UpdateChronicDiseases(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateChronicDiseases(it)) },
                     label = {
                         Text(
                             text = stringResource(CoreR.string.chronic_diseases),
@@ -662,7 +662,7 @@ private fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.currentMedications,
-                    onValueChange = { onAction(SignUpIntent.UpdateCurrentMedications(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateCurrentMedications(it)) },
                     label = {
                         Text(
                             text = stringResource(CoreR.string.current_medications),
@@ -699,7 +699,7 @@ private fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.allergies,
-                    onValueChange = { onAction(SignUpIntent.UpdateAllergies(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateAllergies(it)) },
                     label = {
                         Text(
                             text = stringResource(CoreR.string.allergies),
@@ -736,7 +736,7 @@ private fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.pastSurgeries,
-                    onValueChange = { onAction(SignUpIntent.UpdatePastSurgeries(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdatePastSurgeries(it)) },
                     label = {
                         Text(
                             text = stringResource(CoreR.string.past_surgeries),
@@ -773,7 +773,7 @@ private fun SignUpContent(
 
                 TextField(
                     value = state.password,
-                    onValueChange = { onAction(SignUpIntent.UpdatePassword(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdatePassword(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.password),
@@ -797,7 +797,7 @@ private fun SignUpContent(
                         ),
                     trailingIcon = {
                         IconButton(
-                            onClick = { onAction(SignUpIntent.TogglePasswordVisibility) },
+                            onClick = { onIntent(SignUpIntent.TogglePasswordVisibility) },
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_baseline_remove_red_eye_24),
@@ -828,7 +828,7 @@ private fun SignUpContent(
                             .fillMaxWidth(fraction = 0.6f),
                     text = stringResource(R.string.sign_up),
                     color = buttonBackgroundColor,
-                    onClick = { onAction(SignUpIntent.SubmitSignUp) },
+                    onClick = { onIntent(SignUpIntent.SubmitSignUp) },
                 )
 
                 Spacer(modifier = Modifier.height(L_PADDING))
@@ -840,7 +840,7 @@ private fun SignUpContent(
                     color = textColor,
                     modifier =
                         Modifier
-                            .clickable { onAction(SignUpIntent.NavigateToSignInScreen) },
+                            .clickable { onIntent(SignUpIntent.NavigateToSignInScreen) },
                 )
             }
         }
@@ -868,7 +868,7 @@ private fun SignUpContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         SignUpContent(
             state = SignUpState(),
-            onAction = {},
+            onIntent = {},
         )
     }
 }

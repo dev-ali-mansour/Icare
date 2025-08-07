@@ -45,66 +45,66 @@ class SignUpViewModel(
     private val _singleEvent = MutableSharedFlow<SignUpSingleEvent>()
     val singleEvent = _singleEvent.asSharedFlow()
 
-    fun onAction(action: SignUpIntent) {
-        when (action) {
+    fun processIntent(intent: SignUpIntent) {
+        when (intent) {
             is SignUpIntent.UpdateFirstName -> {
-                _state.update { it.copy(firstName = action.firstName) }
+                _state.update { it.copy(firstName = intent.firstName) }
             }
 
             is SignUpIntent.UpdateLastName -> {
-                _state.value = _state.value.copy(lastName = action.lastName)
+                _state.value = _state.value.copy(lastName = intent.lastName)
             }
 
             is SignUpIntent.UpdateEmail -> {
-                _state.update { it.copy(email = action.email) }
+                _state.update { it.copy(email = intent.email) }
             }
 
             is SignUpIntent.UpdateBirthDate -> {
-                _state.update { _state.value.copy(birthDate = action.birthDate) }
+                _state.update { _state.value.copy(birthDate = intent.birthDate) }
             }
 
             is SignUpIntent.UpdateGender -> {
-                _state.update { it.copy(gender = action.gender) }
+                _state.update { it.copy(gender = intent.gender) }
             }
 
             is SignUpIntent.UpdateGenderExpanded -> {
-                _state.update { it.copy(isGenderExpanded = action.isExpanded) }
+                _state.update { it.copy(isGenderExpanded = intent.isExpanded) }
             }
 
             is SignUpIntent.UpdateNationalId -> {
-                _state.update { it.copy(nationalId = action.nationalId) }
+                _state.update { it.copy(nationalId = intent.nationalId) }
             }
 
             is SignUpIntent.UpdatePhone -> {
-                _state.update { it.copy(phone = action.phone) }
+                _state.update { it.copy(phone = intent.phone) }
             }
 
             is SignUpIntent.UpdateAddress -> {
-                _state.update { it.copy(address = action.address) }
+                _state.update { it.copy(address = intent.address) }
             }
 
             is SignUpIntent.UpdateWeight -> {
-                _state.update { it.copy(weight = action.weight) }
+                _state.update { it.copy(weight = intent.weight) }
             }
 
             is SignUpIntent.UpdateChronicDiseases -> {
-                _state.update { it.copy(chronicDiseases = action.chronicDiseases) }
+                _state.update { it.copy(chronicDiseases = intent.chronicDiseases) }
             }
 
             is SignUpIntent.UpdateCurrentMedications -> {
-                _state.update { it.copy(currentMedications = action.currentMedications) }
+                _state.update { it.copy(currentMedications = intent.currentMedications) }
             }
 
             is SignUpIntent.UpdateAllergies -> {
-                _state.update { it.copy(allergies = action.allergies) }
+                _state.update { it.copy(allergies = intent.allergies) }
             }
 
             is SignUpIntent.UpdatePastSurgeries -> {
-                _state.update { it.copy(pastSurgeries = action.pastSurgeries) }
+                _state.update { it.copy(pastSurgeries = intent.pastSurgeries) }
             }
 
             is SignUpIntent.UpdatePassword -> {
-                _state.update { it.copy(password = action.password) }
+                _state.update { it.copy(password = intent.password) }
             }
 
             is SignUpIntent.ToggleShowAlert -> {
@@ -210,7 +210,7 @@ class SignUpViewModel(
 
                         else -> {
                             signUpJob?.cancel()
-                            signUpJob = onSignUp()
+                            signUpJob = launchSignUp()
                         }
                     }
                 }
@@ -219,7 +219,7 @@ class SignUpViewModel(
         }
     }
 
-    private fun onSignUp() =
+    private fun launchSignUp() =
         viewModelScope.launch(dispatcher) {
             _state.update { it.copy(isLoading = true) }
             signUpUseCase(
