@@ -38,7 +38,7 @@ class PasswordRecoveryViewModel(
     private val _singleEvent = MutableSharedFlow<PasswordRecoverySingleEvent>()
     val singleEvent = _singleEvent.asSharedFlow()
 
-    fun onAction(intent: PasswordRecoveryIntent) {
+    fun processIntent(intent: PasswordRecoveryIntent) {
         when (intent) {
             is PasswordRecoveryIntent.UpdateEmail -> {
                 _state.update { it.copy(email = intent.email) }
