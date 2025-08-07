@@ -112,7 +112,7 @@ internal fun PasswordRecoveryScreen(
         ) {
             PasswordRecoveryContent(
                 state = state,
-                onAction = { intent ->
+                onIntent = { intent ->
                     when (intent) {
                         is PasswordRecoveryIntent.NavigateToSignInScreen -> onSignInClicked()
                         else -> viewModel.processIntent(intent)
@@ -128,7 +128,7 @@ internal fun PasswordRecoveryScreen(
 @Composable
 private fun PasswordRecoveryContent(
     state: PasswordRecoveryState,
-    onAction: (PasswordRecoveryIntent) -> Unit,
+    onIntent: (PasswordRecoveryIntent) -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize(),
@@ -216,7 +216,7 @@ private fun PasswordRecoveryContent(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             TextField(
                                 value = state.email,
-                                onValueChange = { onAction(PasswordRecoveryIntent.UpdateEmail(it)) },
+                                onValueChange = { onIntent(PasswordRecoveryIntent.UpdateEmail(it)) },
                                 label = {
                                     Text(
                                         text = stringResource(id = R.string.email),
@@ -251,7 +251,7 @@ private fun PasswordRecoveryContent(
                                         .fillMaxWidth(fraction = 0.8f),
                                 text = stringResource(id = R.string.reset),
                                 color = buttonBackgroundColor,
-                                onClick = { onAction(PasswordRecoveryIntent.SubmitRecovery) },
+                                onClick = { onIntent(PasswordRecoveryIntent.SubmitRecovery) },
                             )
 
                             Text(
@@ -262,7 +262,7 @@ private fun PasswordRecoveryContent(
                                 modifier =
                                     Modifier
                                         .padding(L_PADDING)
-                                        .clickable { onAction(PasswordRecoveryIntent.NavigateToSignInScreen) },
+                                        .clickable { onIntent(PasswordRecoveryIntent.NavigateToSignInScreen) },
                             )
                         }
                     }
@@ -293,7 +293,7 @@ private fun PasswordRecoveryContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         PasswordRecoveryContent(
             state = PasswordRecoveryState(),
-            onAction = {},
+            onIntent = {},
         )
     }
 }
