@@ -159,7 +159,7 @@ internal fun SignUpScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun SignUpContent(
+private fun SignUpContent(
     state: SignUpState,
     onAction: (SignUpIntent) -> Unit,
     context: Context = LocalContext.current,
@@ -864,7 +864,7 @@ internal fun SignUpContent(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
 @Composable
-internal fun SignUpContentPreview() {
+private fun SignUpContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         SignUpContent(
             state = SignUpState(),
