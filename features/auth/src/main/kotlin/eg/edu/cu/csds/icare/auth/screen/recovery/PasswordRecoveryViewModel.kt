@@ -62,7 +62,7 @@ class PasswordRecoveryViewModel(
 
                         else -> {
                             sendRecoveryMailJob?.cancel()
-                            sendRecoveryMailJob = onSendRecoveryMail()
+                            sendRecoveryMailJob = launchSendRecoveryMail()
                         }
                     }
                 }
@@ -71,7 +71,7 @@ class PasswordRecoveryViewModel(
         }
     }
 
-    private fun onSendRecoveryMail() =
+    private fun launchSendRecoveryMail() =
         viewModelScope.launch(dispatcher) {
             _state.update { it.copy(isLoading = true) }
             sendRecoveryMailUseCase(email = _state.value.email)
