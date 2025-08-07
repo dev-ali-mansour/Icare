@@ -1,6 +1,4 @@
-# ICare - Integrated Medical Services System
-
-# ICare App
+# ICare
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.2.0-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 [![Github Actions](https://github.com/dev-ali-mansour/Icare/actions/workflows/pull_request.yml/badge.svg)](https://github.com/dev-ali-mansour/Icare/actions/workflows/pull_request.yml)
