@@ -57,9 +57,6 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.auth.R
-import eg.edu.cu.csds.icare.auth.screen.SignInAction
-import eg.edu.cu.csds.icare.auth.screen.SignInUIState
-import eg.edu.cu.csds.icare.auth.screen.SignInViewModel
 import eg.edu.cu.csds.icare.auth.util.handleSignIn
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
@@ -100,11 +97,22 @@ internal fun SignInScreen(
     val request: GetCredentialRequest = koinInject()
     val credentialManager: CredentialManager = koinInject()
 
-    LaunchedEffect(state.signInSuccess) {
-        if (state.signInSuccess) {
-            onLoginSuccess()
+    LaunchedEffect(Unit) {
+        viewModel.singleEvent.collect { event ->
+            when (event) {
+                is SignInSingleEvent.LoginSuccess -> onLoginSuccess()
+                is SignInSingleEvent.ShowError -> {
+                    alertMessage = event.message.asString(context)
+                    scope.launch {
+                        showAlert = true
+                        delay(timeMillis = 3000)
+                        showAlert = false
+                    }
+                }
+            }
         }
     }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
     ) { paddingValues ->
@@ -120,7 +128,7 @@ internal fun SignInScreen(
                 state = state,
                 onAction = { action ->
                     when (action) {
-                        is SignInAction.SignInWithGoogle -> {
+                        is SignInIntent.SignInWithGoogle -> {
                             scope.launch {
                                 runCatching {
                                     val result =
@@ -129,8 +137,8 @@ internal fun SignInScreen(
                                             context = context,
                                         )
                                     handleSignIn(result, onSuccess = {
-                                        viewModel.onAction(SignInAction.UpdateGoogleSignInToken(it))
-                                        viewModel.onAction(SignInAction.SignInWithGoogle)
+                                        viewModel.onAction(SignInIntent.UpdateGoogleSignInToken(it))
+                                        viewModel.onAction(SignInIntent.SignInWithGoogle)
                                     }, onError = { error ->
                                         Timber.e("Google Sign-In failed: $error")
                                     })
@@ -140,25 +148,17 @@ internal fun SignInScreen(
                             }
                         }
 
-                        is SignInAction.NavigateToPasswordRecoveryScreen -> {
+                        is SignInIntent.NavigateToPasswordRecoveryScreen -> {
                             onRecoveryClicked()
                         }
 
-                        is SignInAction.NavigateToSignUpScreen -> {
+                        is SignInIntent.NavigateToSignUpScreen -> {
                             onCreateAnAccountClicked()
                         }
 
                         else -> {
                             viewModel.onAction(action = action)
                         }
-                    }
-                },
-                onError = {
-                    alertMessage = it
-                    scope.launch {
-                        showAlert = true
-                        delay(timeMillis = 3000)
-                        showAlert = false
                     }
                 },
             )
@@ -170,9 +170,8 @@ internal fun SignInScreen(
 
 @Composable
 private fun SignInContent(
-    state: SignInUIState,
-    onAction: (SignInAction) -> Unit,
-    onError: (String) -> Unit,
+    state: SignInState,
+    onAction: (SignInIntent) -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize(),
@@ -259,7 +258,7 @@ private fun SignInContent(
                     Column {
                         TextField(
                             value = state.email,
-                            onValueChange = { onAction(SignInAction.UpdateEmail(it)) },
+                            onValueChange = { onAction(SignInIntent.UpdateEmail(it)) },
                             label = {
                                 Text(
                                     text = stringResource(id = R.string.email),
@@ -296,7 +295,7 @@ private fun SignInContent(
                         )
                         TextField(
                             value = state.password,
-                            onValueChange = { onAction(SignInAction.UpdatePassword(it)) },
+                            onValueChange = { onAction(SignInIntent.UpdatePassword(it)) },
                             colors =
                                 TextFieldDefaults.colors(
                                     focusedContainerColor = Color.Transparent,
@@ -308,7 +307,7 @@ private fun SignInContent(
                                     unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
                                 ),
                             trailingIcon = {
-                                IconButton(onClick = { onAction(SignInAction.TogglePasswordVisibility) }) {
+                                IconButton(onClick = { onAction(SignInIntent.TogglePasswordVisibility) }) {
                                     Icon(
                                         painter = painterResource(R.drawable.ic_baseline_remove_red_eye_24),
                                         contentDescription = null,
@@ -352,7 +351,7 @@ private fun SignInContent(
                         Modifier
                             .fillMaxWidth()
                             .padding(horizontal = XL_PADDING)
-                            .clickable { onAction(SignInAction.NavigateToPasswordRecoveryScreen) },
+                            .clickable { onAction(SignInIntent.NavigateToPasswordRecoveryScreen) },
                 )
 
                 Spacer(modifier = Modifier.height(S_PADDING))
@@ -361,7 +360,7 @@ private fun SignInContent(
                     modifier = Modifier.fillMaxWidth(fraction = 0.6f),
                     text = stringResource(id = R.string.sign_in),
                     color = buttonBackgroundColor,
-                    onClick = { onAction(SignInAction.SubmitSignIn) },
+                    onClick = { onAction(SignInIntent.SubmitSignIn) },
                 )
 
                 Spacer(modifier = Modifier.height(S_PADDING))
@@ -389,17 +388,10 @@ private fun SignInContent(
                         modifier = Modifier.fillMaxWidth(fraction = 0.8f),
                         iconId = CoreR.drawable.ic_social_google,
                     ) {
-                        onAction(SignInAction.SignInWithGoogle)
+                        onAction(SignInIntent.SignInWithGoogle)
                     }
                 }
                 Spacer(modifier = Modifier.height(S_PADDING))
-            }
-        }
-
-        val errorMessage = state.errorMessage?.asString()
-        LaunchedEffect(errorMessage) {
-            errorMessage?.let { message ->
-                onError(message)
             }
         }
 
@@ -425,9 +417,8 @@ private fun SignInContent(
 private fun SignInContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         SignInContent(
-            state = SignInUIState(),
+            state = SignInState(),
             onAction = {},
-            onError = {},
         )
     }
 }
