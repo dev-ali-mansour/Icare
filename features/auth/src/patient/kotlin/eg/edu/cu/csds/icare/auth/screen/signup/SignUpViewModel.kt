@@ -35,7 +35,7 @@ class SignUpViewModel(
     private var signUpJob: Job? = null
     private var signOutJob: Job? = null
 
-    private val _state = MutableStateFlow(SignUpUIState())
+    private val _state = MutableStateFlow(SignUpState())
     val state =
         _state.stateIn(
             scope = viewModelScope,

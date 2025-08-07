@@ -1,6 +1,6 @@
 package eg.edu.cu.csds.icare.auth.screen.signup
 
-data class SignUpUIState(
+data class SignUpState(
     val isLoading: Boolean = false,
     val firstName: String = "",
     val lastName: String = "",
