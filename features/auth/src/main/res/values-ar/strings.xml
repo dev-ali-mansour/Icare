@@ -36,7 +36,7 @@
     <string name="error_blank_chronic_diseases">يرجى إدخال الأمراض المزمنة أو اكتب \"لايوجد\".</string>
     <string name="error_blank_current_medications">يرجى إدخال الأدوية الحالية أو اكتب \"لايوجد\".</string>
     <string name="error_blank_allergies">يرجى إدخال الحساسية أو اكتب \"لايوجد\".</string>
-    <string name="err0r_blank_past_surgeries">يرجى إدخال العمليات السابقة أو اكتب \"لايوجد\".</string>
+    <string name="error_blank_past_surgeries">يرجى إدخال العمليات السابقة أو اكتب \"لايوجد\".</string>
     <string name="address">العنوان</string>
     <string name="verify_email">تأكيد البريد الإلكترني</string>
     <string name="link_google">ربط Google</string>
