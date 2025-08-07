@@ -833,7 +833,7 @@ internal fun SignUpContent(
 
         if (state.showAlert) {
             state.alertMessage?.let { errorMessage ->
-                DialogWithIcon(text = errorMessage.asString()) {
+                DialogWithIcon(text = errorMessage.asString(context)) {
                     onAction(SignUpAction.ToggleShowAlert)
                 }
             }
