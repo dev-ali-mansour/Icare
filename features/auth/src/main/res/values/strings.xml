@@ -35,7 +35,7 @@
     <string name="error_blank_chronic_diseases">Please enter chronic diseases or type \"None\" if not exist.</string>
     <string name="error_blank_current_medications">Please enter current medications or type \"None\" if not exist.</string>
     <string name="error_blank_allergies">Please enter your allergies or type \"None\" if not exist.</string>
-    <string name="err0r_blank_past_surgeries">Please enter your past surgeries or type \"None\" if not exist.</string>
+    <string name="error_blank_past_surgeries">Please enter your past surgeries or type \"None\" if not exist.</string>
     <string name="address">Address</string>
     <string name="verify_email">Verify Email</string>
     <string name="link_google">Link Google</string>
