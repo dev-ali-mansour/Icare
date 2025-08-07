@@ -42,18 +42,18 @@ class SignInViewModel(
     private val _singleEvent = MutableSharedFlow<SignInSingleEvent>()
     val singleEvent = _singleEvent.asSharedFlow()
 
-    fun onAction(action: SignInIntent) {
-        when (action) {
+    fun handleIntent(intent: SignInIntent) {
+        when (intent) {
             is SignInIntent.UpdateGoogleSignInToken -> {
-                _state.update { it.copy(googleSignInToken = action.token) }
+                _state.update { it.copy(googleSignInToken = intent.token) }
             }
 
             is SignInIntent.UpdateEmail -> {
-                _state.update { it.copy(email = action.email) }
+                _state.update { it.copy(email = intent.email) }
             }
 
             is SignInIntent.UpdatePassword -> {
-                _state.update { it.copy(password = action.password) }
+                _state.update { it.copy(password = intent.password) }
             }
 
             is SignInIntent.TogglePasswordVisibility -> {
@@ -62,7 +62,7 @@ class SignInViewModel(
 
             is SignInIntent.SignInWithGoogle -> {
                 signInJob?.cancel()
-                signInJob = onLoginWithGoogle()
+                signInJob = launchGoogleSignIn()
             }
 
             is SignInIntent.SubmitSignIn ->
@@ -86,7 +86,7 @@ class SignInViewModel(
 
                         else -> {
                             signInJob?.cancel()
-                            signInJob = onLogIn()
+                            signInJob = launchSignIn()
                         }
                     }
                 }
@@ -96,7 +96,7 @@ class SignInViewModel(
         }
     }
 
-    private fun onLogIn() =
+    private fun launchSignIn() =
         viewModelScope.launch(dispatcher) {
             _state.update { it.copy(isLoading = true) }
             signInUseCase(_state.value.email, _state.value.password)
@@ -112,7 +112,7 @@ class SignInViewModel(
                 }.launchIn(viewModelScope)
         }
 
-    private fun onLoginWithGoogle() =
+    private fun launchGoogleSignIn() =
         viewModelScope.launch(dispatcher) {
             _state.update { it.copy(isLoading = true) }
             runCatching {
