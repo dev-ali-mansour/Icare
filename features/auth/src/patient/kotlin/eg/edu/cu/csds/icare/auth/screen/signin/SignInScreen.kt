@@ -126,8 +126,8 @@ internal fun SignInScreen(
         ) {
             SignInContent(
                 state = state,
-                onAction = { action ->
-                    when (action) {
+                onIntent = { intent ->
+                    when (intent) {
                         is SignInIntent.SignInWithGoogle -> {
                             scope.launch {
                                 runCatching {
@@ -137,8 +137,12 @@ internal fun SignInScreen(
                                             context = context,
                                         )
                                     handleSignIn(result, onSuccess = {
-                                        viewModel.onAction(SignInIntent.UpdateGoogleSignInToken(it))
-                                        viewModel.onAction(SignInIntent.SignInWithGoogle)
+                                        viewModel.handleIntent(
+                                            SignInIntent.UpdateGoogleSignInToken(
+                                                it,
+                                            ),
+                                        )
+                                        viewModel.handleIntent(SignInIntent.SignInWithGoogle)
                                     }, onError = { error ->
                                         Timber.e("Google Sign-In failed: $error")
                                     })
@@ -157,7 +161,7 @@ internal fun SignInScreen(
                         }
 
                         else -> {
-                            viewModel.onAction(action = action)
+                            viewModel.handleIntent(intent = intent)
                         }
                     }
                 },
@@ -171,7 +175,7 @@ internal fun SignInScreen(
 @Composable
 private fun SignInContent(
     state: SignInState,
-    onAction: (SignInIntent) -> Unit,
+    onIntent: (SignInIntent) -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize(),
@@ -258,7 +262,7 @@ private fun SignInContent(
                     Column {
                         TextField(
                             value = state.email,
-                            onValueChange = { onAction(SignInIntent.UpdateEmail(it)) },
+                            onValueChange = { onIntent(SignInIntent.UpdateEmail(it)) },
                             label = {
                                 Text(
                                     text = stringResource(id = R.string.email),
@@ -295,7 +299,7 @@ private fun SignInContent(
                         )
                         TextField(
                             value = state.password,
-                            onValueChange = { onAction(SignInIntent.UpdatePassword(it)) },
+                            onValueChange = { onIntent(SignInIntent.UpdatePassword(it)) },
                             colors =
                                 TextFieldDefaults.colors(
                                     focusedContainerColor = Color.Transparent,
@@ -307,7 +311,7 @@ private fun SignInContent(
                                     unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
                                 ),
                             trailingIcon = {
-                                IconButton(onClick = { onAction(SignInIntent.TogglePasswordVisibility) }) {
+                                IconButton(onClick = { onIntent(SignInIntent.TogglePasswordVisibility) }) {
                                     Icon(
                                         painter = painterResource(R.drawable.ic_baseline_remove_red_eye_24),
                                         contentDescription = null,
@@ -351,7 +355,7 @@ private fun SignInContent(
                         Modifier
                             .fillMaxWidth()
                             .padding(horizontal = XL_PADDING)
-                            .clickable { onAction(SignInIntent.NavigateToPasswordRecoveryScreen) },
+                            .clickable { onIntent(SignInIntent.NavigateToPasswordRecoveryScreen) },
                 )
 
                 Spacer(modifier = Modifier.height(S_PADDING))
@@ -360,7 +364,7 @@ private fun SignInContent(
                     modifier = Modifier.fillMaxWidth(fraction = 0.6f),
                     text = stringResource(id = R.string.sign_in),
                     color = buttonBackgroundColor,
-                    onClick = { onAction(SignInIntent.SubmitSignIn) },
+                    onClick = { onIntent(SignInIntent.SubmitSignIn) },
                 )
 
                 Text(
@@ -371,7 +375,7 @@ private fun SignInContent(
                     modifier =
                         Modifier
                             .padding(L_PADDING)
-                            .clickable { onAction(SignInIntent.NavigateToSignUpScreen) },
+                            .clickable { onIntent(SignInIntent.NavigateToSignUpScreen) },
                 )
 
                 Spacer(modifier = Modifier.height(S_PADDING))
@@ -399,7 +403,7 @@ private fun SignInContent(
                         modifier = Modifier.fillMaxWidth(fraction = 0.8f),
                         iconId = CoreR.drawable.ic_social_google,
                     ) {
-                        onAction(SignInIntent.SignInWithGoogle)
+                        onIntent(SignInIntent.SignInWithGoogle)
                     }
                 }
             }
@@ -428,7 +432,7 @@ private fun LoginContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         SignInContent(
             state = SignInState(),
-            onAction = {},
+            onIntent = {},
         )
     }
 }
