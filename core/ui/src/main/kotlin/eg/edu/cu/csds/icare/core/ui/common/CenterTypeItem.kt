@@ -6,9 +6,9 @@ import eg.edu.cu.csds.icare.core.ui.R
 
 sealed class CenterTypeItem(
     val code: Short,
-    @StringRes
+    @param:StringRes
     val textResId: Int,
-    @DrawableRes
+    @param:DrawableRes
     val iconResId: Int,
 ) {
     data object LabCenter : CenterTypeItem(

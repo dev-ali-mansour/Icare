@@ -6,9 +6,9 @@ import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 
 sealed class AppService(
-    @DrawableRes
+    @param:DrawableRes
     val iconResId: Int,
-    @StringRes
+    @param:StringRes
     val textResId: Int,
     val screen: Screen,
 ) {

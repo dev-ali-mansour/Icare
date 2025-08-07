@@ -5,7 +5,7 @@ import eg.edu.cu.csds.icare.core.ui.R
 
 sealed class Role(
     val code: Short,
-    @StringRes
+    @param:StringRes
     val name: Int,
 ) {
     data object AdminRole : Role(code = 1, name = R.string.admins)

@@ -2,8 +2,6 @@ package eg.edu.cu.csds.icare.auth.screen.signin
 
 import android.content.Context
 import android.content.res.Configuration
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -55,11 +53,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.auth.R
 import eg.edu.cu.csds.icare.auth.screen.SignInAction
 import eg.edu.cu.csds.icare.auth.screen.SignInUIState
 import eg.edu.cu.csds.icare.auth.screen.SignInViewModel
+import eg.edu.cu.csds.icare.auth.util.handleSignIn
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
@@ -73,7 +74,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.buttonBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
-import eg.edu.cu.csds.icare.core.ui.util.signInWithGoogle
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.SocialSignInButton
@@ -81,6 +81,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
+import timber.log.Timber
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
@@ -95,11 +97,8 @@ internal fun SignInScreen(
     val scope: CoroutineScope = rememberCoroutineScope()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
-    val launcher =
-        rememberLauncherForActivityResult(StartActivityForResult()) {
-            viewModel.onAction(SignInAction.UpdateGoogleSignInIntent(it.data))
-            viewModel.onAction(SignInAction.SignInWithGoogle)
-        }
+    val request: GetCredentialRequest = koinInject()
+    val credentialManager: CredentialManager = koinInject()
 
     LaunchedEffect(state.signInSuccess) {
         if (state.signInSuccess) {
@@ -122,8 +121,25 @@ internal fun SignInScreen(
                 state = state,
                 onAction = { action ->
                     when (action) {
-                        is SignInAction.SignInWithGoogle ->
-                            context.signInWithGoogle(launcher = launcher)
+                        is SignInAction.SignInWithGoogle -> {
+                            scope.launch {
+                                runCatching {
+                                    val result =
+                                        credentialManager.getCredential(
+                                            request = request,
+                                            context = context,
+                                        )
+                                    handleSignIn(result, onSuccess = {
+                                        viewModel.onAction(SignInAction.UpdateGoogleSignInToken(it))
+                                        viewModel.onAction(SignInAction.SignInWithGoogle)
+                                    }, onError = { error ->
+                                        Timber.e("Google Sign-In failed: $error")
+                                    })
+                                }.onFailure { error ->
+                                    Timber.e(error.toString())
+                                }
+                            }
+                        }
 
                         is SignInAction.NavigateToPasswordRecoveryScreen -> {
                             onRecoveryClicked()
