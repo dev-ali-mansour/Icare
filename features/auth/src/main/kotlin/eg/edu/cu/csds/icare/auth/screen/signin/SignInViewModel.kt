@@ -32,7 +32,7 @@ class SignInViewModel(
 ) : ViewModel() {
     private var signInJob: Job? = null
 
-    private val _state = MutableStateFlow(SignInUIState())
+    private val _state = MutableStateFlow(SignInState())
     val state =
         _state.stateIn(
             scope = viewModelScope,
