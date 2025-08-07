@@ -42,7 +42,7 @@ class SignInViewModel(
     private val _singleEvent = MutableSharedFlow<SignInSingleEvent>()
     val singleEvent = _singleEvent.asSharedFlow()
 
-    fun handleIntent(intent: SignInIntent) {
+    fun processIntent(intent: SignInIntent) {
         when (intent) {
             is SignInIntent.UpdateGoogleSignInToken -> {
                 _state.update { it.copy(googleSignInToken = intent.token) }

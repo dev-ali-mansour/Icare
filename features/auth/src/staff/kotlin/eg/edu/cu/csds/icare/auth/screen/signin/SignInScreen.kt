@@ -137,8 +137,12 @@ internal fun SignInScreen(
                                             context = context,
                                         )
                                     handleSignIn(result, onSuccess = {
-                                        viewModel.onAction(SignInIntent.UpdateGoogleSignInToken(it))
-                                        viewModel.onAction(SignInIntent.SignInWithGoogle)
+                                        viewModel.processIntent(
+                                            SignInIntent.UpdateGoogleSignInToken(
+                                                it,
+                                            ),
+                                        )
+                                        viewModel.processIntent(SignInIntent.SignInWithGoogle)
                                     }, onError = { error ->
                                         Timber.e("Google Sign-In failed: $error")
                                     })
@@ -157,7 +161,7 @@ internal fun SignInScreen(
                         }
 
                         else -> {
-                            viewModel.onAction(action = intent)
+                            viewModel.processIntent(intent = intent)
                         }
                     }
                 },
