@@ -1,10 +1,8 @@
 package eg.edu.cu.csds.icare.auth.screen
 
-import android.content.Intent
-
 sealed interface SignInAction {
-    data class UpdateGoogleSignInIntent(
-        val intent: Intent?,
+    data class UpdateGoogleSignInToken(
+        val token: String,
     ) : SignInAction
 
     data class UpdateEmail(

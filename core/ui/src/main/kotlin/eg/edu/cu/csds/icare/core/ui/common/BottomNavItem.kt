@@ -6,8 +6,8 @@ import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 
 sealed class BottomNavItem(
-    @DrawableRes var iconResId: Int,
-    @StringRes val titleResId: Int,
+    @param:DrawableRes var iconResId: Int,
+    @param:StringRes val titleResId: Int,
     var screen: Screen,
 ) {
     data object Home : BottomNavItem(
