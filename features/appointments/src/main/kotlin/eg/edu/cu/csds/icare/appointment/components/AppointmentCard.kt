@@ -35,7 +35,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
-import eg.edu.cu.csds.icare.data.util.getFormattedDateTime
+import eg.edu.cu.csds.icare.core.data.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable

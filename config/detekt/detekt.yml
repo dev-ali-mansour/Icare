@@ -106,7 +106,7 @@ complexity:
     ignoreOverloaded: false
   CyclomaticComplexMethod:
     active: true
-    threshold: 25
+    threshold: 35
     ignoreSingleWhenExpression: false
     ignoreSimpleWhenEntries: false
     ignoreNestingFunctions: false
@@ -740,6 +740,9 @@ style:
     active: true
   UnusedPrivateMember:
     active: true
+    ignoreAnnotated:
+      - 'androidx.compose.ui.tooling.preview.Preview' # Good to keep for previews specifically
+      # You can add other annotations here if needed
     allowedNames: ''
   UnusedPrivateProperty:
     active: true

@@ -1,8 +1,5 @@
 package eg.edu.cu.csds.icare.core.domain.model
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class DoctorSchedule(
     val totalPatients: Long = 0,
     val confirmed: Long = 0,
