@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.auth.screen
+package eg.edu.cu.csds.icare.auth.screen.signin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,8 +12,10 @@ import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -37,59 +39,60 @@ class SignInViewModel(
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
             initialValue = _state.value,
         )
+    private val _singleEvent = MutableSharedFlow<SignInSingleEvent>()
+    val singleEvent = _singleEvent.asSharedFlow()
 
-    fun onAction(action: SignInAction) {
+    fun onAction(action: SignInIntent) {
         when (action) {
-            is SignInAction.UpdateGoogleSignInToken -> {
+            is SignInIntent.UpdateGoogleSignInToken -> {
                 _state.update { it.copy(googleSignInToken = action.token) }
             }
 
-            is SignInAction.UpdateEmail -> {
+            is SignInIntent.UpdateEmail -> {
                 _state.update { it.copy(email = action.email) }
             }
 
-            is SignInAction.UpdatePassword -> {
+            is SignInIntent.UpdatePassword -> {
                 _state.update { it.copy(password = action.password) }
             }
 
-            is SignInAction.TogglePasswordVisibility -> {
+            is SignInIntent.TogglePasswordVisibility -> {
                 _state.update { it.copy(isPasswordVisible = !it.isPasswordVisible) }
             }
 
-            is SignInAction.SignInWithGoogle -> {
+            is SignInIntent.SignInWithGoogle -> {
                 signInJob?.cancel()
                 signInJob = onLoginWithGoogle()
             }
 
-            is SignInAction.SubmitSignIn -> {
-                when {
-                    !_state.value.email.isValidEmail -> {
-                        _state.update {
-                            it.copy(
-                                errorMessage = StringResourceId(R.string.error_invalid_email),
-                                isLoading = false,
+            is SignInIntent.SubmitSignIn ->
+                viewModelScope.launch {
+                    when {
+                        !_state.value.email.isValidEmail -> {
+                            _singleEvent.emit(
+                                SignInSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.error_invalid_email)),
                             )
+                            _state.update { it.copy(isLoading = false) }
                         }
-                    }
 
-                    _state.value.password.isBlank() -> {
-                        _state.update {
-                            it.copy(
-                                errorMessage = StringResourceId(R.string.empty_password_error),
-                                isLoading = false,
+                        _state.value.password.isBlank() -> {
+                            _singleEvent.emit(
+                                SignInSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.empty_password_error)),
                             )
+                            _state.update { it.copy(isLoading = false) }
                         }
-                    }
 
-                    else -> {
-                        signInJob?.cancel()
-                        signInJob = onLogIn()
+                        else -> {
+                            signInJob?.cancel()
+                            signInJob = onLogIn()
+                        }
                     }
                 }
-            }
 
-            is SignInAction.NavigateToPasswordRecoveryScreen -> Unit
-            is SignInAction.NavigateToSignUpScreen -> Unit
+            is SignInIntent.NavigateToPasswordRecoveryScreen -> Unit
+            is SignInIntent.NavigateToSignUpScreen -> Unit
         }
     }
 
@@ -100,21 +103,11 @@ class SignInViewModel(
                 .onEach { result ->
                     result
                         .onSuccess {
-                            _state.update {
-                                it.copy(
-                                    isLoading = false,
-                                    signInSuccess = true,
-                                    errorMessage = null,
-                                )
-                            }
+                            _singleEvent.emit(SignInSingleEvent.LoginSuccess)
+                            _state.update { it.copy(isLoading = false) }
                         }.onError { error ->
-                            _state.update {
-                                it.copy(
-                                    isLoading = false,
-                                    signInSuccess = false,
-                                    errorMessage = error.toUiText(),
-                                )
-                            }
+                            _singleEvent.emit(SignInSingleEvent.ShowError(message = error.toUiText()))
+                            _state.update { it.copy(isLoading = false) }
                         }
                 }.launchIn(viewModelScope)
         }
@@ -127,31 +120,22 @@ class SignInViewModel(
                     .onEach { result ->
                         result
                             .onSuccess {
-                                _state.update {
-                                    it.copy(
-                                        isLoading = false,
-                                        signInSuccess = true,
-                                        errorMessage = null,
-                                    )
-                                }
+                                _singleEvent.emit(SignInSingleEvent.LoginSuccess)
+                                _state.update { it.copy(isLoading = false) }
                             }.onError { error ->
-                                _state.update {
-                                    it.copy(
-                                        isLoading = false,
-                                        signInSuccess = false,
-                                        errorMessage = error.toUiText(),
-                                    )
-                                }
+                                _singleEvent.emit(
+                                    SignInSingleEvent
+                                        .ShowError(message = error.toUiText()),
+                                )
+                                _state.update { it.copy(isLoading = false) }
                             }
                     }.launchIn(viewModelScope)
             }.onFailure {
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        signInSuccess = false,
-                        errorMessage = StringResourceId(CoreR.string.error_invalid_credentials),
-                    )
-                }
+                _singleEvent.emit(
+                    SignInSingleEvent
+                        .ShowError(message = StringResourceId(CoreR.string.error_invalid_credentials)),
+                )
+                _state.update { it.copy(isLoading = false) }
             }
         }
 }
