@@ -170,7 +170,7 @@ internal fun SignInScreen(
 
 @Composable
 private fun SignInContent(
-    state: SignInUIState,
+    state: SignInState,
     onAction: (SignInIntent) -> Unit,
 ) {
     ConstraintLayout(
@@ -427,7 +427,7 @@ private fun SignInContent(
 private fun LoginContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         SignInContent(
-            state = SignInUIState(),
+            state = SignInState(),
             onAction = {},
         )
     }
