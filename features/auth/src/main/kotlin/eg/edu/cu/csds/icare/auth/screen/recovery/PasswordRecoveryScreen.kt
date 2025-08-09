@@ -74,33 +74,33 @@ internal fun PasswordRecoveryScreen(
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-    ) { paddingValues ->
+    LaunchedEffect(Unit) {
+        viewModel.singleEvent.collect { event ->
+            when (event) {
+                PasswordRecoverySingleEvent.RecoverySuccess -> onRecoveryCompleted()
+                is PasswordRecoverySingleEvent.ShowInfo -> {
+                    alertMessage = context.getString(R.string.recovery_email_sent)
+                    showAlert = true
+                    delay(timeMillis = 3000)
+                    showAlert = false
+                    onRecoveryCompleted()
+                }
 
-        LaunchedEffect(Unit) {
-            viewModel.singleEvent.collect { event ->
-                when (event) {
-                    PasswordRecoverySingleEvent.RecoverySuccess -> onRecoveryCompleted()
-                    is PasswordRecoverySingleEvent.ShowInfo -> {
-                        alertMessage = context.getString(R.string.recovery_email_sent)
+                is PasswordRecoverySingleEvent.ShowError -> {
+                    alertMessage = event.message.asString(context)
+                    scope.launch {
                         showAlert = true
                         delay(timeMillis = 3000)
                         showAlert = false
-                        onRecoveryCompleted()
-                    }
-
-                    is PasswordRecoverySingleEvent.ShowError -> {
-                        alertMessage = event.message.asString(context)
-                        scope.launch {
-                            showAlert = true
-                            delay(timeMillis = 3000)
-                            showAlert = false
-                        }
                     }
                 }
             }
         }
+    }
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+    ) { paddingValues ->
 
         Box(
             modifier =
@@ -216,7 +216,9 @@ private fun PasswordRecoveryContent(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             TextField(
                                 value = state.email,
-                                onValueChange = { onIntent(PasswordRecoveryIntent.UpdateEmail(it)) },
+                                onValueChange = {
+                                    onIntent(PasswordRecoveryIntent.UpdateEmail(it))
+                                },
                                 label = {
                                     Text(
                                         text = stringResource(id = R.string.email),
@@ -262,7 +264,11 @@ private fun PasswordRecoveryContent(
                                 modifier =
                                     Modifier
                                         .padding(L_PADDING)
-                                        .clickable { onIntent(PasswordRecoveryIntent.NavigateToSignInScreen) },
+                                        .clickable {
+                                            onIntent(
+                                                PasswordRecoveryIntent.NavigateToSignInScreen,
+                                            )
+                                        },
                             )
                         }
                     }
