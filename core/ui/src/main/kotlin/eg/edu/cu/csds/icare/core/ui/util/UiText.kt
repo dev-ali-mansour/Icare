@@ -1,8 +1,7 @@
 package eg.edu.cu.csds.icare.core.ui.util
 
+import android.content.Context
 import androidx.annotation.StringRes
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 
 sealed interface UiText {
     data class DynamicString(
@@ -14,10 +13,9 @@ sealed interface UiText {
         val args: Array<Any> = arrayOf(),
     ) : UiText
 
-    @Composable
-    fun asString(): String =
+    fun asString(context: Context): String =
         when (this) {
             is DynamicString -> value
-            is StringResourceId -> stringResource(id = id, formatArgs = args)
+            is StringResourceId -> context.getString(id, args)
         }
 }

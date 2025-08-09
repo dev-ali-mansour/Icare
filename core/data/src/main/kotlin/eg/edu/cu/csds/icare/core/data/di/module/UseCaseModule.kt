@@ -15,12 +15,13 @@ import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetPatientAppointmen
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.UpdateAppointment
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.DeleteAccountUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfoUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkTokenAccountUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkGoogleAccountUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SendRecoveryMailUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithGoogleUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOutUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignUpUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.UnlinkGoogleAccountUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.center.AddNewCenter
 import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCenters
 import eg.edu.cu.csds.icare.core.domain.usecase.center.UpdateCenter
@@ -85,7 +86,11 @@ class UseCaseModule {
     fun provideSignOut(repository: AuthRepository) = SignOutUseCase(repository)
 
     @Single
-    fun provideLinkTokenAccount(repository: AuthRepository) = LinkTokenAccountUseCase(repository)
+    fun provideLinkTokenAccount(repository: AuthRepository) = LinkGoogleAccountUseCase(repository)
+
+    @Single
+    fun provideUnlinkTokenAccount(repository: AuthRepository) =
+        UnlinkGoogleAccountUseCase(repository)
 
     @Single
     fun provideListClinics(repository: ClinicsRepository) = ListClinics(repository)
@@ -163,32 +168,41 @@ class UseCaseModule {
     fun provideGetAppointments(repository: AppointmentsRepository) = GetAppointments(repository)
 
     @Single
-    fun provideGetAppointmentsByStatus(repository: AppointmentsRepository) = GetAppointmentsByStatus(repository)
+    fun provideGetAppointmentsByStatus(repository: AppointmentsRepository) =
+        GetAppointmentsByStatus(repository)
 
     @Single
-    fun provideGetPatientAppointments(repository: AppointmentsRepository) = GetPatientAppointments(repository)
+    fun provideGetPatientAppointments(repository: AppointmentsRepository) =
+        GetPatientAppointments(repository)
 
     @Single
-    fun provideUpdateAppointment(repository: AppointmentsRepository): UpdateAppointment = UpdateAppointment(repository)
+    fun provideUpdateAppointment(repository: AppointmentsRepository): UpdateAppointment =
+        UpdateAppointment(repository)
 
     @Single
-    fun provideAddNewConsultation(repository: ConsultationsRepository) = AddNewConsultation(repository)
+    fun provideAddNewConsultation(repository: ConsultationsRepository) =
+        AddNewConsultation(repository)
 
     @Single
-    fun provideUpdateConsultation(repository: ConsultationsRepository) = UpdateConsultation(repository)
+    fun provideUpdateConsultation(repository: ConsultationsRepository) =
+        UpdateConsultation(repository)
 
     @Single
     fun provideGetMedicalRecord(repository: ConsultationsRepository) = GetMedicalRecord(repository)
 
     @Single
-    fun provideGetMedicationsByStatus(repository: ConsultationsRepository) = GetMedicationsByStatus(repository)
+    fun provideGetMedicationsByStatus(repository: ConsultationsRepository) =
+        GetMedicationsByStatus(repository)
 
     @Single
-    fun provideGetLabTestsByStatus(repository: ConsultationsRepository) = GetLabTestsByStatus(repository)
+    fun provideGetLabTestsByStatus(repository: ConsultationsRepository) =
+        GetLabTestsByStatus(repository)
 
     @Single
-    fun provideGetImagingTestsByStatus(repository: ConsultationsRepository) = GetImagingTestsByStatus(repository)
+    fun provideGetImagingTestsByStatus(repository: ConsultationsRepository) =
+        GetImagingTestsByStatus(repository)
 
     @Single
-    fun provideGetAdminStatistics(repository: AppointmentsRepository) = GetAdminStatistics(repository)
+    fun provideGetAdminStatistics(repository: AppointmentsRepository) =
+        GetAdminStatistics(repository)
 }

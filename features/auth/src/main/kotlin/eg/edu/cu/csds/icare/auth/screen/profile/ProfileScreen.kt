@@ -1,38 +1,73 @@
 package eg.edu.cu.csds.icare.auth.screen.profile
 
 import android.content.Context
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.constraintlayout.compose.ChainStyle
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.firebase.Firebase
-import com.google.firebase.FirebaseNetworkException
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.auth.auth
-import eg.edu.cu.csds.icare.auth.screen.AuthViewModel
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import eg.edu.cu.csds.icare.auth.R
 import eg.edu.cu.csds.icare.auth.util.handleSignIn
-import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.ui.MainViewModel
+import eg.edu.cu.csds.icare.core.domain.model.Language
+import eg.edu.cu.csds.icare.core.domain.model.User
+import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
+import eg.edu.cu.csds.icare.core.ui.theme.Blue700
+import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.MEDIUM_ICON_SIZE
+import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
+import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import kotlinx.coroutines.CoroutineScope
+import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
+import eg.edu.cu.csds.icare.core.ui.theme.contentColor
+import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
+import eg.edu.cu.csds.icare.core.ui.util.currentLanguage
+import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
+import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import timber.log.Timber
 import kotlin.system.exitProcess
@@ -40,18 +75,36 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun ProfileScreen(
-    mainViewModel: MainViewModel,
-    authViewModel: AuthViewModel,
-    onError: suspend (Throwable?) -> Unit,
+    viewModel: ProfileViewModel = koinViewModel(),
+    request: GetCredentialRequest = koinInject(),
+    credentialManager: CredentialManager = koinInject(),
+    context: Context = LocalContext.current,
 ) {
-    val logoutRes by authViewModel.logoutResFlow.collectAsStateWithLifecycle()
-    val userResource by mainViewModel.currentUserFlow.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
-    val isLoading by authViewModel.isLoading
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val request: GetCredentialRequest = koinInject()
-    val credentialManager: CredentialManager = koinInject()
+    var alertMessage by remember { mutableStateOf("") }
+    var showAlert by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.singleEvent.collect { event ->
+            when (event) {
+                is ProfileSingleEvent.SignOutSuccess -> {
+                    delay(timeMillis = 100)
+                    exitProcess(0)
+                }
+
+                is ProfileSingleEvent.ShowError -> {
+                    alertMessage = event.message.asString(context)
+                    scope.launch {
+                        showAlert = true
+                        delay(timeMillis = 3000)
+                        showAlert = false
+                    }
+                }
+            }
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -64,103 +117,243 @@ internal fun ProfileScreen(
                     .padding(it),
         ) {
             ProfileContent(
-                userResource = userResource,
-                logoutRes = logoutRes,
-                isLoading = isLoading,
-                onGoogleClicked = { linkedWithGoogle ->
-                    if (linkedWithGoogle) {
-                        unLinkGoogleAccount(scope) {
-                            mainViewModel.getUserInfo()
-                        }
-                    } else {
-                        scope.launch {
-                            runCatching {
-                                val result =
-                                    credentialManager.getCredential(
-                                        request = request,
-                                        context = context,
-                                    )
-                                handleSignIn(result, onSuccess = { token ->
-                                    authViewModel.linkGoogleAccount(token)
-                                }, onError = { error ->
-                                    Timber.e("Google Sign-In failed: $error")
-                                })
-                            }.onFailure { error ->
-                                Timber.e(error.toString())
-                            }
-                        }
-                    }
-                },
-                onLogoutClicked = { authViewModel.onLogOutClick() },
-                onLogoutSucceed = {
+                state = state,
+                onIntent = { intent ->
                     scope.launch {
-                        delay(timeMillis = 100)
-                        exitProcess(0)
+                        when (intent) {
+                            is ProfileIntent.LinkWithGoogle -> {
+                                val result =
+                                    credentialManager.getCredential(request = request, context = context)
+                                handleSignIn(
+                                    result,
+                                    onSuccess = { token ->
+                                        viewModel.processIntent(ProfileIntent.UpdateGoogleSignInToken(token))
+                                        viewModel.processIntent(intent)
+                                    },
+                                    onError = { error ->
+                                        Timber.e("Google Sign-In failed: $error")
+                                    },
+                                )
+                            }
+
+                            else -> viewModel.processIntent(intent)
+                        }
                     }
                 },
-                onError = { error -> onError(error) },
             )
 
-            HandleLinkResult(
-                snackBarHostState = snackBarHostState,
-                viewModel = authViewModel,
-                context = context,
-                scope = scope,
-            ) { mainViewModel.getUserInfo() }
+            if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
         }
     }
 }
 
 @Composable
-private fun HandleLinkResult(
-    snackBarHostState: SnackbarHostState,
-    viewModel: AuthViewModel,
+private fun ProfileContent(
+    state: ProfileState,
+    onIntent: (profileIntent: ProfileIntent) -> Unit,
     context: Context = LocalContext.current,
-    scope: CoroutineScope = rememberCoroutineScope(),
-    onSuccess: () -> Unit,
 ) {
-    val resource by viewModel.linkResFlow.collectAsState()
+    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+        val (progress, infoContainer, logout) = createRefs()
+        if (state.isLoading) {
+            CircularProgressIndicator(
+                modifier =
+                    Modifier.constrainAs(progress) {
+                        top.linkTo(parent.top, margin = S_PADDING)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom)
+                    },
+            )
+        }
 
-    LaunchedEffect(key1 = resource) {
-        if (resource is Resource.Success) {
-            onSuccess()
-        } else if (resource is Resource.Error) {
-            val message =
-                when (resource.error) {
-                    is FirebaseNetworkException -> context.getString(CoreR.string.error_server)
-                    else -> {
-                        Timber.e("Account Link Error: ${resource.error?.message}")
-                        context.getString(CoreR.string.account_link_error)
-                    }
-                }
-            scope.launch {
-                snackBarHostState.showSnackbar(
-                    message = message,
-                    duration = SnackbarDuration.Long,
+        CurrentUserInfo(
+            modifier =
+                Modifier.constrainAs(infoContainer) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+            user = state.currentUser,
+            context = context,
+            onGoogleClicked = { onIntent(it) },
+        )
+
+        AnimatedButton(
+            modifier =
+                Modifier
+                    .constrainAs(logout) {
+                        start.linkTo(parent.start, margin = L_PADDING)
+                        end.linkTo(parent.end, margin = L_PADDING)
+                        bottom.linkTo(parent.bottom, margin = L_PADDING)
+                        width = Dimension.fillToConstraints
+                    },
+            text = stringResource(id = R.string.sign_out),
+            color = Color.Red.copy(alpha = 0.6f),
+            onClick = { onIntent(ProfileIntent.SignOut) },
+        )
+    }
+}
+
+@Composable
+private fun CurrentUserInfo(
+    user: User,
+    onGoogleClicked: (ProfileIntent) -> Unit,
+    modifier: Modifier = Modifier,
+    context: Context = LocalContext.current,
+) {
+    ConstraintLayout(
+        modifier =
+            modifier
+                .background(contentBackgroundColor)
+                .fillMaxWidth()
+                .padding(S_PADDING),
+    ) {
+        val (image, name, email, socialContainer, verified, google) = createRefs()
+
+        Image(
+            modifier =
+                Modifier
+                    .padding(XS_PADDING)
+                    .clip(CircleShape)
+                    .border(BOARDER_SIZE, Color.DarkGray, CircleShape)
+                    .size(PROFILE_IMAGE_SIZE)
+                    .constrainAs(image) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                    },
+            painter =
+                rememberAsyncImagePainter(
+                    ImageRequest
+                        .Builder(context)
+                        .data(data = user.photoUrl)
+                        .placeholder(CoreR.drawable.user_placeholder)
+                        .error(CoreR.drawable.user_placeholder)
+                        .build(),
+                ),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+        )
+
+        Text(
+            modifier =
+                Modifier.constrainAs(name) {
+                    top.linkTo(image.top)
+                    start.linkTo(image.end, margin = XS_PADDING)
+                    end.linkTo(parent.end)
+                },
+            text = user.displayName.toString(),
+            color = contentColor,
+            fontSize = MaterialTheme.typography.titleLarge.fontSize,
+            fontWeight = FontWeight.Bold,
+            fontFamily = helveticaFamily,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+
+        Text(
+            modifier =
+                Modifier.constrainAs(email) {
+                    top.linkTo(name.bottom, margin = XS_PADDING)
+                    start.linkTo(image.end)
+                    end.linkTo(parent.end)
+                },
+            text = user.email.toString(),
+            color = contentColor,
+            fontSize = MaterialTheme.typography.titleMedium.fontSize,
+            fontWeight = FontWeight.Bold,
+            fontFamily = helveticaFamily,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+
+        ConstraintLayout(
+            modifier =
+                Modifier.constrainAs(socialContainer) {
+                    top.linkTo(image.bottom, margin = S_PADDING)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                },
+        ) {
+            Box(
+                modifier =
+                    Modifier
+                        .constrainAs(verified) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                        },
+            ) {
+                Icon(
+                    modifier = Modifier.size(MEDIUM_ICON_SIZE),
+                    painter = painterResource(R.drawable.baseline_verified_user_24),
+                    contentDescription = null,
+                    tint = Color.Green,
                 )
+            }
+
+            Box(
+                modifier =
+                    Modifier
+                        .constrainAs(google) {
+                            top.linkTo(verified.top)
+                            start.linkTo(verified.end)
+                        }.clickable {
+                            if (user.linkedWithGoogle) {
+                                onGoogleClicked(ProfileIntent.UnlinkWithGoogle)
+                            } else {
+                                onGoogleClicked(ProfileIntent.LinkWithGoogle)
+                            }
+                        },
+            ) {
+                if (user.linkedWithGoogle) {
+                    Icon(
+                        modifier = Modifier.size(MEDIUM_ICON_SIZE),
+                        painter = painterResource(CoreR.drawable.ic_social_google),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                    )
+                } else {
+                    Text(
+                        text = stringResource(R.string.link_google),
+                        color = Blue700,
+                        fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = helveticaFamily,
+                        style = TextStyle(textDecoration = TextDecoration.Underline),
+                        maxLines = 1,
+                    )
+                }
+            }
+            when (currentLanguage) {
+                Language.ARABIC ->
+                    createHorizontalChain(
+                        google,
+                        verified,
+                        chainStyle = ChainStyle.Spread,
+                    )
+
+                else ->
+                    createHorizontalChain(
+                        verified,
+                        google,
+                        chainStyle = ChainStyle.Spread,
+                    )
             }
         }
     }
 }
 
-private fun unLinkGoogleAccount(
-    scope: CoroutineScope,
-    onSuccess: () -> Unit,
-) {
-    Firebase.auth.currentUser?.let { currentUser ->
-        currentUser
-            .unlink(GoogleAuthProvider.PROVIDER_ID)
-            .addOnSuccessListener {
-                scope.launch {
-                    val profileUpdates =
-                        UserProfileChangeRequest
-                            .Builder()
-                            .setPhotoUri(null)
-                            .build()
-                    currentUser
-                        .updateProfile(profileUpdates)
-                        .addOnSuccessListener { onSuccess() }
-                }
-            }
+@Preview(showBackground = true, name = "Light")
+@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES, name = "Dark")
+@Preview(locale = "ar", showBackground = true, name = "Arabic Light")
+@Preview(locale = "ar", showBackground = true, uiMode = UI_MODE_NIGHT_YES, name = "Arabic Dark")
+@Composable
+private fun ProfileContentPreview() {
+    Column(modifier = Modifier.background(color = backgroundColor)) {
+        ProfileContent(
+            state = ProfileState(),
+            onIntent = {},
+        )
     }
 }

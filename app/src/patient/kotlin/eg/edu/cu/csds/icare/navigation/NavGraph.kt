@@ -21,7 +21,9 @@ import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
 import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.appointment.navigation.appointmentsRoute
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
-import eg.edu.cu.csds.icare.auth.screen.AuthViewModel
+import eg.edu.cu.csds.icare.auth.screen.profile.ProfileIntent
+import eg.edu.cu.csds.icare.auth.screen.profile.ProfileSingleEvent
+import eg.edu.cu.csds.icare.auth.screen.profile.ProfileViewModel
 import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
 import eg.edu.cu.csds.icare.consultation.screen.navigation.consultationsRoute
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
@@ -46,16 +48,16 @@ fun SetupNavGraph(
     mediaHelper: MediaHelper,
     navController: NavHostController,
     mainViewModel: MainViewModel,
-    authViewModel: AuthViewModel,
-    homeViewModel: HomeViewModel,
+    homeViewModel: HomeViewModel = koinViewModel(),
+    clinicViewModel: ClinicViewModel = koinViewModel(),
+    pharmacyViewModel: PharmacyViewModel = koinViewModel(),
+    centerViewModel: CenterViewModel = koinViewModel(),
+    appointmentViewModel: AppointmentViewModel = koinViewModel(),
+    consultationViewModel: ConsultationViewModel = koinViewModel(),
+    profileViewModel: ProfileViewModel = koinViewModel(),
     context: Context = LocalContext.current,
 ) {
     val onBoardingRes by mainViewModel.onBoardingCompleted.collectAsStateWithLifecycle()
-    val appointmentViewModel: AppointmentViewModel = koinViewModel()
-    val clinicViewModel: ClinicViewModel = koinViewModel()
-    val pharmacyViewModel: PharmacyViewModel = koinViewModel()
-    val centerViewModel: CenterViewModel = koinViewModel()
-    val consultationViewModel: ConsultationViewModel = koinViewModel()
     val alertMessage = remember { mutableStateOf("") }
     val showAlert = remember { mutableStateOf(false) }
     val exitApp = remember { mutableStateOf(false) }
@@ -97,7 +99,7 @@ fun SetupNavGraph(
                             error,
                             exitApp,
                             context,
-                            authViewModel,
+                            profileViewModel,
                             navController,
                             alertMessage,
                             showAlert,
@@ -113,8 +115,6 @@ fun SetupNavGraph(
             })
 
             authenticationRoute(
-                mainViewModel = mainViewModel,
-                authViewModel = authViewModel,
                 onRecoveryClicked = { navController.navigate(Screen.PasswordRecovery) },
                 onCreateAccountClicked = { navController.navigate(Screen.SignUp) },
                 onLoginClicked = {
@@ -143,18 +143,6 @@ fun SetupNavGraph(
                         }
                     }
                 },
-                onError = { error ->
-                    exitApp.value = false
-                    handleError(
-                        error,
-                        exitApp,
-                        context,
-                        authViewModel,
-                        navController,
-                        alertMessage,
-                        showAlert,
-                    )
-                },
             )
 
             homeRoute(
@@ -176,7 +164,7 @@ fun SetupNavGraph(
                         error,
                         exitApp,
                         context,
-                        authViewModel,
+                        profileViewModel,
                         navController,
                         alertMessage,
                         showAlert,
@@ -207,7 +195,7 @@ fun SetupNavGraph(
                         error,
                         exitApp,
                         context,
-                        authViewModel,
+                        profileViewModel,
                         navController,
                         alertMessage,
                         showAlert,
@@ -225,7 +213,7 @@ fun SetupNavGraph(
                         error,
                         exitApp,
                         context,
-                        authViewModel,
+                        profileViewModel,
                         navController,
                         alertMessage,
                         showAlert,
@@ -248,16 +236,20 @@ private suspend fun handleError(
     error: Throwable?,
     exitApp: MutableState<Boolean>,
     context: Context,
-    authViewModel: AuthViewModel,
+    profileViewModel: ProfileViewModel,
     navController: NavHostController,
     alertMessage: MutableState<String>,
     showAlert: MutableState<Boolean>,
 ) {
     when (error) {
         is UserNotAuthenticatedException -> {
-            authViewModel.onLogOutClick()
-            navController.navigate(Screen.SignIn) {
-                popUpTo(navController.graph.id) { inclusive = true }
+            profileViewModel.processIntent(ProfileIntent.SignOut)
+            profileViewModel.singleEvent.collect { event ->
+                if (event is ProfileSingleEvent.SignOutSuccess) {
+                    navController.navigate(Screen.SignIn) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
+                }
             }
         }
 

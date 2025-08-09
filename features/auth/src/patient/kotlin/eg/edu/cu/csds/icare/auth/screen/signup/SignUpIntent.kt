@@ -1,71 +1,71 @@
 package eg.edu.cu.csds.icare.auth.screen.signup
 
-sealed interface SignUpAction {
+sealed interface SignUpIntent {
     data class UpdateFirstName(
         val firstName: String,
-    ) : SignUpAction
+    ) : SignUpIntent
 
     data class UpdateLastName(
         val lastName: String,
-    ) : SignUpAction
+    ) : SignUpIntent
 
     data class UpdateEmail(
         val email: String,
-    ) : SignUpAction
+    ) : SignUpIntent
 
     data class UpdateBirthDate(
         val birthDate: Long,
-    ) : SignUpAction
+    ) : SignUpIntent
 
     data class UpdateGender(
         val gender: Short,
-    ) : SignUpAction
+    ) : SignUpIntent
 
     data class UpdateGenderExpanded(
         val isExpanded: Boolean,
-    ) : SignUpAction
+    ) : SignUpIntent
 
     data class UpdateNationalId(
         val nationalId: String,
-    ) : SignUpAction
+    ) : SignUpIntent
 
     data class UpdatePhone(
         val phone: String,
-    ) : SignUpAction
+    ) : SignUpIntent
 
     data class UpdateAddress(
         val address: String,
-    ) : SignUpAction
+    ) : SignUpIntent
 
     data class UpdateWeight(
         val weight: Double,
-    ) : SignUpAction
+    ) : SignUpIntent
 
     data class UpdateChronicDiseases(
         val chronicDiseases: String,
-    ) : SignUpAction
+    ) : SignUpIntent
 
     data class UpdateCurrentMedications(
         val currentMedications: String,
-    ) : SignUpAction
+    ) : SignUpIntent
 
     data class UpdateAllergies(
         val allergies: String,
-    ) : SignUpAction
+    ) : SignUpIntent
 
     data class UpdatePastSurgeries(
         val pastSurgeries: String,
-    ) : SignUpAction
+    ) : SignUpIntent
 
     data class UpdatePassword(
         val password: String,
-    ) : SignUpAction
+    ) : SignUpIntent
 
-    object ToggleShowAlert : SignUpAction
+    object ToggleShowAlert : SignUpIntent
 
-    object TogglePasswordVisibility : SignUpAction
+    object TogglePasswordVisibility : SignUpIntent
 
-    object SubmitSignUp : SignUpAction
+    object SubmitSignUp : SignUpIntent
 
-    object NavigateToSignInScreen : SignUpAction
+    object NavigateToSignInScreen : SignUpIntent
 }
