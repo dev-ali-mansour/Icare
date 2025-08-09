@@ -18,15 +18,12 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
-import eg.edu.cu.csds.icare.auth.screen.profile.ProfileViewModel
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.common.BottomNavItem
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
 import eg.edu.cu.csds.icare.core.ui.view.BottomBarNavigation
-import eg.edu.cu.csds.icare.home.HomeViewModel
 import eg.edu.cu.csds.icare.navigation.SetupNavGraph
-import org.koin.androidx.compose.koinViewModel
 import org.koin.java.KoinJavaComponent.inject
 
 @Composable
@@ -37,8 +34,6 @@ fun MainScreen(
     val layoutDirection = LocalLayoutDirection.current
     val navController = rememberNavController()
     val firebaseAuth: FirebaseAuth by inject(FirebaseAuth::class.java)
-    val profileViewModel: ProfileViewModel = koinViewModel()
-    val homeViewModel: HomeViewModel = koinViewModel()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val bottomNavItems =
@@ -79,8 +74,6 @@ fun MainScreen(
                 mediaHelper = mediaHelper,
                 navController = navController,
                 mainViewModel = mainViewModel,
-                profileViewModel = profileViewModel,
-                homeViewModel = homeViewModel,
             )
         }
     }
