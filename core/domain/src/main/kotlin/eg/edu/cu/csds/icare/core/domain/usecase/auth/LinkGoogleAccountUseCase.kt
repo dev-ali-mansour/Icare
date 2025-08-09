@@ -5,11 +5,9 @@ import eg.edu.cu.csds.icare.core.domain.model.Result
 import eg.edu.cu.csds.icare.core.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 
-class LinkTokenAccountUseCase(
+class LinkGoogleAccountUseCase(
     private val repository: AuthRepository,
 ) {
-    operator fun invoke(
-        providerId: String,
-        token: String,
-    ): Flow<Result<Unit, DataError.Remote>> = repository.linkTokenAccount(providerId, token)
+    operator fun invoke(token: String): Flow<Result<Unit, DataError.Remote>> =
+        repository.linkGoogleAccount(token)
 }
