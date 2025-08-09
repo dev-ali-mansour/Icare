@@ -85,17 +85,17 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 @Composable
 internal fun SignInScreen(
     viewModel: SignInViewModel = koinViewModel(),
+    request: GetCredentialRequest = koinInject(),
+    credentialManager: CredentialManager = koinInject(),
+    context: Context = LocalContext.current,
     onRecoveryClicked: () -> Unit,
     onCreateAnAccountClicked: () -> Unit,
     onLoginSuccess: () -> Unit,
-    context: Context = LocalContext.current,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val scope: CoroutineScope = rememberCoroutineScope()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
-    val request: GetCredentialRequest = koinInject()
-    val credentialManager: CredentialManager = koinInject()
 
     LaunchedEffect(Unit) {
         viewModel.singleEvent.collect { event ->
@@ -137,11 +137,7 @@ internal fun SignInScreen(
                                             context = context,
                                         )
                                     handleSignIn(result, onSuccess = {
-                                        viewModel.processIntent(
-                                            SignInIntent.UpdateGoogleSignInToken(
-                                                it,
-                                            ),
-                                        )
+                                        viewModel.processIntent(SignInIntent.UpdateGoogleSignInToken(it))
                                         viewModel.processIntent(SignInIntent.SignInWithGoogle)
                                     }, onError = { error ->
                                         Timber.e("Google Sign-In failed: $error")
