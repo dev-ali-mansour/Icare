@@ -83,6 +83,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -96,11 +97,32 @@ internal fun SignUpScreen(
     context: Context = LocalContext.current,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val scope: CoroutineScope = rememberCoroutineScope()
+    var alertMessage by remember { mutableStateOf("") }
+    var showAlert by remember { mutableStateOf(false) }
 
-    LaunchedEffect(state.signUpSuccess) {
-        if (state.signUpSuccess) {
-            delay(timeMillis = 3000)
-            onSignUpSuccess()
+    LaunchedEffect(Unit) {
+        viewModel.singleEvent.collect { event ->
+            when (event) {
+                is SignUpSingleEvent.LoginSuccess -> onSignUpSuccess()
+                is SignUpSingleEvent.ShowError -> {
+                    alertMessage = event.message.asString(context)
+                    scope.launch {
+                        showAlert = true
+                        delay(timeMillis = 3000)
+                        showAlert = false
+                    }
+                }
+
+                is SignUpSingleEvent.ShowInfo -> {
+                    alertMessage = event.message.asString(context)
+                    scope.launch {
+                        showAlert = true
+                        delay(timeMillis = 3000)
+                        showAlert = false
+                    }
+                }
+            }
         }
     }
 
@@ -118,26 +140,28 @@ internal fun SignUpScreen(
         ) {
             SignUpContent(
                 state = state,
-                onAction = { action ->
-                    when (action) {
-                        is SignUpAction.NavigateToSignInScreen -> {
+                onIntent = { intent ->
+                    when (intent) {
+                        is SignUpIntent.NavigateToSignInScreen -> {
                             navigateToScreen(Screen.SignIn)
                         }
 
-                        else -> viewModel.onAction(action)
+                        else -> viewModel.processIntent(intent)
                     }
                 },
                 context = context,
             )
+
+            if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun SignUpContent(
-    state: SignUpUIState,
-    onAction: (SignUpAction) -> Unit,
+private fun SignUpContent(
+    state: SignUpState,
+    onIntent: (SignUpIntent) -> Unit,
     context: Context = LocalContext.current,
 ) {
     val genders =
@@ -158,7 +182,7 @@ internal fun SignUpContent(
                 TextButton(
                     onClick = {
                         datePickerState.selectedDateMillis?.let {
-                            onAction(SignUpAction.UpdateBirthDate(it))
+                            onIntent(SignUpIntent.UpdateBirthDate(it))
                         }
                         showDatePicker = false
                     },
@@ -262,7 +286,7 @@ internal fun SignUpContent(
             ) {
                 TextField(
                     value = state.firstName,
-                    onValueChange = { onAction(SignUpAction.UpdateFirstName(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateFirstName(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.first_name),
@@ -295,7 +319,7 @@ internal fun SignUpContent(
 
                 TextField(
                     value = state.lastName,
-                    onValueChange = { onAction(SignUpAction.UpdateLastName(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateLastName(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.last_name),
@@ -327,7 +351,7 @@ internal fun SignUpContent(
 
                 TextField(
                     value = state.email,
-                    onValueChange = { onAction(SignUpAction.UpdateEmail(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateEmail(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.email),
@@ -407,7 +431,7 @@ internal fun SignUpContent(
                 ExposedDropdownMenuBox(
                     modifier = Modifier.fillMaxWidth(fraction = 0.8f),
                     expanded = state.isGenderExpanded,
-                    onExpandedChange = { onAction(SignUpAction.UpdateGenderExpanded(it)) },
+                    onExpandedChange = { onIntent(SignUpIntent.UpdateGenderExpanded(it)) },
                 ) {
                     OutlinedTextField(
                         modifier =
@@ -447,7 +471,7 @@ internal fun SignUpContent(
                     ExposedDropdownMenu(
                         expanded = state.isGenderExpanded,
                         onDismissRequest = {
-                            onAction(SignUpAction.UpdateGenderExpanded(false))
+                            onIntent(SignUpIntent.UpdateGenderExpanded(false))
                         },
                     ) {
                         genders.forEach {
@@ -459,8 +483,8 @@ internal fun SignUpContent(
                                     )
                                 },
                                 onClick = {
-                                    onAction(SignUpAction.UpdateGender(it.code))
-                                    onAction(SignUpAction.UpdateGenderExpanded(false))
+                                    onIntent(SignUpIntent.UpdateGender(it.code))
+                                    onIntent(SignUpIntent.UpdateGenderExpanded(false))
                                 },
                             )
                         }
@@ -469,7 +493,7 @@ internal fun SignUpContent(
 
                 TextField(
                     value = state.nationalId,
-                    onValueChange = { if (it.length < 15) onAction(SignUpAction.UpdateNationalId(it)) },
+                    onValueChange = { if (it.length < 15) onIntent(SignUpIntent.UpdateNationalId(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.national_id),
@@ -500,7 +524,7 @@ internal fun SignUpContent(
                 )
                 TextField(
                     value = state.phone,
-                    onValueChange = { if (it.length < 14) onAction(SignUpAction.UpdatePhone(it)) },
+                    onValueChange = { if (it.length < 14) onIntent(SignUpIntent.UpdatePhone(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.phone_number),
@@ -532,7 +556,7 @@ internal fun SignUpContent(
 
                 TextField(
                     value = state.address,
-                    onValueChange = { onAction(SignUpAction.UpdateAddress(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateAddress(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.address),
@@ -566,7 +590,7 @@ internal fun SignUpContent(
                     value = state.weight.toString(),
                     onValueChange = {
                         runCatching {
-                            onAction(SignUpAction.UpdateWeight(if (it.isEmpty()) 0.0 else it.toDouble()))
+                            onIntent(SignUpIntent.UpdateWeight(if (it.isEmpty()) 0.0 else it.toDouble()))
                         }
                     },
                     label = {
@@ -601,7 +625,7 @@ internal fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.chronicDiseases,
-                    onValueChange = { onAction(SignUpAction.UpdateChronicDiseases(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateChronicDiseases(it)) },
                     label = {
                         Text(
                             text = stringResource(CoreR.string.chronic_diseases),
@@ -638,7 +662,7 @@ internal fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.currentMedications,
-                    onValueChange = { onAction(SignUpAction.UpdateCurrentMedications(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateCurrentMedications(it)) },
                     label = {
                         Text(
                             text = stringResource(CoreR.string.current_medications),
@@ -675,7 +699,7 @@ internal fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.allergies,
-                    onValueChange = { onAction(SignUpAction.UpdateAllergies(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateAllergies(it)) },
                     label = {
                         Text(
                             text = stringResource(CoreR.string.allergies),
@@ -712,7 +736,7 @@ internal fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.pastSurgeries,
-                    onValueChange = { onAction(SignUpAction.UpdatePastSurgeries(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdatePastSurgeries(it)) },
                     label = {
                         Text(
                             text = stringResource(CoreR.string.past_surgeries),
@@ -749,7 +773,7 @@ internal fun SignUpContent(
 
                 TextField(
                     value = state.password,
-                    onValueChange = { onAction(SignUpAction.UpdatePassword(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdatePassword(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.password),
@@ -773,7 +797,7 @@ internal fun SignUpContent(
                         ),
                     trailingIcon = {
                         IconButton(
-                            onClick = { onAction(SignUpAction.TogglePasswordVisibility) },
+                            onClick = { onIntent(SignUpIntent.TogglePasswordVisibility) },
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_baseline_remove_red_eye_24),
@@ -804,7 +828,7 @@ internal fun SignUpContent(
                             .fillMaxWidth(fraction = 0.6f),
                     text = stringResource(R.string.sign_up),
                     color = buttonBackgroundColor,
-                    onClick = { onAction(SignUpAction.SubmitSignUp) },
+                    onClick = { onIntent(SignUpIntent.SubmitSignUp) },
                 )
 
                 Spacer(modifier = Modifier.height(L_PADDING))
@@ -816,26 +840,8 @@ internal fun SignUpContent(
                     color = textColor,
                     modifier =
                         Modifier
-                            .clickable { onAction(SignUpAction.NavigateToSignInScreen) },
+                            .clickable { onIntent(SignUpIntent.NavigateToSignInScreen) },
                 )
-            }
-        }
-
-        LaunchedEffect(state.alertMessage) {
-            state.alertMessage?.let {
-                scope.launch {
-                    onAction(SignUpAction.ToggleShowAlert)
-                    delay(timeMillis = 3000)
-                    onAction(SignUpAction.ToggleShowAlert)
-                }
-            }
-        }
-
-        if (state.showAlert) {
-            state.alertMessage?.let { errorMessage ->
-                DialogWithIcon(text = errorMessage.asString()) {
-                    onAction(SignUpAction.ToggleShowAlert)
-                }
             }
         }
 
@@ -858,11 +864,11 @@ internal fun SignUpContent(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
 @Composable
-internal fun SignUpContentPreview() {
+private fun SignUpContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         SignUpContent(
-            state = SignUpUIState(),
-            onAction = {},
+            state = SignUpState(),
+            onIntent = {},
         )
     }
 }

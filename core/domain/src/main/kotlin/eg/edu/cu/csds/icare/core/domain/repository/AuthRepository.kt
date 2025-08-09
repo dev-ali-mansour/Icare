@@ -39,10 +39,9 @@ interface AuthRepository {
         password: String,
     ): Flow<Result<Unit, DataError.Remote>>
 
-    fun linkTokenAccount(
-        providerId: String,
-        token: String,
-    ): Flow<Result<Unit, DataError.Remote>>
+    fun linkGoogleAccount(token: String): Flow<Result<Unit, DataError.Remote>>
+
+    fun unlinkGoogleAccount(): Flow<Result<Unit, DataError.Remote>>
 
     fun signOut(): Flow<Result<Unit, DataError>>
 

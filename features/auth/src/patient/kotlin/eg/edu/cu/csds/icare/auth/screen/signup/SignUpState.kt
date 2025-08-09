@@ -1,10 +1,7 @@
 package eg.edu.cu.csds.icare.auth.screen.signup
 
-import eg.edu.cu.csds.icare.core.ui.util.UiText
-
-data class SignUpUIState(
+data class SignUpState(
     val isLoading: Boolean = false,
-    val signUpSuccess: Boolean = false,
     val firstName: String = "",
     val lastName: String = "",
     val email: String = "",
@@ -22,5 +19,4 @@ data class SignUpUIState(
     val password: String = "",
     val isPasswordVisible: Boolean = false,
     val showAlert: Boolean = false,
-    val alertMessage: UiText? = null,
 )
