@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.onboarding
+package eg.edu.cu.csds.icare.onboarding.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
