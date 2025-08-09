@@ -9,5 +9,6 @@ import kotlinx.coroutines.flow.Flow
 class GetUserInfoUseCase(
     private val repository: AuthRepository,
 ) {
-    operator fun invoke(forceUpdate: Boolean): Flow<Result<User, DataError.Remote>> = repository.getUserInfo(forceUpdate = forceUpdate)
+    operator fun invoke(forceUpdate: Boolean): Flow<Result<User, DataError.Remote>> =
+        repository.getUserInfo(forceUpdate = forceUpdate)
 }
