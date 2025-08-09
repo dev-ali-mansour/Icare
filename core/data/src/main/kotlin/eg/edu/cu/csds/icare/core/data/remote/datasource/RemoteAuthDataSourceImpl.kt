@@ -2,9 +2,7 @@ package eg.edu.cu.csds.icare.core.data.remote.datasource
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
-import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.auth
@@ -59,7 +57,9 @@ class RemoteAuthDataSourceImpl(
                                                             isEmailVerified = user.isEmailVerified,
                                                             linkedWithGoogle =
                                                                 user.providerData.any {
-                                                                    it.providerId == GoogleAuthProvider.PROVIDER_ID
+                                                                    it.providerId ==
+                                                                        GoogleAuthProvider
+                                                                            .PROVIDER_ID
                                                                 },
                                                         ),
                                                 ),
@@ -183,7 +183,7 @@ class RemoteAuthDataSourceImpl(
                 emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
             }
         }.catch {
-            Timber.e("signInWithToken() Error ${it.javaClass.simpleName}: ${it.message}")
+            Timber.e("signInWithGoogle() Error ${it.javaClass.simpleName}: ${it.message}")
             emit(Result.Error(it.toRemoteError()))
         }
 
@@ -215,23 +215,18 @@ class RemoteAuthDataSourceImpl(
             emit(Result.Error(it.toRemoteError()))
         }
 
-    override fun linkTokenAccount(
-        providerId: String,
-        token: String,
-    ): Flow<Result<Unit, DataError.Remote>> =
+    override fun linkGoogleAccount(token: String): Flow<Result<Unit, DataError.Remote>> =
         flow {
-            val credential =
-                when (providerId) {
-                    GoogleAuthProvider.PROVIDER_ID ->
-                        GoogleAuthProvider.getCredential(token, null)
-
-                    FacebookAuthProvider.PROVIDER_ID -> FacebookAuthProvider.getCredential(token)
-                    else -> throw FirebaseAuthException("17016", "No such provider error")
-                }
+            Timber.d("linkGoogleAccount() called with token: $token")
+            val credential = GoogleAuthProvider.getCredential(token, null)
             auth.currentUser?.let { currentUser ->
                 val authResult = currentUser.linkWithCredential(credential).await()
                 val providerData =
-                    authResult.user?.providerData?.firstOrNull { it.providerId == providerId }
+                    authResult.user
+                        ?.providerData
+                        ?.firstOrNull {
+                            it.providerId == GoogleAuthProvider.PROVIDER_ID
+                        }
                 providerData?.photoUrl?.let { newPhotoUrl ->
                     val profileUpdates =
                         UserProfileChangeRequest
@@ -245,14 +240,34 @@ class RemoteAuthDataSourceImpl(
                 emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
             }
         }.catch {
-            Timber.e("linkTokenAccount() Error ${it.javaClass.simpleName}: ${it.message}")
+            Timber.e("linkGoogleAccount() Error ${it.javaClass.simpleName}: ${it.message}")
             emit(Result.Error(it.toRemoteError()))
+        }
+
+    override fun unlinkGoogleAccount(): Flow<Result<Unit, DataError.Remote>> =
+        flow {
+            Timber.d("unlinkGoogleAccount() called")
+            auth.currentUser?.let { currentUser ->
+                currentUser.unlink(GoogleAuthProvider.PROVIDER_ID).await()
+                val profileUpdates =
+                    UserProfileChangeRequest
+                        .Builder()
+                        .setPhotoUri(null)
+                        .build()
+                currentUser.updateProfile(profileUpdates).await()
+                emit(Result.Success(Unit))
+            } ?: run {
+                emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+            }
+        }.catch { exception ->
+            Timber.e("unLinkGoogleAccount() Error ${exception.javaClass.simpleName}: ${exception.message}")
+            emit(Result.Error(exception.toRemoteError()))
         }
 
     override fun deleteAccount(): Flow<Result<Unit, DataError.Remote>> =
         flow {
             runCatching {
-                auth.currentUser!!.delete().await()
+                auth.currentUser?.delete()?.await()
                 emit(Result.Success(Unit))
             }.onFailure {
                 Timber.e("deleteAccount() Error ${it.javaClass.simpleName}: ${it.message}")
@@ -297,21 +312,27 @@ class RemoteAuthDataSourceImpl(
                 HTTP_OK ->
                     response.body()?.let { res ->
                         when (res.statusCode) {
-                            Constants.ERROR_CODE_OK -> emit(Result.Success(Unit))
+                            Constants.ERROR_CODE_OK ->
+                                emit(Result.Success(Unit))
+
                             Constants.ERROR_CODE_USER_COLLISION ->
                                 emit(Result.Error(DataError.Remote.FirebaseAuthUserCollision))
 
                             Constants.ERROR_CODE_EXPIRED_TOKEN ->
                                 emit(Result.Error(DataError.Remote.ACCESS_TOKEN_EXPIRED))
 
-                            else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                            else ->
+                                emit(Result.Error(DataError.Remote.UNKNOWN))
                         }
-                    } ?: run { emit(Result.Error(DataError.Remote.UNKNOWN)) }
+                    } ?: run {
+                        emit(Result.Error(DataError.Remote.UNKNOWN))
+                    }
 
                 HttpURLConnection.HTTP_UNAUTHORIZED ->
                     emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
 
-                else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                else ->
+                    emit(Result.Error(DataError.Remote.UNKNOWN))
             }
         }.catch {
             Timber.e("registerOnDB() Error ${it.javaClass.simpleName}: ${it.message}")

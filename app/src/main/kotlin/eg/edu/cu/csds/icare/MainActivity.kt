@@ -36,7 +36,9 @@ class MainActivity : AppCompatActivity() {
     private val updateType = AppUpdateType.IMMEDIATE
     private val updateFlowResultLauncher =
         (this as ComponentActivity)
-            .registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+            .registerForActivityResult(
+                ActivityResultContracts.StartIntentSenderForResult(),
+            ) { result ->
                 if (result.resultCode != RESULT_OK) {
                     Timber.e("Update flow failed! Result code: ${result.resultCode}")
                     exitProcess(0)
@@ -99,7 +101,15 @@ class MainActivity : AppCompatActivity() {
                     info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
                 if (isUpdateAvailable && info.isFlexibleUpdateAllowed) {
                     val starter =
-                        IntentSenderForResultStarter { intent, _, fillInIntent, flagsMask, flagsValues, _, _ ->
+                        IntentSenderForResultStarter {
+                            intent,
+                            _,
+                            fillInIntent,
+                            flagsMask,
+                            flagsValues,
+                            _,
+                            _,
+                            ->
                             val request =
                                 IntentSenderRequest
                                     .Builder(intent)

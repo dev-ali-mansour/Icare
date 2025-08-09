@@ -18,7 +18,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
-import eg.edu.cu.csds.icare.auth.screen.AuthViewModel
+import eg.edu.cu.csds.icare.auth.screen.profile.ProfileViewModel
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.common.BottomNavItem
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
@@ -37,7 +37,7 @@ fun MainScreen(
     val layoutDirection = LocalLayoutDirection.current
     val navController = rememberNavController()
     val firebaseAuth: FirebaseAuth by inject(FirebaseAuth::class.java)
-    val authViewModel: AuthViewModel = koinViewModel()
+    val profileViewModel: ProfileViewModel = koinViewModel()
     val homeViewModel: HomeViewModel = koinViewModel()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -79,7 +79,7 @@ fun MainScreen(
                 mediaHelper = mediaHelper,
                 navController = navController,
                 mainViewModel = mainViewModel,
-                authViewModel = authViewModel,
+                profileViewModel = profileViewModel,
                 homeViewModel = homeViewModel,
             )
         }

@@ -14,8 +14,10 @@ import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -33,199 +35,191 @@ class SignUpViewModel(
     private var signUpJob: Job? = null
     private var signOutJob: Job? = null
 
-    private val _state = MutableStateFlow(SignUpUIState())
+    private val _state = MutableStateFlow(SignUpState())
     val state =
         _state.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
             initialValue = _state.value,
         )
+    private val _singleEvent = MutableSharedFlow<SignUpSingleEvent>()
+    val singleEvent = _singleEvent.asSharedFlow()
 
-    fun onAction(action: SignUpAction) {
-        when (action) {
-            is SignUpAction.UpdateFirstName -> {
-                _state.update { it.copy(firstName = action.firstName) }
+    fun processIntent(intent: SignUpIntent) {
+        when (intent) {
+            is SignUpIntent.UpdateFirstName -> {
+                _state.update { it.copy(firstName = intent.firstName) }
             }
 
-            is SignUpAction.UpdateLastName -> {
-                _state.value = _state.value.copy(lastName = action.lastName)
+            is SignUpIntent.UpdateLastName -> {
+                _state.value = _state.value.copy(lastName = intent.lastName)
             }
 
-            is SignUpAction.UpdateEmail -> {
-                _state.update { it.copy(email = action.email) }
+            is SignUpIntent.UpdateEmail -> {
+                _state.update { it.copy(email = intent.email) }
             }
 
-            is SignUpAction.UpdateBirthDate -> {
-                _state.update { _state.value.copy(birthDate = action.birthDate) }
+            is SignUpIntent.UpdateBirthDate -> {
+                _state.update { _state.value.copy(birthDate = intent.birthDate) }
             }
 
-            is SignUpAction.UpdateGender -> {
-                _state.update { it.copy(gender = action.gender) }
+            is SignUpIntent.UpdateGender -> {
+                _state.update { it.copy(gender = intent.gender) }
             }
 
-            is SignUpAction.UpdateGenderExpanded -> {
-                _state.update { it.copy(isGenderExpanded = action.isExpanded) }
+            is SignUpIntent.UpdateGenderExpanded -> {
+                _state.update { it.copy(isGenderExpanded = intent.isExpanded) }
             }
 
-            is SignUpAction.UpdateNationalId -> {
-                _state.update { it.copy(nationalId = action.nationalId) }
+            is SignUpIntent.UpdateNationalId -> {
+                _state.update { it.copy(nationalId = intent.nationalId) }
             }
 
-            is SignUpAction.UpdatePhone -> {
-                _state.update { it.copy(phone = action.phone) }
+            is SignUpIntent.UpdatePhone -> {
+                _state.update { it.copy(phone = intent.phone) }
             }
 
-            is SignUpAction.UpdateAddress -> {
-                _state.update { it.copy(address = action.address) }
+            is SignUpIntent.UpdateAddress -> {
+                _state.update { it.copy(address = intent.address) }
             }
 
-            is SignUpAction.UpdateWeight -> {
-                _state.update { it.copy(weight = action.weight) }
+            is SignUpIntent.UpdateWeight -> {
+                _state.update { it.copy(weight = intent.weight) }
             }
 
-            is SignUpAction.UpdateChronicDiseases -> {
-                _state.update { it.copy(chronicDiseases = action.chronicDiseases) }
+            is SignUpIntent.UpdateChronicDiseases -> {
+                _state.update { it.copy(chronicDiseases = intent.chronicDiseases) }
             }
 
-            is SignUpAction.UpdateCurrentMedications -> {
-                _state.update { it.copy(currentMedications = action.currentMedications) }
+            is SignUpIntent.UpdateCurrentMedications -> {
+                _state.update { it.copy(currentMedications = intent.currentMedications) }
             }
 
-            is SignUpAction.UpdateAllergies -> {
-                _state.update { it.copy(allergies = action.allergies) }
+            is SignUpIntent.UpdateAllergies -> {
+                _state.update { it.copy(allergies = intent.allergies) }
             }
 
-            is SignUpAction.UpdatePastSurgeries -> {
-                _state.update { it.copy(pastSurgeries = action.pastSurgeries) }
+            is SignUpIntent.UpdatePastSurgeries -> {
+                _state.update { it.copy(pastSurgeries = intent.pastSurgeries) }
             }
 
-            is SignUpAction.UpdatePassword -> {
-                _state.update { it.copy(password = action.password) }
+            is SignUpIntent.UpdatePassword -> {
+                _state.update { it.copy(password = intent.password) }
             }
 
-            is SignUpAction.ToggleShowAlert -> {
+            is SignUpIntent.ToggleShowAlert -> {
                 _state.update { it.copy(showAlert = !it.showAlert) }
             }
 
-            is SignUpAction.TogglePasswordVisibility -> {
+            is SignUpIntent.TogglePasswordVisibility -> {
                 _state.update { it.copy(isPasswordVisible = !it.isPasswordVisible) }
             }
 
-            is SignUpAction.SubmitSignUp -> {
-                when {
-                    _state.value.firstName.isBlank() -> {
-                        _state.update {
-                            it.copy(
-                                alertMessage = StringResourceId(R.string.error_blank_first_name),
-                                isLoading = false,
+            is SignUpIntent.SubmitSignUp ->
+                viewModelScope.launch {
+                    when {
+                        _state.value.firstName.isBlank() -> {
+                            _singleEvent.emit(
+                                SignUpSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.error_blank_first_name)),
                             )
+                            _state.update { it.copy(isLoading = false) }
                         }
-                    }
 
-                    _state.value.lastName.isBlank() -> {
-                        _state.update {
-                            it.copy(
-                                alertMessage = StringResourceId(R.string.error_blank_last_name),
-                                isLoading = false,
+                        _state.value.lastName.isBlank() -> {
+                            _singleEvent.emit(
+                                SignUpSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.error_blank_last_name)),
                             )
+                            _state.update { it.copy(isLoading = false) }
                         }
-                    }
 
-                    !_state.value.email.isValidEmail -> {
-                        _state.update {
-                            it.copy(
-                                alertMessage = StringResourceId(R.string.error_invalid_email),
-                                isLoading = false,
+                        !_state.value.email.isValidEmail -> {
+                            _singleEvent.emit(
+                                SignUpSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.error_invalid_email)),
                             )
+                            _state.update { it.copy(isLoading = false) }
                         }
-                    }
 
-                    _state.value.gender == 0.toShort() -> {
-                        _state.update {
-                            it.copy(
-                                alertMessage = StringResourceId(R.string.error_invalid_gender),
-                                isLoading = false,
+                        _state.value.gender == 0.toShort() -> {
+                            _singleEvent.emit(
+                                SignUpSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.error_invalid_gender)),
                             )
+                            _state.update { it.copy(isLoading = false) }
                         }
-                    }
 
-                    _state.value.nationalId.isBlank() ||
-                        _state.value.nationalId.length < Constants.NATIONAL_ID_LENGTH -> {
-                        _state.update {
-                            it.copy(
-                                alertMessage = StringResourceId(CoreR.string.error_invalid_national_id),
-                                isLoading = false,
+                        _state.value.nationalId.isBlank() ||
+                            _state.value.nationalId.length < Constants.NATIONAL_ID_LENGTH -> {
+                            _singleEvent.emit(
+                                SignUpSingleEvent
+                                    .ShowError(message = StringResourceId(CoreR.string.error_invalid_national_id)),
                             )
+                            _state.update { it.copy(isLoading = false) }
                         }
-                    }
 
-                    _state.value.phone.isBlank() ||
-                        _state.value.phone.length < Constants.PHONE_LENGTH -> {
-                        _state.update {
-                            it.copy(
-                                alertMessage = StringResourceId(R.string.error_invalid_phone),
-                                isLoading = false,
+                        _state.value.phone.isBlank() ||
+                            _state.value.phone.length < Constants.PHONE_LENGTH -> {
+                            _singleEvent.emit(
+                                SignUpSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.error_invalid_phone)),
                             )
+                            _state.update { it.copy(isLoading = false) }
                         }
-                    }
 
-                    _state.value.chronicDiseases.isBlank() -> {
-                        _state.update {
-                            it.copy(
-                                alertMessage = StringResourceId(R.string.error_blank_chronic_diseases),
-                                isLoading = false,
+                        _state.value.chronicDiseases.isBlank() -> {
+                            _singleEvent.emit(
+                                SignUpSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.error_blank_chronic_diseases)),
                             )
+                            _state.update { it.copy(isLoading = false) }
                         }
-                    }
 
-                    _state.value.currentMedications.isBlank() -> {
-                        _state.update {
-                            it.copy(
-                                alertMessage = StringResourceId(R.string.error_blank_current_medications),
-                                isLoading = false,
+                        _state.value.currentMedications.isBlank() -> {
+                            _singleEvent.emit(
+                                SignUpSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.error_blank_current_medications)),
                             )
+                            _state.update { it.copy(isLoading = false) }
                         }
-                    }
 
-                    _state.value.allergies.isBlank() -> {
-                        _state.update {
-                            it.copy(
-                                alertMessage = StringResourceId(R.string.error_blank_allergies),
-                                isLoading = false,
+                        _state.value.allergies.isBlank() -> {
+                            _singleEvent.emit(
+                                SignUpSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.error_blank_allergies)),
                             )
+                            _state.update { it.copy(isLoading = false) }
                         }
-                    }
 
-                    _state.value.pastSurgeries.isBlank() -> {
-                        _state.update {
-                            it.copy(
-                                alertMessage = StringResourceId(R.string.err0r_blank_past_surgeries),
-                                isLoading = false,
+                        _state.value.pastSurgeries.isBlank() -> {
+                            _singleEvent.emit(
+                                SignUpSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.error_blank_past_surgeries)),
                             )
+                            _state.update { it.copy(isLoading = false) }
                         }
-                    }
 
-                    !_state.value.password.isValidPassword -> {
-                        _state.update {
-                            it.copy(
-                                alertMessage = StringResourceId(R.string.error_invalid_password),
-                                isLoading = false,
+                        !_state.value.password.isValidPassword -> {
+                            _singleEvent.emit(
+                                SignUpSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.error_invalid_password)),
                             )
+                            _state.update { it.copy(isLoading = false) }
                         }
-                    }
 
-                    else -> {
-                        signUpJob?.cancel()
-                        signUpJob = onSignUp()
+                        else -> {
+                            signUpJob?.cancel()
+                            signUpJob = launchSignUp()
+                        }
                     }
                 }
-            }
 
-            is SignUpAction.NavigateToSignInScreen -> Unit
+            is SignUpIntent.NavigateToSignInScreen -> Unit
         }
     }
 
-    private fun onSignUp() =
+    private fun launchSignUp() =
         viewModelScope.launch(dispatcher) {
             _state.update { it.copy(isLoading = true) }
             signUpUseCase(
@@ -252,29 +246,25 @@ class SignUpViewModel(
                                 .onEach { signOutResult ->
                                     signOutResult
                                         .onSuccess {
-                                            _state.update {
-                                                it.copy(
-                                                    isLoading = false,
-                                                    signUpSuccess = true,
-                                                    alertMessage = StringResourceId(R.string.register_message),
-                                                )
-                                            }
+                                            _singleEvent.emit(
+                                                SignUpSingleEvent
+                                                    .ShowInfo(message = StringResourceId(R.string.register_message)),
+                                            )
+                                            _state.update { it.copy(isLoading = false) }
                                         }.onError { error ->
-                                            _state.update {
-                                                it.copy(
-                                                    isLoading = false,
-                                                    alertMessage = error.toUiText(),
-                                                )
-                                            }
+                                            _singleEvent.emit(
+                                                SignUpSingleEvent
+                                                    .ShowError(message = error.toUiText()),
+                                            )
+                                            _state.update { it.copy(isLoading = false) }
                                         }
                                 }.launchIn(viewModelScope)
                     }.onError { error ->
-                        _state.update {
-                            it.copy(
-                                isLoading = false,
-                                alertMessage = error.toUiText(),
-                            )
-                        }
+                        _singleEvent.emit(
+                            SignUpSingleEvent
+                                .ShowError(message = error.toUiText()),
+                        )
+                        _state.update { it.copy(isLoading = false) }
                     }
             }.launchIn(viewModelScope)
         }

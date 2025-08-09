@@ -6,6 +6,7 @@ end_of_line = lf
 indent_size = 4
 indent_style = space
 tab_width = 4
+max_line_length = 110
 ktlint_function_naming_ignore_when_annotated_with = Composable
 ktlint_standard_import-ordering = disabled
 ktlint_standard_binary-expression-wrapping = disabled
