@@ -48,16 +48,16 @@ fun SetupNavGraph(
     mediaHelper: MediaHelper,
     navController: NavHostController,
     mainViewModel: MainViewModel,
-    profileViewModel: ProfileViewModel,
-    homeViewModel: HomeViewModel,
+    homeViewModel: HomeViewModel = koinViewModel(),
+    clinicViewModel: ClinicViewModel = koinViewModel(),
+    pharmacyViewModel: PharmacyViewModel = koinViewModel(),
+    centerViewModel: CenterViewModel = koinViewModel(),
+    appointmentViewModel: AppointmentViewModel = koinViewModel(),
+    consultationViewModel: ConsultationViewModel = koinViewModel(),
+    profileViewModel: ProfileViewModel = koinViewModel(),
     context: Context = LocalContext.current,
 ) {
     val onBoardingRes by mainViewModel.onBoardingCompleted.collectAsStateWithLifecycle()
-    val appointmentViewModel: AppointmentViewModel = koinViewModel()
-    val clinicViewModel: ClinicViewModel = koinViewModel()
-    val pharmacyViewModel: PharmacyViewModel = koinViewModel()
-    val centerViewModel: CenterViewModel = koinViewModel()
-    val consultationViewModel: ConsultationViewModel = koinViewModel()
     val alertMessage = remember { mutableStateOf("") }
     val showAlert = remember { mutableStateOf(false) }
     val exitApp = remember { mutableStateOf(false) }
