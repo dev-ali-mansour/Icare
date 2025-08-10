@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ClinicDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun persistClinics(clinics: List<ClinicEntity>)
+    suspend fun persistClinics(clinics: List<ClinicEntity>)
 
     @Query("SELECT * FROM clinics")
     fun listClinics(): Flow<List<ClinicEntity>>
