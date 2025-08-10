@@ -23,13 +23,13 @@ import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOutUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignUpUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.UnlinkGoogleAccountUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.center.AddNewCenter
-import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCenters
+import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCentersUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.center.UpdateCenter
 import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.AddNewCenterStaff
 import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.ListCenterStaff
 import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.UpdateCenterStaff
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.AddNewClinic
-import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinics
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinicsUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.UpdateClinic
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.AddNewClinicStaff
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.ListClinicStaff
@@ -42,7 +42,7 @@ import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetMedicationsBySta
 import eg.edu.cu.csds.icare.core.domain.usecase.consultation.UpdateConsultation
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.AddNewDoctor
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.GetDoctorSchedule
-import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctors
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctorsUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListTopDoctors
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.UpdateDoctor
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.FinishOnBoardingUseCase
@@ -51,7 +51,7 @@ import eg.edu.cu.csds.icare.core.domain.usecase.pharmacist.AddNewPharmacist
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacist.ListPharmacists
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacist.UpdatePharmacist
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.AddNewPharmacy
-import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.ListPharmacies
+import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.ListPharmaciesUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.UpdatePharmacy
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -92,7 +92,7 @@ class UseCaseModule {
     fun provideUnlinkTokenAccount(repository: AuthRepository) = UnlinkGoogleAccountUseCase(repository)
 
     @Single
-    fun provideListClinics(repository: ClinicsRepository) = ListClinics(repository)
+    fun provideListClinics(repository: ClinicsRepository) = ListClinicsUseCase(repository)
 
     @Single
     fun provideAddNewClinic(repository: ClinicsRepository) = AddNewClinic(repository)
@@ -101,7 +101,7 @@ class UseCaseModule {
     fun provideUpdateClinic(repository: ClinicsRepository) = UpdateClinic(repository)
 
     @Single
-    fun provideListDoctors(repository: ClinicsRepository) = ListDoctors(repository)
+    fun provideListDoctors(repository: ClinicsRepository) = ListDoctorsUseCase(repository)
 
     @Single
     fun provideGetDoctorSchedule(repository: ClinicsRepository) = GetDoctorSchedule(repository)
@@ -125,7 +125,7 @@ class UseCaseModule {
     fun provideUpdateClinicStaff(repository: ClinicsRepository) = UpdateClinicStaff(repository)
 
     @Single
-    fun provideListPharmacies(repository: PharmaciesRepository) = ListPharmacies(repository)
+    fun provideListPharmacies(repository: PharmaciesRepository) = ListPharmaciesUseCase(repository)
 
     @Single
     fun provideAddNewCPharmacy(repository: PharmaciesRepository) = AddNewPharmacy(repository)
@@ -143,7 +143,7 @@ class UseCaseModule {
     fun provideUpdatePharmacist(repository: PharmaciesRepository) = UpdatePharmacist(repository)
 
     @Single
-    fun provideListCenters(repository: CentersRepository) = ListCenters(repository)
+    fun provideListCenters(repository: CentersRepository) = ListCentersUseCase(repository)
 
     @Single
     fun provideAddNewCenter(repository: CentersRepository) = AddNewCenter(repository)
