@@ -12,9 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.MainActivity
-import eg.edu.cu.csds.icare.SplashScreen
 import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
@@ -38,16 +36,18 @@ import eg.edu.cu.csds.icare.home.navigation.homeRoute
 import eg.edu.cu.csds.icare.notification.navigation.notificationsRoute
 import eg.edu.cu.csds.icare.onboarding.navigation.onBoardingRoute
 import eg.edu.cu.csds.icare.settings.navigation.settingsRoute
+import eg.edu.cu.csds.icare.splash.SplashScreen
+import eg.edu.cu.csds.icare.splash.SplashViewModel
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import kotlin.system.exitProcess
 
 @Composable
 fun SetupNavGraph(
-    firebaseAuth: FirebaseAuth,
     mediaHelper: MediaHelper,
     navController: NavHostController,
     mainViewModel: MainViewModel,
+    splashViewModel: SplashViewModel,
     homeViewModel: HomeViewModel = koinViewModel(),
     clinicViewModel: ClinicViewModel = koinViewModel(),
     pharmacyViewModel: PharmacyViewModel = koinViewModel(),
@@ -81,15 +81,9 @@ fun SetupNavGraph(
         ) {
             composable<Screen.Splash> {
                 SplashScreen(
-                    firebaseAuth = firebaseAuth,
-                    mainViewModel = mainViewModel,
-                    navigateToHome = {
-                        navController.navigate(Screen.Home) {
-                            popUpTo(navController.graph.id) { inclusive = true }
-                        }
-                    },
-                    navigateToLogin = {
-                        navController.navigate(Screen.SignIn) {
+                    splashViewModel = splashViewModel,
+                    navigateTo = { screen ->
+                        navController.navigate(screen) {
                             popUpTo(navController.graph.id) { inclusive = true }
                         }
                     },
@@ -108,7 +102,7 @@ fun SetupNavGraph(
                 )
             }
 
-            onBoardingRoute(onCompleted = {
+            onBoardingRoute(onFinished = {
                 navController.navigate(Screen.SignIn) {
                     popUpTo(navController.graph.id) { inclusive = true }
                 }
@@ -146,7 +140,6 @@ fun SetupNavGraph(
             )
 
             homeRoute(
-                firebaseAuth = firebaseAuth,
                 mediaHelper = mediaHelper,
                 mainViewModel = mainViewModel,
                 homeViewModel = homeViewModel,
