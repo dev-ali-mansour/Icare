@@ -45,8 +45,8 @@ import eg.edu.cu.csds.icare.core.domain.usecase.doctor.GetDoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctors
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListTopDoctors
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.UpdateDoctor
-import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoarding
-import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.SaveOnBoarding
+import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.FinishOnBoardingUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoardingUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacist.AddNewPharmacist
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacist.ListPharmacists
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacist.UpdatePharmacist
@@ -59,10 +59,10 @@ import org.koin.core.annotation.Single
 @Module(includes = [RepositoryModule::class])
 class UseCaseModule {
     @Single
-    fun provideReadOnBoarding(appRepository: AppRepository) = ReadOnBoarding(appRepository)
+    fun provideReadOnBoarding(appRepository: AppRepository) = ReadOnBoardingUseCase(appRepository)
 
     @Single
-    fun provideSaveOnBoarding(appRepository: AppRepository) = SaveOnBoarding(appRepository)
+    fun provideFinishOnBoarding(appRepository: AppRepository) = FinishOnBoardingUseCase(appRepository)
 
     @Single
     fun provideRegister(repository: AuthRepository) = SignUpUseCase(repository)
@@ -89,8 +89,7 @@ class UseCaseModule {
     fun provideLinkTokenAccount(repository: AuthRepository) = LinkGoogleAccountUseCase(repository)
 
     @Single
-    fun provideUnlinkTokenAccount(repository: AuthRepository) =
-        UnlinkGoogleAccountUseCase(repository)
+    fun provideUnlinkTokenAccount(repository: AuthRepository) = UnlinkGoogleAccountUseCase(repository)
 
     @Single
     fun provideListClinics(repository: ClinicsRepository) = ListClinics(repository)
@@ -172,20 +171,17 @@ class UseCaseModule {
         GetAppointmentsByStatus(repository)
 
     @Single
-    fun provideGetPatientAppointments(repository: AppointmentsRepository) =
-        GetPatientAppointments(repository)
+    fun provideGetPatientAppointments(repository: AppointmentsRepository) = GetPatientAppointments(repository)
 
     @Single
     fun provideUpdateAppointment(repository: AppointmentsRepository): UpdateAppointment =
         UpdateAppointment(repository)
 
     @Single
-    fun provideAddNewConsultation(repository: ConsultationsRepository) =
-        AddNewConsultation(repository)
+    fun provideAddNewConsultation(repository: ConsultationsRepository) = AddNewConsultation(repository)
 
     @Single
-    fun provideUpdateConsultation(repository: ConsultationsRepository) =
-        UpdateConsultation(repository)
+    fun provideUpdateConsultation(repository: ConsultationsRepository) = UpdateConsultation(repository)
 
     @Single
     fun provideGetMedicalRecord(repository: ConsultationsRepository) = GetMedicalRecord(repository)
@@ -195,14 +191,12 @@ class UseCaseModule {
         GetMedicationsByStatus(repository)
 
     @Single
-    fun provideGetLabTestsByStatus(repository: ConsultationsRepository) =
-        GetLabTestsByStatus(repository)
+    fun provideGetLabTestsByStatus(repository: ConsultationsRepository) = GetLabTestsByStatus(repository)
 
     @Single
     fun provideGetImagingTestsByStatus(repository: ConsultationsRepository) =
         GetImagingTestsByStatus(repository)
 
     @Single
-    fun provideGetAdminStatistics(repository: AppointmentsRepository) =
-        GetAdminStatistics(repository)
+    fun provideGetAdminStatistics(repository: AppointmentsRepository) = GetAdminStatistics(repository)
 }
