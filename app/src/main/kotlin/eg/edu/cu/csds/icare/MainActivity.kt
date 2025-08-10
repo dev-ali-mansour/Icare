@@ -16,11 +16,11 @@ import com.google.android.play.core.common.IntentSenderForResultStarter
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
-import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
 import eg.edu.cu.csds.icare.core.ui.util.isInternetAvailable
+import eg.edu.cu.csds.icare.splash.SplashViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -31,6 +31,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModel()
+    private val splashViewModel: SplashViewModel by viewModel()
     private val mediaHelper: MediaHelper by inject()
     private val appUpdateManager: AppUpdateManager by inject()
     private val updateType = AppUpdateType.IMMEDIATE
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         installSplashScreen().apply {
             setKeepOnScreenCondition {
-                mainViewModel.onBoardingCompleted.value !is Resource.Success
+                splashViewModel.state.value.isLoading
             }
         }
         enableEdgeToEdge()
@@ -58,6 +59,7 @@ class MainActivity : AppCompatActivity() {
             IcareTheme {
                 MainScreen(
                     mainViewModel = mainViewModel,
+                    splashViewModel = splashViewModel,
                     mediaHelper = mediaHelper,
                 )
             }
