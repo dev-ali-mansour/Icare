@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SettingsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun updateSettings(settings: SettingsEntity)
+    suspend fun updateSettings(settings: SettingsEntity)
 
     @Query("SELECT * FROM settings WHERE id = 1")
     fun getSettings(): Flow<SettingsEntity?>
