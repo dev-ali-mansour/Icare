@@ -1,5 +1,6 @@
-package eg.edu.cu.csds.icare.onboarding.screen
+package eg.edu.cu.csds.icare.onboarding
 
+import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
@@ -19,21 +20,30 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.util.Constants.LAST_ON_BOARDING_PAGE
 import eg.edu.cu.csds.icare.core.domain.util.Constants.ON_BOARDING_PAGE_COUNT
 import eg.edu.cu.csds.icare.core.ui.common.OnBoardingPage
@@ -48,18 +58,26 @@ import eg.edu.cu.csds.icare.core.ui.theme.descriptionColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.inactiveIndicatorColor
 import eg.edu.cu.csds.icare.core.ui.theme.titleColor
+import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.HorizontalPagerIndicator
 import eg.edu.cu.csds.icare.core.ui.view.VerticalPagerIndicator
-import eg.edu.cu.csds.icare.onboarding.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun OnBoardingScreen(
+    onFinished: () -> Unit,
     configuration: Configuration = LocalConfiguration.current,
-    onBoardingViewModel: OnBoardingViewModel = koinViewModel(),
-    onCompleted: () -> Unit,
+    viewModel: OnBoardingViewModel = koinViewModel(),
+    context: Context = LocalContext.current,
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val scope: CoroutineScope = rememberCoroutineScope()
+    var alertMessage by remember { mutableStateOf("") }
+    var showAlert by remember { mutableStateOf(false) }
     val pagerState = rememberPagerState { ON_BOARDING_PAGE_COUNT }
 
     val pages =
@@ -81,31 +99,40 @@ internal fun OnBoardingScreen(
             ),
         )
 
+    LaunchedEffect(Unit) {
+        viewModel.singleEvent.collect { event ->
+            when (event) {
+                is OnBoardingSingleEvent.OnBoardingFinished -> {
+                    onFinished()
+                }
+
+                is OnBoardingSingleEvent.ShowError -> {
+                    alertMessage = event.message.asString(context)
+                    scope.launch {
+                        showAlert = true
+                        delay(timeMillis = 3000)
+                        showAlert = false
+                    }
+                }
+            }
+        }
+    }
+
     when (configuration.orientation) {
         Configuration.ORIENTATION_LANDSCAPE ->
             WelcomeScreenInLandscape(backgroundColor, pagerState, pages) {
-                onFinishClicked(
-                    onBoardingViewModel = onBoardingViewModel,
-                    onCompleted = { onCompleted() },
-                )
+                viewModel.processIntent(OnBoardingIntent.FinishOnBoarding)
             }
 
         else ->
             WelcomeScreenInPortrait(backgroundColor, pagerState, pages) {
-                onFinishClicked(
-                    onBoardingViewModel = onBoardingViewModel,
-                    onCompleted = { onCompleted() },
-                )
+                viewModel.processIntent(OnBoardingIntent.FinishOnBoarding)
             }
     }
-}
 
-private fun onFinishClicked(
-    onBoardingViewModel: OnBoardingViewModel,
-    onCompleted: () -> Unit,
-) {
-    onBoardingViewModel.saveOnBoardingState(completed = true)
-    onCompleted()
+    if (state.isLoading) CircularProgressIndicator()
+
+    if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
 }
 
 @Composable
