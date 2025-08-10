@@ -5,8 +5,8 @@ import androidx.navigation.compose.composable
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.onboarding.OnBoardingScreen
 
-fun NavGraphBuilder.onBoardingRoute(onCompleted: () -> Unit) {
+fun NavGraphBuilder.onBoardingRoute(onFinished: () -> Unit) {
     composable<Screen.OnBoarding> {
-        OnBoardingScreen(onFinished = { onCompleted() })
+        OnBoardingScreen(onFinished = { onFinished() })
     }
 }
