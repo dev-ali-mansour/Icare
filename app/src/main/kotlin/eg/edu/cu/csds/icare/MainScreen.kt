@@ -17,23 +17,22 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.common.BottomNavItem
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
 import eg.edu.cu.csds.icare.core.ui.view.BottomBarNavigation
 import eg.edu.cu.csds.icare.navigation.SetupNavGraph
-import org.koin.java.KoinJavaComponent.inject
+import eg.edu.cu.csds.icare.splash.SplashViewModel
 
 @Composable
 fun MainScreen(
     mainViewModel: MainViewModel,
+    splashViewModel: SplashViewModel,
     mediaHelper: MediaHelper,
 ) {
     val layoutDirection = LocalLayoutDirection.current
     val navController = rememberNavController()
-    val firebaseAuth: FirebaseAuth by inject(FirebaseAuth::class.java)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val bottomNavItems =
@@ -70,10 +69,10 @@ fun MainScreen(
                     ),
         ) {
             SetupNavGraph(
-                firebaseAuth = firebaseAuth,
                 mediaHelper = mediaHelper,
                 navController = navController,
                 mainViewModel = mainViewModel,
+                splashViewModel = splashViewModel,
             )
         }
     }
