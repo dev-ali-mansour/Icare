@@ -1,10 +1,11 @@
 package eg.edu.cu.csds.icare.core.domain.repository
 
-import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.model.DataError
+import eg.edu.cu.csds.icare.core.domain.model.Result
 import kotlinx.coroutines.flow.Flow
 
 interface AppRepository {
-    suspend fun saveOnBoardingState(completed: Boolean)
+    fun finishOnBoarding(): Flow<Result<Unit, DataError.Local>>
 
-    fun getOnBoardingState(): Flow<Resource<Boolean>>
+    fun getOnBoardingState(): Flow<Result<Boolean, DataError.Local>>
 }
