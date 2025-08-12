@@ -1,6 +1,5 @@
 package eg.edu.cu.csds.icare.splash
 
-import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.RepeatMode
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,25 +20,14 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
 import eg.edu.cu.csds.icare.core.ui.theme.SPLASH_LOGO_SIZE
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
-internal fun SplashScreen(
-    splashViewModel: SplashViewModel,
-    navigateTo: (Screen) -> Unit,
-    onError: suspend (Throwable?) -> Unit,
-    context: Context = LocalContext.current,
-) {
-    val state by splashViewModel.state.collectAsStateWithLifecycle()
+internal fun SplashScreen() {
     val degrees = remember { Animatable(0f) }
-
-    if (state.isLoading) Splash(degrees = degrees.value)
 
     LaunchedEffect(key1 = true) {
         degrees.animateTo(
@@ -57,25 +44,7 @@ internal fun SplashScreen(
         )
     }
 
-    LaunchedEffect(Unit) {
-        splashViewModel.singleEvent.collect { event ->
-            when (event) {
-                is SplashSingleEvent.NavigateToSignIn ->
-                    navigateTo(Screen.SignIn)
-
-                is SplashSingleEvent.NavigateToHome -> {
-                    navigateTo(Screen.Home)
-                }
-
-                is SplashSingleEvent.ShowError -> {
-                    onError(Throwable(event.message.asString(context)))
-                }
-
-                SplashSingleEvent.NavigateToOnBoarding ->
-                    navigateTo(Screen.OnBoarding)
-            }
-        }
-    }
+    Splash(degrees = degrees.value)
 }
 
 @Composable
