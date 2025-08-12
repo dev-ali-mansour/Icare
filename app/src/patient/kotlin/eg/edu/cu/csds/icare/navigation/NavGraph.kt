@@ -4,11 +4,9 @@ import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,7 +25,6 @@ import eg.edu.cu.csds.icare.consultation.screen.navigation.consultationsRoute
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Screen
-import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
 import eg.edu.cu.csds.icare.core.ui.util.activity
 import eg.edu.cu.csds.icare.core.ui.util.getErrorMessage
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
@@ -37,17 +34,14 @@ import eg.edu.cu.csds.icare.notification.navigation.notificationsRoute
 import eg.edu.cu.csds.icare.onboarding.navigation.onBoardingRoute
 import eg.edu.cu.csds.icare.settings.navigation.settingsRoute
 import eg.edu.cu.csds.icare.splash.SplashScreen
-import eg.edu.cu.csds.icare.splash.SplashViewModel
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import kotlin.system.exitProcess
 
 @Composable
 fun SetupNavGraph(
-    mediaHelper: MediaHelper,
     navController: NavHostController,
-    mainViewModel: MainViewModel,
-    splashViewModel: SplashViewModel,
+    mainViewModel: MainViewModel = koinViewModel(),
     homeViewModel: HomeViewModel = koinViewModel(),
     clinicViewModel: ClinicViewModel = koinViewModel(),
     pharmacyViewModel: PharmacyViewModel = koinViewModel(),
@@ -57,7 +51,6 @@ fun SetupNavGraph(
     profileViewModel: ProfileViewModel = koinViewModel(),
     context: Context = LocalContext.current,
 ) {
-    val onBoardingRes by mainViewModel.onBoardingCompleted.collectAsStateWithLifecycle()
     val alertMessage = remember { mutableStateOf("") }
     val showAlert = remember { mutableStateOf(false) }
     val exitApp = remember { mutableStateOf(false) }
@@ -69,151 +62,124 @@ fun SetupNavGraph(
         }
     }
 
-    onBoardingRes.data?.let { onBoardingCompleted ->
-        val startScreen: Screen =
-            when {
-                onBoardingCompleted -> Screen.Splash
-                else -> Screen.OnBoarding
-            }
-        NavHost(
-            navController = navController,
-            startDestination = startScreen,
-        ) {
-            composable<Screen.Splash> {
-                SplashScreen(
-                    splashViewModel = splashViewModel,
-                    navigateTo = { screen ->
-                        navController.navigate(screen) {
-                            popUpTo(navController.graph.id) { inclusive = true }
-                        }
-                    },
-                    onError = { error ->
-                        exitApp.value = true
-                        handleError(
-                            error,
-                            exitApp,
-                            context,
-                            profileViewModel,
-                            navController,
-                            alertMessage,
-                            showAlert,
-                        )
-                    },
-                )
-            }
-
-            onBoardingRoute(onFinished = {
-                navController.navigate(Screen.SignIn) {
-                    popUpTo(navController.graph.id) { inclusive = true }
-                }
-            })
-
-            authenticationRoute(
-                onRecoveryClicked = { navController.navigate(Screen.PasswordRecovery) },
-                onCreateAccountClicked = { navController.navigate(Screen.SignUp) },
-                onLoginClicked = {
-                    navController.navigate(Screen.SignIn) {
-                        popUpTo(navController.graph.id) {
-                            inclusive = true
-                        }
-                    }
-                },
-                onLoginSuccess = {
-                    val intent = Intent(context, MainActivity::class.java)
-                    context.activity.finish()
-                    context.startActivity(intent)
-                },
-                onRecoveryCompleted = {
-                    navController.navigate(Screen.SignIn) {
-                        popUpTo(navController.graph.id) {
-                            inclusive = true
-                        }
-                    }
-                },
-                onRegisterCompleted = {
-                    navController.navigate(Screen.SignIn) {
-                        popUpTo(navController.graph.id) {
-                            inclusive = true
-                        }
-                    }
-                },
-            )
-
-            homeRoute(
-                mediaHelper = mediaHelper,
-                mainViewModel = mainViewModel,
-                homeViewModel = homeViewModel,
-                appointmentViewModel = appointmentViewModel,
-                clinicViewModel = clinicViewModel,
-                pharmacyViewModel = pharmacyViewModel,
-                centerViewModel = centerViewModel,
-                navigateToScreen = { screen -> navController.navigate(screen) },
-                onNavigationIconClicked = {
-                    navController.navigateUpSafely()
-                },
-                onError = { error ->
-                    exitApp.value = false
-                    handleError(
-                        error,
-                        exitApp,
-                        context,
-                        profileViewModel,
-                        navController,
-                        alertMessage,
-                        showAlert,
-                    )
-                },
-            )
-
-            notificationsRoute()
-
-            settingsRoute(
-                navigateToScreen = { navController.navigate(it) },
-                onNavigationIconClicked = {
-                    navController.navigateUpSafely()
-                },
-            )
-
-            appointmentsRoute(
-                mainViewModel = mainViewModel,
-                clinicViewModel = clinicViewModel,
-                appointmentsViewModel = appointmentViewModel,
-                onNavigationIconClicked = {
-                    navController.navigateUpSafely()
-                },
-                navigateToScreen = { navController.navigate(it) },
-                onError = { error ->
-                    exitApp.value = false
-                    handleError(
-                        error,
-                        exitApp,
-                        context,
-                        profileViewModel,
-                        navController,
-                        alertMessage,
-                        showAlert,
-                    )
-                },
-            )
-
-            consultationsRoute(
-                consultationViewModel = consultationViewModel,
-                onNavigationIconClicked = { navController.navigateUpSafely() },
-                navigateToScreen = { navController.navigate(it) },
-                onError = { error ->
-                    exitApp.value = false
-                    handleError(
-                        error,
-                        exitApp,
-                        context,
-                        profileViewModel,
-                        navController,
-                        alertMessage,
-                        showAlert,
-                    )
-                },
-            )
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Splash,
+    ) {
+        composable<Screen.Splash> {
+            SplashScreen()
         }
+
+        onBoardingRoute(onFinished = {
+            navController.navigate(Screen.SignIn) {
+                popUpTo(navController.graph.id) { inclusive = true }
+            }
+        })
+
+        authenticationRoute(
+            onRecoveryClicked = { navController.navigate(Screen.PasswordRecovery) },
+            onCreateAccountClicked = { navController.navigate(Screen.SignUp) },
+            onLoginClicked = {
+                navController.navigate(Screen.SignIn) {
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
+                }
+            },
+            onLoginSuccess = {
+                val intent = Intent(context, MainActivity::class.java)
+                context.activity.finish()
+                context.startActivity(intent)
+            },
+            onRecoveryCompleted = {
+                navController.navigate(Screen.SignIn) {
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
+                }
+            },
+            onRegisterCompleted = {
+                navController.navigate(Screen.SignIn) {
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
+                }
+            },
+        )
+
+        homeRoute(
+            mainViewModel = mainViewModel,
+            homeViewModel = homeViewModel,
+            appointmentViewModel = appointmentViewModel,
+            clinicViewModel = clinicViewModel,
+            pharmacyViewModel = pharmacyViewModel,
+            centerViewModel = centerViewModel,
+            navigateToScreen = { screen -> navController.navigate(screen) },
+            onNavigationIconClicked = {
+                navController.navigateUpSafely()
+            },
+            onError = { error ->
+                exitApp.value = false
+                handleError(
+                    error,
+                    exitApp,
+                    context,
+                    profileViewModel,
+                    navController,
+                    alertMessage,
+                    showAlert,
+                )
+            },
+        )
+
+        notificationsRoute()
+
+        settingsRoute(
+            navigateToScreen = { navController.navigate(it) },
+            onNavigationIconClicked = {
+                navController.navigateUpSafely()
+            },
+        )
+
+        appointmentsRoute(
+            mainViewModel = mainViewModel,
+            clinicViewModel = clinicViewModel,
+            appointmentsViewModel = appointmentViewModel,
+            onNavigationIconClicked = {
+                navController.navigateUpSafely()
+            },
+            navigateToScreen = { navController.navigate(it) },
+            onError = { error ->
+                exitApp.value = false
+                handleError(
+                    error,
+                    exitApp,
+                    context,
+                    profileViewModel,
+                    navController,
+                    alertMessage,
+                    showAlert,
+                )
+            },
+        )
+
+        consultationsRoute(
+            consultationViewModel = consultationViewModel,
+            onNavigationIconClicked = { navController.navigateUpSafely() },
+            navigateToScreen = { navController.navigate(it) },
+            onError = { error ->
+                exitApp.value = false
+                handleError(
+                    error,
+                    exitApp,
+                    context,
+                    profileViewModel,
+                    navController,
+                    alertMessage,
+                    showAlert,
+                )
+            },
+        )
     }
 }
 
