@@ -49,11 +49,11 @@ import eg.edu.cu.csds.icare.core.ui.theme.tintColor
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
 import eg.edu.cu.csds.icare.home.HomeViewModel
 import eg.edu.cu.csds.icare.home.R
+import org.koin.compose.koinInject
 import kotlin.system.exitProcess
 
 @Composable
 internal fun HomeScreen(
-    mediaHelper: MediaHelper,
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
     appointmentViewModel: AppointmentViewModel,
@@ -61,6 +61,7 @@ internal fun HomeScreen(
     navigateToScreen: (Screen) -> Unit,
     onDoctorClicked: (Doctor) -> Unit = {},
     onError: suspend (Throwable?) -> Unit,
+    mediaHelper: MediaHelper = koinInject<MediaHelper>(),
     context: Context = LocalContext.current,
 ) {
     val appVersion: String =

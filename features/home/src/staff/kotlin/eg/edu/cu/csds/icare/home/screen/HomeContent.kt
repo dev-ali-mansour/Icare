@@ -72,7 +72,7 @@ internal fun HomeContent(
     appointmentsActionResource: Resource<Nothing?>,
     showLoading: (Boolean) -> Unit,
     onUserClicked: () -> Unit,
-    onPriceCardClicked: () -> Unit,
+    onPriceCardClicked: (String) -> Unit,
     onAppointmentClick: (Appointment) -> Unit,
     onSeeAllClick: () -> Unit,
     onSectionsAdminClicked: () -> Unit,
@@ -187,7 +187,7 @@ internal fun HomeContent(
                                             height = Dimension.fillToConstraints
                                         },
                                     schedule = schedule,
-                                    onPriceCardClicked = { onPriceCardClicked() },
+                                    onPriceCardClicked = { onPriceCardClicked(user.userId) },
                                     onAppointmentClick = { onAppointmentClick(it) },
                                     onSeeAllClick = { onSeeAllClick() },
                                 )
