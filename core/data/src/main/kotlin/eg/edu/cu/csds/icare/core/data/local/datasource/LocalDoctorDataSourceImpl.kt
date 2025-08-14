@@ -9,9 +9,11 @@ import org.koin.core.annotation.Single
 class LocalDoctorDataSourceImpl(
     private val doctorDao: DoctorDao,
 ) : LocalDoctorDataSource {
-    override fun persistDoctors(doctors: List<DoctorEntity>) {
+    override suspend fun persistDoctors(doctors: List<DoctorEntity>) {
         doctorDao.persistDoctors(doctors)
     }
+
+    override fun getDoctor(doctorId: Long): Flow<DoctorEntity> = doctorDao.getDoctor(doctorId)
 
     override fun listDoctors(): Flow<List<DoctorEntity>> = doctorDao.listDoctors()
 
