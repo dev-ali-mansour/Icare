@@ -2,19 +2,20 @@ package eg.edu.cu.csds.icare.core.domain.repository
 
 import eg.edu.cu.csds.icare.core.domain.model.AdminStatistics
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
-import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.model.DataError
+import eg.edu.cu.csds.icare.core.domain.model.Result
 import kotlinx.coroutines.flow.Flow
 
 interface AppointmentsRepository {
-    fun getPatientAppointments(): Flow<Resource<List<Appointment>>>
+    fun getPatientAppointments(): Flow<Result<List<Appointment>, DataError.Remote>>
 
-    fun getAppointments(): Flow<Resource<List<Appointment>>>
+    fun getAppointments(): Flow<Result<List<Appointment>, DataError.Remote>>
 
-    fun getAppointments(statusId: Short): Flow<Resource<List<Appointment>>>
+    fun getAppointments(statusId: Short): Flow<Result<List<Appointment>, DataError.Remote>>
 
-    fun bookAppointment(appointment: Appointment): Flow<Resource<Nothing?>>
+    fun bookAppointment(appointment: Appointment): Flow<Result<Unit, DataError.Remote>>
 
-    fun updateAppointment(appointment: Appointment): Flow<Resource<Nothing?>>
+    fun updateAppointment(appointment: Appointment): Flow<Result<Unit, DataError.Remote>>
 
-    fun getAdminStatistics(): Flow<Resource<AdminStatistics>>
+    fun getAdminStatistics(): Flow<Result<AdminStatistics, DataError.Remote>>
 }
