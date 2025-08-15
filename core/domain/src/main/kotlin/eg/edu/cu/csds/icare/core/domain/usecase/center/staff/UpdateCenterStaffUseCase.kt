@@ -1,12 +1,14 @@
 package eg.edu.cu.csds.icare.core.domain.usecase.center.staff
 
 import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
-import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.model.DataError
+import eg.edu.cu.csds.icare.core.domain.model.Result
 import eg.edu.cu.csds.icare.core.domain.repository.CentersRepository
 import kotlinx.coroutines.flow.Flow
 
-class UpdateCenterStaff(
+class UpdateCenterStaffUseCase(
     private val repository: CentersRepository,
 ) {
-    operator fun invoke(staff: CenterStaff): Flow<Resource<Nothing?>> = repository.updateCenterStaff(staff)
+    operator fun invoke(staff: CenterStaff): Flow<Result<Unit, DataError.Remote>> =
+        repository.updateCenterStaff(staff)
 }
