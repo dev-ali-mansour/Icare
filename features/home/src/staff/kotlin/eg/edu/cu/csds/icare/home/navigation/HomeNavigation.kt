@@ -10,7 +10,7 @@ import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.common.Role
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.home.HomeViewModel
 import eg.edu.cu.csds.icare.home.screen.HomeScreen
 
@@ -22,10 +22,10 @@ fun NavGraphBuilder.homeRoute(
     centerViewModel: CenterViewModel,
     consultationViewModel: ConsultationViewModel,
     appointmentViewModel: AppointmentViewModel,
-    navigateToScreen: (Screen) -> Unit,
+    navigateToScreen: (Route) -> Unit,
     onError: suspend (Throwable?) -> Unit,
 ) {
-    composable<Screen.Home> {
+    composable<Route.Home> {
         HomeScreen(
             mainViewModel = mainViewModel,
             homeViewModel = homeViewModel,
@@ -44,17 +44,17 @@ fun NavGraphBuilder.homeRoute(
             onPriceCardClicked = {
                 clinicViewModel.listClinics()
                 clinicViewModel.selectCurrentDoctor(it)
-                navigateToScreen(Screen.EditDoctor)
+                navigateToScreen(Route.EditDoctor)
             },
             onAppointmentClick = {
                 consultationViewModel.appointmentState.value = it
                 pharmacyViewModel.listPharmacies()
                 centerViewModel.listCenters()
-                navigateToScreen(Screen.NewConsultation)
+                navigateToScreen(Route.NewConsultation)
             },
             onSeeAllClick = {
             },
-            onSectionsAdminClicked = { navigateToScreen(Screen.Admin) },
+            onSectionsAdminClicked = { navigateToScreen(Route.Admin) },
             onConfirm = {
                 appointmentViewModel.selectedAppointmentState.value =
                     it.copy(statusId = AppointmentStatus.ConfirmedStatus.code)
