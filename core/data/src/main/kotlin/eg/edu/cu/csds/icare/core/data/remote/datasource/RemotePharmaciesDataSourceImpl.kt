@@ -4,9 +4,8 @@ import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.data.dto.PharmacistDto
 import eg.edu.cu.csds.icare.core.data.dto.PharmacyDto
 import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
-import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
-import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthorizedException
+import eg.edu.cu.csds.icare.core.domain.model.DataError
+import eg.edu.cu.csds.icare.core.domain.model.Result
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import org.koin.core.annotation.Single
 import timber.log.Timber
-import java.net.ConnectException
 import java.net.HttpURLConnection
 import java.net.HttpURLConnection.HTTP_OK
 
@@ -23,197 +21,235 @@ class RemotePharmaciesDataSourceImpl(
     private val auth: FirebaseAuth,
     private val service: ApiService,
 ) : RemotePharmaciesDataSource {
-    override fun fetchPharmacies(): Flow<Resource<List<PharmacyDto>>> =
+    override fun fetchPharmacies(): Flow<Result<List<PharmacyDto>, DataError.Remote>> =
         flow {
-            emit(Resource.Loading())
-            val token =
-                auth.currentUser
-                    ?.getIdToken(false)
-                    ?.await()
-                    ?.token
-                    .toString()
-            val map = HashMap<String, String>()
-            map["token"] = token
-            val response = service.fetchPharmacies(map)
-            when (response.code()) {
-                HTTP_OK -> {
-                    response.body()?.let { res ->
-                        when (res.statusCode) {
-                            Constants.ERROR_CODE_OK ->
-                                emit(Resource.Success(res.pharmacies))
+            auth.currentUser
+                ?.getIdToken(false)
+                ?.await()
+                ?.token
+                ?.let { token ->
+                    val map = HashMap<String, String>()
+                    map["token"] = token
+                    val response = service.fetchPharmacies(map)
+                    when (response.code()) {
+                        HTTP_OK -> {
+                            response.body()?.let { res ->
+                                when (res.statusCode) {
+                                    Constants.ERROR_CODE_OK ->
+                                        emit(Result.Success(res.pharmacies))
 
-                            Constants.ERROR_CODE_SERVER_ERROR ->
-                                emit(Resource.Error(ConnectException()))
+                                    Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                        emit(Result.Error(DataError.Remote.ACCESS_TOKEN_EXPIRED))
+
+                                    Constants.ERROR_CODE_SERVER_ERROR ->
+                                        emit(Result.Error(DataError.Remote.SERVER))
+
+                                    else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                                }
+                            }
                         }
-                    }
-                }
 
-                else -> emit(Resource.Error(ConnectException(response.code().toString())))
+                        HttpURLConnection.HTTP_UNAUTHORIZED ->
+                            emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+
+                        else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                    }
+                } ?: run {
+                emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
             }
         }.catch {
             Timber.e("fetchPharmacies() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Resource.Error(it))
+            emit(Result.Error(DataError.Remote.UNKNOWN))
         }
 
-    override fun addNewPharmacy(pharmacy: PharmacyDto): Flow<Resource<Nothing?>> =
+    override fun addNewPharmacy(pharmacy: PharmacyDto): Flow<Result<Unit, DataError.Remote>> =
         flow {
-            val token =
-                auth.currentUser
-                    ?.getIdToken(false)
-                    ?.await()
-                    ?.token
-                    .toString()
-            val response = service.upsertPharmacy(pharmacy.copy(token))
-            when (response.code()) {
-                HTTP_OK ->
-                    response.body()?.let { res ->
-                        when (res.statusCode) {
-                            Constants.ERROR_CODE_OK -> emit(Resource.Success(null))
+            auth.currentUser
+                ?.getIdToken(false)
+                ?.await()
+                ?.token
+                ?.let { token ->
+                    val response = service.upsertPharmacy(pharmacy.copy(token))
+                    when (response.code()) {
+                        HTTP_OK -> {
+                            response.body()?.let { res ->
+                                when (res.statusCode) {
+                                    Constants.ERROR_CODE_OK ->
+                                        emit(Result.Success(Unit))
 
-                            Constants.ERROR_CODE_EXPIRED_TOKEN ->
-                                emit(Resource.Error(UserNotAuthenticatedException()))
+                                    Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                        emit(Result.Error(DataError.Remote.ACCESS_TOKEN_EXPIRED))
 
-                            else -> emit(Resource.Error(ConnectException()))
+                                    Constants.ERROR_CODE_SERVER_ERROR ->
+                                        emit(Result.Error(DataError.Remote.SERVER))
+
+                                    else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                                }
+                            }
                         }
-                    } ?: run { emit(Resource.Error(ConnectException())) }
 
-                HttpURLConnection.HTTP_UNAUTHORIZED ->
-                    emit(Resource.Error(UserNotAuthorizedException()))
+                        HttpURLConnection.HTTP_UNAUTHORIZED ->
+                            emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
 
-                else -> emit(Resource.Error(ConnectException(response.code().toString())))
+                        else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                    }
+                } ?: run {
+                emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
             }
         }.catch {
             Timber.e("addNewPharmacy() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Resource.Error(it))
+            emit(Result.Error(DataError.Remote.UNKNOWN))
         }
 
-    override fun updatePharmacy(pharmacy: PharmacyDto): Flow<Resource<Nothing?>> =
+    override fun updatePharmacy(pharmacy: PharmacyDto): Flow<Result<Unit, DataError.Remote>> =
         flow {
-            val token =
-                auth.currentUser
-                    ?.getIdToken(false)
-                    ?.await()
-                    ?.token
-                    .toString()
-            val response = service.upsertPharmacy(pharmacy.copy(token))
-            when (response.code()) {
-                HTTP_OK ->
-                    response.body()?.let { res ->
-                        when (res.statusCode) {
-                            Constants.ERROR_CODE_OK -> emit(Resource.Success(null))
+            auth.currentUser
+                ?.getIdToken(false)
+                ?.await()
+                ?.token
+                ?.let { token ->
+                    val response = service.upsertPharmacy(pharmacy.copy(token))
+                    when (response.code()) {
+                        HTTP_OK -> {
+                            response.body()?.let { res ->
+                                when (res.statusCode) {
+                                    Constants.ERROR_CODE_OK ->
+                                        emit(Result.Success(Unit))
 
-                            Constants.ERROR_CODE_EXPIRED_TOKEN ->
-                                emit(Resource.Error(UserNotAuthenticatedException()))
+                                    Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                        emit(Result.Error(DataError.Remote.ACCESS_TOKEN_EXPIRED))
 
-                            else -> emit(Resource.Error(ConnectException()))
+                                    Constants.ERROR_CODE_SERVER_ERROR ->
+                                        emit(Result.Error(DataError.Remote.SERVER))
+
+                                    else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                                }
+                            }
                         }
-                    } ?: run { emit(Resource.Error(ConnectException())) }
 
-                HttpURLConnection.HTTP_UNAUTHORIZED ->
-                    emit(Resource.Error(UserNotAuthorizedException()))
+                        HttpURLConnection.HTTP_UNAUTHORIZED ->
+                            emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
 
-                else -> emit(Resource.Error(ConnectException(response.code().toString())))
+                        else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                    }
+                } ?: run {
+                emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
             }
         }.catch {
             Timber.e("updatePharmacy() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Resource.Error(it))
+            emit(Result.Error(DataError.Remote.UNKNOWN))
         }
 
-    override fun listPharmacists(): Flow<Resource<List<PharmacistDto>>> =
+    override fun listPharmacists(): Flow<Result<List<PharmacistDto>, DataError.Remote>> =
         flow {
-            emit(Resource.Loading())
-            auth.currentUser?.let {
-                val token =
-                    auth.currentUser
-                        ?.getIdToken(false)
-                        ?.await()
-                        ?.token
-                        .toString()
-                val map = HashMap<String, String>()
-                map["token"] = token
-                val response = service.listPharmacists(map)
-                when (response.code()) {
-                    HTTP_OK -> {
-                        response.body()?.let { res ->
-                            when (res.statusCode) {
-                                Constants.ERROR_CODE_OK ->
-                                    emit(Resource.Success(res.pharmacists))
+            auth.currentUser
+                ?.getIdToken(false)
+                ?.await()
+                ?.token
+                ?.let { token ->
+                    val map = HashMap<String, String>()
+                    map["token"] = token
+                    val response = service.listPharmacists(map)
+                    when (response.code()) {
+                        HTTP_OK -> {
+                            response.body()?.let { res ->
+                                when (res.statusCode) {
+                                    Constants.ERROR_CODE_OK ->
+                                        emit(Result.Success(res.pharmacists))
 
-                                Constants.ERROR_CODE_SERVER_ERROR ->
-                                    emit(Resource.Error(ConnectException()))
+                                    Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                        emit(Result.Error(DataError.Remote.ACCESS_TOKEN_EXPIRED))
+
+                                    Constants.ERROR_CODE_SERVER_ERROR ->
+                                        emit(Result.Error(DataError.Remote.SERVER))
+
+                                    else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                                }
                             }
                         }
-                    }
 
-                    else -> emit(Resource.Error(ConnectException(response.code().toString())))
+                        HttpURLConnection.HTTP_UNAUTHORIZED ->
+                            emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+
+                        else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                    }
                 }
-            }
         }.catch {
             Timber.e("listPharmacists() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Resource.Error(it))
+            emit(Result.Error(DataError.Remote.UNKNOWN))
         }
 
-    override fun addNewPharmacist(pharmacist: PharmacistDto): Flow<Resource<Nothing?>> =
+    override fun addNewPharmacist(pharmacist: PharmacistDto): Flow<Result<Unit, DataError.Remote>> =
         flow {
-            val token =
-                auth.currentUser
-                    ?.getIdToken(false)
-                    ?.await()
-                    ?.token
-                    .toString()
-            val response = service.upsertPharmacist(pharmacist.copy(token))
-            when (response.code()) {
-                HTTP_OK ->
-                    response.body()?.let { res ->
-                        when (res.statusCode) {
-                            Constants.ERROR_CODE_OK -> emit(Resource.Success(null))
+            auth.currentUser
+                ?.getIdToken(false)
+                ?.await()
+                ?.token
+                ?.let { token ->
+                    val response = service.upsertPharmacist(pharmacist.copy(token))
+                    when (response.code()) {
+                        HTTP_OK -> {
+                            response.body()?.let { res ->
+                                when (res.statusCode) {
+                                    Constants.ERROR_CODE_OK ->
+                                        emit(Result.Success(Unit))
 
-                            Constants.ERROR_CODE_EXPIRED_TOKEN ->
-                                emit(Resource.Error(UserNotAuthenticatedException()))
+                                    Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                        emit(Result.Error(DataError.Remote.ACCESS_TOKEN_EXPIRED))
 
-                            else -> emit(Resource.Error(ConnectException()))
+                                    Constants.ERROR_CODE_SERVER_ERROR ->
+                                        emit(Result.Error(DataError.Remote.SERVER))
+
+                                    else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                                }
+                            }
                         }
-                    } ?: run { emit(Resource.Error(ConnectException())) }
 
-                HttpURLConnection.HTTP_UNAUTHORIZED ->
-                    emit(Resource.Error(UserNotAuthorizedException()))
+                        HttpURLConnection.HTTP_UNAUTHORIZED ->
+                            emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
 
-                else -> emit(Resource.Error(ConnectException(response.code().toString())))
-            }
+                        else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                    }
+                }
         }.catch {
             Timber.e("addNewPharmacist() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Resource.Error(it))
+            emit(Result.Error(DataError.Remote.UNKNOWN))
         }
 
-    override fun updatePharmacist(pharmacist: PharmacistDto): Flow<Resource<Nothing?>> =
+    override fun updatePharmacist(pharmacist: PharmacistDto): Flow<Result<Unit, DataError.Remote>> =
         flow {
-            val token =
-                auth.currentUser
-                    ?.getIdToken(false)
-                    ?.await()
-                    ?.token
-                    .toString()
-            val response = service.upsertPharmacist(pharmacist.copy(token))
-            when (response.code()) {
-                HTTP_OK ->
-                    response.body()?.let { res ->
-                        when (res.statusCode) {
-                            Constants.ERROR_CODE_OK -> emit(Resource.Success(null))
+            auth.currentUser
+                ?.getIdToken(false)
+                ?.await()
+                ?.token
+                ?.let { token ->
+                    val response = service.upsertPharmacist(pharmacist.copy(token))
+                    when (response.code()) {
+                        HTTP_OK -> {
+                            response.body()?.let { res ->
+                                when (res.statusCode) {
+                                    Constants.ERROR_CODE_OK ->
+                                        emit(Result.Success(Unit))
 
-                            Constants.ERROR_CODE_EXPIRED_TOKEN ->
-                                emit(Resource.Error(UserNotAuthenticatedException()))
+                                    Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                        emit(Result.Error(DataError.Remote.ACCESS_TOKEN_EXPIRED))
 
-                            else -> emit(Resource.Error(ConnectException()))
+                                    Constants.ERROR_CODE_SERVER_ERROR ->
+                                        emit(Result.Error(DataError.Remote.SERVER))
+
+                                    else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                                }
+                            }
                         }
-                    } ?: run { emit(Resource.Error(ConnectException())) }
 
-                HttpURLConnection.HTTP_UNAUTHORIZED ->
-                    emit(Resource.Error(UserNotAuthorizedException()))
+                        HttpURLConnection.HTTP_UNAUTHORIZED ->
+                            emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
 
-                else -> emit(Resource.Error(ConnectException(response.code().toString())))
-            }
+                        else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                    }
+                }
         }.catch {
             Timber.e("updatePharmacist() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Resource.Error(it))
+            emit(Result.Error(DataError.Remote.UNKNOWN))
         }
 }
