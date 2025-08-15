@@ -22,7 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.navigation.compose.rememberNavController
 import eg.edu.cu.csds.icare.core.ui.common.BottomNavItem
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.view.BottomBarNavigation
 import eg.edu.cu.csds.icare.navigation.SetupNavGraph
@@ -46,8 +46,8 @@ fun MainScreen(splashViewModel: SplashViewModel) {
 
     LaunchedEffect(navController) {
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            isBottomBarVisible = destination.route != Screen.Splash::class.qualifiedName &&
-                bottomNavItems.any { it.screen::class.qualifiedName == destination.route }
+            isBottomBarVisible = destination.route != Route.Splash::class.qualifiedName &&
+                bottomNavItems.any { it.route::class.qualifiedName == destination.route }
         }
     }
 
@@ -56,7 +56,7 @@ fun MainScreen(splashViewModel: SplashViewModel) {
             val currentStartDestinationId = navController.graph.startDestinationId
             val popUpToRoute = navController.graph.findNode(currentStartDestinationId)?.route
 
-            val navigateAndPopUp: (Screen) -> Unit = { screen ->
+            val navigateAndPopUp: (Route) -> Unit = { screen ->
                 navController.navigate(screen) {
                     if (popUpToRoute != null) {
                         popUpTo(popUpToRoute) { inclusive = true }
@@ -67,9 +67,9 @@ fun MainScreen(splashViewModel: SplashViewModel) {
             }
 
             when (event) {
-                is SplashSingleEvent.NavigateToSignIn -> navigateAndPopUp(Screen.SignIn)
-                is SplashSingleEvent.NavigateToHome -> navigateAndPopUp(Screen.Home)
-                is SplashSingleEvent.NavigateToOnBoarding -> navigateAndPopUp(Screen.OnBoarding)
+                is SplashSingleEvent.NavigateToSignIn -> navigateAndPopUp(Route.SignIn)
+                is SplashSingleEvent.NavigateToHome -> navigateAndPopUp(Route.Home)
+                is SplashSingleEvent.NavigateToOnBoarding -> navigateAndPopUp(Route.OnBoarding)
                 is SplashSingleEvent.ShowError -> {
                     Toast.makeText(context, event.message.asString(context), Toast.LENGTH_LONG).show()
                     exitProcess(0)
