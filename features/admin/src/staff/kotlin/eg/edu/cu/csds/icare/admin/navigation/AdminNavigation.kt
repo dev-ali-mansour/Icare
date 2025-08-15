@@ -11,8 +11,8 @@ import eg.edu.cu.csds.icare.admin.screen.center.staff.NewCenterStaffScreen
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.admin.screen.clinic.EditClinicScreen
 import eg.edu.cu.csds.icare.admin.screen.clinic.NewClinicScreen
-import eg.edu.cu.csds.icare.admin.screen.clinic.doctor.EditDoctorScreen
-import eg.edu.cu.csds.icare.admin.screen.clinic.doctor.NewDoctorScreen
+import eg.edu.cu.csds.icare.admin.screen.clinic.doctor.add.NewDoctorScreen
+import eg.edu.cu.csds.icare.admin.screen.clinic.doctor.update.EditDoctorScreen
 import eg.edu.cu.csds.icare.admin.screen.clinic.staff.EditClinicStaffScreen
 import eg.edu.cu.csds.icare.admin.screen.clinic.staff.NewClinicStaffScreen
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.EditPharmacyScreen
@@ -21,7 +21,7 @@ import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.pharmacist.EditPharmacistScreen
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.pharmacist.NewPharmacistScreen
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 
 fun NavGraphBuilder.adminRoute(
     mainViewModel: MainViewModel,
@@ -29,10 +29,10 @@ fun NavGraphBuilder.adminRoute(
     centerViewModel: CenterViewModel,
     pharmacyViewModel: PharmacyViewModel,
     onNavigationIconClicked: () -> Unit,
-    navigateToScreen: (Screen) -> Unit,
+    navigateToScreen: (Route) -> Unit,
     onError: suspend (Throwable?) -> Unit,
 ) {
-    composable<Screen.Admin> {
+    composable<Route.Admin> {
         AdminScreen(
             mainViewModel = mainViewModel,
             clinicViewModel = clinicViewModel,
@@ -71,37 +71,37 @@ fun NavGraphBuilder.adminRoute(
             },
             onClinicClicked = { clinic ->
                 clinicViewModel.selectedClinicState.value = clinic
-                navigateToScreen(Screen.EditClinic)
+                navigateToScreen(Route.EditClinic)
             },
             onDoctorClicked = { doctor ->
                 clinicViewModel.selectedDoctorState.value = doctor
-                navigateToScreen(Screen.EditDoctor)
+                navigateToScreen(Route.EditDoctor)
             },
             onClinicStaffClicked = { staff ->
                 clinicViewModel.selectedClinicStaffState.value = staff
-                navigateToScreen(Screen.EditClinicStaff)
+                navigateToScreen(Route.EditClinicStaff)
             },
             onPharmacyClicked = { pharmacy ->
                 pharmacyViewModel.selectedPharmacyState.value = pharmacy
-                navigateToScreen(Screen.EditPharmacy)
+                navigateToScreen(Route.EditPharmacy)
             },
             onPharmacistClicked = { pharmacist ->
                 pharmacyViewModel.selectedPharmacistState.value = pharmacist
-                navigateToScreen(Screen.EditPharmacist)
+                navigateToScreen(Route.EditPharmacist)
             },
             onCenterClicked = { center ->
                 centerViewModel.selectedCenterState.value = center
-                navigateToScreen(Screen.EditCenter)
+                navigateToScreen(Route.EditCenter)
             },
             onCenterStaffClicked = { staff ->
                 centerViewModel.selectedCenterStaffState.value = staff
-                navigateToScreen(Screen.EditCenterStaff)
+                navigateToScreen(Route.EditCenterStaff)
             },
             onError = { onError(it) },
         )
     }
 
-    composable<Screen.NewClinic> {
+    composable<Route.NewClinic> {
         NewClinicScreen(
             clinicViewModel = clinicViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
@@ -111,7 +111,7 @@ fun NavGraphBuilder.adminRoute(
         )
     }
 
-    composable<Screen.EditClinic> {
+    composable<Route.EditClinic> {
         EditClinicScreen(
             clinicViewModel = clinicViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
@@ -121,7 +121,7 @@ fun NavGraphBuilder.adminRoute(
         )
     }
 
-    composable<Screen.NewCenter> {
+    composable<Route.NewCenter> {
         NewCenterScreen(
             centerViewModel = centerViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
@@ -131,7 +131,7 @@ fun NavGraphBuilder.adminRoute(
         )
     }
 
-    composable<Screen.EditCenter> {
+    composable<Route.EditCenter> {
         EditCenterScreen(
             centerViewModel = centerViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
@@ -141,7 +141,7 @@ fun NavGraphBuilder.adminRoute(
         )
     }
 
-    composable<Screen.NewPharmacy> {
+    composable<Route.NewPharmacy> {
         NewPharmacyScreen(
             pharmacyViewModel = pharmacyViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
@@ -151,7 +151,7 @@ fun NavGraphBuilder.adminRoute(
         )
     }
 
-    composable<Screen.EditPharmacy> {
+    composable<Route.EditPharmacy> {
         EditPharmacyScreen(
             pharmacyViewModel = pharmacyViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
@@ -160,28 +160,19 @@ fun NavGraphBuilder.adminRoute(
             onError = { onError(it) },
         )
     }
-    composable<Screen.NewDoctor> {
+    composable<Route.NewDoctor> {
         NewDoctorScreen(
-            clinicViewModel = clinicViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onProceedButtonClicked = { clinicViewModel.addNewDoctor() },
-            onSuccess = { onNavigationIconClicked() },
-            onError = { onError(it) },
         )
     }
 
-    composable<Screen.EditDoctor> {
+    composable<Route.EditDoctor> {
         EditDoctorScreen(
-            mainViewModel = mainViewModel,
-            clinicViewModel = clinicViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onProceedButtonClicked = { clinicViewModel.updateDoctor() },
-            onSuccess = { onNavigationIconClicked() },
-            onError = { onError(it) },
         )
     }
 
-    composable<Screen.NewClinicStaff> {
+    composable<Route.NewClinicStaff> {
         NewClinicStaffScreen(
             clinicViewModel = clinicViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
@@ -191,7 +182,7 @@ fun NavGraphBuilder.adminRoute(
         )
     }
 
-    composable<Screen.EditClinicStaff> {
+    composable<Route.EditClinicStaff> {
         EditClinicStaffScreen(
             clinicViewModel = clinicViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
@@ -201,7 +192,7 @@ fun NavGraphBuilder.adminRoute(
         )
     }
 
-    composable<Screen.NewPharmacist> {
+    composable<Route.NewPharmacist> {
         NewPharmacistScreen(
             pharmacyViewModel = pharmacyViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
@@ -211,7 +202,7 @@ fun NavGraphBuilder.adminRoute(
         )
     }
 
-    composable<Screen.EditPharmacist> {
+    composable<Route.EditPharmacist> {
         EditPharmacistScreen(
             pharmacyViewModel = pharmacyViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
@@ -221,7 +212,7 @@ fun NavGraphBuilder.adminRoute(
         )
     }
 
-    composable<Screen.NewCenterStaff> {
+    composable<Route.NewCenterStaff> {
         NewCenterStaffScreen(
             centerViewModel = centerViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
@@ -231,7 +222,7 @@ fun NavGraphBuilder.adminRoute(
         )
     }
 
-    composable<Screen.EditCenterStaff> {
+    composable<Route.EditCenterStaff> {
         EditCenterStaffScreen(
             centerViewModel = centerViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
@@ -244,26 +235,26 @@ fun NavGraphBuilder.adminRoute(
 
 private fun NavGraphBuilder.onFabClicked(
     mainViewModel: MainViewModel,
-    navigateToScreen: (Screen) -> Unit,
+    navigateToScreen: (Route) -> Unit,
 ) {
     when (mainViewModel.selectedCategoryTabIndex.intValue) {
         0 ->
             when (mainViewModel.selectedSectionTabIndex.intValue) {
-                0 -> navigateToScreen(Screen.NewClinic)
-                1 -> navigateToScreen(Screen.NewDoctor)
-                2 -> navigateToScreen(Screen.NewClinicStaff)
+                0 -> navigateToScreen(Route.NewClinic)
+                1 -> navigateToScreen(Route.NewDoctor)
+                2 -> navigateToScreen(Route.NewClinicStaff)
             }
 
         1 ->
             when (mainViewModel.selectedSectionTabIndex.intValue) {
-                0 -> navigateToScreen(Screen.NewPharmacy)
-                1 -> navigateToScreen(Screen.NewPharmacist)
+                0 -> navigateToScreen(Route.NewPharmacy)
+                1 -> navigateToScreen(Route.NewPharmacist)
             }
 
         2 ->
             when (mainViewModel.selectedSectionTabIndex.intValue) {
-                0 -> navigateToScreen(Screen.NewCenter)
-                1 -> navigateToScreen(Screen.NewCenterStaff)
+                0 -> navigateToScreen(Route.NewCenter)
+                1 -> navigateToScreen(Route.NewCenterStaff)
             }
     }
 }
