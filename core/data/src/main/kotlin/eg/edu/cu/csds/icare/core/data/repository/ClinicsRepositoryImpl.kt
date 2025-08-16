@@ -23,10 +23,8 @@ import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.repository.ClinicsRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
 import timber.log.Timber
 
@@ -169,11 +167,6 @@ class ClinicsRepositoryImpl(
                         }.onError { emit(Result.Error(it)) }
                 }
         }
-
-    override fun getDoctor(doctorId: Long): Flow<Result<Doctor, DataError.Local>> =
-        localDoctorDataSource
-            .getDoctor(doctorId)
-            .map { Result.Success(data = it.toDoctor(context)) }
 
     override fun updateDoctor(doctor: Doctor): Flow<Result<Unit, DataError.Remote>> =
         flow {
