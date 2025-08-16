@@ -6,8 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface LocalDoctorDataSource {
     suspend fun persistDoctors(doctors: List<DoctorEntity>)
 
-    fun getDoctor(doctorId: Long): Flow<DoctorEntity>
-
     fun listDoctors(): Flow<List<DoctorEntity>>
 
     fun listTopDoctors(): Flow<List<DoctorEntity>>
