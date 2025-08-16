@@ -12,9 +12,6 @@ interface DoctorDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun persistDoctors(doctors: List<DoctorEntity>)
 
-    @Query("SELECT * FROM doctors WHERE id=:doctorId")
-    fun getDoctor(doctorId: Long): Flow<DoctorEntity>
-
     @Query("SELECT * FROM doctors")
     fun listDoctors(): Flow<List<DoctorEntity>>
 
