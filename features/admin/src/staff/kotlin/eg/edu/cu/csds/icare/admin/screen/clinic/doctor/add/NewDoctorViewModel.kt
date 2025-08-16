@@ -197,7 +197,7 @@ class NewDoctorViewModel(
         }
 
     private fun fetchClinics() =
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             _state.update { it.copy(isLoading = true) }
             listClinicsUseCase()
                 .onEach { result ->
