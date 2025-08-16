@@ -13,8 +13,6 @@ class LocalDoctorDataSourceImpl(
         doctorDao.persistDoctors(doctors)
     }
 
-    override fun getDoctor(doctorId: Long): Flow<DoctorEntity> = doctorDao.getDoctor(doctorId)
-
     override fun listDoctors(): Flow<List<DoctorEntity>> = doctorDao.listDoctors()
 
     override fun listTopDoctors(): Flow<List<DoctorEntity>> = doctorDao.listTopDoctors()

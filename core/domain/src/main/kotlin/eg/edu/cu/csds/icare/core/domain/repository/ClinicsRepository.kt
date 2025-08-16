@@ -25,8 +25,6 @@ interface ClinicsRepository {
 
     fun addNewDoctor(doctor: Doctor): Flow<Result<Unit, DataError.Remote>>
 
-    fun getDoctor(doctorId: Long): Flow<Result<Doctor, DataError.Local>>
-
     fun updateDoctor(doctor: Doctor): Flow<Result<Unit, DataError.Remote>>
 
     fun listClinicStaff(): Flow<Result<List<ClinicStaff>, DataError.Remote>>
