@@ -28,6 +28,7 @@ import eg.edu.cu.csds.icare.core.ui.view.BottomBarNavigation
 import eg.edu.cu.csds.icare.navigation.SetupNavGraph
 import eg.edu.cu.csds.icare.splash.SplashSingleEvent
 import eg.edu.cu.csds.icare.splash.SplashViewModel
+import timber.log.Timber
 import kotlin.system.exitProcess
 
 @Composable
@@ -53,27 +54,31 @@ fun MainScreen(splashViewModel: SplashViewModel) {
 
     LaunchedEffect(navController, splashViewModel) {
         splashViewModel.singleEvent.collect { event ->
-            val currentStartDestinationId = navController.graph.startDestinationId
-            val popUpToRoute = navController.graph.findNode(currentStartDestinationId)?.route
+            runCatching {
+                val currentStartDestinationId = navController.graph.startDestinationId
+                val popUpToRoute = navController.graph.findNode(currentStartDestinationId)?.route
 
-            val navigateAndPopUp: (Route) -> Unit = { screen ->
-                navController.navigate(screen) {
-                    if (popUpToRoute != null) {
-                        popUpTo(popUpToRoute) { inclusive = true }
-                    } else {
-                        popUpTo(navController.graph.id) { inclusive = true }
+                val navigateAndPopUp: (Route) -> Unit = { screen ->
+                    navController.navigate(screen) {
+                        if (popUpToRoute != null) {
+                            popUpTo(popUpToRoute) { inclusive = true }
+                        } else {
+                            popUpTo(navController.graph.id) { inclusive = true }
+                        }
                     }
                 }
-            }
 
-            when (event) {
-                is SplashSingleEvent.NavigateToSignIn -> navigateAndPopUp(Route.SignIn)
-                is SplashSingleEvent.NavigateToHome -> navigateAndPopUp(Route.Home)
-                is SplashSingleEvent.NavigateToOnBoarding -> navigateAndPopUp(Route.OnBoarding)
-                is SplashSingleEvent.ShowError -> {
-                    Toast.makeText(context, event.message.asString(context), Toast.LENGTH_LONG).show()
-                    exitProcess(0)
+                when (event) {
+                    is SplashSingleEvent.NavigateToSignIn -> navigateAndPopUp(Route.SignIn)
+                    is SplashSingleEvent.NavigateToHome -> navigateAndPopUp(Route.Home)
+                    is SplashSingleEvent.NavigateToOnBoarding -> navigateAndPopUp(Route.OnBoarding)
+                    is SplashSingleEvent.ShowError -> {
+                        Toast.makeText(context, event.message.asString(context), Toast.LENGTH_LONG).show()
+                        exitProcess(0)
+                    }
                 }
+            }.onFailure {
+                Timber.e(it, "Error during navigation in MainScreen")
             }
         }
     }
@@ -100,9 +105,7 @@ fun MainScreen(splashViewModel: SplashViewModel) {
                         bottom = paddingValues.calculateBottomPadding(),
                     ),
         ) {
-            SetupNavGraph(
-                navController = navController,
-            )
+            SetupNavGraph(navController = navController)
         }
     }
 }
