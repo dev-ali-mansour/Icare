@@ -241,7 +241,7 @@ class UpdateDoctorViewModel(
         }
 
     private fun fetchClinics() =
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             _state.update { it.copy(isLoading = true) }
             listClinicsUseCase()
                 .onEach { result ->
@@ -254,38 +254,4 @@ class UpdateDoctorViewModel(
                         }
                 }.launchIn(viewModelScope)
         }
-
-    /*    private fun fetchDoctor() =
-            viewModelScope.launch(dispatcher) {
-                _state.update { it.copy(isLoading = true) }
-                doctorId?.let { id ->
-                    getDoctorUseCase(id).collect { result ->
-                        result
-                            .onSuccess { doctor ->
-                                _state.update {
-                                    it.copy(
-                                        firstName = doctor.firstName,
-                                        lastName = doctor.lastName,
-                                        email = doctor.email,
-                                        phone = doctor.phone,
-                                        speciality = doctor.specialty,
-                                        clinicId = doctor.clinicId,
-                                        fromTime = doctor.fromTime,
-                                        toTime = doctor.toTime,
-                                        rating = doctor.rating,
-                                        price = doctor.price,
-                                        profilePicture = doctor.profilePicture,
-                                        isLoading = false,
-                                    )
-                                }
-                            }.onError { error ->
-                                _singleEvent.emit(DoctorSingleEvent.ShowError(message = error.toUiText()))
-                                _state.update { it.copy(isLoading = false) }
-                            }
-                    }
-                } ?: run {
-                    _singleEvent.emit(DoctorSingleEvent.ShowError(UiText.DynamicString("Doctor not found")))
-                    _state.update { it.copy(isLoading = false) }
-                }
-            }*/
 }
