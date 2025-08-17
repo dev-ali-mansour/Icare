@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.admin.screen.clinic.staff
+package eg.edu.cu.csds.icare.admin.screen.clinician
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -29,7 +29,7 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 fun ClinicStaffsContent(
     modifier: Modifier = Modifier,
     staffsResource: Resource<List<ClinicStaff>>,
-    actionResource: Resource<Nothing?>,
+    actionResource: Resource<Unit>,
     showLoading: (Boolean) -> Unit,
     onExpandStateChanged: (Boolean) -> Unit,
     onItemClicked: (ClinicStaff) -> Unit,
@@ -134,7 +134,7 @@ internal fun ClinicStaffsContentPreview() {
         ClinicStaffsContent(
             modifier = Modifier,
             staffsResource = Resource.Success(data = listOf()),
-            actionResource = Resource.Success(null),
+            actionResource = Resource.Success(Unit),
             showLoading = {},
             onExpandStateChanged = {},
             onItemClicked = {},
