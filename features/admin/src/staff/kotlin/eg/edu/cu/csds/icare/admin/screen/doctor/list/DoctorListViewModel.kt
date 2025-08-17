@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.admin.screen.clinic.doctor.list
+package eg.edu.cu.csds.icare.admin.screen.doctor.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

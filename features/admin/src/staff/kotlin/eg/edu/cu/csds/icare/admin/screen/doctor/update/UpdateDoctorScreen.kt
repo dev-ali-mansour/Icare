@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.admin.screen.clinic.doctor.add
+package eg.edu.cu.csds.icare.admin.screen.doctor.update
 
 import android.content.Context
 import androidx.compose.foundation.background
@@ -31,8 +31,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.admin.R
-import eg.edu.cu.csds.icare.admin.screen.clinic.doctor.DoctorDetailsContent
-import eg.edu.cu.csds.icare.admin.screen.clinic.doctor.DoctorSingleEvent
+import eg.edu.cu.csds.icare.admin.screen.doctor.DoctorDetailsContent
+import eg.edu.cu.csds.icare.admin.screen.doctor.DoctorSingleEvent
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
@@ -44,8 +44,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun NewDoctorScreen(
-    viewModel: NewDoctorViewModel = koinViewModel(),
+internal fun UpdateDoctorScreen(
+    viewModel: UpdateDoctorViewModel = koinViewModel(),
     context: Context = LocalContext.current,
     onNavigationIconClicked: () -> Unit,
     onSuccess: () -> Unit,
@@ -63,6 +63,7 @@ internal fun NewDoctorScreen(
                     delay(timeMillis = 3000)
                     onSuccess()
                 }
+
                 is DoctorSingleEvent.ShowError -> {
                     alertMessage = event.message.asString(context)
                     showAlert = true
@@ -76,7 +77,7 @@ internal fun NewDoctorScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.new_doctor)) },
+                title = { Text(text = stringResource(id = R.string.edit_doctor)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,
@@ -108,7 +109,7 @@ internal fun NewDoctorScreen(
                         .background(backgroundColor)
                         .fillMaxWidth(),
             ) {
-                val (line, content) = createRefs()
+                val (_, line, content) = createRefs()
                 Box(
                     modifier =
                         Modifier

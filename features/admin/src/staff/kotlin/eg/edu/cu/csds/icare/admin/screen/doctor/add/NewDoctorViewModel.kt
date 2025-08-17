@@ -1,16 +1,16 @@
-package eg.edu.cu.csds.icare.admin.screen.clinic.doctor.update
+package eg.edu.cu.csds.icare.admin.screen.doctor.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eg.edu.cu.csds.icare.admin.R
-import eg.edu.cu.csds.icare.admin.screen.clinic.doctor.DoctorIntent
-import eg.edu.cu.csds.icare.admin.screen.clinic.doctor.DoctorSingleEvent
-import eg.edu.cu.csds.icare.admin.screen.clinic.doctor.DoctorState
+import eg.edu.cu.csds.icare.admin.screen.doctor.DoctorIntent
+import eg.edu.cu.csds.icare.admin.screen.doctor.DoctorSingleEvent
+import eg.edu.cu.csds.icare.admin.screen.doctor.DoctorState
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinicsUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.doctor.UpdateDoctorUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.AddNewDoctorUseCase
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.domain.util.isValidEmail
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
@@ -30,12 +30,12 @@ import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
-class UpdateDoctorViewModel(
+class NewDoctorViewModel(
     private val dispatcher: CoroutineDispatcher,
     private val listClinicsUseCase: ListClinicsUseCase,
-    private val updateDoctorUseCase: UpdateDoctorUseCase,
+    private val addNewDoctorUseCase: AddNewDoctorUseCase,
 ) : ViewModel() {
-    private var updateDoctorJob: Job? = null
+    private var addDoctorJob: Job? = null
     private val _state = MutableStateFlow(DoctorState())
     val state =
         _state
@@ -99,59 +99,38 @@ class UpdateDoctorViewModel(
                 _state.update { it.copy(profilePicture = intent.profilePicture) }
             }
 
-            is DoctorIntent.SelectDoctor -> {
-                _state.update {
-                    it.copy(
-                        id = intent.doctor.id,
-                        firstName = intent.doctor.firstName,
-                        lastName = intent.doctor.lastName,
-                        email = intent.doctor.email,
-                        phone = intent.doctor.phone,
-                        speciality = intent.doctor.specialty,
-                        clinicId = intent.doctor.clinicId,
-                        fromTime = intent.doctor.fromTime,
-                        toTime = intent.doctor.toTime,
-                        rating = intent.doctor.rating,
-                        price = intent.doctor.price,
-                        profilePicture = intent.doctor.profilePicture,
-                        isLoading = false,
-                    )
-                }
-            }
-
+            is DoctorIntent.SelectDoctor -> Unit
             is DoctorIntent.Proceed ->
                 viewModelScope.launch {
                     when {
                         _state.value.firstName.isBlank() -> {
                             _singleEvent.emit(
-                                DoctorSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.first_name_error),
-                                ),
+                                DoctorSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.first_name_error)),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
 
                         _state.value.lastName.isBlank() -> {
                             _singleEvent.emit(
-                                DoctorSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.last_name_error),
-                                ),
+                                DoctorSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.last_name_error)),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
 
                         _state.value.clinicId == 0.toLong() -> {
                             _singleEvent.emit(
-                                DoctorSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.clinic_error),
-                                ),
+                                DoctorSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.clinic_error)),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
 
                         !_state.value.email.isValidEmail -> {
                             _singleEvent.emit(
-                                DoctorSingleEvent.ShowError(message = StringResourceId(R.string.email_error)),
+                                DoctorSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.email_error)),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
@@ -159,62 +138,50 @@ class UpdateDoctorViewModel(
                         _state.value.phone.isBlank() ||
                             _state.value.phone.length < Constants.PHONE_LENGTH -> {
                             _singleEvent.emit(
-                                DoctorSingleEvent.ShowError(message = StringResourceId(R.string.phone_error)),
+                                DoctorSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.phone_error)),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
 
                         _state.value.speciality.isBlank() -> {
                             _singleEvent.emit(
-                                DoctorSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.speciality_error),
-                                ),
+                                DoctorSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.speciality_error)),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
 
                         _state.value.price < 1.0 -> {
                             _singleEvent.emit(
-                                DoctorSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.service_price_error),
-                                ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
-                        }
-
-                        _state.value.rating !in 0.0..Constants.MAX_RATING -> {
-                            _singleEvent.emit(
-                                DoctorSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.rating_error),
-                                ),
+                                DoctorSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.service_price_error)),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
 
                         _state.value.fromTime == _state.value.toTime -> {
                             _singleEvent.emit(
-                                DoctorSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.doctor_times_error),
-                                ),
+                                DoctorSingleEvent
+                                    .ShowError(message = StringResourceId(R.string.doctor_times_error)),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
 
                         else -> {
-                            updateDoctorJob?.cancel()
-                            updateDoctorJob = launchUpdateDoctor()
+                            addDoctorJob?.cancel()
+                            addDoctorJob = launchAddNewDoctor()
                         }
                     }
                 }
         }
     }
 
-    private fun launchUpdateDoctor() =
+    private fun launchAddNewDoctor() =
         viewModelScope.launch(dispatcher) {
             _state.update { it.copy(isLoading = true) }
             val doctor =
                 Doctor(
-                    id = _state.value.id,
                     firstName = _state.value.firstName,
                     lastName = _state.value.lastName,
                     clinicId = _state.value.clinicId,
@@ -227,7 +194,7 @@ class UpdateDoctorViewModel(
                     price = _state.value.price,
                     profilePicture = _state.value.profilePicture,
                 )
-            updateDoctorUseCase(doctor)
+            addNewDoctorUseCase(doctor)
                 .onEach { result ->
                     result
                         .onSuccess {
