@@ -38,13 +38,14 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 fun DoctorListSection(
     modifier: Modifier = Modifier,
     viewModel: DoctorListViewModel = koinViewModel(),
-    context: Context = LocalContext.current,
     navigateToDoctorDetails: (Doctor) -> Unit,
     onExpandStateChanged: (Boolean) -> Unit,
     onError: (String) -> Unit,
 ) {
+    val context: Context = LocalContext.current
     val refreshState = rememberPullToRefreshState()
     val state by viewModel.state.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) {
         viewModel.singleEvent.collect { event ->
             when (event) {
