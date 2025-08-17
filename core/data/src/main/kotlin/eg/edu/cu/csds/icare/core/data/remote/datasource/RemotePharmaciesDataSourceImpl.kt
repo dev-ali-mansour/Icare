@@ -3,6 +3,7 @@ package eg.edu.cu.csds.icare.core.data.remote.datasource
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.data.dto.PharmacistDto
 import eg.edu.cu.csds.icare.core.data.dto.PharmacyDto
+import eg.edu.cu.csds.icare.core.data.mappers.toRemoteError
 import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import eg.edu.cu.csds.icare.core.domain.model.DataError
 import eg.edu.cu.csds.icare.core.domain.model.Result
@@ -59,7 +60,7 @@ class RemotePharmaciesDataSourceImpl(
             }
         }.catch {
             Timber.e("fetchPharmacies() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun addNewPharmacy(pharmacy: PharmacyDto): Flow<Result<Unit, DataError.Remote>> =
@@ -98,7 +99,7 @@ class RemotePharmaciesDataSourceImpl(
             }
         }.catch {
             Timber.e("addNewPharmacy() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun updatePharmacy(pharmacy: PharmacyDto): Flow<Result<Unit, DataError.Remote>> =
@@ -137,7 +138,7 @@ class RemotePharmaciesDataSourceImpl(
             }
         }.catch {
             Timber.e("updatePharmacy() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun listPharmacists(): Flow<Result<List<PharmacistDto>, DataError.Remote>> =
@@ -176,7 +177,7 @@ class RemotePharmaciesDataSourceImpl(
                 }
         }.catch {
             Timber.e("listPharmacists() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun addNewPharmacist(pharmacist: PharmacistDto): Flow<Result<Unit, DataError.Remote>> =
@@ -213,7 +214,7 @@ class RemotePharmaciesDataSourceImpl(
                 }
         }.catch {
             Timber.e("addNewPharmacist() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun updatePharmacist(pharmacist: PharmacistDto): Flow<Result<Unit, DataError.Remote>> =
@@ -250,6 +251,6 @@ class RemotePharmaciesDataSourceImpl(
                 }
         }.catch {
             Timber.e("updatePharmacist() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 }
