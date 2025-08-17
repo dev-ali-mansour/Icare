@@ -3,6 +3,7 @@ package eg.edu.cu.csds.icare.core.data.remote.datasource
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.data.dto.CenterDto
 import eg.edu.cu.csds.icare.core.data.dto.CenterStaffDto
+import eg.edu.cu.csds.icare.core.data.mappers.toRemoteError
 import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import eg.edu.cu.csds.icare.core.domain.model.DataError
 import eg.edu.cu.csds.icare.core.domain.model.Result
@@ -58,7 +59,7 @@ class RemoteCentersDataSourceImpl(
             }
         }.catch {
             Timber.e("fetchCenters() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun addNewCenter(center: CenterDto): Flow<Result<Unit, DataError.Remote>> =
@@ -96,7 +97,7 @@ class RemoteCentersDataSourceImpl(
             }
         }.catch {
             Timber.e("addNewCenter() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun updateCenter(center: CenterDto): Flow<Result<Unit, DataError.Remote>> =
@@ -134,7 +135,7 @@ class RemoteCentersDataSourceImpl(
             }
         }.catch {
             Timber.e("updateCenter() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun listCenterStaff(): Flow<Result<List<CenterStaffDto>, DataError.Remote>> =
@@ -167,7 +168,7 @@ class RemoteCentersDataSourceImpl(
             }
         }.catch {
             Timber.e("listCenterStaff() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun addNewCenterStaff(staff: CenterStaffDto): Flow<Result<Unit, DataError.Remote>> =
@@ -203,7 +204,7 @@ class RemoteCentersDataSourceImpl(
                 }
         }.catch {
             Timber.e("addNewCenterStaff() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun updateCenterStaff(staff: CenterStaffDto): Flow<Result<Unit, DataError.Remote>> =
@@ -238,6 +239,6 @@ class RemoteCentersDataSourceImpl(
                 }
         }.catch {
             Timber.e("updateCenterStaff() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 }
