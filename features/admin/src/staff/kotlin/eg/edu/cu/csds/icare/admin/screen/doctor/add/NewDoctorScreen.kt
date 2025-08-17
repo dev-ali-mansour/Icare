@@ -46,10 +46,10 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 internal fun NewDoctorScreen(
     viewModel: NewDoctorViewModel = koinViewModel(),
-    context: Context = LocalContext.current,
     onNavigationIconClicked: () -> Unit,
     onSuccess: () -> Unit,
 ) {
+    val context: Context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     var showSuccessDialog by remember { mutableStateOf(false) }
     var alertMessage by remember { mutableStateOf("") }
