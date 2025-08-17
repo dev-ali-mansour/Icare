@@ -46,10 +46,10 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 internal fun UpdateDoctorScreen(
     viewModel: UpdateDoctorViewModel = koinViewModel(),
-    context: Context = LocalContext.current,
     onNavigationIconClicked: () -> Unit,
     onSuccess: () -> Unit,
 ) {
+    val context: Context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     var showSuccessDialog by remember { mutableStateOf(false) }
     var alertMessage by remember { mutableStateOf("") }
@@ -109,7 +109,7 @@ internal fun UpdateDoctorScreen(
                         .background(backgroundColor)
                         .fillMaxWidth(),
             ) {
-                val (_, line, content) = createRefs()
+                val (line, content) = createRefs()
                 Box(
                     modifier =
                         Modifier
