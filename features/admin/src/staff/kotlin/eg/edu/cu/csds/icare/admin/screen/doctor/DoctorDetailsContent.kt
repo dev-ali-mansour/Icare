@@ -62,8 +62,9 @@ internal fun DoctorDetailsContent(
     state: DoctorState,
     onIntent: (DoctorIntent) -> Unit,
     modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
 ) {
+    val context: Context = LocalContext.current
+
     ConstraintLayout(
         modifier =
             modifier
