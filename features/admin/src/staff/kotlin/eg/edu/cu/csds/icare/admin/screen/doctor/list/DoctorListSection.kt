@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.admin.screen.clinic.doctor.list
+package eg.edu.cu.csds.icare.admin.screen.doctor.list
 
 import android.content.Context
 import android.content.res.Configuration

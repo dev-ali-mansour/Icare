@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.admin.screen.clinic.doctor
+package eg.edu.cu.csds.icare.admin.screen.doctor
 
 import androidx.lifecycle.ViewModel
 import eg.edu.cu.csds.icare.core.domain.model.Doctor

@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.admin.screen.clinic.doctor
+package eg.edu.cu.csds.icare.admin.screen.doctor
 
 import android.app.TimePickerDialog
 import android.content.Context

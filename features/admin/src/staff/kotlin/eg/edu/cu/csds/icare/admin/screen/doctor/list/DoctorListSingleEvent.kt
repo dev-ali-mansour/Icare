@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.admin.screen.clinic.doctor.list
+package eg.edu.cu.csds.icare.admin.screen.doctor.list
 
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.ui.util.UiText
