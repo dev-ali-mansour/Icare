@@ -114,7 +114,6 @@ class UpdateDoctorViewModel(
                         rating = intent.doctor.rating,
                         price = intent.doctor.price,
                         profilePicture = intent.doctor.profilePicture,
-                        isLoading = false,
                     )
                 }
             }
