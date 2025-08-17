@@ -28,11 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,14 +36,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.admin.R
-import eg.edu.cu.csds.icare.core.domain.model.Clinic
-import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.domain.util.formatForDisplay
+import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
@@ -61,53 +53,17 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import eg.edu.cu.csds.icare.core.ui.view.DoubleTextField
-import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
 import java.util.Calendar
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DoctorDetailsContent(
-    firstName: String,
-    lastName: String,
-    clinicId: Long,
-    email: String,
-    phone: String,
-    speciality: String,
-    fromTime: Long,
-    toTime: Long,
-    price: Double,
-    rating: Double,
-    clinicsResource: Resource<List<Clinic>>,
-    actionResource: Resource<Nothing?>,
-    showLoading: (Boolean) -> Unit,
-    clinicsExpanded: Boolean,
-    onFirstNameChanged: (String) -> Unit,
-    onLastNameChanged: (String) -> Unit,
-    onClinicsExpandedChange: (Boolean) -> Unit,
-    onClinicsDismissRequest: () -> Unit,
-    onClinicClicked: (Long) -> Unit,
-    onEmailChanged: (String) -> Unit,
-    onPhoneChanged: (String) -> Unit,
-    onSpecialityChanged: (String) -> Unit,
-    onFromTimeChanged: (Long) -> Unit,
-    onToTimeChanged: (Long) -> Unit,
-    onPriceChanged: (Double) -> Unit,
-    onRatingChanged: (Double) -> Unit,
-    onProceedButtonClicked: () -> Unit,
-    onSuccess: () -> Unit,
-    onError: suspend (Throwable?) -> Unit,
+    state: DoctorState,
+    onIntent: (DoctorIntent) -> Unit,
     modifier: Modifier = Modifier,
-    editRating: Boolean = false,
     context: Context = LocalContext.current,
 ) {
-    var ratingTextState by remember {
-        mutableStateOf(TextFieldValue(rating.formatForDisplay()))
-    }
-
-    LaunchedEffect(key1 = rating) {
-        ratingTextState = TextFieldValue(rating.formatForDisplay())
-    }
     ConstraintLayout(
         modifier =
             modifier
@@ -128,442 +84,388 @@ internal fun DoctorDetailsContent(
                         height = Dimension.fillToConstraints
                     },
         ) {
-            when (clinicsResource) {
-                is Resource.Unspecified ->
-                    LaunchedEffect(key1 = clinicsResource) { showLoading(false) }
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(backgroundColor)
+                        .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                TextField(
+                    value = state.firstName,
+                    onValueChange = { onIntent(DoctorIntent.UpdateFirstName(it)) },
+                    label = {
+                        Text(
+                            text = stringResource(R.string.first_name),
+                            fontFamily = helveticaFamily,
+                            color = textColor,
+                        )
+                    },
+                    singleLine = true,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(fraction = 0.8f)
+                            .padding(top = L_PADDING),
+                    colors =
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            cursorColor = contentColor,
+                            focusedTextColor = textColor,
+                            focusedIndicatorColor = Yellow500,
+                            unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                        ),
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            autoCorrectEnabled = false,
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next,
+                        ),
+                )
 
-                is Resource.Loading -> LaunchedEffect(key1 = clinicsResource) { showLoading(true) }
+                TextField(
+                    value = state.lastName,
+                    onValueChange = { onIntent(DoctorIntent.UpdateLastName(it)) },
+                    label = {
+                        Text(
+                            text = stringResource(R.string.last_name),
+                            fontFamily = helveticaFamily,
+                            color = textColor,
+                        )
+                    },
+                    singleLine = true,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(fraction = 0.8f),
+                    colors =
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            cursorColor = contentColor,
+                            focusedTextColor = textColor,
+                            focusedIndicatorColor = Yellow500,
+                            unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                        ),
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            autoCorrectEnabled = false,
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next,
+                        ),
+                )
 
-                is Resource.Success -> {
-                    LaunchedEffect(key1 = clinicsResource) { showLoading(false) }
-                    clinicsResource.data?.let { clinics ->
+                ExposedDropdownMenuBox(
+                    modifier = Modifier.fillMaxWidth(fraction = 0.8f),
+                    expanded = state.isClinicsExpanded,
+                    onExpandedChange = { onIntent(DoctorIntent.UpdateClinicsExpanded(it)) },
+                ) {
+                    OutlinedTextField(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .menuAnchor(MenuAnchorType.PrimaryNotEditable),
+                        readOnly = true,
+                        value =
+                            state.clinics.firstOrNull { it.id == state.clinicId }?.name ?: "",
+                        onValueChange = { },
+                        label = {
+                            Text(
+                                text = stringResource(R.string.clinic),
+                                color = dropDownTextColor,
+                            )
+                        },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                expanded = state.isClinicsExpanded,
+                            )
+                        },
+                        colors =
+                            ExposedDropdownMenuDefaults.textFieldColors(
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White,
+                                focusedContainerColor = barBackgroundColor,
+                                unfocusedContainerColor = barBackgroundColor,
+                                unfocusedTrailingIconColor = Color.White,
+                                focusedTrailingIconColor = Color.White,
+                                focusedLabelColor = Color.White,
+                                unfocusedLabelColor = Color.White,
+                            ),
+                    )
 
-                        Column(
-                            modifier =
-                                Modifier
-                                    .fillMaxSize()
-                                    .background(backgroundColor)
-                                    .verticalScroll(rememberScrollState()),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            TextField(
-                                value = firstName,
-                                onValueChange = { onFirstNameChanged(it) },
-                                label = {
+                    ExposedDropdownMenu(
+                        expanded = state.isClinicsExpanded,
+                        onDismissRequest = {
+                            onIntent(DoctorIntent.UpdateClinicsExpanded(false))
+                        },
+                    ) {
+                        state.clinics.forEach {
+                            DropdownMenuItem(
+                                text = {
                                     Text(
-                                        text = stringResource(R.string.first_name),
-                                        fontFamily = helveticaFamily,
-                                        color = textColor,
+                                        text = it.name,
+                                        color = dropDownTextColor,
                                     )
                                 },
-                                singleLine = true,
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth(fraction = 0.8f)
-                                        .padding(top = L_PADDING),
-                                colors =
-                                    TextFieldDefaults.colors(
-                                        focusedContainerColor = Color.Transparent,
-                                        unfocusedContainerColor = Color.Transparent,
-                                        disabledContainerColor = Color.Transparent,
-                                        cursorColor = contentColor,
-                                        focusedTextColor = textColor,
-                                        focusedIndicatorColor = Yellow500,
-                                        unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                                    ),
-                                keyboardOptions =
-                                    KeyboardOptions.Default.copy(
-                                        autoCorrectEnabled = false,
-                                        keyboardType = KeyboardType.Text,
-                                        imeAction = ImeAction.Next,
-                                    ),
-                            )
-
-                            TextField(
-                                value = lastName,
-                                onValueChange = { onLastNameChanged(it) },
-                                label = {
-                                    Text(
-                                        text = stringResource(R.string.last_name),
-                                        fontFamily = helveticaFamily,
-                                        color = textColor,
-                                    )
+                                onClick = {
+                                    onIntent(DoctorIntent.UpdateClinicId(it.id))
+                                    onIntent(DoctorIntent.UpdateClinicsExpanded(false))
                                 },
-                                singleLine = true,
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth(fraction = 0.8f),
-                                colors =
-                                    TextFieldDefaults.colors(
-                                        focusedContainerColor = Color.Transparent,
-                                        unfocusedContainerColor = Color.Transparent,
-                                        disabledContainerColor = Color.Transparent,
-                                        cursorColor = contentColor,
-                                        focusedTextColor = textColor,
-                                        focusedIndicatorColor = Yellow500,
-                                        unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                                    ),
-                                keyboardOptions =
-                                    KeyboardOptions.Default.copy(
-                                        autoCorrectEnabled = false,
-                                        keyboardType = KeyboardType.Text,
-                                        imeAction = ImeAction.Next,
-                                    ),
-                            )
-
-                            ExposedDropdownMenuBox(
-                                modifier = Modifier.fillMaxWidth(fraction = 0.8f),
-                                expanded = clinicsExpanded,
-                                onExpandedChange = {
-                                    onClinicsExpandedChange(it)
-                                },
-                            ) {
-                                OutlinedTextField(
-                                    modifier =
-                                        Modifier
-                                            .fillMaxWidth()
-                                            .menuAnchor(MenuAnchorType.PrimaryNotEditable),
-                                    readOnly = true,
-                                    value =
-                                        clinics.firstOrNull { it.id == clinicId }?.name ?: "",
-                                    onValueChange = { },
-                                    label = {
-                                        Text(
-                                            text = stringResource(R.string.clinic),
-                                            color = dropDownTextColor,
-                                        )
-                                    },
-                                    trailingIcon = {
-                                        ExposedDropdownMenuDefaults.TrailingIcon(
-                                            expanded = clinicsExpanded,
-                                        )
-                                    },
-                                    colors =
-                                        ExposedDropdownMenuDefaults.textFieldColors(
-                                            focusedTextColor = Color.White,
-                                            unfocusedTextColor = Color.White,
-                                            focusedContainerColor = barBackgroundColor,
-                                            unfocusedContainerColor = barBackgroundColor,
-                                            unfocusedTrailingIconColor = Color.White,
-                                            focusedTrailingIconColor = Color.White,
-                                            focusedLabelColor = Color.White,
-                                            unfocusedLabelColor = Color.White,
-                                        ),
-                                )
-
-                                ExposedDropdownMenu(
-                                    expanded = clinicsExpanded,
-                                    onDismissRequest = {
-                                        onClinicsDismissRequest()
-                                    },
-                                ) {
-                                    clinics.forEach {
-                                        DropdownMenuItem(
-                                            text = {
-                                                Text(
-                                                    text = it.name,
-                                                    color = dropDownTextColor,
-                                                )
-                                            },
-                                            onClick = { onClinicClicked(it.id) },
-                                        )
-                                    }
-                                }
-                            }
-
-                            TextField(
-                                value = email,
-                                onValueChange = { onEmailChanged(it) },
-                                label = {
-                                    Text(
-                                        text = stringResource(R.string.email),
-                                        fontFamily = helveticaFamily,
-                                        color = textColor,
-                                    )
-                                },
-                                singleLine = true,
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth(fraction = 0.8f),
-                                colors =
-                                    TextFieldDefaults.colors(
-                                        focusedContainerColor = Color.Transparent,
-                                        unfocusedContainerColor = Color.Transparent,
-                                        disabledContainerColor = Color.Transparent,
-                                        cursorColor = contentColor,
-                                        focusedTextColor = textColor,
-                                        focusedIndicatorColor = Yellow500,
-                                        unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                                    ),
-                                keyboardOptions =
-                                    KeyboardOptions.Default.copy(
-                                        autoCorrectEnabled = false,
-                                        keyboardType = KeyboardType.Email,
-                                        imeAction = ImeAction.Next,
-                                    ),
-                            )
-
-                            TextField(
-                                value = phone,
-                                onValueChange = { if (it.length < 14) onPhoneChanged(it) },
-                                label = {
-                                    Text(
-                                        text = stringResource(R.string.phone_number),
-                                        fontFamily = helveticaFamily,
-                                        color = textColor,
-                                    )
-                                },
-                                singleLine = true,
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth(fraction = 0.8f),
-                                colors =
-                                    TextFieldDefaults.colors(
-                                        focusedContainerColor = Color.Transparent,
-                                        unfocusedContainerColor = Color.Transparent,
-                                        disabledContainerColor = Color.Transparent,
-                                        cursorColor = contentColor,
-                                        focusedTextColor = textColor,
-                                        focusedIndicatorColor = Yellow500,
-                                        unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                                    ),
-                                keyboardOptions =
-                                    KeyboardOptions.Default.copy(
-                                        autoCorrectEnabled = false,
-                                        keyboardType = KeyboardType.Phone,
-                                        imeAction = ImeAction.Next,
-                                    ),
-                            )
-
-                            TextField(
-                                value = speciality,
-                                onValueChange = { onSpecialityChanged(it) },
-                                label = {
-                                    Text(
-                                        text = stringResource(CoreR.string.speciality),
-                                        fontFamily = helveticaFamily,
-                                        color = textColor,
-                                    )
-                                },
-                                singleLine = true,
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth(fraction = 0.8f),
-                                colors =
-                                    TextFieldDefaults.colors(
-                                        focusedContainerColor = Color.Transparent,
-                                        unfocusedContainerColor = Color.Transparent,
-                                        disabledContainerColor = Color.Transparent,
-                                        cursorColor = contentColor,
-                                        focusedTextColor = textColor,
-                                        focusedIndicatorColor = Yellow500,
-                                        unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                                    ),
-                                keyboardOptions =
-                                    KeyboardOptions.Default.copy(
-                                        autoCorrectEnabled = false,
-                                        keyboardType = KeyboardType.Text,
-                                        imeAction = ImeAction.Next,
-                                    ),
-                            )
-
-                            DoubleTextField(
-                                value = price,
-                                onValueChanged = { onPriceChanged(it) },
-                                label = stringResource(CoreR.string.price),
-                                textColor = textColor,
-                            )
-
-                            DoubleTextField(
-                                value = rating,
-                                onValueChanged = { onRatingChanged(it) },
-                                label = stringResource(CoreR.string.rating),
-                                textColor = textColor,
-                                readOnly = !editRating,
-                                imeAction = ImeAction.Done,
-                            )
-
-                            TextField(
-                                value = fromTime.getFormattedTime(context),
-                                onValueChange = {},
-                                readOnly = true,
-                                label = {
-                                    Text(
-                                        text = stringResource(R.string.from_time),
-                                        fontFamily = helveticaFamily,
-                                        color = textColor,
-                                    )
-                                },
-                                singleLine = true,
-                                modifier = Modifier.fillMaxWidth(fraction = 0.8f),
-                                colors =
-                                    TextFieldDefaults.colors(
-                                        focusedContainerColor = Color.Transparent,
-                                        unfocusedContainerColor = Color.Transparent,
-                                        disabledContainerColor = Color.Transparent,
-                                        cursorColor = contentColor,
-                                        focusedTextColor = textColor,
-                                        focusedIndicatorColor = Yellow500,
-                                        unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                                    ),
-                                keyboardOptions =
-                                    KeyboardOptions.Default.copy(
-                                        autoCorrectEnabled = false,
-                                        keyboardType = KeyboardType.Text,
-                                        imeAction = ImeAction.Next,
-                                    ),
-                                trailingIcon = {
-                                    Icon(
-                                        modifier =
-                                            Modifier.clickable {
-                                                val calendar = Calendar.getInstance()
-                                                val hour = calendar.get(Calendar.HOUR_OF_DAY)
-                                                val minute = calendar.get(Calendar.MINUTE)
-
-                                                TimePickerDialog(
-                                                    context,
-                                                    { _: TimePicker, selectedHour: Int, selectedMinute: Int ->
-                                                        val selectedCalendar =
-                                                            Calendar.getInstance()
-                                                        selectedCalendar.set(
-                                                            Calendar.HOUR_OF_DAY,
-                                                            selectedHour,
-                                                        )
-                                                        selectedCalendar.set(
-                                                            Calendar.MINUTE,
-                                                            selectedMinute,
-                                                        )
-                                                        selectedCalendar.set(Calendar.SECOND, 0)
-                                                        selectedCalendar.set(
-                                                            Calendar.MILLISECOND,
-                                                            0,
-                                                        )
-
-                                                        val timeInMillis =
-                                                            selectedCalendar.timeInMillis
-
-                                                        onFromTimeChanged(timeInMillis)
-                                                    },
-                                                    hour,
-                                                    minute,
-                                                    true,
-                                                ).show()
-                                            },
-                                        painter = painterResource(id = CoreR.drawable.baseline_calendar_month_24),
-                                        contentDescription = "",
-                                    )
-                                },
-                            )
-
-                            TextField(
-                                value = toTime.getFormattedTime(context),
-                                onValueChange = {},
-                                readOnly = true,
-                                label = {
-                                    Text(
-                                        text = stringResource(R.string.to_time),
-                                        fontFamily = helveticaFamily,
-                                        color = textColor,
-                                    )
-                                },
-                                singleLine = true,
-                                modifier = Modifier.fillMaxWidth(fraction = 0.8f),
-                                colors =
-                                    TextFieldDefaults.colors(
-                                        focusedContainerColor = Color.Transparent,
-                                        unfocusedContainerColor = Color.Transparent,
-                                        disabledContainerColor = Color.Transparent,
-                                        cursorColor = contentColor,
-                                        focusedTextColor = textColor,
-                                        focusedIndicatorColor = Yellow500,
-                                        unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                                    ),
-                                keyboardOptions =
-                                    KeyboardOptions.Default.copy(
-                                        autoCorrectEnabled = false,
-                                        keyboardType = KeyboardType.Text,
-                                        imeAction = ImeAction.Next,
-                                    ),
-                                trailingIcon = {
-                                    Icon(
-                                        modifier =
-                                            Modifier.clickable {
-                                                val calendar = Calendar.getInstance()
-                                                val hour = calendar.get(Calendar.HOUR_OF_DAY)
-                                                val minute = calendar.get(Calendar.MINUTE)
-
-                                                TimePickerDialog(
-                                                    context,
-                                                    { _: TimePicker, selectedHour: Int, selectedMinute: Int ->
-                                                        val selectedCalendar =
-                                                            Calendar.getInstance()
-                                                        selectedCalendar.set(
-                                                            Calendar.HOUR_OF_DAY,
-                                                            selectedHour,
-                                                        )
-                                                        selectedCalendar.set(
-                                                            Calendar.MINUTE,
-                                                            selectedMinute,
-                                                        )
-                                                        selectedCalendar.set(Calendar.SECOND, 0)
-                                                        selectedCalendar.set(
-                                                            Calendar.MILLISECOND,
-                                                            0,
-                                                        )
-
-                                                        val timeInMillis =
-                                                            selectedCalendar.timeInMillis
-
-                                                        onToTimeChanged(timeInMillis)
-                                                    },
-                                                    hour,
-                                                    minute,
-                                                    true,
-                                                ).show()
-                                            },
-                                        painter = painterResource(id = CoreR.drawable.baseline_calendar_month_24),
-                                        contentDescription = "",
-                                    )
-                                },
-                            )
-
-                            Spacer(modifier = Modifier.height(L_PADDING))
-
-                            AnimatedButton(
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth(fraction = 0.6f),
-                                text = stringResource(CoreR.string.proceed),
-                                color = buttonBackgroundColor,
-                                onClick = { onProceedButtonClicked() },
                             )
                         }
                     }
                 }
 
-                is Resource.Error ->
-                    LaunchedEffect(key1 = true) {
-                        showLoading(false)
-                        onError(clinicsResource.error)
-                    }
+                TextField(
+                    value = state.email,
+                    onValueChange = { onIntent(DoctorIntent.UpdateEmail(it)) },
+                    label = {
+                        Text(
+                            text = stringResource(R.string.email),
+                            fontFamily = helveticaFamily,
+                            color = textColor,
+                        )
+                    },
+                    singleLine = true,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(fraction = 0.8f),
+                    colors =
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            cursorColor = contentColor,
+                            focusedTextColor = textColor,
+                            focusedIndicatorColor = Yellow500,
+                            unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                        ),
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            autoCorrectEnabled = false,
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Next,
+                        ),
+                )
+
+                TextField(
+                    value = state.phone,
+                    onValueChange = { if (it.length < 14) onIntent(DoctorIntent.UpdatePhone(it)) },
+                    label = {
+                        Text(
+                            text = stringResource(R.string.phone_number),
+                            fontFamily = helveticaFamily,
+                            color = textColor,
+                        )
+                    },
+                    singleLine = true,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(fraction = 0.8f),
+                    colors =
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            cursorColor = contentColor,
+                            focusedTextColor = textColor,
+                            focusedIndicatorColor = Yellow500,
+                            unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                        ),
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            autoCorrectEnabled = false,
+                            keyboardType = KeyboardType.Phone,
+                            imeAction = ImeAction.Next,
+                        ),
+                )
+
+                TextField(
+                    value = state.speciality,
+                    onValueChange = { onIntent(DoctorIntent.UpdateSpeciality(it)) },
+                    label = {
+                        Text(
+                            text = stringResource(CoreR.string.speciality),
+                            fontFamily = helveticaFamily,
+                            color = textColor,
+                        )
+                    },
+                    singleLine = true,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(fraction = 0.8f),
+                    colors =
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            cursorColor = contentColor,
+                            focusedTextColor = textColor,
+                            focusedIndicatorColor = Yellow500,
+                            unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                        ),
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            autoCorrectEnabled = false,
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next,
+                        ),
+                )
+
+                DoubleTextField(
+                    value = state.price,
+                    onValueChanged = { onIntent(DoctorIntent.UpdatePrice(it)) },
+                    label = stringResource(CoreR.string.price),
+                    textColor = textColor,
+                )
+
+                DoubleTextField(
+                    value = state.rating,
+                    onValueChanged = { onIntent(DoctorIntent.UpdateRating(it)) },
+                    label = stringResource(CoreR.string.rating),
+                    textColor = textColor,
+                    readOnly = state.ratingReadOnly,
+                    imeAction = ImeAction.Done,
+                )
+
+                TextField(
+                    value = state.fromTime.getFormattedTime(context),
+                    onValueChange = {},
+                    readOnly = true,
+                    label = {
+                        Text(
+                            text = stringResource(R.string.from_time),
+                            fontFamily = helveticaFamily,
+                            color = textColor,
+                        )
+                    },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(fraction = 0.8f),
+                    colors =
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            cursorColor = contentColor,
+                            focusedTextColor = textColor,
+                            focusedIndicatorColor = Yellow500,
+                            unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                        ),
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            autoCorrectEnabled = false,
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next,
+                        ),
+                    trailingIcon = {
+                        Icon(
+                            modifier =
+                                Modifier.clickable {
+                                    val calendar = Calendar.getInstance()
+                                    val hour = calendar.get(Calendar.HOUR_OF_DAY)
+                                    val minute = calendar.get(Calendar.MINUTE)
+
+                                    TimePickerDialog(
+                                        context,
+                                        { _: TimePicker, selectedHour: Int, selectedMinute: Int ->
+                                            val selectedCalendar = Calendar.getInstance()
+                                            selectedCalendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                                            selectedCalendar.set(Calendar.MINUTE, selectedMinute)
+                                            selectedCalendar.set(Calendar.SECOND, 0)
+                                            selectedCalendar.set(Calendar.MILLISECOND, 0)
+
+                                            val timeInMillis = selectedCalendar.timeInMillis
+
+                                            onIntent(DoctorIntent.UpdateFromTime(timeInMillis))
+                                        },
+                                        hour,
+                                        minute,
+                                        true,
+                                    ).show()
+                                },
+                            painter = painterResource(id = CoreR.drawable.baseline_calendar_month_24),
+                            contentDescription = "",
+                        )
+                    },
+                )
+
+                TextField(
+                    value = state.toTime.getFormattedTime(context),
+                    onValueChange = {},
+                    readOnly = true,
+                    label = {
+                        Text(
+                            text = stringResource(R.string.to_time),
+                            fontFamily = helveticaFamily,
+                            color = textColor,
+                        )
+                    },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(fraction = 0.8f),
+                    colors =
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            cursorColor = contentColor,
+                            focusedTextColor = textColor,
+                            focusedIndicatorColor = Yellow500,
+                            unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                        ),
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            autoCorrectEnabled = false,
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next,
+                        ),
+                    trailingIcon = {
+                        Icon(
+                            modifier =
+                                Modifier.clickable {
+                                    val calendar = Calendar.getInstance()
+                                    val hour = calendar.get(Calendar.HOUR_OF_DAY)
+                                    val minute = calendar.get(Calendar.MINUTE)
+
+                                    TimePickerDialog(
+                                        context,
+                                        { _: TimePicker, selectedHour: Int, selectedMinute: Int ->
+                                            val selectedCalendar = Calendar.getInstance()
+                                            selectedCalendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                                            selectedCalendar.set(Calendar.MINUTE, selectedMinute)
+                                            selectedCalendar.set(Calendar.SECOND, 0)
+                                            selectedCalendar.set(Calendar.MILLISECOND, 0)
+
+                                            val timeInMillis = selectedCalendar.timeInMillis
+
+                                            onIntent(DoctorIntent.UpdateToTime(timeInMillis))
+                                        },
+                                        hour,
+                                        minute,
+                                        true,
+                                    ).show()
+                                },
+                            painter =
+                                painterResource(
+                                    id = CoreR.drawable.baseline_calendar_month_24,
+                                ),
+                            contentDescription = "",
+                        )
+                    },
+                )
+
+                Spacer(modifier = Modifier.height(L_PADDING))
+
+                AnimatedButton(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(fraction = 0.6f),
+                    text = stringResource(CoreR.string.proceed),
+                    color = buttonBackgroundColor,
+                    onClick = { onIntent(DoctorIntent.Proceed) },
+                )
             }
-        }
-
-        when (actionResource) {
-            is Resource.Unspecified -> LaunchedEffect(key1 = actionResource) { showLoading(false) }
-            is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
-
-            is Resource.Success ->
-                LaunchedEffect(key1 = Unit) {
-                    showLoading(false)
-                    onSuccess()
-                }
-
-            is Resource.Error ->
-                LaunchedEffect(key1 = actionResource) {
-                    showLoading(false)
-                    onError(actionResource.error)
-                }
         }
     }
 }
@@ -576,36 +478,8 @@ internal fun DoctorDetailsContent(
 internal fun DoctorDetailsContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         DoctorDetailsContent(
-            firstName = "",
-            lastName = "",
-            clinicId = 0,
-            email = "",
-            phone = "",
-            speciality = "",
-            fromTime = 0,
-            toTime = 0,
-            price = 500.0,
-            rating = 4.5,
-            clinicsResource = Resource.Success(listOf(Clinic(name = "عيادة 1"))),
-            actionResource = Resource.Unspecified(),
-            clinicsExpanded = false,
-            editRating = true,
-            showLoading = {},
-            onFirstNameChanged = {},
-            onLastNameChanged = {},
-            onClinicsExpandedChange = {},
-            onClinicsDismissRequest = {},
-            onClinicClicked = {},
-            onEmailChanged = {},
-            onPhoneChanged = {},
-            onSpecialityChanged = {},
-            onFromTimeChanged = {},
-            onToTimeChanged = {},
-            onPriceChanged = {},
-            onRatingChanged = {},
-            onProceedButtonClicked = {},
-            onSuccess = {},
-            onError = {},
+            state = DoctorState(),
+            onIntent = {},
         )
     }
 }
