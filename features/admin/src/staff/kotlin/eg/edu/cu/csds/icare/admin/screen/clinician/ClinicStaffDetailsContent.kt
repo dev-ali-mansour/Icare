@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.admin.screen.clinic.staff
+package eg.edu.cu.csds.icare.admin.screen.clinician
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -56,7 +56,7 @@ internal fun ClinicStaffDetailsContent(
     email: String,
     phone: String,
     clinicsResource: Resource<List<Clinic>>,
-    actionResource: Resource<Nothing?>,
+    actionResource: Resource<Unit>,
     showLoading: (Boolean) -> Unit,
     clinicsExpanded: Boolean,
     onFirstNameChanged: (String) -> Unit,

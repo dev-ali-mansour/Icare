@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.admin.screen.clinic.staff
+package eg.edu.cu.csds.icare.admin.screen.clinician
 
 import android.content.Context
 import androidx.compose.foundation.background
