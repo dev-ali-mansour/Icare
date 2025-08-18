@@ -28,7 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.Clinician
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.view.ClinicStaffView
+import eg.edu.cu.csds.icare.core.ui.view.ClinicianView
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import org.koin.androidx.compose.koinViewModel
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
@@ -140,7 +140,7 @@ private fun ClinicianListContent(
                         clinician.id
                     },
                 ) { clinician ->
-                    ClinicStaffView(clinician = clinician) {
+                    ClinicianView(clinician = clinician) {
                         onIntent(ClinicianListIntent.SelectClinician(clinician))
                     }
                 }

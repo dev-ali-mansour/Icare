@@ -33,7 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
+import eg.edu.cu.csds.icare.core.domain.model.Clinician
 import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
@@ -44,8 +44,8 @@ import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 
 @Composable
-fun ClinicStaffView(
-    clinicStaff: ClinicStaff,
+fun ClinicianView(
+    clinician: Clinician,
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     onClick: () -> Unit,
@@ -81,7 +81,7 @@ fun ClinicStaffView(
                     rememberAsyncImagePainter(
                         ImageRequest
                             .Builder(context)
-                            .data(data = clinicStaff.profilePicture)
+                            .data(data = clinician.profilePicture)
                             .placeholder(R.drawable.user_placeholder)
                             .error(R.drawable.user_placeholder)
                             .build(),
@@ -97,14 +97,14 @@ fun ClinicStaffView(
                 verticalArrangement = Arrangement.spacedBy(XS_PADDING),
             ) {
                 Text(
-                    text = "${clinicStaff.firstName} ${clinicStaff.lastName}",
+                    text = "${clinician.firstName} ${clinician.lastName}",
                     style = MaterialTheme.typography.titleMedium,
                     fontFamily = helveticaFamily,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Spacer(modifier = Modifier.height(M_PADDING))
                 Text(
-                    text = clinicStaff.clinicName,
+                    text = clinician.clinicName,
                     style = MaterialTheme.typography.bodyMedium,
                     fontFamily = helveticaFamily,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
@@ -113,14 +113,14 @@ fun ClinicStaffView(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Phone, contentDescription = null)
                     Spacer(modifier = Modifier.width(XS_PADDING))
-                    Text(text = clinicStaff.phone)
+                    Text(text = clinician.phone)
                 }
                 Spacer(modifier = Modifier.height(M_PADDING))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Email, contentDescription = null)
                     Spacer(modifier = Modifier.width(XS_PADDING))
-                    Text(text = clinicStaff.email)
+                    Text(text = clinician.email)
                 }
             }
         }
@@ -132,7 +132,7 @@ fun ClinicStaffView(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(locale = "ar", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun ClinicStaffCardPreview() {
+fun ClinicianCardPreview() {
     MaterialTheme {
         Column(
             modifier =
@@ -140,9 +140,9 @@ fun ClinicStaffCardPreview() {
                     .padding(XS_PADDING)
                     .background(color = backgroundColor),
         ) {
-            ClinicStaffView(
-                clinicStaff =
-                    ClinicStaff(
+            ClinicianView(
+                clinician =
+                    Clinician(
                         id = "101",
                         firstName = "Mohammed Adel",
                         lastName = "Ahmed",
