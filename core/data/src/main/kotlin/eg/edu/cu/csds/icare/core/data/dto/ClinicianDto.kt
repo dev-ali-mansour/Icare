@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ClinicStaffDto(
+data class ClinicianDto(
     val token: String = "",
     val id: String = "",
     @SerialName("fname") val firstName: String = "",
