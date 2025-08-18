@@ -2,7 +2,7 @@ package eg.edu.cu.csds.icare.core.data.remote.datasource
 
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.data.dto.ClinicDto
-import eg.edu.cu.csds.icare.core.data.dto.ClinicStaffDto
+import eg.edu.cu.csds.icare.core.data.dto.ClinicianDto
 import eg.edu.cu.csds.icare.core.data.dto.DoctorDto
 import eg.edu.cu.csds.icare.core.data.dto.DoctorScheduleDto
 import eg.edu.cu.csds.icare.core.data.mappers.toRemoteError
@@ -283,7 +283,7 @@ class RemoteClinicsDataSourceImpl(
             emit(Result.Error(it.toRemoteError()))
         }
 
-    override fun listClinicStaff(): Flow<Result<List<ClinicStaffDto>, DataError.Remote>> =
+    override fun listClinicians(): Flow<Result<List<ClinicianDto>, DataError.Remote>> =
         flow {
             auth.currentUser?.let {
                 auth.currentUser
@@ -293,7 +293,7 @@ class RemoteClinicsDataSourceImpl(
                     ?.let { token ->
                         val map = HashMap<String, String>()
                         map["token"] = token
-                        val response = service.listClinicStaff(map)
+                        val response = service.listClinicians(map)
                         when (response.code()) {
                             HTTP_OK -> {
                                 response.body()?.let { res ->
@@ -320,18 +320,18 @@ class RemoteClinicsDataSourceImpl(
                     }
             }
         }.catch {
-            Timber.e("listClinicStaff() error ${it.javaClass.simpleName}: ${it.message}")
+            Timber.e("listClinicians() error ${it.javaClass.simpleName}: ${it.message}")
             emit(Result.Error(it.toRemoteError()))
         }
 
-    override fun addNewClinicStaff(staff: ClinicStaffDto): Flow<Result<Unit, DataError.Remote>> =
+    override fun addNewClinician(clinician: ClinicianDto): Flow<Result<Unit, DataError.Remote>> =
         flow {
             auth.currentUser
                 ?.getIdToken(false)
                 ?.await()
                 ?.token
                 ?.let { token ->
-                    val response = service.upsertClinicStaff(staff.copy(token = token))
+                    val response = service.upsertClinician(clinician.copy(token = token))
                     when (response.code()) {
                         HTTP_OK ->
                             response.body()?.let { res ->
@@ -353,18 +353,18 @@ class RemoteClinicsDataSourceImpl(
                     }
                 }
         }.catch {
-            Timber.e("addNewClinicStaff() error ${it.javaClass.simpleName}: ${it.message}")
+            Timber.e("addNewClinician() error ${it.javaClass.simpleName}: ${it.message}")
             emit(Result.Error(it.toRemoteError()))
         }
 
-    override fun updateClinicStaff(staff: ClinicStaffDto): Flow<Result<Unit, DataError.Remote>> =
+    override fun updateClinician(clinician: ClinicianDto): Flow<Result<Unit, DataError.Remote>> =
         flow {
             auth.currentUser
                 ?.getIdToken(false)
                 ?.await()
                 ?.token
                 ?.let { token ->
-                    val response = service.upsertClinicStaff(staff.copy(token = token))
+                    val response = service.upsertClinician(clinician.copy(token = token))
                     when (response.code()) {
                         HTTP_OK ->
                             response.body()?.let { res ->
@@ -386,7 +386,7 @@ class RemoteClinicsDataSourceImpl(
                     }
                 }
         }.catch {
-            Timber.e("updateClinicStaff() error ${it.javaClass.simpleName}: ${it.message}")
+            Timber.e("updateClinician() error ${it.javaClass.simpleName}: ${it.message}")
             emit(Result.Error(it.toRemoteError()))
         }
 }
