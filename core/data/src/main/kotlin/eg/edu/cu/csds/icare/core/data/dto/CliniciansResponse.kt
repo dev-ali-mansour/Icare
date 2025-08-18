@@ -8,5 +8,5 @@ data class CliniciansResponse(
     @SerialName("status")
     val statusCode: Short,
     @SerialName("data")
-    val staffList: List<ClinicianDto>,
+    val clinicians: List<ClinicianDto>,
 )
