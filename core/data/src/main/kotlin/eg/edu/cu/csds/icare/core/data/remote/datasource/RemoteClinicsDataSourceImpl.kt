@@ -299,7 +299,7 @@ class RemoteClinicsDataSourceImpl(
                                 response.body()?.let { res ->
                                     when (res.statusCode) {
                                         Constants.ERROR_CODE_OK ->
-                                            emit(Result.Success(res.staffList))
+                                            emit(Result.Success(res.clinicians))
 
                                         Constants.ERROR_CODE_EXPIRED_TOKEN ->
                                             emit(Result.Error(DataError.Remote.ACCESS_TOKEN_EXPIRED))
