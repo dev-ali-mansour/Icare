@@ -106,7 +106,7 @@ class NewDoctorViewModel(
                         _state.value.firstName.isBlank() -> {
                             _singleEvent.emit(
                                 DoctorSingleEvent
-                                    .ShowError(message = StringResourceId(R.string.first_name_error)),
+                                    .ShowError(message = StringResourceId(R.string.error_first_name)),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
@@ -114,7 +114,7 @@ class NewDoctorViewModel(
                         _state.value.lastName.isBlank() -> {
                             _singleEvent.emit(
                                 DoctorSingleEvent
-                                    .ShowError(message = StringResourceId(R.string.last_name_error)),
+                                    .ShowError(message = StringResourceId(R.string.error_last_name)),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
@@ -122,7 +122,7 @@ class NewDoctorViewModel(
                         _state.value.clinicId == 0.toLong() -> {
                             _singleEvent.emit(
                                 DoctorSingleEvent
-                                    .ShowError(message = StringResourceId(R.string.clinic_error)),
+                                    .ShowError(message = StringResourceId(R.string.error_clinic)),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
@@ -130,7 +130,7 @@ class NewDoctorViewModel(
                         !_state.value.email.isValidEmail -> {
                             _singleEvent.emit(
                                 DoctorSingleEvent
-                                    .ShowError(message = StringResourceId(R.string.email_error)),
+                                    .ShowError(message = StringResourceId(R.string.error_invalid_email)),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
@@ -139,7 +139,7 @@ class NewDoctorViewModel(
                             _state.value.phone.length < Constants.PHONE_LENGTH -> {
                             _singleEvent.emit(
                                 DoctorSingleEvent
-                                    .ShowError(message = StringResourceId(R.string.phone_error)),
+                                    .ShowError(message = StringResourceId(R.string.error_phone)),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
