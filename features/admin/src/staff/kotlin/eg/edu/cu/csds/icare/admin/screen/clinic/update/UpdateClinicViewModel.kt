@@ -103,7 +103,7 @@ class UpdateClinicViewModel(
                             _state.value.phone.length < Constants.PHONE_LENGTH -> {
                             _singleEvent.emit(
                                 ClinicSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.phone_error),
+                                    message = StringResourceId(R.string.error_phone),
                                 ),
                             )
                             _state.update { it.copy(isLoading = false) }
