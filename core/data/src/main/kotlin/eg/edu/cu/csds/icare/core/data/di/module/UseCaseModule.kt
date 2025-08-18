@@ -31,9 +31,9 @@ import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.UpdateCenterStaffUs
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.AddNewClinicUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinicsUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.UpdateClinicUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.AddNewClinicStaffUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.ListClinicStaffUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.UpdateClinicStaffUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.AddNewClinicianCase
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.ListCliniciansUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.UpdateClinicianUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.consultation.AddNewConsultationUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetImagingTestsByStatusUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetLabTestsByStatusUseCase
@@ -116,13 +116,13 @@ class UseCaseModule {
     fun provideUpdateUpdateDoctor(repository: ClinicsRepository) = UpdateDoctorUseCase(repository)
 
     @Single
-    fun provideListClinicStaff(repository: ClinicsRepository) = ListClinicStaffUseCase(repository)
+    fun provideListClinicians(repository: ClinicsRepository) = ListCliniciansUseCase(repository)
 
     @Single
-    fun provideAddNewClinicStaff(repository: ClinicsRepository) = AddNewClinicStaffUseCase(repository)
+    fun provideAddNewClinician(repository: ClinicsRepository) = AddNewClinicianCase(repository)
 
     @Single
-    fun provideUpdateClinicStaff(repository: ClinicsRepository) = UpdateClinicStaffUseCase(repository)
+    fun provideUpdateClinician(repository: ClinicsRepository) = UpdateClinicianUseCase(repository)
 
     @Single
     fun provideListPharmacies(repository: PharmaciesRepository) = ListPharmaciesUseCase(repository)
