@@ -1,10 +1,10 @@
 package eg.edu.cu.csds.icare.core.data.mappers
 
-import eg.edu.cu.csds.icare.core.data.dto.ClinicStaffDto
-import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
+import eg.edu.cu.csds.icare.core.data.dto.ClinicianDto
+import eg.edu.cu.csds.icare.core.domain.model.Clinician
 
-fun ClinicStaff.toClinicStaffDto(): ClinicStaffDto =
-    ClinicStaffDto(
+fun Clinician.toClinicianDto(): ClinicianDto =
+    ClinicianDto(
         id = this.id,
         firstName = this.firstName,
         lastName = this.lastName,
@@ -15,8 +15,8 @@ fun ClinicStaff.toClinicStaffDto(): ClinicStaffDto =
         profilePicture = this.profilePicture,
     )
 
-fun ClinicStaffDto.toClinicStaff(): ClinicStaff =
-    ClinicStaff(
+fun ClinicianDto.toClinician(): Clinician =
+    Clinician(
         id = this.id,
         firstName = this.firstName,
         lastName = this.lastName,
