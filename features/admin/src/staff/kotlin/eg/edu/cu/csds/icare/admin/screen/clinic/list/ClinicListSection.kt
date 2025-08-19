@@ -17,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -29,7 +31,9 @@ import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.view.ClinicView
+import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
@@ -40,11 +44,12 @@ fun ClinicListSection(
     viewModel: ClinicListViewModel = koinViewModel(),
     navigateToClinicDetails: (Clinic) -> Unit,
     onExpandStateChanged: (Boolean) -> Unit,
-    onError: (String) -> Unit,
 ) {
     val context: Context = LocalContext.current
     val refreshState = rememberPullToRefreshState()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    var alertMessage by remember { mutableStateOf("") }
+    var showAlert by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.singleEvent.collect { event ->
@@ -58,7 +63,10 @@ fun ClinicListSection(
                 }
 
                 is ClinicListSingleEvent.ShowError -> {
-                    onError(event.message.asString(context))
+                    alertMessage = event.message.asString(context)
+                    showAlert = true
+                    delay(timeMillis = 3000)
+                    showAlert = false
                 }
             }
         }
@@ -103,6 +111,8 @@ fun ClinicListSection(
             isRefreshing = state.isLoading,
             state = refreshState,
         )
+
+        if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
     }
 }
 
