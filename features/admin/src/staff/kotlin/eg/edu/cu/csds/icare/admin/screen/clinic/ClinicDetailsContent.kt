@@ -50,9 +50,9 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ClinicDetailsContent(
+    modifier: Modifier = Modifier,
     state: ClinicState,
     onIntent: (ClinicIntent) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     ConstraintLayout(
         modifier =
