@@ -77,7 +77,7 @@ internal fun UpdateDoctorScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.edit_doctor)) },
+                title = { Text(text = stringResource(id = R.string.update_doctor)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,

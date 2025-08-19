@@ -50,7 +50,6 @@ internal fun NewClinicScreen(
     onSuccess: () -> Unit,
 ) {
     val context: Context = LocalContext.current
-
     val state by viewModel.state.collectAsStateWithLifecycle()
     var showSuccessDialog by remember { mutableStateOf(false) }
     var alertMessage by remember { mutableStateOf("") }
