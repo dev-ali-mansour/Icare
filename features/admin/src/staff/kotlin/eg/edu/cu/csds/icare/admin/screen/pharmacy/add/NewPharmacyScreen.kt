@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.admin.screen.pharmacy
+package eg.edu.cu.csds.icare.admin.screen.pharmacy.add
 
 import android.content.Context
 import androidx.compose.foundation.background
@@ -17,15 +17,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
-import androidx.compose.material3.pulltorefresh.pullToRefresh
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,42 +31,47 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.admin.R
-import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.domain.util.Constants
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyDetailsContent
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacySingleEvent
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun NewPharmacyScreen(
-    pharmacyViewModel: PharmacyViewModel,
+    viewModel: NewPharmacyViewModel = koinViewModel(),
     onNavigationIconClicked: () -> Unit,
-    onProceedButtonClicked: () -> Unit,
     onSuccess: () -> Unit,
-    onError: suspend (Throwable?) -> Unit,
-    context: Context = LocalContext.current,
 ) {
-    val actionResource by pharmacyViewModel.actionResFlow
-        .collectAsStateWithLifecycle(initialValue = Resource.Unspecified())
-    var name by pharmacyViewModel.nameState
-    var phone by pharmacyViewModel.phoneState
-    var address by pharmacyViewModel.addressState
-    var showSuccessDialog by pharmacyViewModel.showSuccessDialog
-    var isRefreshing by pharmacyViewModel.isRefreshing
-    val state = rememberPullToRefreshState()
-    val scope: CoroutineScope = rememberCoroutineScope()
+    val context: Context = LocalContext.current
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    var showSuccessDialog by remember { mutableStateOf(false) }
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
-    LaunchedEffect(key1 = true) {
-        pharmacyViewModel.resetStates()
+    LaunchedEffect(Unit) {
+        viewModel.singleEvent.collect { event ->
+            when (event) {
+                is PharmacySingleEvent.ShowSuccess -> {
+                    showSuccessDialog = true
+                    delay(timeMillis = 3000)
+                    onSuccess()
+                }
+
+                is PharmacySingleEvent.ShowError -> {
+                    alertMessage = event.message.asString(context)
+                    showAlert = true
+                    delay(timeMillis = 3000)
+                    showAlert = false
+                }
+            }
+        }
     }
 
     Scaffold(
@@ -100,7 +101,6 @@ internal fun NewPharmacyScreen(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .pullToRefresh(state = state, isRefreshing = isRefreshing, onRefresh = {})
                     .padding(paddingValues),
         ) {
             ConstraintLayout(
@@ -109,7 +109,7 @@ internal fun NewPharmacyScreen(
                         .background(backgroundColor)
                         .fillMaxWidth(),
             ) {
-                val (refresh, line, content) = createRefs()
+                val (_, line, content) = createRefs()
 
                 Box(
                     modifier =
@@ -133,63 +133,10 @@ internal fun NewPharmacyScreen(
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         },
-                    name = name,
-                    phone = phone,
-                    address = address,
-                    actionResource = actionResource,
-                    showLoading = { isRefreshing = it },
-                    onNameChanged = { name = it },
-                    onPhoneChanged = { phone = it },
-                    onAddressChanged = { address = it },
-                    onProceedButtonClicked = {
-                        scope.launch {
-                            when {
-                                name.isBlank() -> {
-                                    alertMessage = context.getString(R.string.name_error)
-                                    showAlert = true
-                                    delay(timeMillis = 3000)
-                                    showAlert = false
-                                }
-
-                                phone.isBlank() || phone.length < Constants.PHONE_LENGTH -> {
-                                    alertMessage = context.getString(R.string.phone_error)
-                                    showAlert = true
-                                    delay(timeMillis = 3000)
-                                    showAlert = false
-                                }
-
-                                address.isBlank() -> {
-                                    alertMessage = context.getString(R.string.address_error)
-                                    showAlert = true
-                                    delay(timeMillis = 3000)
-                                    showAlert = false
-                                }
-
-                                else -> onProceedButtonClicked()
-                            }
-                        }
-                    },
-                    onSuccess = {
-                        scope.launch {
-                            showSuccessDialog = true
-                            delay(timeMillis = 2000)
-                            showSuccessDialog = false
-                            onSuccess()
-                        }
-                    },
-                    onError = { onError(it) },
-                )
-
-                Indicator(
-                    modifier =
-                        Modifier.constrainAs(refresh) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        },
-                    isRefreshing = isRefreshing,
                     state = state,
+                    onIntent = viewModel::processIntent,
                 )
+
                 if (showSuccessDialog) SuccessesDialog {}
                 if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
             }
