@@ -6,4 +6,5 @@ data class PharmacyState(
     val name: String = "",
     val phone: String = "",
     val address: String = "",
+    val effect: PharmacyEffect? = null,
 )
