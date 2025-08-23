@@ -134,7 +134,7 @@ private fun ClinicianListContent(
             EmptyContentView(
                 modifier =
                     Modifier.fillMaxSize(),
-                text = stringResource(CoreR.string.no_clinic_staff_data),
+                text = stringResource(CoreR.string.no_clinicians_data),
             )
         } else {
             LazyColumn(
