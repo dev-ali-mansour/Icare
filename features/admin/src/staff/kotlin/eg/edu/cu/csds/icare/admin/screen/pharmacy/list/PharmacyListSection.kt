@@ -47,24 +47,24 @@ fun PharmacyListSection(
 ) {
     val context: Context = LocalContext.current
     val refreshState = rememberPullToRefreshState()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.singleEvent.collect { event ->
             when (event) {
-                is PharmacyListSingleEvent
+                is PharmacyListEffect
                     .NavigateToPharmacyDetails,
                 -> {
                     navigateToPharmacyDetails(event.pharmacy)
                 }
 
-                is PharmacyListSingleEvent.UpdateFabExpanded -> {
+                is PharmacyListEffect.UpdateFabExpanded -> {
                     onExpandStateChanged(event.isExpanded)
                 }
 
-                is PharmacyListSingleEvent.ShowError -> {
+                is PharmacyListEffect.ShowError -> {
                     alertMessage = event.message.asString(context)
                     showAlert = true
                     delay(timeMillis = 3000)
@@ -82,7 +82,7 @@ fun PharmacyListSection(
                     state = refreshState,
                     isRefreshing = state.isLoading,
                     onRefresh = {
-                        viewModel.processIntent(PharmacyListIntent.Refresh)
+                        viewModel.processIntent(PharmacyListEvent.Refresh)
                     },
                 ),
     ) {
@@ -122,7 +122,7 @@ fun PharmacyListSection(
 private fun PharmacyListContent(
     modifier: Modifier = Modifier,
     state: PharmacyListState,
-    onIntent: (PharmacyListIntent) -> Unit,
+    onIntent: (PharmacyListEvent) -> Unit,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         val listState = rememberLazyListState()
@@ -133,7 +133,7 @@ private fun PharmacyListContent(
                 }
             }
         LaunchedEffect(key1 = expandedFabState.value) {
-            onIntent(PharmacyListIntent.UpdateFabExpanded(expandedFabState.value))
+            onIntent(PharmacyListEvent.UpdateFabExpanded(expandedFabState.value))
         }
 
         if (state.pharmacies.isEmpty()) {
@@ -156,7 +156,7 @@ private fun PharmacyListContent(
                     },
                 ) { pharmacy ->
                     PharmacyView(pharmacy = pharmacy) {
-                        onIntent(PharmacyListIntent.SelectPharmacy(pharmacy))
+                        onIntent(PharmacyListEvent.SelectPharmacy(pharmacy))
                     }
                 }
             }

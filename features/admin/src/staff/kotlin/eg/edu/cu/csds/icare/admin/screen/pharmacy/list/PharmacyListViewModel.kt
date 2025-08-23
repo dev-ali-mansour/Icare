@@ -2,6 +2,8 @@ package eg.edu.cu.csds.icare.admin.screen.pharmacy.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.list.PharmacyListEffect.NavigateToPharmacyDetails
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.list.PharmacyListEffect.UpdateFabExpanded
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.ListPharmaciesUseCase
@@ -24,57 +26,61 @@ class PharmacyListViewModel(
     private val dispatcher: CoroutineDispatcher,
     private val listPharmaciesUseCase: ListPharmaciesUseCase,
 ) : ViewModel() {
-    private val _state = MutableStateFlow(PharmacyListState())
-    val state =
-        _state
+    private val _uiState = MutableStateFlow(PharmacyListState())
+    val uiState =
+        _uiState
             .onStart {
                 fetchPharmacies()
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
-                initialValue = _state.value,
+                initialValue = _uiState.value,
             )
-    private val _singleEvent = MutableSharedFlow<PharmacyListSingleEvent>()
+    private val _singleEvent = MutableSharedFlow<PharmacyListEffect>()
     val singleEvent = _singleEvent.asSharedFlow()
 
-    fun processIntent(intent: PharmacyListIntent) {
+    fun processIntent(intent: PharmacyListEvent) {
         when (intent) {
-            is PharmacyListIntent.Refresh -> {
+            is PharmacyListEvent.Refresh -> {
                 fetchPharmacies(forceUpdate = true)
             }
 
-            is PharmacyListIntent.SelectPharmacy -> {
+            is PharmacyListEvent.SelectPharmacy -> {
                 viewModelScope.launch {
                     _singleEvent.emit(
-                        PharmacyListSingleEvent
-                            .NavigateToPharmacyDetails(pharmacy = intent.pharmacy),
+                        NavigateToPharmacyDetails(pharmacy = intent.pharmacy),
                     )
                 }
             }
 
-            is PharmacyListIntent.UpdateFabExpanded -> {
+            is PharmacyListEvent.UpdateFabExpanded -> {
                 viewModelScope.launch {
                     _singleEvent.emit(
-                        PharmacyListSingleEvent
-                            .UpdateFabExpanded(isExpanded = intent.isExpanded),
+                        UpdateFabExpanded(isExpanded = intent.isExpanded),
                     )
                 }
             }
+
+            PharmacyListEvent.ConsumeEffect -> consumeEffect()
         }
     }
 
     private fun fetchPharmacies(forceUpdate: Boolean = false) =
         viewModelScope.launch(dispatcher) {
-            _state.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(isLoading = true) }
             listPharmaciesUseCase(forceUpdate = forceUpdate)
                 .onEach { result ->
                     result
                         .onSuccess { pharmacies ->
-                            _state.update { it.copy(pharmacies = pharmacies, isLoading = false) }
+                            _uiState.update { it.copy(pharmacies = pharmacies, isLoading = false) }
                         }.onError { error ->
-                            _singleEvent.emit(PharmacyListSingleEvent.ShowError(message = error.toUiText()))
-                            _state.update { it.copy(isLoading = false) }
+                            _singleEvent.emit(PharmacyListEffect.ShowError(message = error.toUiText()))
+                            _uiState.update { it.copy(isLoading = false) }
                         }
                 }.launchIn(viewModelScope)
         }
+
+    private fun consumeEffect() {
+        _uiState.update { it.copy(effect = null) }
+    }
 }

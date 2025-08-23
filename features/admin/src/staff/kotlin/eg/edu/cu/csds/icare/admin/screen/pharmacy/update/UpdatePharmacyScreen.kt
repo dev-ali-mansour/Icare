@@ -32,7 +32,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.admin.R
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyDetailsContent
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacySingleEvent
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyEffect
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
@@ -50,7 +50,7 @@ internal fun UpdatePharmacyScreen(
     onSuccess: () -> Unit,
 ) {
     val context: Context = LocalContext.current
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     var showSuccessDialog by remember { mutableStateOf(false) }
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
@@ -58,13 +58,13 @@ internal fun UpdatePharmacyScreen(
     LaunchedEffect(Unit) {
         viewModel.singleEvent.collect { event ->
             when (event) {
-                is PharmacySingleEvent.ShowSuccess -> {
+                is PharmacyEffect.ShowSuccess -> {
                     showSuccessDialog = true
                     delay(timeMillis = 3000)
                     onSuccess()
                 }
 
-                is PharmacySingleEvent.ShowError -> {
+                is PharmacyEffect.ShowError -> {
                     alertMessage = event.message.asString(context)
                     showAlert = true
                     delay(timeMillis = 3000)
@@ -134,7 +134,7 @@ internal fun UpdatePharmacyScreen(
                             height = Dimension.fillToConstraints
                         },
                     state = state,
-                    onIntent = viewModel::processIntent,
+                    onIntent = viewModel::processEvent,
                 )
 
                 if (showSuccessDialog) SuccessesDialog {}
