@@ -130,7 +130,7 @@ Objectives:\n
     <string name="pharmacists">Pharmacists</string>
     <string name="no_clinics_data">No clinics data</string>
     <string name="no_doctors_data">No Doctors data</string>
-    <string name="no_clinic_staff_data">No clinic staff data</string>
+    <string name="no_clinicians_data">No clinicians data</string>
     <string name="no_pharmacies_data">No pharmacies data</string>
     <string name="no_pharmacists_data">No pharmacists data</string>
     <string name="no_centers_data">No centers data</string>
