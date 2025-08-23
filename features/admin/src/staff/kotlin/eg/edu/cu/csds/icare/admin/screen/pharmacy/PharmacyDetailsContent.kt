@@ -44,7 +44,7 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 internal fun PharmacyDetailsContent(
     modifier: Modifier = Modifier,
     state: PharmacyState,
-    onIntent: (PharmacyIntent) -> Unit,
+    onIntent: (PharmacyEvent) -> Unit,
 ) {
     ConstraintLayout(
         modifier =
@@ -75,7 +75,7 @@ internal fun PharmacyDetailsContent(
             ) {
                 TextField(
                     value = state.name,
-                    onValueChange = { onIntent(PharmacyIntent.UpdateName(it)) },
+                    onValueChange = { onIntent(PharmacyEvent.UpdateName(it)) },
                     label = {
                         Text(
                             text = stringResource(CoreR.string.name),
@@ -108,7 +108,7 @@ internal fun PharmacyDetailsContent(
 
                 TextField(
                     value = state.phone,
-                    onValueChange = { if (it.length < 14) onIntent(PharmacyIntent.UpdatePhone(it)) },
+                    onValueChange = { if (it.length < 14) onIntent(PharmacyEvent.UpdatePhone(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.phone_number),
@@ -140,7 +140,7 @@ internal fun PharmacyDetailsContent(
 
                 TextField(
                     value = state.address,
-                    onValueChange = { onIntent(PharmacyIntent.UpdateAddress(it)) },
+                    onValueChange = { onIntent(PharmacyEvent.UpdateAddress(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.address),
@@ -178,7 +178,7 @@ internal fun PharmacyDetailsContent(
                             .fillMaxWidth(fraction = 0.6f),
                     text = stringResource(CoreR.string.proceed),
                     color = buttonBackgroundColor,
-                    onClick = { onIntent(PharmacyIntent.Proceed) },
+                    onClick = { onIntent(PharmacyEvent.Proceed) },
                 )
             }
         }
