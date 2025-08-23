@@ -2,40 +2,40 @@ package eg.edu.cu.csds.icare.admin.screen.pharmacist
 
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacist
 
-sealed interface PharmacistIntent {
+sealed interface PharmacistEvent {
     data class UpdateFirstName(
         val firstName: String,
-    ) : PharmacistIntent
+    ) : PharmacistEvent
 
     data class UpdateLastName(
         val lastName: String,
-    ) : PharmacistIntent
+    ) : PharmacistEvent
 
     data class UpdatePharmacyId(
         val pharmacyId: Long,
-    ) : PharmacistIntent
+    ) : PharmacistEvent
 
     data class UpdatePharmaciesExpanded(
         val isExpanded: Boolean,
-    ) : PharmacistIntent
+    ) : PharmacistEvent
 
     data class UpdateEmail(
         val email: String,
-    ) : PharmacistIntent
+    ) : PharmacistEvent
 
     data class UpdatePhone(
         val phone: String,
-    ) : PharmacistIntent
+    ) : PharmacistEvent
 
     data class UpdateProfilePicture(
         val profilePicture: String,
-    ) : PharmacistIntent
+    ) : PharmacistEvent
 
     data class SelectPharmacist(
         val pharmacist: Pharmacist,
-    ) : PharmacistIntent
+    ) : PharmacistEvent
 
-    object Proceed : PharmacistIntent
+    object Proceed : PharmacistEvent
 
-    object ConsumeEffect : PharmacistIntent
+    object ConsumeEffect : PharmacistEvent
 }
