@@ -133,8 +133,8 @@ internal fun NewPharmacyScreen(
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         },
-                    state = state,
-                    onIntent = viewModel::processEvent,
+                    uiState = state,
+                    onEvent = viewModel::processEvent,
                 )
 
                 if (showSuccessDialog) SuccessesDialog {}
