@@ -69,7 +69,7 @@ class PharmacistListViewModel(
                 .onEach { result ->
                     result
                         .onSuccess { pharmacists ->
-                            _uiState.update { it.copy(pharmacists = pharmacists, isLoading = false) }
+                            _uiState.update { it.copy(isLoading = false, pharmacists = pharmacists) }
                         }.onError { error ->
                             _uiState.update {
                                 it.copy(
