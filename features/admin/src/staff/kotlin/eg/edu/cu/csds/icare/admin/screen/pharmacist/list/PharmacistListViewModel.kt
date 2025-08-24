@@ -2,9 +2,6 @@ package eg.edu.cu.csds.icare.admin.screen.pharmacist.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.admin.screen.pharmacist.list.PharmacistListEffect.NavigateToPharmacistDetails
-import eg.edu.cu.csds.icare.admin.screen.pharmacist.list.PharmacistListEffect.ShowError
-import eg.edu.cu.csds.icare.admin.screen.pharmacist.list.PharmacistListEffect.UpdateFabExpanded
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacist.ListPharmacistsUseCase
@@ -48,7 +45,7 @@ class PharmacistListViewModel(
                 _uiState.update {
                     it.copy(
                         effect =
-                            NavigateToPharmacistDetails(pharmacist = event.pharmacist),
+                            PharmacistListEffect.NavigateToPharmacistDetails(pharmacist = event.pharmacist),
                     )
                 }
             }
@@ -56,7 +53,7 @@ class PharmacistListViewModel(
             is PharmacistListEvent.UpdateFabExpanded -> {
                 _uiState.update {
                     it.copy(
-                        effect = UpdateFabExpanded(isExpanded = event.isExpanded),
+                        effect = PharmacistListEffect.UpdateFabExpanded(isExpanded = event.isExpanded),
                     )
                 }
             }
@@ -76,7 +73,7 @@ class PharmacistListViewModel(
                         }.onError { error ->
                             _uiState.update {
                                 it.copy(
-                                    effect = ShowError(message = error.toUiText()),
+                                    effect = PharmacistListEffect.ShowError(message = error.toUiText()),
                                     isLoading = false,
                                 )
                             }
