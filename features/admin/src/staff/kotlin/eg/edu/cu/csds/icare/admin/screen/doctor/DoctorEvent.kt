@@ -2,58 +2,60 @@ package eg.edu.cu.csds.icare.admin.screen.doctor
 
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 
-sealed interface DoctorIntent {
+sealed interface DoctorEvent {
     data class UpdateFirstName(
         val firstName: String,
-    ) : DoctorIntent
+    ) : DoctorEvent
 
     data class UpdateLastName(
         val lastName: String,
-    ) : DoctorIntent
+    ) : DoctorEvent
 
     data class UpdateClinicId(
         val clinicId: Long,
-    ) : DoctorIntent
+    ) : DoctorEvent
 
     data class UpdateClinicsExpanded(
         val isExpanded: Boolean,
-    ) : DoctorIntent
+    ) : DoctorEvent
 
     data class UpdateEmail(
         val email: String,
-    ) : DoctorIntent
+    ) : DoctorEvent
 
     data class UpdatePhone(
         val phone: String,
-    ) : DoctorIntent
+    ) : DoctorEvent
 
     data class UpdateSpeciality(
         val speciality: String,
-    ) : DoctorIntent
+    ) : DoctorEvent
 
     data class UpdateFromTime(
         val fromTime: Long,
-    ) : DoctorIntent
+    ) : DoctorEvent
 
     data class UpdateToTime(
         val toTime: Long,
-    ) : DoctorIntent
+    ) : DoctorEvent
 
     data class UpdatePrice(
         val price: Double,
-    ) : DoctorIntent
+    ) : DoctorEvent
 
     data class UpdateRating(
         val rating: Double,
-    ) : DoctorIntent
+    ) : DoctorEvent
 
     data class UpdateProfilePicture(
         val profilePicture: String,
-    ) : DoctorIntent
+    ) : DoctorEvent
 
     data class SelectDoctor(
         val doctor: Doctor,
-    ) : DoctorIntent
+    ) : DoctorEvent
 
-    object Proceed : DoctorIntent
+    object Proceed : DoctorEvent
+
+    object ConsumeEffect : DoctorEvent
 }
