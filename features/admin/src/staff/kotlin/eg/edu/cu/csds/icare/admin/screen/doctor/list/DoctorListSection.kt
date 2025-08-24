@@ -28,6 +28,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
@@ -47,30 +48,32 @@ fun DoctorListSection(
 ) {
     val context: Context = LocalContext.current
     val refreshState = rememberPullToRefreshState()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        viewModel.singleEvent.collect { event ->
-            when (event) {
-                is DoctorListSingleEvent.NavigateToDoctorDetails -> {
-                    navigateToDoctorDetails(event.doctor)
+    LaunchedUiEffectHandler(
+        viewModel.effect,
+        onConsumeEffect = { viewModel.processEvent(DoctorLisEvent.ConsumeEffect) },
+        onEffect = { effect ->
+            when (effect) {
+                is DoctorListEffect.NavigateToDoctorDetails -> {
+                    navigateToDoctorDetails(effect.doctor)
                 }
 
-                is DoctorListSingleEvent.UpdateFabExpanded -> {
-                    onExpandStateChanged(event.isExpanded)
+                is DoctorListEffect.UpdateFabExpanded -> {
+                    onExpandStateChanged(effect.isExpanded)
                 }
 
-                is DoctorListSingleEvent.ShowError -> {
-                    alertMessage = event.message.asString(context)
+                is DoctorListEffect.ShowError -> {
+                    alertMessage = effect.message.asString(context)
                     showAlert = true
                     delay(timeMillis = 3000)
                     showAlert = false
                 }
             }
-        }
-    }
+        },
+    )
 
     ConstraintLayout(
         modifier =
@@ -78,9 +81,9 @@ fun DoctorListSection(
                 .fillMaxSize()
                 .pullToRefresh(
                     state = refreshState,
-                    isRefreshing = state.isLoading,
+                    isRefreshing = uiState.isLoading,
                     onRefresh = {
-                        viewModel.processIntent(DoctorListIntent.Refresh)
+                        viewModel.processEvent(DoctorLisEvent.Refresh)
                     },
                 ),
     ) {
@@ -96,8 +99,8 @@ fun DoctorListSection(
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
                 },
-            state = state,
-            onIntent = viewModel::processIntent,
+            state = uiState,
+            onIntent = viewModel::processEvent,
         )
 
         Indicator(
@@ -108,7 +111,7 @@ fun DoctorListSection(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-            isRefreshing = state.isLoading,
+            isRefreshing = uiState.isLoading,
             state = refreshState,
         )
 
@@ -120,7 +123,7 @@ fun DoctorListSection(
 private fun DoctorListContent(
     modifier: Modifier,
     state: DoctorListState,
-    onIntent: (DoctorListIntent) -> Unit,
+    onIntent: (DoctorLisEvent) -> Unit,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
@@ -128,7 +131,7 @@ private fun DoctorListContent(
         val listState = rememberLazyListState()
         val expandedFabState = remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
         LaunchedEffect(key1 = expandedFabState.value) {
-            onIntent(DoctorListIntent.UpdateFabExpanded(expandedFabState.value))
+            onIntent(DoctorLisEvent.UpdateFabExpanded(expandedFabState.value))
         }
 
         if (state.doctors.isEmpty()) {
@@ -150,7 +153,7 @@ private fun DoctorListContent(
                     },
                 ) { doctor ->
                     DoctorView(doctor = doctor) {
-                        onIntent(DoctorListIntent.SelectDoctor(doctor))
+                        onIntent(DoctorLisEvent.SelectDoctor(doctor))
                     }
                 }
             }
