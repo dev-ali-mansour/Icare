@@ -2,10 +2,10 @@ package eg.edu.cu.csds.icare.admin.screen.doctor
 
 import eg.edu.cu.csds.icare.core.ui.util.UiText
 
-sealed interface DoctorSingleEvent {
-    object ShowSuccess : DoctorSingleEvent
+sealed interface DoctorEffect {
+    object ShowSuccess : DoctorEffect
 
     data class ShowError(
         val message: UiText,
-    ) : DoctorSingleEvent
+    ) : DoctorEffect
 }
