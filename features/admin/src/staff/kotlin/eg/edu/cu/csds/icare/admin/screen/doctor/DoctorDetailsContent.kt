@@ -59,8 +59,8 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DoctorDetailsContent(
-    state: DoctorState,
-    onIntent: (DoctorIntent) -> Unit,
+    uiState: DoctorState,
+    onEvent: (DoctorEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context: Context = LocalContext.current
@@ -94,8 +94,8 @@ internal fun DoctorDetailsContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 TextField(
-                    value = state.firstName,
-                    onValueChange = { onIntent(DoctorIntent.UpdateFirstName(it)) },
+                    value = uiState.firstName,
+                    onValueChange = { onEvent(DoctorEvent.UpdateFirstName(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.first_name),
@@ -127,8 +127,8 @@ internal fun DoctorDetailsContent(
                 )
 
                 TextField(
-                    value = state.lastName,
-                    onValueChange = { onIntent(DoctorIntent.UpdateLastName(it)) },
+                    value = uiState.lastName,
+                    onValueChange = { onEvent(DoctorEvent.UpdateLastName(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.last_name),
@@ -160,8 +160,8 @@ internal fun DoctorDetailsContent(
 
                 ExposedDropdownMenuBox(
                     modifier = Modifier.fillMaxWidth(fraction = 0.8f),
-                    expanded = state.isClinicsExpanded,
-                    onExpandedChange = { onIntent(DoctorIntent.UpdateClinicsExpanded(it)) },
+                    expanded = uiState.isClinicsExpanded,
+                    onExpandedChange = { onEvent(DoctorEvent.UpdateClinicsExpanded(it)) },
                 ) {
                     OutlinedTextField(
                         modifier =
@@ -170,7 +170,7 @@ internal fun DoctorDetailsContent(
                                 .menuAnchor(MenuAnchorType.PrimaryNotEditable),
                         readOnly = true,
                         value =
-                            state.clinics.firstOrNull { it.id == state.clinicId }?.name ?: "",
+                            uiState.clinics.firstOrNull { it.id == uiState.clinicId }?.name ?: "",
                         onValueChange = { },
                         label = {
                             Text(
@@ -180,7 +180,7 @@ internal fun DoctorDetailsContent(
                         },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(
-                                expanded = state.isClinicsExpanded,
+                                expanded = uiState.isClinicsExpanded,
                             )
                         },
                         colors =
@@ -197,12 +197,12 @@ internal fun DoctorDetailsContent(
                     )
 
                     ExposedDropdownMenu(
-                        expanded = state.isClinicsExpanded,
+                        expanded = uiState.isClinicsExpanded,
                         onDismissRequest = {
-                            onIntent(DoctorIntent.UpdateClinicsExpanded(false))
+                            onEvent(DoctorEvent.UpdateClinicsExpanded(false))
                         },
                     ) {
-                        state.clinics.forEach {
+                        uiState.clinics.forEach {
                             DropdownMenuItem(
                                 text = {
                                     Text(
@@ -211,8 +211,8 @@ internal fun DoctorDetailsContent(
                                     )
                                 },
                                 onClick = {
-                                    onIntent(DoctorIntent.UpdateClinicId(it.id))
-                                    onIntent(DoctorIntent.UpdateClinicsExpanded(false))
+                                    onEvent(DoctorEvent.UpdateClinicId(it.id))
+                                    onEvent(DoctorEvent.UpdateClinicsExpanded(false))
                                 },
                             )
                         }
@@ -220,8 +220,8 @@ internal fun DoctorDetailsContent(
                 }
 
                 TextField(
-                    value = state.email,
-                    onValueChange = { onIntent(DoctorIntent.UpdateEmail(it)) },
+                    value = uiState.email,
+                    onValueChange = { onEvent(DoctorEvent.UpdateEmail(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.email),
@@ -252,8 +252,8 @@ internal fun DoctorDetailsContent(
                 )
 
                 TextField(
-                    value = state.phone,
-                    onValueChange = { if (it.length < 14) onIntent(DoctorIntent.UpdatePhone(it)) },
+                    value = uiState.phone,
+                    onValueChange = { if (it.length < 14) onEvent(DoctorEvent.UpdatePhone(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.phone_number),
@@ -284,8 +284,8 @@ internal fun DoctorDetailsContent(
                 )
 
                 TextField(
-                    value = state.speciality,
-                    onValueChange = { onIntent(DoctorIntent.UpdateSpeciality(it)) },
+                    value = uiState.speciality,
+                    onValueChange = { onEvent(DoctorEvent.UpdateSpeciality(it)) },
                     label = {
                         Text(
                             text = stringResource(CoreR.string.speciality),
@@ -316,23 +316,23 @@ internal fun DoctorDetailsContent(
                 )
 
                 DoubleTextField(
-                    value = state.price,
-                    onValueChanged = { onIntent(DoctorIntent.UpdatePrice(it)) },
+                    value = uiState.price,
+                    onValueChanged = { onEvent(DoctorEvent.UpdatePrice(it)) },
                     label = stringResource(CoreR.string.price),
                     textColor = textColor,
                 )
 
                 DoubleTextField(
-                    value = state.rating,
-                    onValueChanged = { onIntent(DoctorIntent.UpdateRating(it)) },
+                    value = uiState.rating,
+                    onValueChanged = { onEvent(DoctorEvent.UpdateRating(it)) },
                     label = stringResource(CoreR.string.rating),
                     textColor = textColor,
-                    readOnly = state.ratingReadOnly,
+                    readOnly = uiState.ratingReadOnly,
                     imeAction = ImeAction.Done,
                 )
 
                 TextField(
-                    value = state.fromTime.getFormattedTime(context),
+                    value = uiState.fromTime.getFormattedTime(context),
                     onValueChange = {},
                     readOnly = true,
                     label = {
@@ -379,7 +379,7 @@ internal fun DoctorDetailsContent(
 
                                             val timeInMillis = selectedCalendar.timeInMillis
 
-                                            onIntent(DoctorIntent.UpdateFromTime(timeInMillis))
+                                            onEvent(DoctorEvent.UpdateFromTime(timeInMillis))
                                         },
                                         hour,
                                         minute,
@@ -393,7 +393,7 @@ internal fun DoctorDetailsContent(
                 )
 
                 TextField(
-                    value = state.toTime.getFormattedTime(context),
+                    value = uiState.toTime.getFormattedTime(context),
                     onValueChange = {},
                     readOnly = true,
                     label = {
@@ -440,7 +440,7 @@ internal fun DoctorDetailsContent(
 
                                             val timeInMillis = selectedCalendar.timeInMillis
 
-                                            onIntent(DoctorIntent.UpdateToTime(timeInMillis))
+                                            onEvent(DoctorEvent.UpdateToTime(timeInMillis))
                                         },
                                         hour,
                                         minute,
@@ -464,7 +464,7 @@ internal fun DoctorDetailsContent(
                             .fillMaxWidth(fraction = 0.6f),
                     text = stringResource(CoreR.string.proceed),
                     color = buttonBackgroundColor,
-                    onClick = { onIntent(DoctorIntent.Proceed) },
+                    onClick = { onEvent(DoctorEvent.Proceed) },
                 )
             }
         }
@@ -479,8 +479,8 @@ internal fun DoctorDetailsContent(
 internal fun DoctorDetailsContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         DoctorDetailsContent(
-            state = DoctorState(),
-            onIntent = {},
+            uiState = DoctorState(),
+            onEvent = {},
         )
     }
 }
