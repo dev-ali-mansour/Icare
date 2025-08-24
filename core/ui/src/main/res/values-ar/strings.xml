@@ -45,7 +45,7 @@
     <string name="error_invalid_national_id">يرجى إدخال الرقم القومي بشكل صحيح.</string>
     <string name="error_disk_full">عفواً يبدو أنه لا توجد مساحة تخزين كافية.</string>
     <string name="error_request_timeout">انتهت مدة انتظار الطلب.</string>
-    <string name="error_internet_connection">لا يمكن الاتصال بالسيرفر. يرجى التأكد من توفر الاتصال بالانترننت.</string>
+    <string name="error_internet_connection">لا يمكن الاتصال بالسيرفر. يرجى التأكد من توفر الاتصال بالانترنت.</string>
     <string name="error_too_many_requests">لقد تجاوزت الحد المسموح به من محاولات تسجيل الدخول! يرجى المحاولة لاحقاً.</string>
     <string name="error_serialization">عفواً حدث خطأ في معالجة البيانات.</string>
     <string name="proceed">متابعة</string>
