@@ -2,18 +2,15 @@ package eg.edu.cu.csds.icare.admin.screen.pharmacy.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.list.PharmacyListEffect.NavigateToPharmacyDetails
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.list.PharmacyListEffect.UpdateFabExpanded
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.ListPharmaciesUseCase
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -36,28 +33,23 @@ class PharmacyListViewModel(
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
                 initialValue = _uiState.value,
             )
-    private val _singleEvent = MutableSharedFlow<PharmacyListEffect>()
-    val singleEvent = _singleEvent.asSharedFlow()
+    val effect = uiState.map { it.effect }
 
-    fun processIntent(intent: PharmacyListEvent) {
-        when (intent) {
+    fun processEvent(event: PharmacyListEvent) {
+        when (event) {
             is PharmacyListEvent.Refresh -> {
                 fetchPharmacies(forceUpdate = true)
             }
 
             is PharmacyListEvent.SelectPharmacy -> {
-                viewModelScope.launch {
-                    _singleEvent.emit(
-                        NavigateToPharmacyDetails(pharmacy = intent.pharmacy),
-                    )
+                _uiState.update {
+                    it.copy(effect = PharmacyListEffect.NavigateToPharmacyDetails(pharmacy = event.pharmacy))
                 }
             }
 
             is PharmacyListEvent.UpdateFabExpanded -> {
-                viewModelScope.launch {
-                    _singleEvent.emit(
-                        UpdateFabExpanded(isExpanded = intent.isExpanded),
-                    )
+                _uiState.update {
+                    it.copy(effect = PharmacyListEffect.UpdateFabExpanded(isExpanded = event.isExpanded))
                 }
             }
 
@@ -74,8 +66,12 @@ class PharmacyListViewModel(
                         .onSuccess { pharmacies ->
                             _uiState.update { it.copy(pharmacies = pharmacies, isLoading = false) }
                         }.onError { error ->
-                            _singleEvent.emit(PharmacyListEffect.ShowError(message = error.toUiText()))
-                            _uiState.update { it.copy(isLoading = false) }
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect = PharmacyListEffect.ShowError(message = error.toUiText()),
+                                )
+                            }
                         }
                 }.launchIn(viewModelScope)
         }
