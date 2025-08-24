@@ -28,6 +28,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
@@ -47,32 +48,32 @@ fun PharmacyListSection(
 ) {
     val context: Context = LocalContext.current
     val refreshState = rememberPullToRefreshState()
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        viewModel.singleEvent.collect { event ->
-            when (event) {
-                is PharmacyListEffect
-                    .NavigateToPharmacyDetails,
-                -> {
-                    navigateToPharmacyDetails(event.pharmacy)
+    LaunchedUiEffectHandler(
+        viewModel.effect,
+        onConsumeEffect = { viewModel.processEvent(PharmacyListEvent.ConsumeEffect) },
+        onEffect = { effect ->
+            when (effect) {
+                is PharmacyListEffect.NavigateToPharmacyDetails -> {
+                    navigateToPharmacyDetails(effect.pharmacy)
                 }
 
                 is PharmacyListEffect.UpdateFabExpanded -> {
-                    onExpandStateChanged(event.isExpanded)
+                    onExpandStateChanged(effect.isExpanded)
                 }
 
                 is PharmacyListEffect.ShowError -> {
-                    alertMessage = event.message.asString(context)
+                    alertMessage = effect.message.asString(context)
                     showAlert = true
                     delay(timeMillis = 3000)
                     showAlert = false
                 }
             }
-        }
-    }
+        },
+    )
 
     ConstraintLayout(
         modifier =
@@ -80,9 +81,9 @@ fun PharmacyListSection(
                 .fillMaxSize()
                 .pullToRefresh(
                     state = refreshState,
-                    isRefreshing = state.isLoading,
+                    isRefreshing = uiState.isLoading,
                     onRefresh = {
-                        viewModel.processIntent(PharmacyListEvent.Refresh)
+                        viewModel.processEvent(PharmacyListEvent.Refresh)
                     },
                 ),
     ) {
@@ -98,8 +99,8 @@ fun PharmacyListSection(
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
                 },
-            state = state,
-            onIntent = viewModel::processIntent,
+            uiState = uiState,
+            onEvent = viewModel::processEvent,
         )
 
         Indicator(
@@ -110,7 +111,7 @@ fun PharmacyListSection(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-            isRefreshing = state.isLoading,
+            isRefreshing = uiState.isLoading,
             state = refreshState,
         )
 
@@ -121,8 +122,8 @@ fun PharmacyListSection(
 @Composable
 private fun PharmacyListContent(
     modifier: Modifier = Modifier,
-    state: PharmacyListState,
-    onIntent: (PharmacyListEvent) -> Unit,
+    uiState: PharmacyListState,
+    onEvent: (PharmacyListEvent) -> Unit,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         val listState = rememberLazyListState()
@@ -133,10 +134,10 @@ private fun PharmacyListContent(
                 }
             }
         LaunchedEffect(key1 = expandedFabState.value) {
-            onIntent(PharmacyListEvent.UpdateFabExpanded(expandedFabState.value))
+            onEvent(PharmacyListEvent.UpdateFabExpanded(expandedFabState.value))
         }
 
-        if (state.pharmacies.isEmpty()) {
+        if (uiState.pharmacies.isEmpty()) {
             EmptyContentView(
                 modifier =
                     Modifier.fillMaxSize(),
@@ -150,13 +151,13 @@ private fun PharmacyListContent(
                 verticalArrangement = Arrangement.spacedBy(S_PADDING),
             ) {
                 items(
-                    items = state.pharmacies,
+                    items = uiState.pharmacies,
                     key = { pharmacy ->
                         pharmacy.id
                     },
                 ) { pharmacy ->
                     PharmacyView(pharmacy = pharmacy) {
-                        onIntent(PharmacyListEvent.SelectPharmacy(pharmacy))
+                        onEvent(PharmacyListEvent.SelectPharmacy(pharmacy))
                     }
                 }
             }
@@ -172,7 +173,7 @@ private fun PharmacyListContent(
 internal fun PharmacyContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         PharmacyListContent(
-            state =
+            uiState =
                 PharmacyListState(
                     pharmacies =
                         listOf(
@@ -190,7 +191,7 @@ internal fun PharmacyContentPreview() {
                             ),
                         ),
                 ),
-            onIntent = {},
+            onEvent = {},
         )
     }
 }
