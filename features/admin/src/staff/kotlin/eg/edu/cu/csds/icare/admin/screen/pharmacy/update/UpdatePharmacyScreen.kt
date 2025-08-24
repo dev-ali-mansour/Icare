@@ -50,7 +50,7 @@ internal fun UpdatePharmacyScreen(
     onSuccess: () -> Unit,
 ) {
     val context: Context = LocalContext.current
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showSuccessDialog by remember { mutableStateOf(false) }
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
@@ -133,8 +133,8 @@ internal fun UpdatePharmacyScreen(
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         },
-                    state = state,
-                    onIntent = viewModel::processEvent,
+                    uiState = uiState,
+                    onEvent = viewModel::processEvent,
                 )
 
                 if (showSuccessDialog) SuccessesDialog {}
