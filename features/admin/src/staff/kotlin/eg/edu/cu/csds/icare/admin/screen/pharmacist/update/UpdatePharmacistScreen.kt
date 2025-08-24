@@ -80,7 +80,7 @@ internal fun UpdatePharmacistScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.update_clinician)) },
+                title = { Text(text = stringResource(id = R.string.update_pharmacist)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,
@@ -137,7 +137,7 @@ internal fun UpdatePharmacistScreen(
                             height = Dimension.fillToConstraints
                         },
                     uiState = uiState,
-                    onIntent = viewModel::processEvent,
+                    onEvent = viewModel::processEvent,
                 )
                 if (showSuccessDialog) SuccessesDialog {}
                 if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
