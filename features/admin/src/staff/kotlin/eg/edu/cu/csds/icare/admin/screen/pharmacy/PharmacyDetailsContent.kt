@@ -43,8 +43,8 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 @Composable
 internal fun PharmacyDetailsContent(
     modifier: Modifier = Modifier,
-    state: PharmacyState,
-    onIntent: (PharmacyEvent) -> Unit,
+    uiState: PharmacyState,
+    onEvent: (PharmacyEvent) -> Unit,
 ) {
     ConstraintLayout(
         modifier =
@@ -74,8 +74,8 @@ internal fun PharmacyDetailsContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 TextField(
-                    value = state.name,
-                    onValueChange = { onIntent(PharmacyEvent.UpdateName(it)) },
+                    value = uiState.name,
+                    onValueChange = { onEvent(PharmacyEvent.UpdateName(it)) },
                     label = {
                         Text(
                             text = stringResource(CoreR.string.name),
@@ -107,8 +107,8 @@ internal fun PharmacyDetailsContent(
                 )
 
                 TextField(
-                    value = state.phone,
-                    onValueChange = { if (it.length < 14) onIntent(PharmacyEvent.UpdatePhone(it)) },
+                    value = uiState.phone,
+                    onValueChange = { if (it.length < 14) onEvent(PharmacyEvent.UpdatePhone(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.phone_number),
@@ -139,8 +139,8 @@ internal fun PharmacyDetailsContent(
                 )
 
                 TextField(
-                    value = state.address,
-                    onValueChange = { onIntent(PharmacyEvent.UpdateAddress(it)) },
+                    value = uiState.address,
+                    onValueChange = { onEvent(PharmacyEvent.UpdateAddress(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.address),
@@ -178,7 +178,7 @@ internal fun PharmacyDetailsContent(
                             .fillMaxWidth(fraction = 0.6f),
                     text = stringResource(CoreR.string.proceed),
                     color = buttonBackgroundColor,
-                    onClick = { onIntent(PharmacyEvent.Proceed) },
+                    onClick = { onEvent(PharmacyEvent.Proceed) },
                 )
             }
         }
@@ -193,14 +193,14 @@ internal fun PharmacyDetailsContent(
 internal fun PharmacyDetailsContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         PharmacyDetailsContent(
-            state =
+            uiState =
                 PharmacyState(
                     id = 1L,
                     name = "صيدلية الدقم",
                     phone = "01234567890",
                     address = "43 ش أحمد ماهر",
                 ),
-            onIntent = {},
+            onEvent = {},
         )
     }
 }
