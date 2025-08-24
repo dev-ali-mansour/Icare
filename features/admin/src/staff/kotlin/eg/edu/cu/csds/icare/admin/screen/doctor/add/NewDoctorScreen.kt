@@ -18,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,7 +31,9 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.admin.R
 import eg.edu.cu.csds.icare.admin.screen.doctor.DoctorDetailsContent
-import eg.edu.cu.csds.icare.admin.screen.doctor.DoctorSingleEvent
+import eg.edu.cu.csds.icare.admin.screen.doctor.DoctorEffect
+import eg.edu.cu.csds.icare.admin.screen.doctor.DoctorEvent
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
@@ -50,29 +51,31 @@ internal fun NewDoctorScreen(
     onSuccess: () -> Unit,
 ) {
     val context: Context = LocalContext.current
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showSuccessDialog by remember { mutableStateOf(false) }
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        viewModel.singleEvent.collect { event ->
-            when (event) {
-                is DoctorSingleEvent.ShowSuccess -> {
+    LaunchedUiEffectHandler(
+        viewModel.effect,
+        onConsumeEffect = { viewModel.processEvent(DoctorEvent.ConsumeEffect) },
+        onEffect = { effect ->
+            when (effect) {
+                DoctorEffect.ShowSuccess -> {
                     showSuccessDialog = true
                     delay(timeMillis = 3000)
                     onSuccess()
                 }
 
-                is DoctorSingleEvent.ShowError -> {
-                    alertMessage = event.message.asString(context)
+                is DoctorEffect.ShowError -> {
+                    alertMessage = effect.message.asString(context)
                     showAlert = true
                     delay(timeMillis = 3000)
                     showAlert = false
                 }
             }
-        }
-    }
+        },
+    )
 
     Scaffold(
         topBar = {
@@ -132,8 +135,8 @@ internal fun NewDoctorScreen(
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         },
-                    state = state,
-                    onIntent = viewModel::processIntent,
+                    uiState = uiState,
+                    onEvent = viewModel::processEvent,
                 )
 
                 if (showSuccessDialog) SuccessesDialog {}
