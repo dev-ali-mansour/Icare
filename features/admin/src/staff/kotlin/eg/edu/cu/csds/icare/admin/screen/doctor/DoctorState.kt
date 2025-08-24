@@ -19,4 +19,5 @@ data class DoctorState(
     val ratingReadOnly: Boolean = true,
     val price: Double = 0.0,
     val profilePicture: String = "",
+    val effect: DoctorEffect? = null,
 )
