@@ -50,7 +50,7 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 @Composable
 internal fun PharmacistDetailsContent(
     uiState: PharmacistState,
-    onIntent: (PharmacistEvent) -> Unit,
+    onEvent: (PharmacistEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ConstraintLayout(
@@ -83,7 +83,7 @@ internal fun PharmacistDetailsContent(
             ) {
                 TextField(
                     value = uiState.firstName,
-                    onValueChange = { onIntent(PharmacistEvent.UpdateFirstName(it)) },
+                    onValueChange = { onEvent(PharmacistEvent.UpdateFirstName(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.first_name),
@@ -116,7 +116,7 @@ internal fun PharmacistDetailsContent(
 
                 TextField(
                     value = uiState.lastName,
-                    onValueChange = { onIntent(PharmacistEvent.UpdateLastName(it)) },
+                    onValueChange = { onEvent(PharmacistEvent.UpdateLastName(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.last_name),
@@ -150,7 +150,7 @@ internal fun PharmacistDetailsContent(
                     modifier = Modifier.fillMaxWidth(fraction = 0.8f),
                     expanded = uiState.isPharmaciesExpanded,
                     onExpandedChange = {
-                        onIntent(PharmacistEvent.UpdatePharmaciesExpanded(it))
+                        onEvent(PharmacistEvent.UpdatePharmaciesExpanded(it))
                     },
                 ) {
                     OutlinedTextField(
@@ -189,7 +189,7 @@ internal fun PharmacistDetailsContent(
                     ExposedDropdownMenu(
                         expanded = uiState.isPharmaciesExpanded,
                         onDismissRequest = {
-                            onIntent(PharmacistEvent.UpdatePharmaciesExpanded(false))
+                            onEvent(PharmacistEvent.UpdatePharmaciesExpanded(false))
                         },
                     ) {
                         uiState.pharmacies.forEach {
@@ -201,8 +201,8 @@ internal fun PharmacistDetailsContent(
                                     )
                                 },
                                 onClick = {
-                                    onIntent(PharmacistEvent.UpdatePharmacyId(it.id))
-                                    onIntent(PharmacistEvent.UpdatePharmaciesExpanded(false))
+                                    onEvent(PharmacistEvent.UpdatePharmacyId(it.id))
+                                    onEvent(PharmacistEvent.UpdatePharmaciesExpanded(false))
                                 },
                             )
                         }
@@ -211,7 +211,7 @@ internal fun PharmacistDetailsContent(
 
                 TextField(
                     value = uiState.email,
-                    onValueChange = { onIntent(PharmacistEvent.UpdateEmail(it)) },
+                    onValueChange = { onEvent(PharmacistEvent.UpdateEmail(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.email),
@@ -243,7 +243,7 @@ internal fun PharmacistDetailsContent(
 
                 TextField(
                     value = uiState.phone,
-                    onValueChange = { if (it.length < 14) onIntent(PharmacistEvent.UpdatePhone(it)) },
+                    onValueChange = { if (it.length < 14) onEvent(PharmacistEvent.UpdatePhone(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.phone_number),
@@ -281,7 +281,7 @@ internal fun PharmacistDetailsContent(
                             .fillMaxWidth(fraction = 0.6f),
                     text = stringResource(CoreR.string.proceed),
                     color = buttonBackgroundColor,
-                    onClick = { onIntent(PharmacistEvent.Proceed) },
+                    onClick = { onEvent(PharmacistEvent.Proceed) },
                 )
             }
         }
@@ -297,7 +297,7 @@ internal fun PharmacistDetailsContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         PharmacistDetailsContent(
             uiState = PharmacistState(),
-            onIntent = { },
+            onEvent = { },
         )
     }
 }
