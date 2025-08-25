@@ -25,9 +25,9 @@ import eg.edu.cu.csds.icare.core.domain.usecase.auth.UnlinkGoogleAccountUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.center.AddNewCenterUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCentersUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.center.UpdateCenterUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.AddNewCenterStaffUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.ListCenterStaffUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.UpdateCenterStaffUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.AddNewStaffUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.ListStaffUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.UpdateStaffUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.AddNewClinicUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinicsUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.UpdateClinicUseCase
@@ -152,13 +152,13 @@ class UseCaseModule {
     fun provideUpdateCenter(repository: CentersRepository) = UpdateCenterUseCase(repository)
 
     @Single
-    fun provideListCenterStaff(repository: CentersRepository) = ListCenterStaffUseCase(repository)
+    fun provideListStaff(repository: CentersRepository) = ListStaffUseCase(repository)
 
     @Single
-    fun provideAddNewCenterStaff(repository: CentersRepository) = AddNewCenterStaffUseCase(repository)
+    fun provideAddNewStaff(repository: CentersRepository) = AddNewStaffUseCase(repository)
 
     @Single
-    fun provideUpdateCenterStaff(repository: CentersRepository) = UpdateCenterStaffUseCase(repository)
+    fun provideUpdateStaff(repository: CentersRepository) = UpdateStaffUseCase(repository)
 
     @Single
     fun provideBookAppointment(repository: AppointmentsRepository) = BookAppointmentUseCase(repository)
