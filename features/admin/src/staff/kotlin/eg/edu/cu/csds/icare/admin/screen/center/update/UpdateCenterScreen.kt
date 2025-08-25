@@ -112,7 +112,7 @@ internal fun UpdateCenterScreen(
                         .background(backgroundColor)
                         .fillMaxWidth(),
             ) {
-                val (refresh, line, content) = createRefs()
+                val (line, content) = createRefs()
                 Box(
                     modifier =
                         Modifier
