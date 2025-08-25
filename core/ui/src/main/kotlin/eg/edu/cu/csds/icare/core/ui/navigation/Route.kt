@@ -80,10 +80,10 @@ sealed class Route {
     data object UpdatePharmacist : Route()
 
     @Serializable
-    data object NewCenterStaff : Route()
+    data object NewStaff : Route()
 
     @Serializable
-    data object UpdateCenterStaff : Route()
+    data object UpdateStaff : Route()
 
     @Serializable
     data object MyAppointments : Route()
