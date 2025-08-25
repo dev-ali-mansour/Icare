@@ -1,6 +1,6 @@
 package eg.edu.cu.csds.icare.core.domain.repository
 
-import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
+import eg.edu.cu.csds.icare.core.domain.model.Staff
 import eg.edu.cu.csds.icare.core.domain.model.DataError
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.domain.model.Result
@@ -13,9 +13,9 @@ interface CentersRepository {
 
     fun updateCenter(center: LabImagingCenter): Flow<Result<Unit, DataError.Remote>>
 
-    fun listCenterStaff(): Flow<Result<List<CenterStaff>, DataError.Remote>>
+    fun listCenterStaff(): Flow<Result<List<Staff>, DataError.Remote>>
 
-    fun addNewCenterStaff(staff: CenterStaff): Flow<Result<Unit, DataError.Remote>>
+    fun addNewCenterStaff(staff: Staff): Flow<Result<Unit, DataError.Remote>>
 
-    fun updateCenterStaff(staff: CenterStaff): Flow<Result<Unit, DataError.Remote>>
+    fun updateCenterStaff(staff: Staff): Flow<Result<Unit, DataError.Remote>>
 }
