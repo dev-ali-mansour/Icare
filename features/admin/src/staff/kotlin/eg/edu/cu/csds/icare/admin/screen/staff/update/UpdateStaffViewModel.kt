@@ -47,40 +47,40 @@ class UpdateStaffViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(intent: StaffEvent) {
-        when (intent) {
+    fun processEvent(event: StaffEvent) {
+        when (event) {
             is StaffEvent.UpdateFirstName ->
-                _uiState.update { it.copy(firstName = intent.firstName) }
+                _uiState.update { it.copy(firstName = event.firstName) }
 
             is StaffEvent.UpdateLastName ->
-                _uiState.update { it.copy(lastName = intent.lastName) }
+                _uiState.update { it.copy(lastName = event.lastName) }
 
             is StaffEvent.UpdateCenterId ->
-                _uiState.update { it.copy(centerId = intent.centerId) }
+                _uiState.update { it.copy(centerId = event.centerId) }
 
             is StaffEvent.UpdateCentersExpanded -> {
-                _uiState.update { it.copy(isCentersExpanded = intent.isExpanded) }
+                _uiState.update { it.copy(isCentersExpanded = event.isExpanded) }
             }
 
             is StaffEvent.UpdateEmail ->
-                _uiState.update { it.copy(email = intent.email) }
+                _uiState.update { it.copy(email = event.email) }
 
             is StaffEvent.UpdatePhone ->
-                _uiState.update { it.copy(phone = intent.phone) }
+                _uiState.update { it.copy(phone = event.phone) }
 
             is StaffEvent.UpdateProfilePicture ->
-                _uiState.update { it.copy(profilePicture = intent.profilePicture) }
+                _uiState.update { it.copy(profilePicture = event.profilePicture) }
 
             is StaffEvent.SelectStaff -> {
                 _uiState.update {
                     it.copy(
-                        id = intent.staff.id,
-                        firstName = intent.staff.firstName,
-                        lastName = intent.staff.lastName,
-                        centerId = intent.staff.centerId,
-                        email = intent.staff.email,
-                        phone = intent.staff.phone,
-                        profilePicture = intent.staff.profilePicture,
+                        id = event.staff.id,
+                        firstName = event.staff.firstName,
+                        lastName = event.staff.lastName,
+                        centerId = event.staff.centerId,
+                        email = event.staff.email,
+                        phone = event.staff.phone,
+                        profilePicture = event.staff.profilePicture,
                     )
                 }
             }
@@ -151,7 +151,7 @@ class UpdateStaffViewModel(
 
                         else -> {
                             updateStaffJob?.cancel()
-                            updateStaffJob = launchUpdateClinician()
+                            updateStaffJob = launchUpdateStaff()
                         }
                     }
                 }
@@ -160,7 +160,7 @@ class UpdateStaffViewModel(
         }
     }
 
-    private fun launchUpdateClinician() =
+    private fun launchUpdateStaff() =
         viewModelScope.launch(dispatcher) {
             _uiState.update { it.copy(isLoading = true) }
             val staff =
