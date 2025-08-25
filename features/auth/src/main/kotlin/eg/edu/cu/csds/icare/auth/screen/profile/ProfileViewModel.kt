@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -42,13 +43,10 @@ class ProfileViewModel(
                 observeCurrentUser(false)
             }.stateIn(
                 scope = viewModelScope,
-                started =
-                    kotlinx.coroutines.flow.SharingStarted
-                        .WhileSubscribed(stopTimeoutMillis = 5000L),
+                started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
                 initialValue = _state.value,
             )
-    private val _singleEvent =
-        MutableSharedFlow<ProfileSingleEvent>()
+    private val _singleEvent = MutableSharedFlow<ProfileSingleEvent>()
     val singleEvent = _singleEvent.asSharedFlow()
 
     fun processIntent(intent: ProfileIntent) {
@@ -56,14 +54,17 @@ class ProfileViewModel(
             is ProfileIntent.UpdateGoogleSignInToken -> {
                 _state.update { it.copy(googleToken = intent.token) }
             }
+
             is ProfileIntent.LinkWithGoogle -> {
                 linkGoogleJob?.cancel()
                 linkGoogleJob = launchGoogleLinking()
             }
+
             is ProfileIntent.UnlinkWithGoogle -> {
                 unlinkGoogleJob?.cancel()
                 unlinkGoogleJob = launchGoogleUnlinking()
             }
+
             is ProfileIntent.SignOut -> {
                 signOutJob?.cancel()
                 signOutJob = launchSignOut()

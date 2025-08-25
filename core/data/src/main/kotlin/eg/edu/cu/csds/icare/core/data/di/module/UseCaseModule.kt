@@ -7,12 +7,12 @@ import eg.edu.cu.csds.icare.core.domain.repository.CentersRepository
 import eg.edu.cu.csds.icare.core.domain.repository.ClinicsRepository
 import eg.edu.cu.csds.icare.core.domain.repository.ConsultationsRepository
 import eg.edu.cu.csds.icare.core.domain.repository.PharmaciesRepository
-import eg.edu.cu.csds.icare.core.domain.usecase.appointment.BookAppointment
-import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAdminStatistics
-import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointments
-import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointmentsByStatus
-import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetPatientAppointments
-import eg.edu.cu.csds.icare.core.domain.usecase.appointment.UpdateAppointment
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.BookAppointmentUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAdminStatisticsUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointmentsByStatusUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetAppointmentsUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetPatientAppointmentsUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.appointment.UpdateAppointmentUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.DeleteAccountUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfoUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkGoogleAccountUseCase
@@ -22,47 +22,47 @@ import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithGoogleUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOutUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignUpUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.UnlinkGoogleAccountUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.center.AddNewCenter
-import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCenters
-import eg.edu.cu.csds.icare.core.domain.usecase.center.UpdateCenter
-import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.AddNewCenterStaff
-import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.ListCenterStaff
-import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.UpdateCenterStaff
-import eg.edu.cu.csds.icare.core.domain.usecase.clinic.AddNewClinic
-import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinics
-import eg.edu.cu.csds.icare.core.domain.usecase.clinic.UpdateClinic
-import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.AddNewClinicStaff
-import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.ListClinicStaff
-import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.UpdateClinicStaff
-import eg.edu.cu.csds.icare.core.domain.usecase.consultation.AddNewConsultation
-import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetImagingTestsByStatus
-import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetLabTestsByStatus
-import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetMedicalRecord
-import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetMedicationsByStatus
-import eg.edu.cu.csds.icare.core.domain.usecase.consultation.UpdateConsultation
-import eg.edu.cu.csds.icare.core.domain.usecase.doctor.AddNewDoctor
-import eg.edu.cu.csds.icare.core.domain.usecase.doctor.GetDoctorSchedule
-import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctors
-import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListTopDoctors
-import eg.edu.cu.csds.icare.core.domain.usecase.doctor.UpdateDoctor
-import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoarding
-import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.SaveOnBoarding
-import eg.edu.cu.csds.icare.core.domain.usecase.pharmacist.AddNewPharmacist
-import eg.edu.cu.csds.icare.core.domain.usecase.pharmacist.ListPharmacists
-import eg.edu.cu.csds.icare.core.domain.usecase.pharmacist.UpdatePharmacist
-import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.AddNewPharmacy
-import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.ListPharmacies
-import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.UpdatePharmacy
+import eg.edu.cu.csds.icare.core.domain.usecase.center.AddNewCenterUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCentersUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.center.UpdateCenterUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.AddNewStaffUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.ListStaffUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.UpdateStaffUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.AddNewClinicUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinicsUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.UpdateClinicUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.AddNewClinicianCase
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.ListCliniciansUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.UpdateClinicianUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.consultation.AddNewConsultationUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetImagingTestsByStatusUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetLabTestsByStatusUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetMedicalRecordUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetMedicationsByStatusUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.consultation.UpdateConsultationUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.AddNewDoctorUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.GetDoctorScheduleUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctorsUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListTopDoctorsUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.UpdateDoctorUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.FinishOnBoardingUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoardingUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.pharmacist.AddNewPharmacistUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.pharmacist.ListPharmacistsUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.pharmacist.UpdatePharmacistUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.AddNewPharmacyUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.ListPharmaciesUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.UpdatePharmacyUseCase
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 
 @Module(includes = [RepositoryModule::class])
 class UseCaseModule {
     @Single
-    fun provideReadOnBoarding(appRepository: AppRepository) = ReadOnBoarding(appRepository)
+    fun provideReadOnBoarding(appRepository: AppRepository) = ReadOnBoardingUseCase(appRepository)
 
     @Single
-    fun provideSaveOnBoarding(appRepository: AppRepository) = SaveOnBoarding(appRepository)
+    fun provideFinishOnBoarding(appRepository: AppRepository) = FinishOnBoardingUseCase(appRepository)
 
     @Single
     fun provideRegister(repository: AuthRepository) = SignUpUseCase(repository)
@@ -89,120 +89,116 @@ class UseCaseModule {
     fun provideLinkTokenAccount(repository: AuthRepository) = LinkGoogleAccountUseCase(repository)
 
     @Single
-    fun provideUnlinkTokenAccount(repository: AuthRepository) =
-        UnlinkGoogleAccountUseCase(repository)
+    fun provideUnlinkTokenAccount(repository: AuthRepository) = UnlinkGoogleAccountUseCase(repository)
 
     @Single
-    fun provideListClinics(repository: ClinicsRepository) = ListClinics(repository)
+    fun provideListClinics(repository: ClinicsRepository) = ListClinicsUseCase(repository)
 
     @Single
-    fun provideAddNewClinic(repository: ClinicsRepository) = AddNewClinic(repository)
+    fun provideAddNewClinic(repository: ClinicsRepository) = AddNewClinicUseCase(repository)
 
     @Single
-    fun provideUpdateClinic(repository: ClinicsRepository) = UpdateClinic(repository)
+    fun provideUpdateClinic(repository: ClinicsRepository) = UpdateClinicUseCase(repository)
 
     @Single
-    fun provideListDoctors(repository: ClinicsRepository) = ListDoctors(repository)
+    fun provideListDoctors(repository: ClinicsRepository) = ListDoctorsUseCase(repository)
 
     @Single
-    fun provideGetDoctorSchedule(repository: ClinicsRepository) = GetDoctorSchedule(repository)
+    fun provideGetDoctorSchedule(repository: ClinicsRepository) = GetDoctorScheduleUseCase(repository)
 
     @Single
-    fun provideListTopDoctors(repository: ClinicsRepository) = ListTopDoctors(repository)
+    fun provideListTopDoctors(repository: ClinicsRepository) = ListTopDoctorsUseCase(repository)
 
     @Single
-    fun provideAddNewDoctor(repository: ClinicsRepository) = AddNewDoctor(repository)
+    fun provideAddNewDoctor(repository: ClinicsRepository) = AddNewDoctorUseCase(repository)
 
     @Single
-    fun provideUpdateUpdateDoctor(repository: ClinicsRepository) = UpdateDoctor(repository)
+    fun provideUpdateUpdateDoctor(repository: ClinicsRepository) = UpdateDoctorUseCase(repository)
 
     @Single
-    fun provideListClinicStaff(repository: ClinicsRepository) = ListClinicStaff(repository)
+    fun provideListClinicians(repository: ClinicsRepository) = ListCliniciansUseCase(repository)
 
     @Single
-    fun provideAddNewClinicStaff(repository: ClinicsRepository) = AddNewClinicStaff(repository)
+    fun provideAddNewClinician(repository: ClinicsRepository) = AddNewClinicianCase(repository)
 
     @Single
-    fun provideUpdateClinicStaff(repository: ClinicsRepository) = UpdateClinicStaff(repository)
+    fun provideUpdateClinician(repository: ClinicsRepository) = UpdateClinicianUseCase(repository)
 
     @Single
-    fun provideListPharmacies(repository: PharmaciesRepository) = ListPharmacies(repository)
+    fun provideListPharmacies(repository: PharmaciesRepository) = ListPharmaciesUseCase(repository)
 
     @Single
-    fun provideAddNewCPharmacy(repository: PharmaciesRepository) = AddNewPharmacy(repository)
+    fun provideAddNewCPharmacy(repository: PharmaciesRepository) = AddNewPharmacyUseCase(repository)
 
     @Single
-    fun provideUpdatePharmacy(repository: PharmaciesRepository) = UpdatePharmacy(repository)
+    fun provideUpdatePharmacy(repository: PharmaciesRepository) = UpdatePharmacyUseCase(repository)
 
     @Single
-    fun provideListPharmacists(repository: PharmaciesRepository) = ListPharmacists(repository)
+    fun provideListPharmacists(repository: PharmaciesRepository) = ListPharmacistsUseCase(repository)
 
     @Single
-    fun provideAddNewPharmacist(repository: PharmaciesRepository) = AddNewPharmacist(repository)
+    fun provideAddNewPharmacist(repository: PharmaciesRepository) = AddNewPharmacistUseCase(repository)
 
     @Single
-    fun provideUpdatePharmacist(repository: PharmaciesRepository) = UpdatePharmacist(repository)
+    fun provideUpdatePharmacist(repository: PharmaciesRepository) = UpdatePharmacistUseCase(repository)
 
     @Single
-    fun provideListCenters(repository: CentersRepository) = ListCenters(repository)
+    fun provideListCenters(repository: CentersRepository) = ListCentersUseCase(repository)
 
     @Single
-    fun provideAddNewCenter(repository: CentersRepository) = AddNewCenter(repository)
+    fun provideAddNewCenter(repository: CentersRepository) = AddNewCenterUseCase(repository)
 
     @Single
-    fun provideUpdateCenter(repository: CentersRepository) = UpdateCenter(repository)
+    fun provideUpdateCenter(repository: CentersRepository) = UpdateCenterUseCase(repository)
 
     @Single
-    fun provideListCenterStaff(repository: CentersRepository) = ListCenterStaff(repository)
+    fun provideListStaff(repository: CentersRepository) = ListStaffUseCase(repository)
 
     @Single
-    fun provideAddNewCenterStaff(repository: CentersRepository) = AddNewCenterStaff(repository)
+    fun provideAddNewStaff(repository: CentersRepository) = AddNewStaffUseCase(repository)
 
     @Single
-    fun provideUpdateCenterStaff(repository: CentersRepository) = UpdateCenterStaff(repository)
+    fun provideUpdateStaff(repository: CentersRepository) = UpdateStaffUseCase(repository)
 
     @Single
-    fun provideBookAppointment(repository: AppointmentsRepository) = BookAppointment(repository)
+    fun provideBookAppointment(repository: AppointmentsRepository) = BookAppointmentUseCase(repository)
 
     @Single
-    fun provideGetAppointments(repository: AppointmentsRepository) = GetAppointments(repository)
+    fun provideGetAppointments(repository: AppointmentsRepository) = GetAppointmentsUseCase(repository)
 
     @Single
     fun provideGetAppointmentsByStatus(repository: AppointmentsRepository) =
-        GetAppointmentsByStatus(repository)
+        GetAppointmentsByStatusUseCase(repository)
 
     @Single
     fun provideGetPatientAppointments(repository: AppointmentsRepository) =
-        GetPatientAppointments(repository)
+        GetPatientAppointmentsUseCase(repository)
 
     @Single
-    fun provideUpdateAppointment(repository: AppointmentsRepository): UpdateAppointment =
-        UpdateAppointment(repository)
+    fun provideUpdateAppointment(repository: AppointmentsRepository): UpdateAppointmentUseCase =
+        UpdateAppointmentUseCase(repository)
 
     @Single
-    fun provideAddNewConsultation(repository: ConsultationsRepository) =
-        AddNewConsultation(repository)
+    fun provideAddNewConsultation(repository: ConsultationsRepository) = AddNewConsultationUseCase(repository)
 
     @Single
-    fun provideUpdateConsultation(repository: ConsultationsRepository) =
-        UpdateConsultation(repository)
+    fun provideUpdateConsultation(repository: ConsultationsRepository) = UpdateConsultationUseCase(repository)
 
     @Single
-    fun provideGetMedicalRecord(repository: ConsultationsRepository) = GetMedicalRecord(repository)
+    fun provideGetMedicalRecord(repository: ConsultationsRepository) = GetMedicalRecordUseCase(repository)
 
     @Single
     fun provideGetMedicationsByStatus(repository: ConsultationsRepository) =
-        GetMedicationsByStatus(repository)
+        GetMedicationsByStatusUseCase(repository)
 
     @Single
     fun provideGetLabTestsByStatus(repository: ConsultationsRepository) =
-        GetLabTestsByStatus(repository)
+        GetLabTestsByStatusUseCase(repository)
 
     @Single
     fun provideGetImagingTestsByStatus(repository: ConsultationsRepository) =
-        GetImagingTestsByStatus(repository)
+        GetImagingTestsByStatusUseCase(repository)
 
     @Single
-    fun provideGetAdminStatistics(repository: AppointmentsRepository) =
-        GetAdminStatistics(repository)
+    fun provideGetAdminStatistics(repository: AppointmentsRepository) = GetAdminStatisticsUseCase(repository)
 }

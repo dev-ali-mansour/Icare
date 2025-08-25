@@ -4,7 +4,7 @@ import eg.edu.cu.csds.icare.core.data.local.db.entity.DoctorEntity
 import kotlinx.coroutines.flow.Flow
 
 interface LocalDoctorDataSource {
-    fun persistDoctors(doctors: List<DoctorEntity>)
+    suspend fun persistDoctors(doctors: List<DoctorEntity>)
 
     fun listDoctors(): Flow<List<DoctorEntity>>
 

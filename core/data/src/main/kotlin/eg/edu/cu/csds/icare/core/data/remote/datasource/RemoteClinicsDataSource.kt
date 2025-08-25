@@ -1,30 +1,31 @@
 package eg.edu.cu.csds.icare.core.data.remote.datasource
 
 import eg.edu.cu.csds.icare.core.data.dto.ClinicDto
-import eg.edu.cu.csds.icare.core.data.dto.ClinicStaffDto
+import eg.edu.cu.csds.icare.core.data.dto.ClinicianDto
 import eg.edu.cu.csds.icare.core.data.dto.DoctorDto
 import eg.edu.cu.csds.icare.core.data.dto.DoctorScheduleDto
-import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.model.DataError
+import eg.edu.cu.csds.icare.core.domain.model.Result
 import kotlinx.coroutines.flow.Flow
 
 interface RemoteClinicsDataSource {
-    fun fetchClinics(): Flow<Resource<List<ClinicDto>>>
+    fun fetchClinics(): Flow<Result<List<ClinicDto>, DataError.Remote>>
 
-    fun addNewClinic(clinic: ClinicDto): Flow<Resource<Nothing?>>
+    fun addNewClinic(clinic: ClinicDto): Flow<Result<Unit, DataError.Remote>>
 
-    fun updateClinic(clinic: ClinicDto): Flow<Resource<Nothing?>>
+    fun updateClinic(clinic: ClinicDto): Flow<Result<Unit, DataError.Remote>>
 
-    fun fetchDoctors(): Flow<Resource<List<DoctorDto>>>
+    fun fetchDoctors(): Flow<Result<List<DoctorDto>, DataError.Remote>>
 
-    fun addNewDoctor(doctor: DoctorDto): Flow<Resource<Nothing?>>
+    fun addNewDoctor(doctor: DoctorDto): Flow<Result<Unit, DataError.Remote>>
 
-    fun updateDoctor(doctor: DoctorDto): Flow<Resource<Nothing?>>
+    fun updateDoctor(doctor: DoctorDto): Flow<Result<Unit, DataError.Remote>>
 
-    fun getDoctorSchedule(uid: String): Flow<Resource<DoctorScheduleDto>>
+    fun getDoctorSchedule(uid: String): Flow<Result<DoctorScheduleDto, DataError.Remote>>
 
-    fun listClinicStaff(): Flow<Resource<List<ClinicStaffDto>>>
+    fun listClinicians(): Flow<Result<List<ClinicianDto>, DataError.Remote>>
 
-    fun addNewClinicStaff(staff: ClinicStaffDto): Flow<Resource<Nothing?>>
+    fun addNewClinician(clinician: ClinicianDto): Flow<Result<Unit, DataError.Remote>>
 
-    fun updateClinicStaff(staff: ClinicStaffDto): Flow<Resource<Nothing?>>
+    fun updateClinician(clinician: ClinicianDto): Flow<Result<Unit, DataError.Remote>>
 }
