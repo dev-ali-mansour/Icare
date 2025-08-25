@@ -3,8 +3,8 @@ package eg.edu.cu.csds.icare.admin.screen.clinician.update
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eg.edu.cu.csds.icare.admin.R
-import eg.edu.cu.csds.icare.admin.screen.clinician.ClinicianIntent
-import eg.edu.cu.csds.icare.admin.screen.clinician.ClinicianSingleEvent
+import eg.edu.cu.csds.icare.admin.screen.clinician.ClinicianEffect
+import eg.edu.cu.csds.icare.admin.screen.clinician.ClinicianEvent
 import eg.edu.cu.csds.icare.admin.screen.clinician.ClinicianState
 import eg.edu.cu.csds.icare.core.domain.model.Clinician
 import eg.edu.cu.csds.icare.core.domain.model.onError
@@ -17,11 +17,10 @@ import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -36,110 +35,119 @@ class UpdateClinicianViewModel(
     private val updateClinicianUseCase: UpdateClinicianUseCase,
 ) : ViewModel() {
     private var updateClinicianJob: Job? = null
-    private val _state = MutableStateFlow(ClinicianState())
-    val state =
-        _state
+    private val _uiState = MutableStateFlow(ClinicianState())
+    val uiState =
+        _uiState
             .onStart {
                 fetchClinics()
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
-                initialValue = _state.value,
+                initialValue = _uiState.value,
             )
-    private val _singleEvent = MutableSharedFlow<ClinicianSingleEvent>()
-    val singleEvent = _singleEvent.asSharedFlow()
+    val effect = _uiState.map { it.effect }
 
-    fun processIntent(intent: ClinicianIntent) {
-        when (intent) {
-            is ClinicianIntent.UpdateFirstName -> {
-                _state.update { it.copy(firstName = intent.firstName) }
+    fun processEvent(event: ClinicianEvent) {
+        when (event) {
+            is ClinicianEvent.UpdateFirstName -> {
+                _uiState.update { it.copy(firstName = event.firstName) }
             }
 
-            is ClinicianIntent.UpdateLastName -> {
-                _state.update { it.copy(lastName = intent.lastName) }
+            is ClinicianEvent.UpdateLastName -> {
+                _uiState.update { it.copy(lastName = event.lastName) }
             }
 
-            is ClinicianIntent.UpdateClinicId -> {
-                _state.update { it.copy(clinicId = intent.clinicId) }
+            is ClinicianEvent.UpdateClinicId -> {
+                _uiState.update { it.copy(clinicId = event.clinicId) }
             }
 
-            is ClinicianIntent.UpdateClinicsExpanded -> {
-                _state.update { it.copy(isClinicsExpanded = intent.isExpanded) }
+            is ClinicianEvent.UpdateClinicsExpanded -> {
+                _uiState.update { it.copy(isClinicsExpanded = event.isExpanded) }
             }
 
-            is ClinicianIntent.UpdateEmail -> {
-                _state.update { it.copy(email = intent.email) }
+            is ClinicianEvent.UpdateEmail -> {
+                _uiState.update { it.copy(email = event.email) }
             }
 
-            is ClinicianIntent.UpdatePhone -> {
-                _state.update { it.copy(phone = intent.phone) }
+            is ClinicianEvent.UpdatePhone -> {
+                _uiState.update { it.copy(phone = event.phone) }
             }
-            is ClinicianIntent.UpdateProfilePicture -> {
-                _state.update { it.copy(profilePicture = intent.profilePicture) }
+            is ClinicianEvent.UpdateProfilePicture -> {
+                _uiState.update { it.copy(profilePicture = event.profilePicture) }
             }
 
-            is ClinicianIntent.SelectClinician -> {
-                _state.update {
+            is ClinicianEvent.SelectClinician -> {
+                _uiState.update {
                     it.copy(
-                        id = intent.clinician.id,
-                        firstName = intent.clinician.firstName,
-                        lastName = intent.clinician.lastName,
-                        clinicId = intent.clinician.clinicId,
-                        email = intent.clinician.email,
-                        phone = intent.clinician.phone,
-                        profilePicture = intent.clinician.profilePicture,
+                        id = event.clinician.id,
+                        firstName = event.clinician.firstName,
+                        lastName = event.clinician.lastName,
+                        clinicId = event.clinician.clinicId,
+                        email = event.clinician.email,
+                        phone = event.clinician.phone,
+                        profilePicture = event.clinician.profilePicture,
                     )
                 }
             }
 
-            is ClinicianIntent.Proceed ->
+            is ClinicianEvent.Proceed ->
                 viewModelScope.launch {
                     when {
-                        _state.value.firstName.isBlank() -> {
-                            _singleEvent.emit(
-                                ClinicianSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.error_first_name),
-                                ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
-                        }
+                        _uiState.value.firstName.isBlank() ->
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        ClinicianEffect.ShowError(
+                                            message = StringResourceId(R.string.error_first_name),
+                                        ),
+                                )
+                            }
 
-                        _state.value.lastName.isBlank() -> {
-                            _singleEvent.emit(
-                                ClinicianSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.error_last_name),
-                                ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
-                        }
+                        _uiState.value.lastName.isBlank() ->
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        ClinicianEffect.ShowError(
+                                            message = StringResourceId(R.string.error_last_name),
+                                        ),
+                                )
+                            }
 
-                        _state.value.clinicId == 0.toLong() -> {
-                            _singleEvent.emit(
-                                ClinicianSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.error_clinic),
-                                ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
-                        }
+                        _uiState.value.clinicId == 0.toLong() ->
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        ClinicianEffect.ShowError(
+                                            message = StringResourceId(R.string.error_clinic),
+                                        ),
+                                )
+                            }
 
-                        !_state.value.email.isValidEmail -> {
-                            _singleEvent.emit(
-                                ClinicianSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.error_invalid_email),
-                                ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
-                        }
+                        !_uiState.value.email.isValidEmail ->
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        ClinicianEffect.ShowError(
+                                            message = StringResourceId(R.string.error_invalid_email),
+                                        ),
+                                )
+                            }
 
-                        _state.value.phone.isBlank() ||
-                            _state.value.phone.length < Constants.PHONE_LENGTH -> {
-                            _singleEvent.emit(
-                                ClinicianSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.error_phone),
-                                ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
-                        }
+                        _uiState.value.phone.isBlank() ||
+                            _uiState.value.phone.length < Constants.PHONE_LENGTH ->
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        ClinicianEffect.ShowError(
+                                            message = StringResourceId(R.string.error_phone),
+                                        ),
+                                )
+                            }
 
                         else -> {
                             updateClinicianJob?.cancel()
@@ -147,46 +155,59 @@ class UpdateClinicianViewModel(
                         }
                     }
                 }
+            ClinicianEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
         }
     }
 
     private fun launchUpdateClinician() =
         viewModelScope.launch(dispatcher) {
-            _state.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(isLoading = true) }
             val clinician =
                 Clinician(
-                    id = _state.value.id,
-                    firstName = _state.value.firstName,
-                    lastName = _state.value.lastName,
-                    clinicId = _state.value.clinicId,
-                    email = _state.value.email,
-                    phone = _state.value.phone,
-                    profilePicture = _state.value.profilePicture,
+                    id = _uiState.value.id,
+                    firstName = _uiState.value.firstName,
+                    lastName = _uiState.value.lastName,
+                    clinicId = _uiState.value.clinicId,
+                    email = _uiState.value.email,
+                    phone = _uiState.value.phone,
+                    profilePicture = _uiState.value.profilePicture,
                 )
             updateClinicianUseCase(clinician)
                 .onEach { result ->
                     result
                         .onSuccess {
-                            _singleEvent.emit(ClinicianSingleEvent.ShowSuccess)
-                            _state.update { it.copy(isLoading = false) }
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect = ClinicianEffect.ShowSuccess,
+                                )
+                            }
                         }.onError { error ->
-                            _singleEvent.emit(ClinicianSingleEvent.ShowError(message = error.toUiText()))
-                            _state.update { it.copy(isLoading = false) }
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect = ClinicianEffect.ShowError(message = error.toUiText()),
+                                )
+                            }
                         }
                 }.launchIn(viewModelScope)
         }
 
     private fun fetchClinics() =
         viewModelScope.launch(dispatcher) {
-            _state.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(isLoading = true) }
             listClinicsUseCase()
                 .onEach { result ->
                     result
                         .onSuccess { clinics ->
-                            _state.update { it.copy(clinics = clinics, isLoading = false) }
+                            _uiState.update { it.copy(clinics = clinics, isLoading = false) }
                         }.onError { error ->
-                            _singleEvent.emit(ClinicianSingleEvent.ShowError(message = error.toUiText()))
-                            _state.update { it.copy(isLoading = false) }
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect = ClinicianEffect.ShowError(message = error.toUiText()),
+                                )
+                            }
                         }
                 }.launchIn(viewModelScope)
         }

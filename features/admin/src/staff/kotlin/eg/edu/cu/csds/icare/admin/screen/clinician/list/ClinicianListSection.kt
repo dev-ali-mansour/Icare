@@ -28,6 +28,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.Clinician
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.view.ClinicianView
@@ -47,29 +48,32 @@ fun ClinicianListSection(
 ) {
     val context: Context = LocalContext.current
     val refreshState = rememberPullToRefreshState()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        viewModel.singleEvent.collect { event ->
-            when (event) {
-                is ClinicianListSingleEvent.NavigateToClinicianDetails -> {
-                    navigateToClinicianDetails(event.clinician)
+    LaunchedUiEffectHandler(
+        viewModel.effect,
+        onConsumeEffect = { viewModel.processEvent(ClinicianListEvent.ConsumeEffect) },
+        onEffect = { effect ->
+            when (effect) {
+                is ClinicianListEffect.NavigateToClinicianDetails -> {
+                    navigateToClinicianDetails(effect.clinician)
                 }
 
-                is ClinicianListSingleEvent.UpdateFabExpanded -> {
-                    onExpandStateChanged(event.isExpanded)
+                is ClinicianListEffect.UpdateFabExpanded -> {
+                    onExpandStateChanged(effect.isExpanded)
                 }
 
-                is ClinicianListSingleEvent.ShowError -> {
-                    alertMessage = event.message.asString(context)
+                is ClinicianListEffect.ShowError -> {
+                    alertMessage = effect.message.asString(context)
                     showAlert = true
                     delay(timeMillis = 3000)
-                    showAlert = false                }
+                    showAlert = false
+                }
             }
-        }
-    }
+        },
+    )
 
     ConstraintLayout(
         modifier =
@@ -79,7 +83,7 @@ fun ClinicianListSection(
                     state = refreshState,
                     isRefreshing = state.isLoading,
                     onRefresh = {
-                        viewModel.processIntent(ClinicianListIntent.Refresh)
+                        viewModel.processEvent(ClinicianListEvent.Refresh)
                     },
                 ),
     ) {
@@ -96,7 +100,7 @@ fun ClinicianListSection(
                     height = Dimension.fillToConstraints
                 },
             state = state,
-            onIntent = viewModel::processIntent,
+            onIntent = viewModel::processEvent,
         )
 
         Indicator(
@@ -119,7 +123,7 @@ fun ClinicianListSection(
 private fun ClinicianListContent(
     modifier: Modifier,
     state: ClinicianListState,
-    onIntent: (ClinicianListIntent) -> Unit,
+    onIntent: (ClinicianListEvent) -> Unit,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
@@ -127,7 +131,7 @@ private fun ClinicianListContent(
         val listState = rememberLazyListState()
         val expandedFabState = remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
         LaunchedEffect(key1 = expandedFabState.value) {
-            onIntent(ClinicianListIntent.UpdateFabExpanded(expandedFabState.value))
+            onIntent(ClinicianListEvent.UpdateFabExpanded(expandedFabState.value))
         }
 
         if (state.clinicians.isEmpty()) {
@@ -150,7 +154,7 @@ private fun ClinicianListContent(
                     },
                 ) { clinician ->
                     ClinicianView(clinician = clinician) {
-                        onIntent(ClinicianListIntent.SelectClinician(clinician))
+                        onIntent(ClinicianListEvent.SelectClinician(clinician))
                     }
                 }
             }

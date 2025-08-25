@@ -145,7 +145,7 @@ class NewStaffViewModel(
                     }
                 }
 
-            StaffEvent.ConsumeEffect -> consumeEffect()
+            StaffEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
         }
     }
 
@@ -200,8 +200,4 @@ class NewStaffViewModel(
                         }
                 }.launchIn(viewModelScope)
         }
-
-    private fun consumeEffect() {
-        _uiState.update { it.copy(effect = null) }
-    }
 }

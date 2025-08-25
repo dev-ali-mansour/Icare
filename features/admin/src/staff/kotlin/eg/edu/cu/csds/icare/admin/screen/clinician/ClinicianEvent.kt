@@ -2,38 +2,40 @@ package eg.edu.cu.csds.icare.admin.screen.clinician
 
 import eg.edu.cu.csds.icare.core.domain.model.Clinician
 
-sealed interface ClinicianIntent {
+sealed interface ClinicianEvent {
     data class UpdateFirstName(
         val firstName: String,
-    ) : ClinicianIntent
+    ) : ClinicianEvent
 
     data class UpdateLastName(
         val lastName: String,
-    ) : ClinicianIntent
+    ) : ClinicianEvent
 
     data class UpdateClinicId(
         val clinicId: Long,
-    ) : ClinicianIntent
+    ) : ClinicianEvent
 
     data class UpdateClinicsExpanded(
         val isExpanded: Boolean,
-    ) : ClinicianIntent
+    ) : ClinicianEvent
 
     data class UpdateEmail(
         val email: String,
-    ) : ClinicianIntent
+    ) : ClinicianEvent
 
     data class UpdatePhone(
         val phone: String,
-    ) : ClinicianIntent
+    ) : ClinicianEvent
 
     data class UpdateProfilePicture(
         val profilePicture: String,
-    ) : ClinicianIntent
+    ) : ClinicianEvent
 
     data class SelectClinician(
         val clinician: Clinician,
-    ) : ClinicianIntent
+    ) : ClinicianEvent
 
-    object Proceed : ClinicianIntent
+    object Proceed : ClinicianEvent
+
+    object ConsumeEffect : ClinicianEvent
 }

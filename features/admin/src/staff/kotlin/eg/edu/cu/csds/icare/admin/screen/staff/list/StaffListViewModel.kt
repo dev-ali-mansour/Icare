@@ -37,28 +37,24 @@ class StaffListViewModel(
 
     fun processEvent(event: StaffListEvent) {
         when (event) {
-            is StaffListEvent.Refresh -> {
-                fetchPharmacists()
-            }
+            is StaffListEvent.Refresh -> fetchPharmacists()
 
-            is StaffListEvent.SelectStaff -> {
+            is StaffListEvent.SelectStaff ->
                 _uiState.update {
                     it.copy(
                         effect =
                             StaffListEffect.NavigateToStaffDetails(staff = event.staff),
                     )
                 }
-            }
 
-            is StaffListEvent.UpdateFabExpanded -> {
+            is StaffListEvent.UpdateFabExpanded ->
                 _uiState.update {
                     it.copy(
                         effect = StaffListEffect.UpdateFabExpanded(isExpanded = event.isExpanded),
                     )
                 }
-            }
 
-            StaffListEvent.ConsumeEffect -> consumeEffect()
+            StaffListEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
         }
     }
 
@@ -80,8 +76,4 @@ class StaffListViewModel(
                         }
                 }.launchIn(viewModelScope)
         }
-
-    private fun consumeEffect() {
-        _uiState.update { it.copy(effect = null) }
-    }
 }

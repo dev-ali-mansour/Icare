@@ -58,7 +58,7 @@ class DoctorListViewModel(
                 }
             }
 
-            DoctorLisEvent.ConsumeEffect -> consumeEffect()
+            DoctorLisEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
         }
     }
 
@@ -80,8 +80,4 @@ class DoctorListViewModel(
                         }
                 }.launchIn(viewModelScope)
         }
-
-    private fun consumeEffect() {
-        _uiState.update { it.copy(effect = null) }
-    }
 }
