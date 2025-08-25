@@ -100,7 +100,7 @@ fun ClinicianListSection(
                     height = Dimension.fillToConstraints
                 },
             state = state,
-            onIntent = viewModel::processEvent,
+            onEvent = viewModel::processEvent,
         )
 
         Indicator(
@@ -123,7 +123,7 @@ fun ClinicianListSection(
 private fun ClinicianListContent(
     modifier: Modifier,
     state: ClinicianListState,
-    onIntent: (ClinicianListEvent) -> Unit,
+    onEvent: (ClinicianListEvent) -> Unit,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
@@ -131,7 +131,7 @@ private fun ClinicianListContent(
         val listState = rememberLazyListState()
         val expandedFabState = remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
         LaunchedEffect(key1 = expandedFabState.value) {
-            onIntent(ClinicianListEvent.UpdateFabExpanded(expandedFabState.value))
+            onEvent(ClinicianListEvent.UpdateFabExpanded(expandedFabState.value))
         }
 
         if (state.clinicians.isEmpty()) {
@@ -154,7 +154,7 @@ private fun ClinicianListContent(
                     },
                 ) { clinician ->
                     ClinicianView(clinician = clinician) {
-                        onIntent(ClinicianListEvent.SelectClinician(clinician))
+                        onEvent(ClinicianListEvent.SelectClinician(clinician))
                     }
                 }
             }
@@ -172,7 +172,7 @@ internal fun ClinicStaffsContentPreview() {
         ClinicianListContent(
             modifier = Modifier,
             state = ClinicianListState(),
-            onIntent = {},
+            onEvent = {},
         )
     }
 }

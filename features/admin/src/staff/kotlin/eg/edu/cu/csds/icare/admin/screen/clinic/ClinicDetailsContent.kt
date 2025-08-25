@@ -52,7 +52,7 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 internal fun ClinicDetailsContent(
     modifier: Modifier = Modifier,
     state: ClinicState,
-    onIntent: (ClinicIntent) -> Unit,
+    onEvent: (ClinicEvent) -> Unit,
 ) {
     ConstraintLayout(
         modifier =
@@ -83,7 +83,7 @@ internal fun ClinicDetailsContent(
             ) {
                 TextField(
                     value = state.name,
-                    onValueChange = { onIntent(ClinicIntent.UpdateName(it)) },
+                    onValueChange = { onEvent(ClinicEvent.UpdateName(it)) },
                     label = {
                         Text(
                             text = stringResource(CoreR.string.name),
@@ -116,7 +116,7 @@ internal fun ClinicDetailsContent(
 
                 TextField(
                     value = state.type,
-                    onValueChange = { onIntent(ClinicIntent.UpdateType(it)) },
+                    onValueChange = { onEvent(ClinicEvent.UpdateType(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.type),
@@ -148,7 +148,7 @@ internal fun ClinicDetailsContent(
 
                 TextField(
                     value = state.phone,
-                    onValueChange = { if (it.length < 14) onIntent(ClinicIntent.UpdatePhone(it)) },
+                    onValueChange = { if (it.length < 14) onEvent(ClinicEvent.UpdatePhone(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.phone_number),
@@ -180,7 +180,7 @@ internal fun ClinicDetailsContent(
 
                 TextField(
                     value = state.address,
-                    onValueChange = { onIntent(ClinicIntent.UpdateAddress(it)) },
+                    onValueChange = { onEvent(ClinicEvent.UpdateAddress(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.address),
@@ -224,7 +224,7 @@ internal fun ClinicDetailsContent(
                 ) {
                     Switch(
                         checked = state.isOpen,
-                        onCheckedChange = { onIntent(ClinicIntent.UpdateIsOpen(it)) },
+                        onCheckedChange = { onEvent(ClinicEvent.UpdateIsOpen(it)) },
                         colors =
                             SwitchDefaults.colors(
                                 checkedThumbColor = barBackgroundColor,
@@ -258,7 +258,7 @@ internal fun ClinicDetailsContent(
                             .fillMaxWidth(fraction = 0.6f),
                     text = stringResource(CoreR.string.proceed),
                     color = buttonBackgroundColor,
-                    onClick = { onIntent(ClinicIntent.Proceed) },
+                    onClick = { onEvent(ClinicEvent.Proceed) },
                 )
             }
         }
@@ -274,7 +274,7 @@ internal fun ClinicDetailsContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         ClinicDetailsContent(
             state = ClinicState(),
-            onIntent = {},
+            onEvent = {},
         )
     }
 }

@@ -2,14 +2,16 @@ package eg.edu.cu.csds.icare.admin.screen.clinic.list
 
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 
-sealed interface ClinicListIntent {
-    object Refresh : ClinicListIntent
+sealed interface ClinicListEvent {
+    object Refresh : ClinicListEvent
 
     data class SelectClinic(
         val clinic: Clinic,
-    ) : ClinicListIntent
+    ) : ClinicListEvent
 
     data class UpdateFabExpanded(
         val isExpanded: Boolean,
-    ) : ClinicListIntent
+    ) : ClinicListEvent
+
+    object ConsumeEffect : ClinicListEvent
 }
