@@ -6,15 +6,15 @@ import eg.edu.cu.csds.icare.core.data.local.datasource.LocalDoctorDataSource
 import eg.edu.cu.csds.icare.core.data.mappers.toClinic
 import eg.edu.cu.csds.icare.core.data.mappers.toClinicDto
 import eg.edu.cu.csds.icare.core.data.mappers.toClinicEntity
-import eg.edu.cu.csds.icare.core.data.mappers.toClinicStaff
-import eg.edu.cu.csds.icare.core.data.mappers.toClinicStaffDto
+import eg.edu.cu.csds.icare.core.data.mappers.toClinician
+import eg.edu.cu.csds.icare.core.data.mappers.toClinicianDto
 import eg.edu.cu.csds.icare.core.data.mappers.toDoctor
 import eg.edu.cu.csds.icare.core.data.mappers.toDoctorDto
 import eg.edu.cu.csds.icare.core.data.mappers.toDoctorEntity
 import eg.edu.cu.csds.icare.core.data.mappers.toDoctorSchedule
 import eg.edu.cu.csds.icare.core.data.remote.datasource.RemoteClinicsDataSource
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
-import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
+import eg.edu.cu.csds.icare.core.domain.model.Clinician
 import eg.edu.cu.csds.icare.core.domain.model.DataError
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
@@ -184,21 +184,21 @@ class ClinicsRepositoryImpl(
                 }
         }
 
-    override fun listClinicStaff(): Flow<Result<List<ClinicStaff>, DataError.Remote>> =
+    override fun listClinicians(): Flow<Result<List<Clinician>, DataError.Remote>> =
         flow {
             remoteClinicsDataSource
-                .listClinicStaff()
+                .listClinicians()
                 .collect { result ->
                     result
                         .onSuccess {
-                            emit(Result.Success(data = it.map { staffDto -> staffDto.toClinicStaff() }))
+                            emit(Result.Success(data = it.map { staffDto -> staffDto.toClinician() }))
                         }.onError { emit(Result.Error(it)) }
                 }
         }
 
-    override fun addNewClinicStaff(staff: ClinicStaff): Flow<Result<Unit, DataError.Remote>> =
-        remoteClinicsDataSource.updateClinicStaff(staff.toClinicStaffDto())
+    override fun addNewClinician(clinician: Clinician): Flow<Result<Unit, DataError.Remote>> =
+        remoteClinicsDataSource.updateClinician(clinician.toClinicianDto())
 
-    override fun updateClinicStaff(staff: ClinicStaff): Flow<Result<Unit, DataError.Remote>> =
-        remoteClinicsDataSource.updateClinicStaff(staff.toClinicStaffDto())
+    override fun updateClinician(clinician: Clinician): Flow<Result<Unit, DataError.Remote>> =
+        remoteClinicsDataSource.updateClinician(clinician.toClinicianDto())
 }

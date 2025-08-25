@@ -1,9 +1,9 @@
 package eg.edu.cu.csds.icare.core.data.mappers
 
 import eg.edu.cu.csds.icare.core.data.dto.CenterStaffDto
-import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
+import eg.edu.cu.csds.icare.core.domain.model.Staff
 
-fun CenterStaff.toCenterStaffDto(): CenterStaffDto =
+fun Staff.toCenterStaffDto(): CenterStaffDto =
     CenterStaffDto(
         id = this.id,
         firstName = this.firstName,
@@ -15,8 +15,8 @@ fun CenterStaff.toCenterStaffDto(): CenterStaffDto =
         profilePicture = this.profilePicture,
     )
 
-fun CenterStaffDto.toCenterStaff(): CenterStaff =
-    CenterStaff(
+fun CenterStaffDto.toCenterStaff(): Staff =
+    Staff(
         id = this.id,
         firstName = this.firstName,
         lastName = this.lastName,

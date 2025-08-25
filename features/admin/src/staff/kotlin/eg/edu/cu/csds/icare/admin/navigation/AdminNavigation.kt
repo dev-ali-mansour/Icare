@@ -1,289 +1,252 @@
 package eg.edu.cu.csds.icare.admin.navigation
 
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import eg.edu.cu.csds.icare.admin.screen.AdminScreen
-import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
-import eg.edu.cu.csds.icare.admin.screen.center.EditCenterScreen
-import eg.edu.cu.csds.icare.admin.screen.center.NewCenterScreen
-import eg.edu.cu.csds.icare.admin.screen.center.staff.EditCenterStaffScreen
-import eg.edu.cu.csds.icare.admin.screen.center.staff.NewCenterStaffScreen
-import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
-import eg.edu.cu.csds.icare.admin.screen.clinic.EditClinicScreen
-import eg.edu.cu.csds.icare.admin.screen.clinic.NewClinicScreen
-import eg.edu.cu.csds.icare.admin.screen.clinic.doctor.add.NewDoctorScreen
-import eg.edu.cu.csds.icare.admin.screen.clinic.doctor.update.EditDoctorScreen
-import eg.edu.cu.csds.icare.admin.screen.clinic.staff.EditClinicStaffScreen
-import eg.edu.cu.csds.icare.admin.screen.clinic.staff.NewClinicStaffScreen
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.EditPharmacyScreen
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.NewPharmacyScreen
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.pharmacist.EditPharmacistScreen
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.pharmacist.NewPharmacistScreen
-import eg.edu.cu.csds.icare.core.ui.MainViewModel
+import eg.edu.cu.csds.icare.admin.screen.center.CenterEvent
+import eg.edu.cu.csds.icare.admin.screen.center.SelectedCenterViewModel
+import eg.edu.cu.csds.icare.admin.screen.center.add.NewCenterScreen
+import eg.edu.cu.csds.icare.admin.screen.center.update.UpdateCenterScreen
+import eg.edu.cu.csds.icare.admin.screen.center.update.UpdateCenterViewModel
+import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicEvent
+import eg.edu.cu.csds.icare.admin.screen.clinic.SelectedClinicViewModel
+import eg.edu.cu.csds.icare.admin.screen.clinic.add.NewClinicScreen
+import eg.edu.cu.csds.icare.admin.screen.clinic.update.UpdateClinicScreen
+import eg.edu.cu.csds.icare.admin.screen.clinic.update.UpdateClinicViewModel
+import eg.edu.cu.csds.icare.admin.screen.clinician.ClinicianEvent
+import eg.edu.cu.csds.icare.admin.screen.clinician.SelectedClinicianViewModel
+import eg.edu.cu.csds.icare.admin.screen.clinician.add.NewClinicStaffScreen
+import eg.edu.cu.csds.icare.admin.screen.clinician.update.UpdateClinicianScreen
+import eg.edu.cu.csds.icare.admin.screen.clinician.update.UpdateClinicianViewModel
+import eg.edu.cu.csds.icare.admin.screen.doctor.DoctorEvent
+import eg.edu.cu.csds.icare.admin.screen.doctor.SelectedDoctorViewModel
+import eg.edu.cu.csds.icare.admin.screen.doctor.add.NewDoctorScreen
+import eg.edu.cu.csds.icare.admin.screen.doctor.update.UpdateDoctorScreen
+import eg.edu.cu.csds.icare.admin.screen.doctor.update.UpdateDoctorViewModel
+import eg.edu.cu.csds.icare.admin.screen.pharmacist.PharmacistEvent
+import eg.edu.cu.csds.icare.admin.screen.pharmacist.SelectedPharmacistViewModel
+import eg.edu.cu.csds.icare.admin.screen.pharmacist.add.NewPharmacistScreen
+import eg.edu.cu.csds.icare.admin.screen.pharmacist.update.UpdatePharmacistScreen
+import eg.edu.cu.csds.icare.admin.screen.pharmacist.update.UpdatePharmacistViewModel
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyEvent
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.SelectedPharmacyViewModel
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.add.NewPharmacyScreen
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.update.UpdatePharmacyScreen
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.update.UpdatePharmacyViewModel
+import eg.edu.cu.csds.icare.admin.screen.staff.SelectedStaffViewModel
+import eg.edu.cu.csds.icare.admin.screen.staff.StaffEvent
+import eg.edu.cu.csds.icare.admin.screen.staff.add.NewStaffScreen
+import eg.edu.cu.csds.icare.admin.screen.staff.update.UpdateStaffScreen
+import eg.edu.cu.csds.icare.admin.screen.staff.update.UpdateStaffViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
+import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.adminRoute(
-    mainViewModel: MainViewModel,
-    clinicViewModel: ClinicViewModel,
-    centerViewModel: CenterViewModel,
-    pharmacyViewModel: PharmacyViewModel,
+    selectedClinicViewModel: SelectedClinicViewModel,
+    selectedDoctorViewModel: SelectedDoctorViewModel,
+    selectedClinicianViewModel: SelectedClinicianViewModel,
+    selectedPharmacyViewModel: SelectedPharmacyViewModel,
+    selectedPharmacistViewModel: SelectedPharmacistViewModel,
+    selectedCenterViewModel: SelectedCenterViewModel,
+    selectedStaffViewModel: SelectedStaffViewModel,
     onNavigationIconClicked: () -> Unit,
-    navigateToScreen: (Route) -> Unit,
-    onError: suspend (Throwable?) -> Unit,
+    navigateToRoute: (Route) -> Unit,
 ) {
     composable<Route.Admin> {
+        LaunchedEffect(true) {
+            selectedClinicViewModel.onSelectClinic(null)
+            selectedDoctorViewModel.onSelectDoctor(null)
+            selectedClinicianViewModel.onSelectClinician(null)
+            selectedPharmacyViewModel.onSelectPharmacy(null)
+            selectedPharmacistViewModel.onSelectPharmacist(null)
+            selectedCenterViewModel.onSelectCenter(null)
+            selectedStaffViewModel.onSelectStaff(null)
+        }
+
         AdminScreen(
-            mainViewModel = mainViewModel,
-            clinicViewModel = clinicViewModel,
-            pharmacyViewModel = pharmacyViewModel,
-            centerViewModel = centerViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onRefresh = {
-                loadData(
-                    mainViewModel = mainViewModel,
-                    clinicViewModel = clinicViewModel,
-                    pharmacyViewModel = pharmacyViewModel,
-                    centerViewModel = centerViewModel,
-                    forceRefresh = true,
-                )
+            navigateToRoute = {
+                navigateToRoute(it)
             },
-            onFabClicked = {
-                onFabClicked(mainViewModel = mainViewModel) {
-                    navigateToScreen(it)
-                }
+            navigateToClinicDetails = { clinic ->
+                selectedClinicViewModel.onSelectClinic(clinic)
+                navigateToRoute(Route.UpdateClinic)
             },
-            onCategoryTabClicked = {
-                mainViewModel.selectedSectionTabIndex.intValue = 0
-                when (mainViewModel.selectedCategoryTabIndex.intValue) {
-                    0 -> clinicViewModel.listClinics()
-                    1 -> pharmacyViewModel.listPharmacies()
-                    2 -> centerViewModel.listCenters()
-                }
+            navigateToDoctorDetails = { doctor ->
+                selectedDoctorViewModel.onSelectDoctor(doctor)
+                navigateToRoute(Route.UpdateDoctor)
             },
-            onSectionTabClicked = {
-                loadData(
-                    mainViewModel = mainViewModel,
-                    clinicViewModel = clinicViewModel,
-                    pharmacyViewModel = pharmacyViewModel,
-                    centerViewModel = centerViewModel,
-                )
+            navigateToClinicianDetails = { clinician ->
+                selectedClinicianViewModel.onSelectClinician(clinician)
+                navigateToRoute(Route.UpdateClinician)
             },
-            onClinicClicked = { clinic ->
-                clinicViewModel.selectedClinicState.value = clinic
-                navigateToScreen(Route.EditClinic)
+            navigateToPharmacyDetails = { pharmacy ->
+                selectedPharmacyViewModel.onSelectPharmacy(pharmacy)
+                navigateToRoute(Route.UpdatePharmacy)
             },
-            onDoctorClicked = { doctor ->
-                clinicViewModel.selectedDoctorState.value = doctor
-                navigateToScreen(Route.EditDoctor)
+            navigateToPharmacistDetails = { pharmacist ->
+                selectedPharmacistViewModel.onSelectPharmacist(pharmacist)
+                navigateToRoute(Route.UpdatePharmacist)
             },
-            onClinicStaffClicked = { staff ->
-                clinicViewModel.selectedClinicStaffState.value = staff
-                navigateToScreen(Route.EditClinicStaff)
+            navigateToCenterDetails = { center ->
+                selectedCenterViewModel.onSelectCenter(center)
+                navigateToRoute(Route.UpdateCenter)
             },
-            onPharmacyClicked = { pharmacy ->
-                pharmacyViewModel.selectedPharmacyState.value = pharmacy
-                navigateToScreen(Route.EditPharmacy)
+            navigateToStaffDetails = { staff ->
+                selectedStaffViewModel.onSelectStaff(staff)
+                navigateToRoute(Route.UpdateStaff)
             },
-            onPharmacistClicked = { pharmacist ->
-                pharmacyViewModel.selectedPharmacistState.value = pharmacist
-                navigateToScreen(Route.EditPharmacist)
-            },
-            onCenterClicked = { center ->
-                centerViewModel.selectedCenterState.value = center
-                navigateToScreen(Route.EditCenter)
-            },
-            onCenterStaffClicked = { staff ->
-                centerViewModel.selectedCenterStaffState.value = staff
-                navigateToScreen(Route.EditCenterStaff)
-            },
-            onError = { onError(it) },
         )
     }
 
     composable<Route.NewClinic> {
         NewClinicScreen(
-            clinicViewModel = clinicViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onProceedButtonClicked = { clinicViewModel.addNewClinic() },
-            onSuccess = { onNavigationIconClicked() },
-            onError = { onError(it) },
+            onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.EditClinic> {
-        EditClinicScreen(
-            clinicViewModel = clinicViewModel,
+    composable<Route.UpdateClinic> {
+        val viewModel: UpdateClinicViewModel = koinViewModel()
+        val selectedClinic by selectedClinicViewModel.selectedClinic.collectAsStateWithLifecycle()
+        LaunchedEffect(selectedClinic) {
+            selectedClinic?.let { clinic ->
+                viewModel.processEvent(ClinicEvent.SelectClinic(clinic))
+            }
+        }
+        UpdateClinicScreen(
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onProceedButtonClicked = { clinicViewModel.updateClinic() },
-            onSuccess = { onNavigationIconClicked() },
-            onError = { onError(it) },
+            onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.NewCenter> {
-        NewCenterScreen(
-            centerViewModel = centerViewModel,
+    composable<Route.NewDoctor> {
+        NewDoctorScreen(
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onProceedButtonClicked = { centerViewModel.addNewCenter() },
-            onSuccess = { onNavigationIconClicked() },
-            onError = { onError(it) },
+            onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.EditCenter> {
-        EditCenterScreen(
-            centerViewModel = centerViewModel,
+    composable<Route.UpdateDoctor> {
+        val viewModel: UpdateDoctorViewModel = koinViewModel()
+        val selectedDoctor by selectedDoctorViewModel.selectedDoctor.collectAsStateWithLifecycle()
+        LaunchedEffect(selectedDoctor) {
+            selectedDoctor?.let { doctor ->
+                viewModel.processEvent(DoctorEvent.SelectDoctor(doctor))
+            }
+        }
+        UpdateDoctorScreen(
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onProceedButtonClicked = { centerViewModel.updateCenter() },
-            onSuccess = { onNavigationIconClicked() },
-            onError = { onError(it) },
+            onSuccess = { navigateToRoute(Route.Admin) },
+        )
+    }
+
+    composable<Route.NewClinician> {
+        NewClinicStaffScreen(
+            onNavigationIconClicked = { onNavigationIconClicked() },
+            onSuccess = { navigateToRoute(Route.Admin) },
+        )
+    }
+
+    composable<Route.UpdateClinician> {
+        val viewModel: UpdateClinicianViewModel = koinViewModel()
+        val selectedClinician by selectedClinicianViewModel.selectedClinician.collectAsStateWithLifecycle()
+        LaunchedEffect(selectedClinician) {
+            selectedClinician?.let { clinician ->
+                viewModel.processEvent(ClinicianEvent.SelectClinician(clinician))
+            }
+        }
+        UpdateClinicianScreen(
+            onNavigationIconClicked = { onNavigationIconClicked() },
+            onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
     composable<Route.NewPharmacy> {
         NewPharmacyScreen(
-            pharmacyViewModel = pharmacyViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onProceedButtonClicked = { pharmacyViewModel.addNewPharmacy() },
-            onSuccess = { onNavigationIconClicked() },
-            onError = { onError(it) },
+            onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.EditPharmacy> {
-        EditPharmacyScreen(
-            pharmacyViewModel = pharmacyViewModel,
+    composable<Route.UpdatePharmacy> {
+        val viewModel: UpdatePharmacyViewModel = koinViewModel()
+        val selectedPharmacy by selectedPharmacyViewModel.selectedPharmacy.collectAsStateWithLifecycle()
+        LaunchedEffect(selectedPharmacy) {
+            selectedPharmacy?.let { pharmacy ->
+                viewModel.processEvent(PharmacyEvent.SelectPharmacy(pharmacy))
+            }
+        }
+        UpdatePharmacyScreen(
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onProceedButtonClicked = { pharmacyViewModel.updatePharmacy() },
-            onSuccess = { onNavigationIconClicked() },
-            onError = { onError(it) },
-        )
-    }
-    composable<Route.NewDoctor> {
-        NewDoctorScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
-        )
-    }
-
-    composable<Route.EditDoctor> {
-        EditDoctorScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
-        )
-    }
-
-    composable<Route.NewClinicStaff> {
-        NewClinicStaffScreen(
-            clinicViewModel = clinicViewModel,
-            onNavigationIconClicked = { onNavigationIconClicked() },
-            onProceedButtonClicked = { clinicViewModel.addNewStaff() },
-            onSuccess = { onNavigationIconClicked() },
-            onError = { onError(it) },
-        )
-    }
-
-    composable<Route.EditClinicStaff> {
-        EditClinicStaffScreen(
-            clinicViewModel = clinicViewModel,
-            onNavigationIconClicked = { onNavigationIconClicked() },
-            onProceedButtonClicked = { clinicViewModel.updateStaff() },
-            onSuccess = { onNavigationIconClicked() },
-            onError = { onError(it) },
+            onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
     composable<Route.NewPharmacist> {
         NewPharmacistScreen(
-            pharmacyViewModel = pharmacyViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onProceedButtonClicked = { pharmacyViewModel.addNewPharmacist() },
-            onSuccess = { onNavigationIconClicked() },
-            onError = { onError(it) },
+            onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.EditPharmacist> {
-        EditPharmacistScreen(
-            pharmacyViewModel = pharmacyViewModel,
+    composable<Route.UpdatePharmacist> {
+        val viewModel: UpdatePharmacistViewModel = koinViewModel()
+        val selectedPharmacist by selectedPharmacistViewModel.selectedPharmacist.collectAsStateWithLifecycle()
+        LaunchedEffect(selectedPharmacist) {
+            selectedPharmacist?.let { pharmacist ->
+                viewModel.processEvent(PharmacistEvent.SelectPharmacist(pharmacist))
+            }
+        }
+
+        UpdatePharmacistScreen(
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onProceedButtonClicked = { pharmacyViewModel.updatePharmacist() },
-            onSuccess = { onNavigationIconClicked() },
-            onError = { onError(it) },
+            onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.NewCenterStaff> {
-        NewCenterStaffScreen(
-            centerViewModel = centerViewModel,
+    composable<Route.NewCenter> {
+        NewCenterScreen(
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onProceedButtonClicked = { centerViewModel.addNewStaff() },
-            onSuccess = { onNavigationIconClicked() },
-            onError = { onError(it) },
+            onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.EditCenterStaff> {
-        EditCenterStaffScreen(
-            centerViewModel = centerViewModel,
+    composable<Route.UpdateCenter> {
+        val viewModel: UpdateCenterViewModel = koinViewModel()
+        val selectedCenter by selectedCenterViewModel.selectedCenter.collectAsStateWithLifecycle()
+        LaunchedEffect(selectedCenter) {
+            selectedCenter?.let { center ->
+                viewModel.processEvent(CenterEvent.SelectCenter(center))
+            }
+        }
+        UpdateCenterScreen(
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onProceedButtonClicked = { centerViewModel.updateStaff() },
-            onSuccess = { onNavigationIconClicked() },
-            onError = { onError(it) },
+            onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
-}
 
-private fun NavGraphBuilder.onFabClicked(
-    mainViewModel: MainViewModel,
-    navigateToScreen: (Route) -> Unit,
-) {
-    when (mainViewModel.selectedCategoryTabIndex.intValue) {
-        0 ->
-            when (mainViewModel.selectedSectionTabIndex.intValue) {
-                0 -> navigateToScreen(Route.NewClinic)
-                1 -> navigateToScreen(Route.NewDoctor)
-                2 -> navigateToScreen(Route.NewClinicStaff)
-            }
-
-        1 ->
-            when (mainViewModel.selectedSectionTabIndex.intValue) {
-                0 -> navigateToScreen(Route.NewPharmacy)
-                1 -> navigateToScreen(Route.NewPharmacist)
-            }
-
-        2 ->
-            when (mainViewModel.selectedSectionTabIndex.intValue) {
-                0 -> navigateToScreen(Route.NewCenter)
-                1 -> navigateToScreen(Route.NewCenterStaff)
-            }
+    composable<Route.NewStaff> {
+        NewStaffScreen(
+            onNavigationIconClicked = { onNavigationIconClicked() },
+            onSuccess = { navigateToRoute(Route.Admin) },
+        )
     }
-}
 
-private fun NavGraphBuilder.loadData(
-    mainViewModel: MainViewModel,
-    clinicViewModel: ClinicViewModel,
-    pharmacyViewModel: PharmacyViewModel,
-    centerViewModel: CenterViewModel,
-    forceRefresh: Boolean = false,
-) {
-    when (mainViewModel.selectedCategoryTabIndex.intValue) {
-        0 ->
-            when (mainViewModel.selectedSectionTabIndex.intValue) {
-                0 -> clinicViewModel.listClinics(forceRefresh = forceRefresh)
-                1 -> clinicViewModel.listDoctors(forceRefresh = forceRefresh)
-                2 -> clinicViewModel.listStaffs()
+    composable<Route.UpdateStaff> {
+        val viewModel: UpdateStaffViewModel = koinViewModel()
+        val selectedStaff by selectedStaffViewModel.selectedStaff.collectAsStateWithLifecycle()
+        LaunchedEffect(selectedStaff) {
+            selectedStaff?.let { staff ->
+                viewModel.processEvent(StaffEvent.SelectStaff(staff))
             }
-
-        1 ->
-            when (mainViewModel.selectedSectionTabIndex.intValue) {
-                0 -> pharmacyViewModel.listPharmacies(forceRefresh = forceRefresh)
-                1 -> pharmacyViewModel.listPharmacists()
-            }
-
-        2 ->
-            when (mainViewModel.selectedSectionTabIndex.intValue) {
-                0 -> centerViewModel.listCenters(forceRefresh = forceRefresh)
-                1 -> centerViewModel.listStaff()
-            }
+        }
+        UpdateStaffScreen(
+            onNavigationIconClicked = { onNavigationIconClicked() },
+            onSuccess = { navigateToRoute(Route.Admin) },
+        )
     }
 }

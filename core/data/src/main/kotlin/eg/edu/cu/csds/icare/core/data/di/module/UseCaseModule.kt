@@ -25,15 +25,15 @@ import eg.edu.cu.csds.icare.core.domain.usecase.auth.UnlinkGoogleAccountUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.center.AddNewCenterUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCentersUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.center.UpdateCenterUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.AddNewCenterStaffUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.ListCenterStaffUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.UpdateCenterStaffUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.AddNewStaffUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.ListStaffUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.center.staff.UpdateStaffUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.AddNewClinicUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinicsUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.UpdateClinicUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.AddNewClinicStaffUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.ListClinicStaffUseCase
-import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.UpdateClinicStaffUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.AddNewClinicianCase
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.ListCliniciansUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.clinic.staff.UpdateClinicianUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.consultation.AddNewConsultationUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetImagingTestsByStatusUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetLabTestsByStatusUseCase
@@ -116,13 +116,13 @@ class UseCaseModule {
     fun provideUpdateUpdateDoctor(repository: ClinicsRepository) = UpdateDoctorUseCase(repository)
 
     @Single
-    fun provideListClinicStaff(repository: ClinicsRepository) = ListClinicStaffUseCase(repository)
+    fun provideListClinicians(repository: ClinicsRepository) = ListCliniciansUseCase(repository)
 
     @Single
-    fun provideAddNewClinicStaff(repository: ClinicsRepository) = AddNewClinicStaffUseCase(repository)
+    fun provideAddNewClinician(repository: ClinicsRepository) = AddNewClinicianCase(repository)
 
     @Single
-    fun provideUpdateClinicStaff(repository: ClinicsRepository) = UpdateClinicStaffUseCase(repository)
+    fun provideUpdateClinician(repository: ClinicsRepository) = UpdateClinicianUseCase(repository)
 
     @Single
     fun provideListPharmacies(repository: PharmaciesRepository) = ListPharmaciesUseCase(repository)
@@ -152,13 +152,13 @@ class UseCaseModule {
     fun provideUpdateCenter(repository: CentersRepository) = UpdateCenterUseCase(repository)
 
     @Single
-    fun provideListCenterStaff(repository: CentersRepository) = ListCenterStaffUseCase(repository)
+    fun provideListStaff(repository: CentersRepository) = ListStaffUseCase(repository)
 
     @Single
-    fun provideAddNewCenterStaff(repository: CentersRepository) = AddNewCenterStaffUseCase(repository)
+    fun provideAddNewStaff(repository: CentersRepository) = AddNewStaffUseCase(repository)
 
     @Single
-    fun provideUpdateCenterStaff(repository: CentersRepository) = UpdateCenterStaffUseCase(repository)
+    fun provideUpdateStaff(repository: CentersRepository) = UpdateStaffUseCase(repository)
 
     @Single
     fun provideBookAppointment(repository: AppointmentsRepository) = BookAppointmentUseCase(repository)

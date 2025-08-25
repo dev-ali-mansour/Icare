@@ -67,7 +67,7 @@ fun DoctorProfileContent(
     userRes: Resource<User>,
     selectedDoctor: Doctor?,
     doctorScheduleRes: Resource<DoctorSchedule>,
-    actionResource: Resource<Nothing?>,
+    actionResource: Resource<Unit>,
     showLoading: (Boolean) -> Unit,
     selectedSlot: Long,
     onSlotSelected: (Long) -> Unit,
@@ -164,7 +164,9 @@ fun DoctorProfileContent(
                                         )
 
                                         Text(
-                                            text = "${stringResource(CoreR.string.speciality)}: ${doctor.specialty}",
+                                            text = "${stringResource(
+                                                CoreR.string.speciality,
+                                            )}: ${doctor.specialty}",
                                             modifier =
                                                 Modifier.constrainAs(speciality) {
                                                     top.linkTo(name.bottom)
@@ -179,7 +181,9 @@ fun DoctorProfileContent(
                                         )
 
                                         Text(
-                                            text = "${stringResource(CoreR.string.appointment_price)}: ${doctor.price} ${
+                                            text = "${stringResource(
+                                                CoreR.string.appointment_price,
+                                            )}: ${doctor.price} ${
                                                 stringResource(
                                                     CoreR.string.egp,
                                                 )
@@ -198,7 +202,9 @@ fun DoctorProfileContent(
                                         )
 
                                         Text(
-                                            text = "${stringResource(CoreR.string.total_appointments)}: ${schedule.totalPatients}",
+                                            text = "${stringResource(
+                                                CoreR.string.total_appointments,
+                                            )}: ${schedule.totalPatients}",
                                             modifier =
                                                 Modifier.constrainAs(totalApp) {
                                                     top.linkTo(price.bottom)

@@ -52,7 +52,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 @Composable
 fun ClinicStaffContent(
     appointmentsRes: Resource<List<Appointment>>,
-    actionResource: Resource<Nothing?>,
+    actionResource: Resource<Unit>,
     showLoading: (Boolean) -> Unit,
     onConfirm: (Appointment) -> Unit,
     onSuccess: () -> Unit,
