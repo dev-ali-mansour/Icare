@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eg.edu.cu.csds.icare.admin.R
 import eg.edu.cu.csds.icare.admin.screen.center.CenterEffect
-import eg.edu.cu.csds.icare.admin.screen.center.CenterEffect.ShowError
 import eg.edu.cu.csds.icare.admin.screen.center.CenterEvent
 import eg.edu.cu.csds.icare.admin.screen.center.CenterState
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
@@ -78,7 +77,7 @@ class UpdateCenterViewModel(
                                 it.copy(
                                     isLoading = false,
                                     effect =
-                                        ShowError(
+                                        CenterEffect.ShowError(
                                             message = StringResourceId(R.string.error_first_name),
                                         ),
                                 )
@@ -90,7 +89,7 @@ class UpdateCenterViewModel(
                                 it.copy(
                                     isLoading = false,
                                     effect =
-                                        ShowError(
+                                        CenterEffect.ShowError(
                                             message = StringResourceId(R.string.error_type),
                                         ),
                                 )
@@ -102,7 +101,7 @@ class UpdateCenterViewModel(
                                 it.copy(
                                     isLoading = false,
                                     effect =
-                                        ShowError(
+                                        CenterEffect.ShowError(
                                             message = StringResourceId(R.string.error_phone),
                                         ),
                                 )
@@ -113,7 +112,7 @@ class UpdateCenterViewModel(
                                 it.copy(
                                     isLoading = false,
                                     effect =
-                                        ShowError(
+                                        CenterEffect.ShowError(
                                             message = StringResourceId(R.string.error_address),
                                         ),
                                 )
