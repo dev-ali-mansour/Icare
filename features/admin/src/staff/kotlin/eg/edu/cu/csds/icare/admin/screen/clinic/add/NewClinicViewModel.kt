@@ -81,7 +81,7 @@ class NewClinicViewModel(
                         _state.value.type.isBlank() -> {
                             _singleEvent.emit(
                                 ClinicSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.type_error),
+                                    message = StringResourceId(R.string.error_type),
                                 ),
                             )
                             _state.update { it.copy(isLoading = false) }
@@ -100,7 +100,7 @@ class NewClinicViewModel(
                         _state.value.address.isBlank() -> {
                             _singleEvent.emit(
                                 ClinicSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.address_error),
+                                    message = StringResourceId(R.string.error_address),
                                 ),
                             )
                             _state.update { it.copy(isLoading = false) }
