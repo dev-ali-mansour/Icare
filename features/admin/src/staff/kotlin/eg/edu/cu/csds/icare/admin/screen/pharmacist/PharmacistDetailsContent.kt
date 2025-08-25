@@ -50,8 +50,8 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 @Composable
 internal fun PharmacistDetailsContent(
     uiState: PharmacistState,
-    onEvent: (PharmacistEvent) -> Unit,
     modifier: Modifier = Modifier,
+    onEvent: (PharmacistEvent) -> Unit,
 ) {
     ConstraintLayout(
         modifier =
