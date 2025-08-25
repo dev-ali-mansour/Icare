@@ -18,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +32,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.admin.R
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyDetailsContent
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyEffect
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyEvent
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
@@ -55,9 +56,11 @@ internal fun UpdatePharmacyScreen(
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        viewModel.singleEvent.collect { event ->
-            when (event) {
+    LaunchedUiEffectHandler(
+        viewModel.effect,
+        onConsumeEffect = { viewModel.processEvent(PharmacyEvent.ConsumeEffect) },
+        onEffect = { effect ->
+            when (effect) {
                 is PharmacyEffect.ShowSuccess -> {
                     showSuccessDialog = true
                     delay(timeMillis = 3000)
@@ -65,14 +68,14 @@ internal fun UpdatePharmacyScreen(
                 }
 
                 is PharmacyEffect.ShowError -> {
-                    alertMessage = event.message.asString(context)
+                    alertMessage = effect.message.asString(context)
                     showAlert = true
                     delay(timeMillis = 3000)
                     showAlert = false
                 }
             }
-        }
-    }
+        },
+    )
 
     Scaffold(
         topBar = {

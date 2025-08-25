@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eg.edu.cu.csds.icare.admin.R
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyEffect
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyEffect.ShowError
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyEvent
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyState
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
@@ -16,11 +15,10 @@ import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -41,8 +39,7 @@ class NewPharmacyViewModel(
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
                 initialValue = _uiState.value,
             )
-    private val _singleEvent = MutableSharedFlow<PharmacyEffect>()
-    val singleEvent = _singleEvent.asSharedFlow()
+    val effect = _uiState.map { it.effect }
 
     fun processEvent(intent: PharmacyEvent) {
         when (intent) {
@@ -62,33 +59,39 @@ class NewPharmacyViewModel(
             is PharmacyEvent.Proceed ->
                 viewModelScope.launch {
                     when {
-                        _uiState.value.name.isBlank() -> {
-                            _singleEvent.emit(
-                                ShowError(
-                                    message = StringResourceId(R.string.name_error),
-                                ),
-                            )
-                            _uiState.update { it.copy(isLoading = false) }
-                        }
+                        _uiState.value.name.isBlank() ->
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        PharmacyEffect.ShowError(
+                                            message = StringResourceId(R.string.name_error),
+                                        ),
+                                )
+                            }
 
                         _uiState.value.phone.isBlank() ||
-                            _uiState.value.phone.length < Constants.PHONE_LENGTH -> {
-                            _singleEvent.emit(
-                                ShowError(
-                                    message = StringResourceId(R.string.error_phone),
-                                ),
-                            )
-                            _uiState.update { it.copy(isLoading = false) }
-                        }
+                            _uiState.value.phone.length < Constants.PHONE_LENGTH ->
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        PharmacyEffect.ShowError(
+                                            message = StringResourceId(R.string.error_phone),
+                                        ),
+                                )
+                            }
 
-                        _uiState.value.address.isBlank() -> {
-                            _singleEvent.emit(
-                                ShowError(
-                                    message = StringResourceId(R.string.address_error),
-                                ),
-                            )
-                            _uiState.update { it.copy(isLoading = false) }
-                        }
+                        _uiState.value.address.isBlank() ->
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        PharmacyEffect.ShowError(
+                                            message = StringResourceId(R.string.error_address),
+                                        ),
+                                )
+                            }
 
                         else -> {
                             addPharmacyJob?.cancel()
@@ -114,11 +117,19 @@ class NewPharmacyViewModel(
                 .onEach { result ->
                     result
                         .onSuccess {
-                            _singleEvent.emit(PharmacyEffect.ShowSuccess)
-                            _uiState.update { it.copy(isLoading = false) }
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect = PharmacyEffect.ShowSuccess,
+                                )
+                            }
                         }.onError { error ->
-                            _singleEvent.emit(ShowError(message = error.toUiText()))
-                            _uiState.update { it.copy(isLoading = false) }
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect = PharmacyEffect.ShowError(message = error.toUiText()),
+                                )
+                            }
                         }
                 }.launchIn(viewModelScope)
         }
