@@ -62,9 +62,9 @@ fun BottomBarNavigation(
                         unselectedTextColor = Color.White,
                     ),
                 alwaysShowLabel = false,
-                selected = currentDestination?.hierarchy?.any { it.hasRoute(item.screen::class) } == true,
+                selected = currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true,
                 onClick = {
-                    navController.navigate(item.screen) {
+                    navController.navigate(item.route) {
                         navController.graph.startDestinationRoute?.let { screenRoute ->
                             popUpTo(screenRoute) {
                                 saveState = true

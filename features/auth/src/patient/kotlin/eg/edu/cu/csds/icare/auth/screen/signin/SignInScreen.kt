@@ -84,13 +84,13 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun SignInScreen(
+    onRecoveryClicked: () -> Unit,
+    onCreateAnAccountClicked: () -> Unit,
+    onLoginSuccess: () -> Unit,
     viewModel: SignInViewModel = koinViewModel(),
     request: GetCredentialRequest = koinInject(),
     credentialManager: CredentialManager = koinInject(),
     context: Context = LocalContext.current,
-    onRecoveryClicked: () -> Unit,
-    onCreateAnAccountClicked: () -> Unit,
-    onLoginSuccess: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val scope: CoroutineScope = rememberCoroutineScope()

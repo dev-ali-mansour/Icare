@@ -17,7 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import eg.edu.cu.csds.icare.core.ui.common.AppService
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.theme.GRID_ITEM_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.GRID_ITEM_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.SERVICE_ICON_SIZE
@@ -27,7 +27,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.textColor
 @Composable
 fun ServiceItem(
     service: AppService,
-    onClick: (Screen) -> Unit,
+    onClick: (Route) -> Unit,
 ) {
     Row(
         modifier =
@@ -35,7 +35,7 @@ fun ServiceItem(
                 .width(GRID_ITEM_WIDTH)
                 .height(GRID_ITEM_HEIGHT)
                 .clickable {
-                    onClick(service.screen)
+                    onClick(service.route)
                 },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,

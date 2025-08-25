@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.SettingsItem
 import eg.edu.cu.csds.icare.core.domain.util.Constants
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.util.appRate
 import eg.edu.cu.csds.icare.core.ui.util.appShare
@@ -33,7 +33,7 @@ import org.koin.androidx.compose.koinViewModel
 internal fun SettingsScreen(
     context: Context = LocalContext.current,
     settingsViewModel: SettingsViewModel = koinViewModel(),
-    navigateToScreen: (Screen) -> Unit,
+    navigateToScreen: (Route) -> Unit,
 ) {
     val settings by settingsViewModel.settingsFlow.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
@@ -69,7 +69,7 @@ internal fun SettingsScreen(
 private fun onItemClicked(
     settingsItem: SettingsItem,
     context: Context,
-    navigateToScreen: (Screen) -> Unit,
+    navigateToScreen: (Route) -> Unit,
 ) {
     when (settingsItem.id) {
         Constants.SHARE_CODE -> context.appShare()
@@ -78,6 +78,6 @@ private fun onItemClicked(
         Constants.ERROR_REPORTING_CODE -> context.reportError()
         Constants.APPS_CODE -> context.showOurApps()
         Constants.POLICY_CODE -> context.showPrivacyPolicy()
-        Constants.ABOUT_CODE -> navigateToScreen(Screen.About)
+        Constants.ABOUT_CODE -> navigateToScreen(Route.About)
     }
 }

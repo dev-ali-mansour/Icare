@@ -2,7 +2,6 @@ package eg.edu.cu.csds.icare.home.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
@@ -11,14 +10,11 @@ import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.common.Role
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
-import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.home.HomeViewModel
 import eg.edu.cu.csds.icare.home.screen.HomeScreen
 
 fun NavGraphBuilder.homeRoute(
-    firebaseAuth: FirebaseAuth,
-    mediaHelper: MediaHelper,
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
     clinicViewModel: ClinicViewModel,
@@ -26,13 +22,11 @@ fun NavGraphBuilder.homeRoute(
     centerViewModel: CenterViewModel,
     consultationViewModel: ConsultationViewModel,
     appointmentViewModel: AppointmentViewModel,
-    navigateToScreen: (Screen) -> Unit,
+    navigateToScreen: (Route) -> Unit,
     onError: suspend (Throwable?) -> Unit,
 ) {
-    composable<Screen.Home> {
+    composable<Route.Home> {
         HomeScreen(
-            firebaseAuth = firebaseAuth,
-            mediaHelper = mediaHelper,
             mainViewModel = mainViewModel,
             homeViewModel = homeViewModel,
             clinicViewModel = clinicViewModel,
@@ -50,17 +44,17 @@ fun NavGraphBuilder.homeRoute(
             onPriceCardClicked = {
                 clinicViewModel.listClinics()
                 clinicViewModel.selectCurrentDoctor(it)
-                navigateToScreen(Screen.EditDoctor)
+                navigateToScreen(Route.EditDoctor)
             },
             onAppointmentClick = {
                 consultationViewModel.appointmentState.value = it
                 pharmacyViewModel.listPharmacies()
                 centerViewModel.listCenters()
-                navigateToScreen(Screen.NewConsultation)
+                navigateToScreen(Route.NewConsultation)
             },
             onSeeAllClick = {
             },
-            onSectionsAdminClicked = { navigateToScreen(Screen.Admin) },
+            onSectionsAdminClicked = { navigateToScreen(Route.Admin) },
             onConfirm = {
                 appointmentViewModel.selectedAppointmentState.value =
                     it.copy(statusId = AppointmentStatus.ConfirmedStatus.code)

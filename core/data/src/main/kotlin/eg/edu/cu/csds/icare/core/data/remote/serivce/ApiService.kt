@@ -9,8 +9,8 @@ import eg.edu.cu.csds.icare.core.data.dto.CenterStaffDto
 import eg.edu.cu.csds.icare.core.data.dto.CenterStaffResponse
 import eg.edu.cu.csds.icare.core.data.dto.CentersResponse
 import eg.edu.cu.csds.icare.core.data.dto.ClinicDto
-import eg.edu.cu.csds.icare.core.data.dto.ClinicStaffDto
-import eg.edu.cu.csds.icare.core.data.dto.ClinicStaffResponse
+import eg.edu.cu.csds.icare.core.data.dto.ClinicianDto
+import eg.edu.cu.csds.icare.core.data.dto.CliniciansResponse
 import eg.edu.cu.csds.icare.core.data.dto.ClinicsResponse
 import eg.edu.cu.csds.icare.core.data.dto.ConsultationDto
 import eg.edu.cu.csds.icare.core.data.dto.ConsultationsResponse
@@ -99,13 +99,13 @@ interface ApiService {
     ): Response<DoctorScheduleResponse>
 
     @POST("userApi/getClinicStaff")
-    suspend fun listClinicStaff(
+    suspend fun listClinicians(
         @Body body: HashMap<String, String>,
-    ): Response<ClinicStaffResponse>
+    ): Response<CliniciansResponse>
 
     @POST("userApi/clinicStaffRegister")
-    suspend fun upsertClinicStaff(
-        @Body body: ClinicStaffDto,
+    suspend fun upsertClinician(
+        @Body body: ClinicianDto,
     ): Response<ActionResultResponse>
 
     @POST("pharmacyApi/addPharmacy")
