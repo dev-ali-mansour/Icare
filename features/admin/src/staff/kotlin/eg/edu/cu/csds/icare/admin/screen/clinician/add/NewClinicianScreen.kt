@@ -137,7 +137,7 @@ internal fun NewClinicStaffScreen(
                             height = Dimension.fillToConstraints
                         },
                     state = state,
-                    onIntent = viewModel::processEvent,
+                    onEvent = viewModel::processEvent,
                 )
 
                 if (showSuccessDialog) SuccessesDialog {}

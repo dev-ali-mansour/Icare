@@ -2,30 +2,32 @@ package eg.edu.cu.csds.icare.admin.screen.clinic
 
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 
-sealed interface ClinicIntent {
+sealed interface ClinicEvent {
     data class UpdateName(
         val name: String,
-    ) : ClinicIntent
+    ) : ClinicEvent
 
     data class UpdateType(
         val type: String,
-    ) : ClinicIntent
+    ) : ClinicEvent
 
     data class UpdatePhone(
         val phone: String,
-    ) : ClinicIntent
+    ) : ClinicEvent
 
     data class UpdateAddress(
         val address: String,
-    ) : ClinicIntent
+    ) : ClinicEvent
 
     data class UpdateIsOpen(
         val isOpen: Boolean,
-    ) : ClinicIntent
+    ) : ClinicEvent
 
     data class SelectClinic(
         val clinic: Clinic,
-    ) : ClinicIntent
+    ) : ClinicEvent
 
-    object Proceed : ClinicIntent
+    object Proceed : ClinicEvent
+
+    object ConsumeEffect : ClinicEvent
 }

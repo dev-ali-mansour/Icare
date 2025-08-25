@@ -8,4 +8,5 @@ data class ClinicState(
     val phone: String = "",
     val address: String = "",
     val isOpen: Boolean = true,
+    val effect: ClinicEffect? = null,
 )

@@ -28,6 +28,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.view.ClinicView
@@ -47,30 +48,32 @@ fun ClinicListSection(
 ) {
     val context: Context = LocalContext.current
     val refreshState = rememberPullToRefreshState()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        viewModel.singleEvent.collect { event ->
-            when (event) {
-                is ClinicListSingleEvent.NavigateToClinicDetails -> {
-                    navigateToClinicDetails(event.clinic)
+    LaunchedUiEffectHandler(
+        viewModel.effect,
+        onConsumeEffect = { viewModel.processEvent(ClinicListEvent.ConsumeEffect) },
+        onEffect = { effect ->
+            when (effect) {
+                is ClinicListEffect.NavigateToClinicDetails -> {
+                    navigateToClinicDetails(effect.clinic)
                 }
 
-                is ClinicListSingleEvent.UpdateFabExpanded -> {
-                    onExpandStateChanged(event.isExpanded)
+                is ClinicListEffect.UpdateFabExpanded -> {
+                    onExpandStateChanged(effect.isExpanded)
                 }
 
-                is ClinicListSingleEvent.ShowError -> {
-                    alertMessage = event.message.asString(context)
+                is ClinicListEffect.ShowError -> {
+                    alertMessage = effect.message.asString(context)
                     showAlert = true
                     delay(timeMillis = 3000)
                     showAlert = false
                 }
             }
-        }
-    }
+        },
+    )
 
     ConstraintLayout(
         modifier =
@@ -80,7 +83,7 @@ fun ClinicListSection(
                     state = refreshState,
                     isRefreshing = state.isLoading,
                     onRefresh = {
-                        viewModel.processIntent(ClinicListIntent.Refresh)
+                        viewModel.processEvent(ClinicListEvent.Refresh)
                     },
                 ),
     ) {
@@ -97,7 +100,7 @@ fun ClinicListSection(
                     height = Dimension.fillToConstraints
                 },
             state = state,
-            onIntent = viewModel::processIntent,
+            onEvent = viewModel::processEvent,
         )
 
         Indicator(
@@ -120,13 +123,13 @@ fun ClinicListSection(
 private fun ClinicListContent(
     modifier: Modifier,
     state: ClinicListState,
-    onIntent: (ClinicListIntent) -> Unit,
+    onEvent: (ClinicListEvent) -> Unit,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         val listState = rememberLazyListState()
         val expandedFabState = remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
         LaunchedEffect(key1 = expandedFabState.value) {
-            onIntent(ClinicListIntent.UpdateFabExpanded(expandedFabState.value))
+            onEvent(ClinicListEvent.UpdateFabExpanded(expandedFabState.value))
         }
 
         if (state.clinics.isEmpty()) {
@@ -149,7 +152,7 @@ private fun ClinicListContent(
                     },
                 ) { clinic ->
                     ClinicView(clinic = clinic) {
-                        onIntent(ClinicListIntent.SelectClinic(clinic))
+                        onEvent(ClinicListEvent.SelectClinic(clinic))
                     }
                 }
             }
@@ -188,7 +191,7 @@ internal fun ClinicsContentPreview() {
                             ),
                         ),
                 ),
-            onIntent = {},
+            onEvent = {},
         )
     }
 }

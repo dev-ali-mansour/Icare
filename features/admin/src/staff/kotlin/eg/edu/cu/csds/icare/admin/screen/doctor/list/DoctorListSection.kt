@@ -100,7 +100,7 @@ fun DoctorListSection(
                     height = Dimension.fillToConstraints
                 },
             state = uiState,
-            onIntent = viewModel::processEvent,
+            onEvent = viewModel::processEvent,
         )
 
         Indicator(
@@ -123,7 +123,7 @@ fun DoctorListSection(
 private fun DoctorListContent(
     modifier: Modifier,
     state: DoctorListState,
-    onIntent: (DoctorLisEvent) -> Unit,
+    onEvent: (DoctorLisEvent) -> Unit,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
@@ -131,7 +131,7 @@ private fun DoctorListContent(
         val listState = rememberLazyListState()
         val expandedFabState = remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
         LaunchedEffect(key1 = expandedFabState.value) {
-            onIntent(DoctorLisEvent.UpdateFabExpanded(expandedFabState.value))
+            onEvent(DoctorLisEvent.UpdateFabExpanded(expandedFabState.value))
         }
 
         if (state.doctors.isEmpty()) {
@@ -153,7 +153,7 @@ private fun DoctorListContent(
                     },
                 ) { doctor ->
                     DoctorView(doctor = doctor) {
-                        onIntent(DoctorLisEvent.SelectDoctor(doctor))
+                        onEvent(DoctorLisEvent.SelectDoctor(doctor))
                     }
                 }
             }
@@ -181,7 +181,7 @@ internal fun DoctorListContentPreview() {
                             ),
                         ),
                 ),
-            onIntent = {},
+            onEvent = {},
         )
     }
 }
