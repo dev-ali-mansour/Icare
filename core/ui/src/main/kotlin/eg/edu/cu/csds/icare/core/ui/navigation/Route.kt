@@ -47,43 +47,43 @@ sealed class Route {
     data object NewClinic : Route()
 
     @Serializable
-    data object EditClinic : Route()
+    data object UpdateClinic : Route()
 
     @Serializable
     data object NewPharmacy : Route()
 
     @Serializable
-    data object EditPharmacy : Route()
+    data object UpdatePharmacy : Route()
 
     @Serializable
     data object NewCenter : Route()
 
     @Serializable
-    data object EditCenter : Route()
+    data object UpdateCenter : Route()
 
     @Serializable
     data object NewDoctor : Route()
 
     @Serializable
-    data object EditDoctor : Route()
+    data object UpdateDoctor : Route()
 
     @Serializable
-    data object NewClinicStaff : Route()
+    data object NewClinician : Route()
 
     @Serializable
-    data object EditClinicStaff : Route()
+    data object UpdateClinician : Route()
 
     @Serializable
     data object NewPharmacist : Route()
 
     @Serializable
-    data object EditPharmacist : Route()
+    data object UpdatePharmacist : Route()
 
     @Serializable
-    data object NewCenterStaff : Route()
+    data object NewStaff : Route()
 
     @Serializable
-    data object EditCenterStaff : Route()
+    data object UpdateStaff : Route()
 
     @Serializable
     data object MyAppointments : Route()
@@ -116,5 +116,5 @@ sealed class Route {
     data object NewConsultation : Route()
 
     @Serializable
-    data object EditConsultation : Route()
+    data object UpdateConsultation : Route()
 }

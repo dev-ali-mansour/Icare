@@ -1,7 +1,7 @@
 package eg.edu.cu.csds.icare.core.domain.repository
 
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
-import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
+import eg.edu.cu.csds.icare.core.domain.model.Clinician
 import eg.edu.cu.csds.icare.core.domain.model.DataError
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
@@ -27,9 +27,9 @@ interface ClinicsRepository {
 
     fun updateDoctor(doctor: Doctor): Flow<Result<Unit, DataError.Remote>>
 
-    fun listClinicStaff(): Flow<Result<List<ClinicStaff>, DataError.Remote>>
+    fun listClinicians(): Flow<Result<List<Clinician>, DataError.Remote>>
 
-    fun addNewClinicStaff(staff: ClinicStaff): Flow<Result<Unit, DataError.Remote>>
+    fun addNewClinician(clinician: Clinician): Flow<Result<Unit, DataError.Remote>>
 
-    fun updateClinicStaff(staff: ClinicStaff): Flow<Result<Unit, DataError.Remote>>
+    fun updateClinician(clinician: Clinician): Flow<Result<Unit, DataError.Remote>>
 }

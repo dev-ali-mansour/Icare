@@ -7,7 +7,7 @@ import eg.edu.cu.csds.icare.core.data.mappers.toCenterStaff
 import eg.edu.cu.csds.icare.core.data.mappers.toCenterStaffDto
 import eg.edu.cu.csds.icare.core.data.mappers.toLabImagingCenter
 import eg.edu.cu.csds.icare.core.data.remote.datasource.RemoteCentersDataSource
-import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
+import eg.edu.cu.csds.icare.core.domain.model.Staff
 import eg.edu.cu.csds.icare.core.domain.model.DataError
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.domain.model.Result
@@ -82,7 +82,7 @@ class CentersRepositoryImpl(
                 }
         }
 
-    override fun listCenterStaff(): Flow<Result<List<CenterStaff>, DataError.Remote>> =
+    override fun listCenterStaff(): Flow<Result<List<Staff>, DataError.Remote>> =
         flow {
             remoteCentersDataSource
                 .listCenterStaff()
@@ -94,9 +94,9 @@ class CentersRepositoryImpl(
                 }
         }
 
-    override fun addNewCenterStaff(staff: CenterStaff): Flow<Result<Unit, DataError.Remote>> =
+    override fun addNewCenterStaff(staff: Staff): Flow<Result<Unit, DataError.Remote>> =
         remoteCentersDataSource.addNewCenterStaff(staff.toCenterStaffDto())
 
-    override fun updateCenterStaff(staff: CenterStaff): Flow<Result<Unit, DataError.Remote>> =
+    override fun updateCenterStaff(staff: Staff): Flow<Result<Unit, DataError.Remote>> =
         remoteCentersDataSource.updateCenterStaff(staff.toCenterStaffDto())
 }
