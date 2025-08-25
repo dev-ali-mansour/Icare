@@ -34,7 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
+import eg.edu.cu.csds.icare.core.domain.model.Staff
 import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
@@ -45,12 +45,12 @@ import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 
 @Composable
-fun CenterStaffView(
-    centerStaff: CenterStaff,
-    onClick: () -> Unit,
+fun StaffView(
+    staff: Staff,
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
-) {
+    onClick: () -> Unit,
+    ) {
     Card(
         onClick = onClick,
         modifier =
@@ -82,7 +82,7 @@ fun CenterStaffView(
                     rememberAsyncImagePainter(
                         ImageRequest
                             .Builder(context)
-                            .data(data = centerStaff.profilePicture)
+                            .data(data = staff.profilePicture)
                             .placeholder(R.drawable.user_placeholder)
                             .error(R.drawable.user_placeholder)
                             .build(),
@@ -98,7 +98,7 @@ fun CenterStaffView(
                 verticalArrangement = Arrangement.spacedBy(XS_PADDING),
             ) {
                 Text(
-                    text = centerStaff.name,
+                    text = staff.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontFamily = helveticaFamily,
                     fontWeight = FontWeight.Bold,
@@ -106,7 +106,7 @@ fun CenterStaffView(
                 )
                 Spacer(modifier = Modifier.width(M_PADDING))
                 Text(
-                    text = centerStaff.centerName,
+                    text = staff.centerName,
                     style = MaterialTheme.typography.bodyMedium,
                     fontFamily = helveticaFamily,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
@@ -115,14 +115,14 @@ fun CenterStaffView(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Phone, contentDescription = null)
                     Spacer(modifier = Modifier.width(XS_PADDING))
-                    Text(text = centerStaff.phone)
+                    Text(text = staff.phone)
                 }
                 Spacer(modifier = Modifier.height(M_PADDING))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Email, contentDescription = null)
                     Spacer(modifier = Modifier.width(XS_PADDING))
-                    Text(text = centerStaff.email)
+                    Text(text = staff.email)
                 }
             }
         }
@@ -134,7 +134,7 @@ fun CenterStaffView(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(locale = "ar", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun CenterStaffCardPreview() {
+fun StaffCardPreview() {
     MaterialTheme {
         Column(
             modifier =
@@ -142,9 +142,9 @@ fun CenterStaffCardPreview() {
                     .padding(XS_PADDING)
                     .background(color = backgroundColor),
         ) {
-            CenterStaffView(
-                centerStaff =
-                    CenterStaff(
+            StaffView(
+                staff =
+                    Staff(
                         id = "101",
                         firstName = "Mohammed Adel",
                         lastName = "Ahmed",
