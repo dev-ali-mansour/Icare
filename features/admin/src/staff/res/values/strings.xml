@@ -15,7 +15,7 @@
     <string name="address_error">Please enter a valid address.</string>
     <string name="error_clinic">Please choose a clinic.</string>
     <string name="error_pharmacy">Please choose a pharmacy.</string>
-    <string name="center_error">Please choose a center.</string>
+    <string name="error_center">Please choose a center.</string>
     <string name="speciality_error">Please enter doctor\'s speciality.</string>
     <string name="service_price_error">Please enter  a valid service price.</string>
     <string name="rating_error">Please enter a valid rating.</string>
@@ -48,8 +48,8 @@
     <string name="update_pharmacist">Update Pharmacist</string>
     <string name="new_center">New Center</string>
     <string name="update_center">Update Center</string>
-    <string name="new_center_staff">New Center Staff</string>
-    <string name="update_center_staff">Update Center Staff</string>
+    <string name="new_staff">New Staff</string>
+    <string name="update_staff">Update Staff</string>
     <string name="from_time">From Time</string>
     <string name="to_time">To Time</string>
     <string name="lab_center">Lab Center</string>
