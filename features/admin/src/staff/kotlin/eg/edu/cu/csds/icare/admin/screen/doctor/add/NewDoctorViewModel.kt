@@ -205,7 +205,7 @@ class NewDoctorViewModel(
                     }
                 }
 
-            DoctorEvent.ConsumeEffect -> consumeEffect()
+            DoctorEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
         }
     }
 
@@ -265,8 +265,4 @@ class NewDoctorViewModel(
                         }
                 }.launchIn(viewModelScope)
         }
-
-    private fun consumeEffect() {
-        _uiState.update { it.copy(effect = null) }
-    }
 }

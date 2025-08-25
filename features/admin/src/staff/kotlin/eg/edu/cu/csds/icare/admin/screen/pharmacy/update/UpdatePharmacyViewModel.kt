@@ -110,7 +110,7 @@ class UpdatePharmacyViewModel(
                     }
                 }
 
-            PharmacyEvent.ConsumeEffect -> consumeEffect()
+            PharmacyEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
         }
     }
 
@@ -144,8 +144,4 @@ class UpdatePharmacyViewModel(
                         }
                 }.launchIn(viewModelScope)
         }
-
-    private fun consumeEffect() {
-        _uiState.update { it.copy(effect = null) }
-    }
 }

@@ -58,7 +58,7 @@ class PharmacistListViewModel(
                 }
             }
 
-            PharmacistListEvent.ConsumeEffect -> consumeEffect()
+            PharmacistListEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
         }
     }
 
@@ -80,8 +80,4 @@ class PharmacistListViewModel(
                         }
                 }.launchIn(viewModelScope)
         }
-
-    private fun consumeEffect() {
-        _uiState.update { it.copy(effect = null) }
-    }
 }

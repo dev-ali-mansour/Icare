@@ -13,4 +13,5 @@ data class ClinicianState(
     val email: String = "",
     val phone: String = "",
     val profilePicture: String = "",
+    val effect: ClinicianEffect? = null,
 )

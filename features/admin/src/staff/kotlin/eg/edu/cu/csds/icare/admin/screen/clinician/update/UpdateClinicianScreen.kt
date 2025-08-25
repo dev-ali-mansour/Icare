@@ -18,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,7 +31,9 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.admin.R
 import eg.edu.cu.csds.icare.admin.screen.clinician.ClinicianDetailsContent
-import eg.edu.cu.csds.icare.admin.screen.clinician.ClinicianSingleEvent
+import eg.edu.cu.csds.icare.admin.screen.clinician.ClinicianEffect
+import eg.edu.cu.csds.icare.admin.screen.clinician.ClinicianEvent
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
@@ -50,29 +51,31 @@ internal fun UpdateClinicianScreen(
     onSuccess: () -> Unit,
 ) {
     val context: Context = LocalContext.current
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     var showSuccessDialog by remember { mutableStateOf(false) }
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        viewModel.singleEvent.collect { event ->
-            when (event) {
-                is ClinicianSingleEvent.ShowSuccess -> {
+    LaunchedUiEffectHandler(
+        viewModel.effect,
+        onConsumeEffect = { viewModel.processEvent(ClinicianEvent.ConsumeEffect) },
+        onEffect = { effect ->
+            when (effect) {
+                is ClinicianEffect.ShowSuccess -> {
                     showSuccessDialog = true
                     delay(timeMillis = 3000)
                     onSuccess()
                 }
 
-                is ClinicianSingleEvent.ShowError -> {
-                    alertMessage = event.message.asString(context)
+                is ClinicianEffect.ShowError -> {
+                    alertMessage = effect.message.asString(context)
                     showAlert = true
                     delay(timeMillis = 3000)
                     showAlert = false
                 }
             }
-        }
-    }
+        },
+    )
 
     Scaffold(
         topBar = {
@@ -134,7 +137,7 @@ internal fun UpdateClinicianScreen(
                             height = Dimension.fillToConstraints
                         },
                     state = state,
-                    onIntent = viewModel::processIntent,
+                    onIntent = viewModel::processEvent,
                 )
 
                 if (showSuccessDialog) SuccessesDialog {}

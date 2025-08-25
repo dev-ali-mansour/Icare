@@ -49,7 +49,7 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 @Composable
 internal fun ClinicianDetailsContent(
     state: ClinicianState,
-    onIntent: (ClinicianIntent) -> Unit,
+    onIntent: (ClinicianEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -68,7 +68,7 @@ internal fun ClinicianDetailsContent(
         ) {
             TextField(
                 value = state.firstName,
-                onValueChange = { onIntent(ClinicianIntent.UpdateFirstName(it)) },
+                onValueChange = { onIntent(ClinicianEvent.UpdateFirstName(it)) },
                 label = {
                     Text(
                         text = stringResource(R.string.first_name),
@@ -101,7 +101,7 @@ internal fun ClinicianDetailsContent(
 
             TextField(
                 value = state.lastName,
-                onValueChange = { onIntent(ClinicianIntent.UpdateLastName(it)) },
+                onValueChange = { onIntent(ClinicianEvent.UpdateLastName(it)) },
                 label = {
                     Text(
                         text = stringResource(R.string.last_name),
@@ -135,7 +135,7 @@ internal fun ClinicianDetailsContent(
                 modifier = Modifier.fillMaxWidth(fraction = 0.8f),
                 expanded = state.isClinicsExpanded,
                 onExpandedChange = {
-                    onIntent(ClinicianIntent.UpdateClinicsExpanded(it))
+                    onIntent(ClinicianEvent.UpdateClinicsExpanded(it))
                 },
             ) {
                 OutlinedTextField(
@@ -174,7 +174,7 @@ internal fun ClinicianDetailsContent(
                 ExposedDropdownMenu(
                     expanded = state.isClinicsExpanded,
                     onDismissRequest = {
-                        onIntent(ClinicianIntent.UpdateClinicsExpanded(false))
+                        onIntent(ClinicianEvent.UpdateClinicsExpanded(false))
                     },
                 ) {
                     state.clinics.forEach {
@@ -186,8 +186,8 @@ internal fun ClinicianDetailsContent(
                                 )
                             },
                             onClick = {
-                                onIntent(ClinicianIntent.UpdateClinicId(it.id))
-                                onIntent(ClinicianIntent.UpdateClinicsExpanded(false))
+                                onIntent(ClinicianEvent.UpdateClinicId(it.id))
+                                onIntent(ClinicianEvent.UpdateClinicsExpanded(false))
                             },
                         )
                     }
@@ -196,7 +196,7 @@ internal fun ClinicianDetailsContent(
 
             TextField(
                 value = state.email,
-                onValueChange = { onIntent(ClinicianIntent.UpdateEmail(it)) },
+                onValueChange = { onIntent(ClinicianEvent.UpdateEmail(it)) },
                 label = {
                     Text(
                         text = stringResource(R.string.email),
@@ -228,7 +228,7 @@ internal fun ClinicianDetailsContent(
 
             TextField(
                 value = state.phone,
-                onValueChange = { if (it.length < 14) onIntent(ClinicianIntent.UpdatePhone(it)) },
+                onValueChange = { if (it.length < 14) onIntent(ClinicianEvent.UpdatePhone(it)) },
                 label = {
                     Text(
                         text = stringResource(R.string.phone_number),
@@ -266,7 +266,7 @@ internal fun ClinicianDetailsContent(
                         .fillMaxWidth(fraction = 0.6f),
                 text = stringResource(CoreR.string.proceed),
                 color = buttonBackgroundColor,
-                onClick = { onIntent(ClinicianIntent.Proceed) },
+                onClick = { onIntent(ClinicianEvent.Proceed) },
             )
         }
     }
