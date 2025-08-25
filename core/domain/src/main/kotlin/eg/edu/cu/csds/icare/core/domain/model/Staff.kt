@@ -1,6 +1,6 @@
 package eg.edu.cu.csds.icare.core.domain.model
 
-data class CenterStaff(
+data class Staff(
     val token: String = "",
     val id: String = "",
     val firstName: String = "",
