@@ -93,7 +93,7 @@ class UpdateClinicViewModel(
                         _state.value.type.isBlank() -> {
                             _singleEvent.emit(
                                 ClinicSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.type_error),
+                                    message = StringResourceId(R.string.error_type),
                                 ),
                             )
                             _state.update { it.copy(isLoading = false) }
@@ -113,7 +113,7 @@ class UpdateClinicViewModel(
                             _state.value.phone.length < Constants.PHONE_LENGTH -> {
                             _singleEvent.emit(
                                 ClinicSingleEvent.ShowError(
-                                    message = StringResourceId(R.string.address_error),
+                                    message = StringResourceId(R.string.error_address),
                                 ),
                             )
                             _state.update { it.copy(isLoading = false) }
