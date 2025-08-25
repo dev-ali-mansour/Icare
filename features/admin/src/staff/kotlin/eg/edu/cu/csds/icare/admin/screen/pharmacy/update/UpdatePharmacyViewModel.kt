@@ -44,27 +44,27 @@ class UpdatePharmacyViewModel(
     private val _singleEvent = MutableSharedFlow<PharmacyEffect>()
     val singleEvent = _singleEvent.asSharedFlow()
 
-    fun processEvent(intent: PharmacyEvent) {
-        when (intent) {
+    fun processEvent(event: PharmacyEvent) {
+        when (event) {
             is PharmacyEvent.UpdateName -> {
-                _uiState.update { it.copy(name = intent.name) }
+                _uiState.update { it.copy(name = event.name) }
             }
 
             is PharmacyEvent.UpdatePhone -> {
-                _uiState.update { it.copy(phone = intent.phone) }
+                _uiState.update { it.copy(phone = event.phone) }
             }
 
             is PharmacyEvent.UpdateAddress -> {
-                _uiState.update { it.copy(address = intent.address) }
+                _uiState.update { it.copy(address = event.address) }
             }
 
             is PharmacyEvent.SelectPharmacy -> {
                 _uiState.update {
                     it.copy(
-                        id = intent.pharmacy.id,
-                        name = intent.pharmacy.name,
-                        phone = intent.pharmacy.phone,
-                        address = intent.pharmacy.address,
+                        id = event.pharmacy.id,
+                        name = event.pharmacy.name,
+                        phone = event.pharmacy.phone,
+                        address = event.pharmacy.address,
                     )
                 }
             }
@@ -95,7 +95,7 @@ class UpdatePharmacyViewModel(
                             _uiState.value.phone.length < Constants.PHONE_LENGTH -> {
                             _singleEvent.emit(
                                 ShowError(
-                                    message = StringResourceId(R.string.address_error),
+                                    message = StringResourceId(R.string.error_address),
                                 ),
                             )
                             _uiState.update { it.copy(isLoading = false) }
