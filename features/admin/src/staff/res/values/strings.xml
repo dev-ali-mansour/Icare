@@ -11,8 +11,8 @@
     <string name="gender_error">Please choose your gender.</string>
     <string name="error_phone">Please enter a valid phone number.</string>
     <string name="name_error">Please enter a valid name.</string>
-    <string name="type_error">Please enter a valid type.</string>
-    <string name="address_error">Please enter a valid address.</string>
+    <string name="error_type">Please enter a valid type.</string>
+    <string name="error_address">Please enter a valid address.</string>
     <string name="error_clinic">Please choose a clinic.</string>
     <string name="error_pharmacy">Please choose a pharmacy.</string>
     <string name="error_center">Please choose a center.</string>
