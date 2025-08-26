@@ -7,7 +7,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -33,7 +31,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -41,6 +38,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,31 +53,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
-import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
+import eg.edu.cu.csds.icare.appointment.statusList
 import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
 import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.Promotion
-import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.domain.util.Constants
-import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.common.AppService
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.common.Role
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
-import eg.edu.cu.csds.icare.core.ui.navigation.Route.Profile
 import eg.edu.cu.csds.icare.core.ui.theme.ACTION_BUTTON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.ANNOUNCEMENT_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.CARD_ROUND_CORNER_SIZE
@@ -100,208 +94,108 @@ import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
-import eg.edu.cu.csds.icare.core.ui.theme.dialogTint
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.kufamFamily
 import eg.edu.cu.csds.icare.core.ui.theme.statusColor
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
-import eg.edu.cu.csds.icare.core.ui.theme.tintColor
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
+import eg.edu.cu.csds.icare.core.ui.view.ConfirmDialog
+import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.home.component.PromotionItem
 import eg.edu.cu.csds.icare.home.component.ServiceItem
 import eg.edu.cu.csds.icare.home.component.TopDoctorCard
+import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import kotlin.system.exitProcess
 import eg.edu.cu.csds.icare.home.R as CoreR
 
 @Composable
 internal fun HomeScreen(
-    mainViewModel: MainViewModel,
-    homeViewModel: HomeViewModel,
-    appointmentViewModel: AppointmentViewModel,
-    clinicViewModel: ClinicViewModel,
+    viewModel: HomeViewModel = koinViewModel(),
     navigateToScreen: (Route) -> Unit,
-    onDoctorClicked: (Doctor) -> Unit = {},
-    onError: suspend (Throwable?) -> Unit,
-    mediaHelper: MediaHelper = koinInject<MediaHelper>(),
-    context: Context = LocalContext.current,
+    navigateToDoctorDetails: (Doctor) -> Unit,
 ) {
+    val context: Context = LocalContext.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var alertMessage by remember { mutableStateOf("") }
+    var showAlert by remember { mutableStateOf(false) }
+    val mediaHelper: MediaHelper = koinInject()
     val appVersion: String =
         context.packageManager
             .getPackageInfo(context.packageName, 0)
             .versionName ?: ""
-    var openDialog by homeViewModel.openDialog
-    var isPlayed by homeViewModel.isPlayed
-    val userResource by mainViewModel.currentUserFlow.collectAsStateWithLifecycle()
-    val topDoctorsRes by clinicViewModel.topDoctorsResFlow.collectAsStateWithLifecycle()
-    val appointmentsRes by appointmentViewModel.appointmentsResFlow.collectAsStateWithLifecycle()
-    val promotionRes by homeViewModel.promotionResFlow.collectAsStateWithLifecycle()
-    val statusList by appointmentViewModel.statusListState
 
     BackHandler {
-        openDialog = true
+        viewModel.processEvent(HomeEvent.UpdateOpenDialog(isOpen = true))
     }
 
-    userResource.data?.let {
-        LaunchedEffect(key1 = isPlayed) {
-            if (!isPlayed) {
-                mediaHelper.play(CoreR.raw.welcome)
-                isPlayed = true
-            }
+    LaunchedEffect(key1 = mediaHelper.isGreetingPlayed) {
+        if (!mediaHelper.isGreetingPlayed) {
+            mediaHelper.play(CoreR.raw.welcome)
         }
     }
 
-    LaunchedEffect(key1 = Unit) {
-        appointmentViewModel.getPatientAppointments()
-        clinicViewModel.listTopDoctors()
-    }
+    LaunchedUiEffectHandler(
+        viewModel.effect,
+        onConsumeEffect = { viewModel.processEvent(HomeEvent.ConsumeEffect) },
+        onEffect = { effect ->
+            when (effect) {
+                is HomeEffect.NavigateToRoute -> navigateToScreen(effect.route)
+                is HomeEffect.NavigateToDoctorDetails -> navigateToDoctorDetails(effect.doctor)
+                is HomeEffect.ShowError -> {
+                    alertMessage = effect.message.asString(context)
+                    showAlert = true
+                    delay(timeMillis = 3000)
+                    showAlert = false
+                }
+            }
+        },
+    )
 
     Column(
         modifier =
             Modifier
                 .fillMaxSize(),
     ) {
-        if (openDialog) {
-            Dialog(
+        if (uiState.openDialog) {
+            ConfirmDialog(
+                backgroundColor = backgroundColor,
+                title = stringResource(id = R.string.exit_dialog_title),
+                message = stringResource(id = R.string.exit_dialog),
                 onDismissRequest = {
-                    openDialog = false
+                    viewModel.processEvent(HomeEvent.UpdateOpenDialog(isOpen = false))
                 },
-            ) {
-                Surface(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight(),
-                    shape = RoundedCornerShape(size = S_PADDING),
-                ) {
-                    Column(modifier = Modifier.padding(all = M_PADDING)) {
-                        Row(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement =
-                                Arrangement.spacedBy(
-                                    space = 6.dp,
-                                    alignment = Alignment.Start,
-                                ),
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.exit_dialog_title),
-                                color = dialogTint.copy(alpha = 0.6f),
-                                fontSize = MaterialTheme.typography.headlineSmall.fontSize,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = helveticaFamily,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        }
-
-                        Text(
-                            text = stringResource(id = R.string.exit_dialog),
-                            color = dialogTint.copy(alpha = 0.6f),
-                            fontSize = MaterialTheme.typography.titleMedium.fontSize,
-                            fontFamily = helveticaFamily,
-                            fontWeight = FontWeight.Bold,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                        Spacer(modifier = Modifier.height(S_PADDING))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement =
-                                Arrangement.spacedBy(
-                                    space = 10.dp,
-                                    alignment = Alignment.End,
-                                ),
-                        ) {
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .clickable {
-                                            openDialog = false
-                                        }.border(
-                                            width = 1.dp,
-                                            color = contentColor,
-                                            shape = RoundedCornerShape(S_PADDING),
-                                        ).padding(
-                                            top = 6.dp,
-                                            bottom = 8.dp,
-                                            start = 24.dp,
-                                            end = 24.dp,
-                                        ),
-                            ) {
-                                Text(
-                                    text = stringResource(id = android.R.string.cancel),
-                                    color = dialogTint,
-                                    fontFamily = helveticaFamily,
-                                )
-                            }
-
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .background(
-                                            color = tintColor,
-                                            shape = RoundedCornerShape(S_PADDING),
-                                        ).border(
-                                            width = 1.dp,
-                                            color = contentColor,
-                                            shape = RoundedCornerShape(S_PADDING),
-                                        ).clickable {
-                                            openDialog = false
-                                            (context as Activity).finish()
-                                            exitProcess(0)
-                                        }.padding(
-                                            top = 6.dp,
-                                            bottom = 8.dp,
-                                            start = 24.dp,
-                                            end = 24.dp,
-                                        ),
-                            ) {
-                                Text(
-                                    text = stringResource(id = android.R.string.ok),
-                                    color = Color.White,
-                                    fontFamily = helveticaFamily,
-                                )
-                            }
-                        }
-                    }
-                }
-            }
+                onConfirmed = {
+                    viewModel.processEvent(HomeEvent.UpdateOpenDialog(isOpen = false))
+                    (context as Activity).finish()
+                    exitProcess(0)
+                },
+                onCancelled = {
+                    viewModel.processEvent(HomeEvent.UpdateOpenDialog(isOpen = false))
+                },
+            )
         }
+
         HomeContent(
-            userResource = userResource,
-            topDoctorsRes = topDoctorsRes,
-            appointmentsRes = appointmentsRes,
-            promotionsRes = promotionRes,
+            uiState = uiState,
             appVersion = appVersion,
-            statusList = statusList,
-            onUserClicked = { navigateToScreen(Profile) },
-            onPromotionClicked = {},
-            onServiceClicked = { navigateToScreen(it) },
-            onDoctorClicked = { onDoctorClicked(it) },
-            onError = { onError(it) },
+            onEvent = viewModel::processEvent,
         )
+
+        if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
     }
 }
 
 @Composable
 internal fun HomeContent(
-    userResource: Resource<User>,
-    topDoctorsRes: Resource<List<Doctor>>,
-    appointmentsRes: Resource<List<Appointment>>,
-    promotionsRes: Resource<List<Promotion>>,
+    uiState: HomeState,
     appVersion: String,
-    statusList: List<AppointmentStatus>,
-    onUserClicked: () -> Unit,
-    onPromotionClicked: () -> Unit = {},
-    onServiceClicked: (Route) -> Unit = {},
-    onDoctorClicked: (Doctor) -> Unit = {},
-    onError: suspend (Throwable?) -> Unit,
     context: Context = LocalContext.current,
+    onEvent: (HomeEvent) -> Unit,
 ) {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-        val (progress, titleContainer, line, content, marquee) = createRefs()
+        val (titleContainer, line, content, marquee) = createRefs()
         Surface(
             modifier =
                 Modifier.constrainAs(titleContainer) {
@@ -313,15 +207,14 @@ internal fun HomeContent(
             color = backgroundColor,
             tonalElevation = S_PADDING,
         ) {
-            userResource.data?.let { user ->
-                TitleView(
-                    modifier = Modifier,
-                    appVersion = appVersion,
-                    user = user,
-                    onUserClicked = { onUserClicked() },
-                )
-            }
+            TitleView(
+                modifier = Modifier,
+                appVersion = appVersion,
+                user = uiState.currentUser,
+                onUserClicked = { onEvent(HomeEvent.NavigateToProfileScreen) },
+            )
         }
+
         Box(
             modifier =
                 Modifier
@@ -335,362 +228,342 @@ internal fun HomeContent(
                     .background(Yellow500),
         )
 
-        when (userResource) {
-            is Resource.Unspecified -> {}
-            is Resource.Loading ->
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier.constrainAs(progress) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                        },
-                )
-
-            is Resource.Success ->
-                userResource.data?.let {
-                    Column(
-                        modifier =
-                            Modifier
-                                .constrainAs(content) {
-                                    top.linkTo(line.bottom)
-                                    start.linkTo(parent.start)
-                                    end.linkTo(parent.end)
-                                    bottom.linkTo(marquee.top)
-                                    width = Dimension.fillToConstraints
-                                    height = Dimension.fillToConstraints
-                                }.background(backgroundColor)
-                                .verticalScroll(rememberScrollState())
-                                .padding(M_PADDING),
-                    ) {
-                        Card(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .height(PROMOTION_BANNER_HEIGHT),
-                            shape = RoundedCornerShape(CARD_ROUND_CORNER_SIZE),
-                            colors = CardDefaults.cardColors(containerColor = LightGreen),
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                            ) {
-                                Column(modifier = Modifier.padding(M_PADDING)) {
-                                    Text(
-                                        text = stringResource(CoreR.string.cosmetics),
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = MaterialTheme.typography.titleMedium.fontSize,
-                                        fontFamily = helveticaFamily,
-                                        color = DeepTeal,
-                                        maxLines = 1,
-                                    )
-                                    Text(
-                                        text = " ${stringResource(CoreR.string.discount_50)} ${
-                                            stringResource(CoreR.string.off)
-                                        }",
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                                        fontFamily = helveticaFamily,
-                                        color = Color.Gray,
-                                        maxLines = 1,
-                                    )
-                                    Button(
-                                        onClick = { onPromotionClicked() },
-                                        modifier = Modifier.padding(top = S_PADDING),
-                                        colors =
-                                            ButtonDefaults.buttonColors(
-                                                containerColor = DeepTeal,
-                                            ),
-                                    ) {
-                                        Text(
-                                            text = stringResource(CoreR.string.buy_now),
-                                            fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                                            fontFamily = helveticaFamily,
-                                            color = Color.White,
-                                            maxLines = 1,
-                                        )
-                                    }
-                                }
-                                Image(
-                                    painter = painterResource(id = CoreR.drawable.doctor_announcement),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(ANNOUNCEMENT_IMAGE_SIZE),
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(M_PADDING))
-
+        Column(
+            modifier =
+                Modifier
+                    .constrainAs(content) {
+                        top.linkTo(line.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(marquee.top)
+                        width = Dimension.fillToConstraints
+                        height = Dimension.fillToConstraints
+                    }.background(backgroundColor)
+                    .verticalScroll(rememberScrollState())
+                    .padding(M_PADDING),
+        ) {
+            Card(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(PROMOTION_BANNER_HEIGHT),
+                shape = RoundedCornerShape(CARD_ROUND_CORNER_SIZE),
+                colors = CardDefaults.cardColors(containerColor = LightGreen),
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Column(modifier = Modifier.padding(M_PADDING)) {
                         Text(
-                            text = stringResource(CoreR.string.services),
+                            text = stringResource(CoreR.string.cosmetics),
                             fontWeight = FontWeight.Bold,
-                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                            fontSize = MaterialTheme.typography.titleMedium.fontSize,
                             fontFamily = helveticaFamily,
-                            color = textColor,
+                            color = DeepTeal,
                             maxLines = 1,
                         )
-                        Row(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = S_PADDING),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                        ) {
-                            ServiceItem(AppService.ScanCenter, onClick = { onServiceClicked(it) })
-                            ServiceItem(
-                                AppService.BookAppointment,
-                                onClick = { onServiceClicked(it) },
-                            )
-                        }
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                        ) {
-                            ServiceItem(AppService.LabCenter, onClick = { onServiceClicked(it) })
-                            ServiceItem(AppService.Pharmacy, onClick = { onServiceClicked(it) })
-                        }
-
-                        Spacer(modifier = Modifier.height(M_PADDING))
-
                         Text(
-                            stringResource(CoreR.string.next_appointment),
+                            text = " ${stringResource(CoreR.string.discount_50)} ${
+                                stringResource(CoreR.string.off)
+                            }",
                             fontWeight = FontWeight.Bold,
-                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                            fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                             fontFamily = helveticaFamily,
-                            color = textColor,
+                            color = Color.Gray,
                             maxLines = 1,
                         )
-                        Card(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .height(PROMOTION_ITEM_HEIGHT)
-                                    .clickable {
-                                        onServiceClicked(Route.MyAppointments)
-                                    },
-                            shape = RoundedCornerShape(CARD_ROUND_CORNER_SIZE),
+                        Button(
+                            onClick = { },
+                            modifier = Modifier.padding(top = S_PADDING),
                             colors =
-                                CardDefaults.cardColors(
-                                    containerColor = cardBackgroundColor,
+                                ButtonDefaults.buttonColors(
+                                    containerColor = DeepTeal,
                                 ),
                         ) {
-                            ConstraintLayout(
-                                modifier =
-                                    Modifier
-                                        .fillMaxSize()
-                                        .padding(M_PADDING),
-                            ) {
-                                val (
-                                    doctorImage, doctorName, doctorSpecialty, status, dateIcon, date,
-                                    timeIcon, time, message,
-                                ) = createRefs()
-                                appointmentsRes.data?.let { appointments ->
-                                    if (appointments.any {
-                                            it.statusId == AppointmentStatus.PendingStatus.code ||
-                                                it.statusId == AppointmentStatus.ConfirmedStatus.code
-                                        }
-                                    ) {
-                                        val appointment =
-                                            appointments.first().let { firstAppointment ->
-                                                firstAppointment.copy(
-                                                    status =
-                                                        statusList
-                                                            .find { it.code == firstAppointment.statusId }
-                                                            ?.let {
-                                                                stringResource(it.textResId)
-                                                            }
-                                                            ?: stringResource(R.string.undefined),
-                                                )
-                                            }
-
-                                        Box(
-                                            modifier =
-                                                Modifier
-                                                    .constrainAs(doctorImage) {
-                                                        top.linkTo(parent.top)
-                                                        start.linkTo(parent.start)
-                                                    }.size(ACTION_BUTTON_SIZE),
-                                        ) {
-                                            AsyncImage(
-                                                model = appointment.doctorImage,
-                                                contentDescription = null,
-                                                placeholder = painterResource(R.drawable.user_placeholder),
-                                                modifier =
-                                                    Modifier
-                                                        .clip(RoundedCornerShape(M_PADDING)),
-                                                error = painterResource(R.drawable.user_placeholder),
-                                                contentScale = ContentScale.Crop,
-                                            )
-                                        }
-                                        Text(
-                                            text = appointment.doctorName,
-                                            modifier =
-                                                Modifier.constrainAs(doctorName) {
-                                                    top.linkTo(doctorImage.top)
-                                                    start.linkTo(
-                                                        doctorImage.end,
-                                                        margin = S_PADDING,
-                                                    )
-                                                },
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = MaterialTheme.typography.titleSmall.fontSize,
-                                            fontFamily = helveticaFamily,
-                                            color = textColor,
-                                            maxLines = 1,
-                                        )
-                                        Text(
-                                            text = appointment.doctorSpecialty,
-                                            modifier =
-                                                Modifier.constrainAs(doctorSpecialty) {
-                                                    top.linkTo(doctorName.bottom)
-                                                    start.linkTo(doctorName.start)
-                                                    end.linkTo(doctorName.end)
-                                                },
-                                            fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                                            fontFamily = helveticaFamily,
-                                            color = textColor,
-                                            maxLines = 1,
-                                        )
-
-                                        Text(
-                                            text = appointment.status,
-                                            modifier =
-                                                Modifier.constrainAs(status) {
-                                                    top.linkTo(doctorName.top)
-                                                    end.linkTo(parent.end)
-                                                },
-                                            color =
-                                                if (appointment.statusId ==
-                                                    AppointmentStatus.ConfirmedStatus.code
-                                                ) {
-                                                    Color.Green
-                                                } else {
-                                                    statusColor
-                                                },
-                                        )
-                                        Icon(
-                                            Icons.Default.DateRange,
-                                            contentDescription = null,
-                                            modifier =
-                                                Modifier.constrainAs(dateIcon) {
-                                                    top.linkTo(
-                                                        doctorImage.bottom,
-                                                        margin = XS_PADDING,
-                                                    )
-                                                    start.linkTo(doctorImage.start)
-                                                },
-                                        )
-                                        Text(
-                                            text = appointment.dateTime.getFormattedDate(context),
-                                            modifier =
-                                                Modifier.constrainAs(date) {
-                                                    top.linkTo(dateIcon.top)
-                                                    start.linkTo(dateIcon.end, margin = U_PADDING)
-                                                    bottom.linkTo(dateIcon.bottom)
-                                                },
-                                            fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                                            fontFamily = helveticaFamily,
-                                            color = textColor,
-                                            maxLines = 1,
-                                        )
-
-                                        Icon(
-                                            painterResource(CoreR.drawable.baseline_access_time_24),
-                                            contentDescription = null,
-                                            modifier =
-                                                Modifier.constrainAs(timeIcon) {
-                                                    top.linkTo(dateIcon.top)
-                                                    end.linkTo(time.start, margin = U_PADDING)
-                                                },
-                                        )
-
-                                        Text(
-                                            text = appointment.dateTime.getFormattedTime(context),
-                                            modifier =
-                                                Modifier.constrainAs(time) {
-                                                    top.linkTo(timeIcon.top)
-                                                    end.linkTo(status.end)
-                                                    bottom.linkTo(timeIcon.bottom)
-                                                },
-                                            fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                                            fontFamily = helveticaFamily,
-                                            color = textColor,
-                                            maxLines = 1,
-                                        )
-                                    } else {
-                                        Text(
-                                            text = stringResource(CoreR.string.no_upcoming_appointments),
-                                            modifier =
-                                                Modifier.constrainAs(message) {
-                                                    top.linkTo(parent.top)
-                                                    start.linkTo(parent.start)
-                                                    end.linkTo(parent.end)
-                                                    bottom.linkTo(parent.bottom)
-                                                },
-                                            fontSize = MaterialTheme.typography.titleMedium.fontSize,
-                                            fontFamily = helveticaFamily,
-                                            color = Color.Gray,
-                                            maxLines = 1,
-                                        )
-                                    }
-                                }
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(M_PADDING))
-
-                        Text(
-                            stringResource(CoreR.string.promotions),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                            fontFamily = helveticaFamily,
-                            color = textColor,
-                            maxLines = 1,
-                        )
-                        promotionsRes.data?.let { promotions ->
-                            LazyRow(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                            ) {
-                                items(promotions, key = { promotion ->
-                                    promotion.id
-                                }) { promotion ->
-                                    PromotionItem(promotion)
-                                }
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(M_PADDING))
-
-                        Text(
-                            stringResource(CoreR.string.top_doctors),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                            fontFamily = helveticaFamily,
-                            color = textColor,
-                            maxLines = 1,
-                        )
-                        topDoctorsRes.data?.let { doctors ->
-                            LazyRow {
-                                items(doctors) { doctor ->
-                                    TopDoctorCard(
-                                        doctor,
-                                        modifier =
-                                            Modifier.clickable {
-                                                onDoctorClicked(doctor)
-                                            },
-                                    )
-                                }
-                            }
+                            Text(
+                                text = stringResource(CoreR.string.buy_now),
+                                fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                fontFamily = helveticaFamily,
+                                color = Color.White,
+                                maxLines = 1,
+                            )
                         }
                     }
+                    Image(
+                        painter = painterResource(id = CoreR.drawable.doctor_announcement),
+                        contentDescription = null,
+                        modifier = Modifier.size(ANNOUNCEMENT_IMAGE_SIZE),
+                    )
                 }
+            }
 
-            is Resource.Error ->
-                LaunchedEffect(key1 = true) {
-                    onError(userResource.error)
+            Spacer(modifier = Modifier.height(M_PADDING))
+
+            Text(
+                text = stringResource(CoreR.string.services),
+                fontWeight = FontWeight.Bold,
+                fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                fontFamily = helveticaFamily,
+                color = textColor,
+                maxLines = 1,
+            )
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = S_PADDING),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                ServiceItem(
+                    AppService.ScanCenter,
+                    onClick = { onEvent(HomeEvent.NavigateToScanCentersScreen) },
+                )
+                ServiceItem(
+                    AppService.BookAppointment,
+                    onClick = { onEvent(HomeEvent.NavigateToBookAppointmentScreen) },
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                ServiceItem(AppService.LabCenter, onClick = {
+                    onEvent(HomeEvent.NavigateToLabCentersScreen)
+                })
+                ServiceItem(AppService.Pharmacy, onClick = {
+                    onEvent(HomeEvent.NavigateToPharmaciesScreen)
+                })
+            }
+
+            Spacer(modifier = Modifier.height(M_PADDING))
+
+            Text(
+                stringResource(CoreR.string.next_appointment),
+                fontWeight = FontWeight.Bold,
+                fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                fontFamily = helveticaFamily,
+                color = textColor,
+                maxLines = 1,
+            )
+
+            Card(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(PROMOTION_ITEM_HEIGHT)
+                        .clickable { onEvent(HomeEvent.NavigateToMyAppointmentsScreen) },
+                shape = RoundedCornerShape(CARD_ROUND_CORNER_SIZE),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = cardBackgroundColor,
+                    ),
+            ) {
+                ConstraintLayout(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(M_PADDING),
+                ) {
+                    val (
+                        doctorImage, doctorName, doctorSpecialty, status, dateIcon, date,
+                        timeIcon, time, message,
+                    ) = createRefs()
+                    if (uiState.myAppointments.any {
+                            it.statusId == AppointmentStatus.PendingStatus.code ||
+                                it.statusId == AppointmentStatus.ConfirmedStatus.code
+                        }
+                    ) {
+                        val appointment =
+                            uiState.myAppointments.first().let { firstAppointment ->
+                                firstAppointment.copy(
+                                    status =
+                                        statusList
+                                            .find { it.code == firstAppointment.statusId }
+                                            ?.let {
+                                                stringResource(it.textResId)
+                                            }
+                                            ?: stringResource(R.string.undefined),
+                                )
+                            }
+
+                        Box(
+                            modifier =
+                                Modifier
+                                    .constrainAs(doctorImage) {
+                                        top.linkTo(parent.top)
+                                        start.linkTo(parent.start)
+                                    }.size(ACTION_BUTTON_SIZE),
+                        ) {
+                            AsyncImage(
+                                model = appointment.doctorImage,
+                                contentDescription = null,
+                                placeholder = painterResource(R.drawable.user_placeholder),
+                                modifier =
+                                    Modifier
+                                        .clip(RoundedCornerShape(M_PADDING)),
+                                error = painterResource(R.drawable.user_placeholder),
+                                contentScale = ContentScale.Crop,
+                            )
+                        }
+                        Text(
+                            text = appointment.doctorName,
+                            modifier =
+                                Modifier.constrainAs(doctorName) {
+                                    top.linkTo(doctorImage.top)
+                                    start.linkTo(
+                                        doctorImage.end,
+                                        margin = S_PADDING,
+                                    )
+                                },
+                            fontWeight = FontWeight.Bold,
+                            fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                            fontFamily = helveticaFamily,
+                            color = textColor,
+                            maxLines = 1,
+                        )
+                        Text(
+                            text = appointment.doctorSpecialty,
+                            modifier =
+                                Modifier.constrainAs(doctorSpecialty) {
+                                    top.linkTo(doctorName.bottom)
+                                    start.linkTo(doctorName.start)
+                                    end.linkTo(doctorName.end)
+                                },
+                            fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                            fontFamily = helveticaFamily,
+                            color = textColor,
+                            maxLines = 1,
+                        )
+
+                        Text(
+                            text = appointment.status,
+                            modifier =
+                                Modifier.constrainAs(status) {
+                                    top.linkTo(doctorName.top)
+                                    end.linkTo(parent.end)
+                                },
+                            color =
+                                if (appointment.statusId ==
+                                    AppointmentStatus.ConfirmedStatus.code
+                                ) {
+                                    Color.Green
+                                } else {
+                                    statusColor
+                                },
+                        )
+                        Icon(
+                            Icons.Default.DateRange,
+                            contentDescription = null,
+                            modifier =
+                                Modifier.constrainAs(dateIcon) {
+                                    top.linkTo(
+                                        doctorImage.bottom,
+                                        margin = XS_PADDING,
+                                    )
+                                    start.linkTo(doctorImage.start)
+                                },
+                        )
+                        Text(
+                            text = appointment.dateTime.getFormattedDate(context),
+                            modifier =
+                                Modifier.constrainAs(date) {
+                                    top.linkTo(dateIcon.top)
+                                    start.linkTo(dateIcon.end, margin = U_PADDING)
+                                    bottom.linkTo(dateIcon.bottom)
+                                },
+                            fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                            fontFamily = helveticaFamily,
+                            color = textColor,
+                            maxLines = 1,
+                        )
+
+                        Icon(
+                            painterResource(CoreR.drawable.baseline_access_time_24),
+                            contentDescription = null,
+                            modifier =
+                                Modifier.constrainAs(timeIcon) {
+                                    top.linkTo(dateIcon.top)
+                                    end.linkTo(time.start, margin = U_PADDING)
+                                },
+                        )
+
+                        Text(
+                            text = appointment.dateTime.getFormattedTime(context),
+                            modifier =
+                                Modifier.constrainAs(time) {
+                                    top.linkTo(timeIcon.top)
+                                    end.linkTo(status.end)
+                                    bottom.linkTo(timeIcon.bottom)
+                                },
+                            fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                            fontFamily = helveticaFamily,
+                            color = textColor,
+                            maxLines = 1,
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(CoreR.string.no_upcoming_appointments),
+                            modifier =
+                                Modifier.constrainAs(message) {
+                                    top.linkTo(parent.top)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                    bottom.linkTo(parent.bottom)
+                                },
+                            fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                            fontFamily = helveticaFamily,
+                            color = Color.Gray,
+                            maxLines = 1,
+                        )
+                    }
                 }
+            }
+
+            Spacer(modifier = Modifier.height(M_PADDING))
+
+            Text(
+                stringResource(CoreR.string.promotions),
+                fontWeight = FontWeight.Bold,
+                fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                fontFamily = helveticaFamily,
+                color = textColor,
+                maxLines = 1,
+            )
+
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                items(uiState.promotions, key = { promotion ->
+                    promotion.id
+                }) { promotion ->
+                    PromotionItem(promotion)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(M_PADDING))
+
+            Text(
+                stringResource(CoreR.string.top_doctors),
+                fontWeight = FontWeight.Bold,
+                fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                fontFamily = helveticaFamily,
+                color = textColor,
+                maxLines = 1,
+            )
+            LazyRow {
+                items(uiState.topDoctors) { doctor ->
+                    TopDoctorCard(
+                        doctor,
+                        modifier =
+                            Modifier.clickable {
+                                onEvent(HomeEvent.NavigateToDoctorDetails(doctor))
+                            },
+                    )
+                }
+            }
         }
 
         Text(
@@ -716,7 +589,7 @@ internal fun HomeContent(
 @Composable
 private fun TitleView(
     appVersion: String,
-    user: User,
+    user: User?,
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     onUserClicked: () -> Unit,
@@ -788,7 +661,7 @@ private fun TitleView(
                         rememberAsyncImagePainter(
                             ImageRequest
                                 .Builder(context)
-                                .data(data = user.photoUrl)
+                                .data(data = user?.photoUrl)
                                 .placeholder(R.drawable.user_placeholder)
                                 .error(R.drawable.user_placeholder)
                                 .build(),
@@ -804,7 +677,7 @@ private fun TitleView(
                             start.linkTo(image.end, margin = XS_PADDING)
                             bottom.linkTo(image.bottom)
                         },
-                    text = user.displayName,
+                    text = user?.displayName ?: "",
                     color = contentColor,
                     fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                     fontWeight = FontWeight.Bold,
@@ -848,76 +721,60 @@ private fun HomeContentPreview() {
                 .padding(XS_PADDING),
     ) {
         HomeContent(
-            userResource =
-                Resource.Success(
-                    User(
-                        roleId = Role.AdminRole.code,
-                        displayName = "Ali Mansour",
-                        email = "",
-                        photoUrl = "",
-                    ),
-                ),
-            topDoctorsRes =
-                Resource.Success(
-                    listOf(
-                        Doctor(
-                            name = "Dr. Anna Jones",
-                            specialty = "General Practitioner",
-                            rating = 4.5,
+            uiState =
+                HomeState(
+                    currentUser =
+                        User(
+                            roleId = Role.AdminRole.code,
+                            displayName = "Ali Mansour",
+                            email = "",
+                            photoUrl = "",
                         ),
-                        Doctor(
-                            name = "Dr. John Berry",
-                            specialty = "General Practitioner",
-                            rating = 4.5,
+                    myAppointments =
+                        listOf(
+                            Appointment(
+                                appointmentId = 1,
+                                doctorName = "Dr. John Smith",
+                                doctorSpecialty = "Cardiologist",
+                                doctorImage = "https://i.ibb.co/JRkcZzhR/doctor.webp",
+                                dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
+                                statusId = AppointmentStatus.ConfirmedStatus.code,
+                            ),
                         ),
-                        Doctor(
-                            name = "Dr. Atiyah",
-                            specialty = "General Practitioner",
-                            rating = 4.5,
+                    topDoctors =
+                        listOf(
+                            Doctor(
+                                name = "Dr. Anna Jones",
+                                specialty = "General Practitioner",
+                                rating = 4.5,
+                            ),
+                            Doctor(
+                                name = "Dr. John Berry",
+                                specialty = "General Practitioner",
+                                rating = 4.5,
+                            ),
+                            Doctor(
+                                name = "Dr. Atiyah",
+                                specialty = "General Practitioner",
+                                rating = 4.5,
+                            ),
                         ),
-                    ),
-                ),
-            appointmentsRes =
-                Resource.Success(
-                    listOf(
-                        Appointment(
-                            appointmentId = 1,
-                            doctorName = "Dr. John Smith",
-                            doctorSpecialty = "Cardiologist",
-                            doctorImage = "https://i.ibb.co/JRkcZzhR/doctor.webp",
-                            dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
-                            statusId = AppointmentStatus.ConfirmedStatus.code,
+                    promotions =
+                        listOf(
+                            Promotion(
+                                id = 1,
+                                imageUrl = "https://i.postimg.cc/5jjyk7Jn/promo1.png",
+                                discount = stringResource(CoreR.string.discount_30),
+                            ),
+                            Promotion(
+                                id = 2,
+                                imageUrl = "https://i.postimg.cc/vDjTRrHM/promo2.png",
+                                discount = stringResource(CoreR.string.discount_50),
+                            ),
                         ),
-                    ),
-                ),
-            promotionsRes =
-                Resource.Success(
-                    listOf(
-                        Promotion(
-                            id = 1,
-                            imageUrl = "https://i.postimg.cc/5jjyk7Jn/promo1.png",
-                            discount = stringResource(CoreR.string.discount_30),
-                        ),
-                        Promotion(
-                            id = 2,
-                            imageUrl = "https://i.postimg.cc/vDjTRrHM/promo2.png",
-                            discount = stringResource(CoreR.string.discount_50),
-                        ),
-                    ),
                 ),
             appVersion = "1.0.0",
-            onUserClicked = {},
-            onPromotionClicked = {},
-            onServiceClicked = { },
-            onDoctorClicked = {},
-            onError = {},
-            statusList =
-                listOf(
-                    AppointmentStatus.PendingStatus,
-                    AppointmentStatus.ConfirmedStatus,
-                    AppointmentStatus.CancelledStatus,
-                    AppointmentStatus.CompletedStatus,
-                ),
+            onEvent = {},
         )
     }
 }
