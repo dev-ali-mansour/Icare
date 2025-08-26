@@ -1,10 +1,13 @@
-package eg.edu.cu.csds.icare.home.screen
+package eg.edu.cu.csds.icare.home.screen.home
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -36,6 +40,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,21 +54,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
+import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
+import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
+import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.Promotion
 import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.domain.util.Constants
+import eg.edu.cu.csds.icare.core.ui.MainViewModel
+import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.common.AppService
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.common.Role
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
+import eg.edu.cu.csds.icare.core.ui.navigation.Route.Profile
 import eg.edu.cu.csds.icare.core.ui.theme.ACTION_BUTTON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.ANNOUNCEMENT_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.CARD_ROUND_CORNER_SIZE
@@ -84,17 +100,190 @@ import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
+import eg.edu.cu.csds.icare.core.ui.theme.dialogTint
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.kufamFamily
 import eg.edu.cu.csds.icare.core.ui.theme.statusColor
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
-import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
-import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
-import eg.edu.cu.csds.icare.home.R
+import eg.edu.cu.csds.icare.core.ui.theme.tintColor
+import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
 import eg.edu.cu.csds.icare.home.component.PromotionItem
 import eg.edu.cu.csds.icare.home.component.ServiceItem
 import eg.edu.cu.csds.icare.home.component.TopDoctorCard
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
+import org.koin.compose.koinInject
+import kotlin.system.exitProcess
+import eg.edu.cu.csds.icare.home.R as CoreR
+
+@Composable
+internal fun HomeScreen(
+    mainViewModel: MainViewModel,
+    homeViewModel: HomeViewModel,
+    appointmentViewModel: AppointmentViewModel,
+    clinicViewModel: ClinicViewModel,
+    navigateToScreen: (Route) -> Unit,
+    onDoctorClicked: (Doctor) -> Unit = {},
+    onError: suspend (Throwable?) -> Unit,
+    mediaHelper: MediaHelper = koinInject<MediaHelper>(),
+    context: Context = LocalContext.current,
+) {
+    val appVersion: String =
+        context.packageManager
+            .getPackageInfo(context.packageName, 0)
+            .versionName ?: ""
+    var openDialog by homeViewModel.openDialog
+    var isPlayed by homeViewModel.isPlayed
+    val userResource by mainViewModel.currentUserFlow.collectAsStateWithLifecycle()
+    val topDoctorsRes by clinicViewModel.topDoctorsResFlow.collectAsStateWithLifecycle()
+    val appointmentsRes by appointmentViewModel.appointmentsResFlow.collectAsStateWithLifecycle()
+    val promotionRes by homeViewModel.promotionResFlow.collectAsStateWithLifecycle()
+    val statusList by appointmentViewModel.statusListState
+
+    BackHandler {
+        openDialog = true
+    }
+
+    userResource.data?.let {
+        LaunchedEffect(key1 = isPlayed) {
+            if (!isPlayed) {
+                mediaHelper.play(CoreR.raw.welcome)
+                isPlayed = true
+            }
+        }
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        appointmentViewModel.getPatientAppointments()
+        clinicViewModel.listTopDoctors()
+    }
+
+    Column(
+        modifier =
+            Modifier
+                .fillMaxSize(),
+    ) {
+        if (openDialog) {
+            Dialog(
+                onDismissRequest = {
+                    openDialog = false
+                },
+            ) {
+                Surface(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                    shape = RoundedCornerShape(size = S_PADDING),
+                ) {
+                    Column(modifier = Modifier.padding(all = M_PADDING)) {
+                        Row(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement =
+                                Arrangement.spacedBy(
+                                    space = 6.dp,
+                                    alignment = Alignment.Start,
+                                ),
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.exit_dialog_title),
+                                color = dialogTint.copy(alpha = 0.6f),
+                                fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = helveticaFamily,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+
+                        Text(
+                            text = stringResource(id = R.string.exit_dialog),
+                            color = dialogTint.copy(alpha = 0.6f),
+                            fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                            fontFamily = helveticaFamily,
+                            fontWeight = FontWeight.Bold,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        Spacer(modifier = Modifier.height(S_PADDING))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement =
+                                Arrangement.spacedBy(
+                                    space = 10.dp,
+                                    alignment = Alignment.End,
+                                ),
+                        ) {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .clickable {
+                                            openDialog = false
+                                        }.border(
+                                            width = 1.dp,
+                                            color = contentColor,
+                                            shape = RoundedCornerShape(S_PADDING),
+                                        ).padding(
+                                            top = 6.dp,
+                                            bottom = 8.dp,
+                                            start = 24.dp,
+                                            end = 24.dp,
+                                        ),
+                            ) {
+                                Text(
+                                    text = stringResource(id = android.R.string.cancel),
+                                    color = dialogTint,
+                                    fontFamily = helveticaFamily,
+                                )
+                            }
+
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .background(
+                                            color = tintColor,
+                                            shape = RoundedCornerShape(S_PADDING),
+                                        ).border(
+                                            width = 1.dp,
+                                            color = contentColor,
+                                            shape = RoundedCornerShape(S_PADDING),
+                                        ).clickable {
+                                            openDialog = false
+                                            (context as Activity).finish()
+                                            exitProcess(0)
+                                        }.padding(
+                                            top = 6.dp,
+                                            bottom = 8.dp,
+                                            start = 24.dp,
+                                            end = 24.dp,
+                                        ),
+                            ) {
+                                Text(
+                                    text = stringResource(id = android.R.string.ok),
+                                    color = Color.White,
+                                    fontFamily = helveticaFamily,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        HomeContent(
+            userResource = userResource,
+            topDoctorsRes = topDoctorsRes,
+            appointmentsRes = appointmentsRes,
+            promotionsRes = promotionRes,
+            appVersion = appVersion,
+            statusList = statusList,
+            onUserClicked = { navigateToScreen(Profile) },
+            onPromotionClicked = {},
+            onServiceClicked = { navigateToScreen(it) },
+            onDoctorClicked = { onDoctorClicked(it) },
+            onError = { onError(it) },
+        )
+    }
+}
 
 @Composable
 internal fun HomeContent(
@@ -106,7 +295,7 @@ internal fun HomeContent(
     statusList: List<AppointmentStatus>,
     onUserClicked: () -> Unit,
     onPromotionClicked: () -> Unit = {},
-    onServiceClicked: (Screen) -> Unit = {},
+    onServiceClicked: (Route) -> Unit = {},
     onDoctorClicked: (Doctor) -> Unit = {},
     onError: suspend (Throwable?) -> Unit,
     context: Context = LocalContext.current,
@@ -190,7 +379,7 @@ internal fun HomeContent(
                             ) {
                                 Column(modifier = Modifier.padding(M_PADDING)) {
                                     Text(
-                                        text = stringResource(R.string.cosmetics),
+                                        text = stringResource(CoreR.string.cosmetics),
                                         fontWeight = FontWeight.Bold,
                                         fontSize = MaterialTheme.typography.titleMedium.fontSize,
                                         fontFamily = helveticaFamily,
@@ -198,8 +387,8 @@ internal fun HomeContent(
                                         maxLines = 1,
                                     )
                                     Text(
-                                        text = " ${stringResource(R.string.discount_50)} ${
-                                            stringResource(R.string.off)
+                                        text = " ${stringResource(CoreR.string.discount_50)} ${
+                                            stringResource(CoreR.string.off)
                                         }",
                                         fontWeight = FontWeight.Bold,
                                         fontSize = MaterialTheme.typography.bodyMedium.fontSize,
@@ -216,7 +405,7 @@ internal fun HomeContent(
                                             ),
                                     ) {
                                         Text(
-                                            text = stringResource(R.string.buy_now),
+                                            text = stringResource(CoreR.string.buy_now),
                                             fontSize = MaterialTheme.typography.bodySmall.fontSize,
                                             fontFamily = helveticaFamily,
                                             color = Color.White,
@@ -225,7 +414,7 @@ internal fun HomeContent(
                                     }
                                 }
                                 Image(
-                                    painter = painterResource(id = R.drawable.doctor_announcement),
+                                    painter = painterResource(id = CoreR.drawable.doctor_announcement),
                                     contentDescription = null,
                                     modifier = Modifier.size(ANNOUNCEMENT_IMAGE_SIZE),
                                 )
@@ -235,7 +424,7 @@ internal fun HomeContent(
                         Spacer(modifier = Modifier.height(M_PADDING))
 
                         Text(
-                            text = stringResource(R.string.services),
+                            text = stringResource(CoreR.string.services),
                             fontWeight = FontWeight.Bold,
                             fontSize = MaterialTheme.typography.titleLarge.fontSize,
                             fontFamily = helveticaFamily,
@@ -266,7 +455,7 @@ internal fun HomeContent(
                         Spacer(modifier = Modifier.height(M_PADDING))
 
                         Text(
-                            stringResource(R.string.next_appointment),
+                            stringResource(CoreR.string.next_appointment),
                             fontWeight = FontWeight.Bold,
                             fontSize = MaterialTheme.typography.titleLarge.fontSize,
                             fontFamily = helveticaFamily,
@@ -279,7 +468,7 @@ internal fun HomeContent(
                                     .fillMaxWidth()
                                     .height(PROMOTION_ITEM_HEIGHT)
                                     .clickable {
-                                        onServiceClicked(Screen.MyAppointments)
+                                        onServiceClicked(Route.MyAppointments)
                                     },
                             shape = RoundedCornerShape(CARD_ROUND_CORNER_SIZE),
                             colors =
@@ -293,8 +482,10 @@ internal fun HomeContent(
                                         .fillMaxSize()
                                         .padding(M_PADDING),
                             ) {
-                                val (doctorImage, doctorName, doctorSpecialty, status, dateIcon, date, timeIcon, time, message) =
-                                    createRefs()
+                                val (
+                                    doctorImage, doctorName, doctorSpecialty, status, dateIcon, date,
+                                    timeIcon, time, message,
+                                ) = createRefs()
                                 appointmentsRes.data?.let { appointments ->
                                     if (appointments.any {
                                             it.statusId == AppointmentStatus.PendingStatus.code ||
@@ -310,7 +501,7 @@ internal fun HomeContent(
                                                             ?.let {
                                                                 stringResource(it.textResId)
                                                             }
-                                                            ?: stringResource(CoreR.string.undefined),
+                                                            ?: stringResource(R.string.undefined),
                                                 )
                                             }
 
@@ -371,7 +562,9 @@ internal fun HomeContent(
                                                     end.linkTo(parent.end)
                                                 },
                                             color =
-                                                if (appointment.statusId == AppointmentStatus.ConfirmedStatus.code) {
+                                                if (appointment.statusId ==
+                                                    AppointmentStatus.ConfirmedStatus.code
+                                                ) {
                                                     Color.Green
                                                 } else {
                                                     statusColor
@@ -404,7 +597,7 @@ internal fun HomeContent(
                                         )
 
                                         Icon(
-                                            painterResource(R.drawable.baseline_access_time_24),
+                                            painterResource(CoreR.drawable.baseline_access_time_24),
                                             contentDescription = null,
                                             modifier =
                                                 Modifier.constrainAs(timeIcon) {
@@ -428,7 +621,7 @@ internal fun HomeContent(
                                         )
                                     } else {
                                         Text(
-                                            text = stringResource(R.string.no_upcoming_appointments),
+                                            text = stringResource(CoreR.string.no_upcoming_appointments),
                                             modifier =
                                                 Modifier.constrainAs(message) {
                                                     top.linkTo(parent.top)
@@ -449,7 +642,7 @@ internal fun HomeContent(
                         Spacer(modifier = Modifier.height(M_PADDING))
 
                         Text(
-                            stringResource(R.string.promotions),
+                            stringResource(CoreR.string.promotions),
                             fontWeight = FontWeight.Bold,
                             fontSize = MaterialTheme.typography.titleLarge.fontSize,
                             fontFamily = helveticaFamily,
@@ -471,7 +664,7 @@ internal fun HomeContent(
                         Spacer(modifier = Modifier.height(M_PADDING))
 
                         Text(
-                            stringResource(R.string.top_doctors),
+                            stringResource(CoreR.string.top_doctors),
                             fontWeight = FontWeight.Bold,
                             fontSize = MaterialTheme.typography.titleLarge.fontSize,
                             fontFamily = helveticaFamily,
@@ -501,7 +694,7 @@ internal fun HomeContent(
         }
 
         Text(
-            text = stringResource(id = CoreR.string.made_by),
+            text = stringResource(id = R.string.made_by),
             modifier =
                 Modifier
                     .constrainAs(marquee) {
@@ -543,7 +736,7 @@ private fun TitleView(
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                     }.size(HEADER_ICON_SIZE),
-            painter = painterResource(CoreR.drawable.logo),
+            painter = painterResource(R.drawable.logo),
             contentDescription = null,
             contentScale = ContentScale.Fit,
         )
@@ -556,7 +749,7 @@ private fun TitleView(
                     bottom.linkTo(logo.bottom)
                     width = Dimension.fillToConstraints
                 },
-            text = stringResource(CoreR.string.app_name),
+            text = stringResource(R.string.app_name),
             fontFamily = kufamFamily,
             fontWeight = FontWeight.Bold,
             fontSize = MaterialTheme.typography.labelLarge.fontSize,
@@ -646,7 +839,7 @@ private fun TitleView(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(locale = "ar", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-internal fun HomeContentPreview() {
+private fun HomeContentPreview() {
     Box(
         modifier =
             Modifier
@@ -678,7 +871,7 @@ internal fun HomeContentPreview() {
                             rating = 4.5,
                         ),
                         Doctor(
-                            name = "Dr. Tiyah",
+                            name = "Dr. Atiyah",
                             specialty = "General Practitioner",
                             rating = 4.5,
                         ),
@@ -691,7 +884,7 @@ internal fun HomeContentPreview() {
                             appointmentId = 1,
                             doctorName = "Dr. John Smith",
                             doctorSpecialty = "Cardiologist",
-                            doctorImage = "https://t4.ftcdn.net/jpg/01/98/82/75/360_F_198827520_wVNNHdMq4yLJe76WWivQQ5Ev2WtXac4N.webp",
+                            doctorImage = "https://i.ibb.co/JRkcZzhR/doctor.webp",
                             dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
                             statusId = AppointmentStatus.ConfirmedStatus.code,
                         ),
@@ -703,12 +896,12 @@ internal fun HomeContentPreview() {
                         Promotion(
                             id = 1,
                             imageUrl = "https://i.postimg.cc/5jjyk7Jn/promo1.png",
-                            discount = stringResource(R.string.discount_30),
+                            discount = stringResource(CoreR.string.discount_30),
                         ),
                         Promotion(
                             id = 2,
                             imageUrl = "https://i.postimg.cc/vDjTRrHM/promo2.png",
-                            discount = stringResource(R.string.discount_50),
+                            discount = stringResource(CoreR.string.discount_50),
                         ),
                     ),
                 ),

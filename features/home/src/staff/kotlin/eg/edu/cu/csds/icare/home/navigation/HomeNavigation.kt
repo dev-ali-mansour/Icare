@@ -2,9 +2,7 @@ package eg.edu.cu.csds.icare.home.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
 import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
@@ -12,14 +10,12 @@ import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.common.Role
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.home.HomeViewModel
-import eg.edu.cu.csds.icare.home.screen.HomeScreen
+import eg.edu.cu.csds.icare.home.screen.home.HomeScreen
 
 fun NavGraphBuilder.homeRoute(
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
     clinicViewModel: ClinicViewModel,
-    pharmacyViewModel: PharmacyViewModel,
-    centerViewModel: CenterViewModel,
     consultationViewModel: ConsultationViewModel,
     appointmentViewModel: AppointmentViewModel,
     navigateToScreen: (Route) -> Unit,
@@ -42,14 +38,15 @@ fun NavGraphBuilder.homeRoute(
             },
             navigateToScreen = { navigateToScreen(it) },
             onPriceCardClicked = {
-                clinicViewModel.listClinics()
-                clinicViewModel.selectCurrentDoctor(it)
-                navigateToScreen(Route.EditDoctor)
+                // Todo Use SelectedDoctorViewModel to update doctor price
+//                clinicViewModel.listClinics()
+//                clinicViewModel.selectCurrentDoctor(it)
+                navigateToScreen(Route.UpdateDoctor)
             },
             onAppointmentClick = {
                 consultationViewModel.appointmentState.value = it
-                pharmacyViewModel.listPharmacies()
-                centerViewModel.listCenters()
+//                pharmacyViewModel.listPharmacies()
+//                centerViewModel.listCenters()
                 navigateToScreen(Route.NewConsultation)
             },
             onSeeAllClick = {
