@@ -3,36 +3,36 @@ package eg.edu.cu.csds.icare.core.ui.common
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import eg.edu.cu.csds.icare.core.ui.R
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 
 sealed class AppService(
     @param:DrawableRes
     val iconResId: Int,
     @param:StringRes
     val textResId: Int,
-    val screen: Screen,
+    val route: Route,
 ) {
     data object ScanCenter : AppService(
         iconResId = R.drawable.ic_scan,
         textResId = R.string.scan_center,
-        screen = Screen.ScanCenters,
+        route = Route.ScanCenters,
     )
 
     data object BookAppointment : AppService(
         iconResId = R.drawable.ic_appointment,
         textResId = R.string.appointment_booking,
-        screen = Screen.DoctorList,
+        route = Route.DoctorList,
     )
 
     data object LabCenter : AppService(
         iconResId = R.drawable.ic_lab_colored,
         textResId = R.string.lab_center,
-        screen = Screen.LabCenters,
+        route = Route.LabCenters,
     )
 
     data object Pharmacy : AppService(
         iconResId = R.drawable.ic_pharmacy_colored,
         textResId = R.string.pharmacies,
-        screen = Screen.Pharmacies,
+        route = Route.Pharmacies,
     )
 }

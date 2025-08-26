@@ -8,6 +8,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -16,12 +19,12 @@ import com.google.android.play.core.common.IntentSenderForResultStarter
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
-import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
-import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
 import eg.edu.cu.csds.icare.core.ui.util.isInternetAvailable
+import eg.edu.cu.csds.icare.splash.SplashViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -30,8 +33,7 @@ import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.milliseconds
 
 class MainActivity : AppCompatActivity() {
-    private val mainViewModel: MainViewModel by viewModel()
-    private val mediaHelper: MediaHelper by inject()
+    private val splashViewModel: SplashViewModel by viewModel()
     private val appUpdateManager: AppUpdateManager by inject()
     private val updateType = AppUpdateType.IMMEDIATE
     private val updateFlowResultLauncher =
@@ -47,19 +49,25 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var isLoadingSplash by mutableStateOf(true)
+        lifecycleScope.launch {
+            splashViewModel.state
+                .onEach {
+                    isLoadingSplash = it.isLoading
+                }.launchIn(this)
+        }
         installSplashScreen().apply {
             setKeepOnScreenCondition {
-                mainViewModel.onBoardingCompleted.value !is Resource.Success
+                isLoadingSplash
             }
         }
+
         enableEdgeToEdge()
         checkForUpdates()
+
         setContent {
             IcareTheme {
-                MainScreen(
-                    mainViewModel = mainViewModel,
-                    mediaHelper = mediaHelper,
-                )
+                MainScreen(splashViewModel = splashViewModel)
             }
         }
     }

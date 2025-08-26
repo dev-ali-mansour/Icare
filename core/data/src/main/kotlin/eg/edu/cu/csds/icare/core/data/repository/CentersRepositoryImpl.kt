@@ -7,9 +7,12 @@ import eg.edu.cu.csds.icare.core.data.mappers.toCenterStaff
 import eg.edu.cu.csds.icare.core.data.mappers.toCenterStaffDto
 import eg.edu.cu.csds.icare.core.data.mappers.toLabImagingCenter
 import eg.edu.cu.csds.icare.core.data.remote.datasource.RemoteCentersDataSource
-import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
+import eg.edu.cu.csds.icare.core.domain.model.Staff
+import eg.edu.cu.csds.icare.core.domain.model.DataError
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
-import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.model.Result
+import eg.edu.cu.csds.icare.core.domain.model.onError
+import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.repository.CentersRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -21,107 +24,79 @@ class CentersRepositoryImpl(
     private val remoteCentersDataSource: RemoteCentersDataSource,
     private val localCentersDataSource: LocalCentersDataSource,
 ) : CentersRepository {
-    override fun listCenters(forceUpdate: Boolean): Flow<Resource<List<LabImagingCenter>>> =
+    override fun listCenters(forceUpdate: Boolean): Flow<Result<List<LabImagingCenter>, DataError.Remote>> =
         flow {
             if (!forceUpdate) {
                 localCentersDataSource
                     .listCenters()
                     .distinctUntilChanged()
                     .collect { entities ->
-                        emit(Resource.Success(data = entities.map { it.toLabImagingCenter() }))
+                        emit(Result.Success(data = entities.map { it.toLabImagingCenter() }))
                     }
                 return@flow
             }
-            remoteCentersDataSource.fetchCenters().collect { res ->
-                when (res) {
-                    is Resource.Unspecified -> emit(Resource.Unspecified())
+            remoteCentersDataSource.fetchCenters().collect { result ->
+                result
+                    .onSuccess { centers ->
+                        localCentersDataSource.persistCenters(centers.map { it.toCenterEntity() })
 
-                    is Resource.Loading -> emit(Resource.Loading())
-
-                    is Resource.Success -> {
-                        res.data?.let { centers ->
-                            localCentersDataSource.persistCenters(centers.map { it.toCenterEntity() })
-                        }
                         localCentersDataSource
                             .listCenters()
                             .distinctUntilChanged()
                             .collect { entities ->
-                                emit(Resource.Success(data = entities.map { it.toLabImagingCenter() }))
+                                emit(Result.Success(data = entities.map { it.toLabImagingCenter() }))
                             }
-                    }
-
-                    is Resource.Error -> emit(Resource.Error(res.error))
-                }
+                    }.onError { emit(Result.Error(it)) }
             }
         }
 
-    override fun addNewCenter(center: LabImagingCenter): Flow<Resource<Nothing?>> =
+    override fun addNewCenter(center: LabImagingCenter): Flow<Result<Unit, DataError.Remote>> =
         flow {
-            emit(Resource.Loading())
-            remoteCentersDataSource.addNewCenter(center.toCenterDto()).collect { res ->
-                when (res) {
-                    is Resource.Unspecified<*> -> emit(Resource.Unspecified())
-                    is Resource.Loading<*> -> emit(Resource.Loading())
-                    is Resource.Success ->
-                        listCenters(true).collect { refreshResult ->
-                            when (refreshResult) {
-                                is Resource.Success -> emit(Resource.Success(null))
-                                is Resource.Error -> emit(Resource.Error(refreshResult.error))
-                                else -> {}
+            remoteCentersDataSource
+                .addNewCenter(center.toCenterDto())
+                .collect { result ->
+                    result
+                        .onSuccess {
+                            listCenters(forceUpdate = true).collect { listResult ->
+                                listResult
+                                    .onSuccess { emit(Result.Success(Unit)) }
+                                    .onError { emit(Result.Error(it)) }
                             }
-                        }
-
-                    is Resource.Error -> emit(Resource.Error(res.error))
+                        }.onError { emit(Result.Error(it)) }
                 }
-            }
         }
 
-    override fun updateCenter(center: LabImagingCenter): Flow<Resource<Nothing?>> =
+    override fun updateCenter(center: LabImagingCenter): Flow<Result<Unit, DataError.Remote>> =
         flow {
-            emit(Resource.Loading())
-            remoteCentersDataSource.updateCenter(center.toCenterDto()).collect { res ->
-                when (res) {
-                    is Resource.Unspecified<*> -> emit(Resource.Unspecified())
-                    is Resource.Loading<*> -> emit(Resource.Loading())
-                    is Resource.Success ->
-                        listCenters(true).collect { refreshResult ->
-                            when (refreshResult) {
-                                is Resource.Success -> emit(Resource.Success(null))
-                                is Resource.Error -> emit(Resource.Error(refreshResult.error))
-                                else -> {}
+            remoteCentersDataSource
+                .updateCenter(center.toCenterDto())
+                .collect { result ->
+                    result
+                        .onSuccess {
+                            listCenters(forceUpdate = true).collect { listResult ->
+                                listResult
+                                    .onSuccess { emit(Result.Success(Unit)) }
+                                    .onError { emit(Result.Error(it)) }
                             }
-                        }
-
-                    is Resource.Error -> emit(Resource.Error(res.error))
+                        }.onError { emit(Result.Error(it)) }
                 }
-            }
         }
 
-    override fun listCenterStaff(): Flow<Resource<List<CenterStaff>>> =
+    override fun listCenterStaff(): Flow<Result<List<Staff>, DataError.Remote>> =
         flow {
-            remoteCentersDataSource.listCenterStaff().collect { res ->
-                when (res) {
-                    is Resource.Unspecified -> emit(Resource.Unspecified())
-
-                    is Resource.Loading -> emit(Resource.Loading())
-
-                    is Resource.Success ->
-                        res.data?.let { doctors ->
-                            emit(Resource.Success(data = doctors.map { it.toCenterStaff() }))
-                        }
-
-                    is Resource.Error -> emit(Resource.Error(res.error))
+            remoteCentersDataSource
+                .listCenterStaff()
+                .collect { result ->
+                    result
+                        .onSuccess { entities ->
+                            emit(Result.Success(data = entities.map { it.toCenterStaff() }))
+                        }.onError { emit(Result.Error(it)) }
                 }
-            }
         }
 
-    override fun addNewCenterStaff(staff: CenterStaff): Flow<Resource<Nothing?>> =
-        remoteCentersDataSource.addNewCenterStaff(
-            staff.toCenterStaffDto(),
-        )
+    override fun addNewCenterStaff(staff: Staff): Flow<Result<Unit, DataError.Remote>> =
+        remoteCentersDataSource.addNewCenterStaff(staff.toCenterStaffDto())
 
-    override fun updateCenterStaff(staff: CenterStaff): Flow<Resource<Nothing?>> =
-        remoteCentersDataSource.updateCenterStaff(
-            staff.toCenterStaffDto(),
-        )
+    override fun updateCenterStaff(staff: Staff): Flow<Result<Unit, DataError.Remote>> =
+        remoteCentersDataSource.updateCenterStaff(staff.toCenterStaffDto())
 }

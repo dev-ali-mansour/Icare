@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="first_page_title">مرحبا بك في ICare!</string>
-    <string name="first_page_description">ابدأ رحلتك الصحية معنا بكل سهولة وراحة</string>
-    <string name="second_page_title">إدارة مواعيدك بسهولة</string>
-    <string name="second_page_description">لا تفوت موعدًا أبدًا! احجز، تابع، واحصل على تذكيرات لمواعيدك الطبية.</string>
-    <string name="third_page_title">سجلات صحية آمنة</string>
-    <string name="third_page_description">يمكنك الوصول إلى سجلاتك الطبية بأمان، والبقاء على اطلاع دائم بحالتك الصحية</string>
+    <string name="features_on_boarding_first_page_title">مرحبا بك في ICare!</string>
+    <string name="features_on_boarding_first_page_description">ابدأ رحلتك الصحية معنا بكل سهولة وراحة</string>
+    <string name="features_on_boarding_second_page_title">إدارة مواعيدك بسهولة</string>
+    <string name="features_on_boarding_second_page_description">لا تفوت موعدًا أبدًا! احجز، تابع، واحصل على تذكيرات لمواعيدك الطبية.</string>
+    <string name="features_on_boarding_third_page_title">سجلات صحية آمنة</string>
+    <string name="features_on_boarding_third_page_description">يمكنك الوصول إلى سجلاتك الطبية بأمان، والبقاء على اطلاع دائم بحالتك الصحية</string>
 </resources>

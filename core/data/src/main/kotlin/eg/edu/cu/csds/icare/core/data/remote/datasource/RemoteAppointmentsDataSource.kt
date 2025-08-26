@@ -2,19 +2,20 @@ package eg.edu.cu.csds.icare.core.data.remote.datasource
 
 import eg.edu.cu.csds.icare.core.data.dto.AdminStatisticsDto
 import eg.edu.cu.csds.icare.core.data.dto.AppointmentDto
-import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.model.DataError
+import eg.edu.cu.csds.icare.core.domain.model.Result
 import kotlinx.coroutines.flow.Flow
 
 interface RemoteAppointmentsDataSource {
-    fun getPatientAppointments(): Flow<Resource<List<AppointmentDto>>>
+    fun getPatientAppointments(): Flow<Result<List<AppointmentDto>, DataError.Remote>>
 
-    fun getAppointments(): Flow<Resource<List<AppointmentDto>>>
+    fun getAppointments(): Flow<Result<List<AppointmentDto>, DataError.Remote>>
 
-    fun getAppointments(statusId: Short): Flow<Resource<List<AppointmentDto>>>
+    fun getAppointments(statusId: Short): Flow<Result<List<AppointmentDto>, DataError.Remote>>
 
-    fun bookAppointment(appointment: AppointmentDto): Flow<Resource<Nothing?>>
+    fun bookAppointment(appointment: AppointmentDto): Flow<Result<Unit, DataError.Remote>>
 
-    fun updateAppointment(appointment: AppointmentDto): Flow<Resource<Nothing?>>
+    fun updateAppointment(appointment: AppointmentDto): Flow<Result<Unit, DataError.Remote>>
 
-    fun getAdminStatistics(): Flow<Resource<AdminStatisticsDto>>
+    fun getAdminStatistics(): Flow<Result<AdminStatisticsDto, DataError.Remote>>
 }

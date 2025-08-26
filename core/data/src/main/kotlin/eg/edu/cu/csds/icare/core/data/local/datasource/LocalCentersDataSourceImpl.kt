@@ -9,7 +9,7 @@ import org.koin.core.annotation.Single
 class LocalCentersDataSourceImpl(
     private val centerDao: CenterDao,
 ) : LocalCentersDataSource {
-    override fun persistCenters(centers: List<CenterEntity>) {
+    override suspend fun persistCenters(centers: List<CenterEntity>) {
         centerDao.persistCenters(centers)
     }
 

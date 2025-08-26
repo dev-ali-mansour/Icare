@@ -8,36 +8,36 @@ import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
 import eg.edu.cu.csds.icare.consultation.screen.EditConsultationScreen
 import eg.edu.cu.csds.icare.consultation.screen.MedicalRecordScreen
 import eg.edu.cu.csds.icare.consultation.screen.NewConsultationScreen
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 
 fun NavGraphBuilder.consultationsRoute(
     pharmacyViewModel: PharmacyViewModel,
     centerViewModel: CenterViewModel,
     consultationViewModel: ConsultationViewModel,
     onNavigationIconClicked: () -> Unit,
-    navigateToScreen: (Screen) -> Unit,
+    navigateToScreen: (Route) -> Unit,
     onError: suspend (Throwable?) -> Unit,
 ) {
-    composable<Screen.PatientMedicalRecord> {
+    composable<Route.PatientMedicalRecord> {
         MedicalRecordScreen(
             consultationViewModel = consultationViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
             onConsultationClicked = {
                 consultationViewModel.selectedConsultationState.value = it
-                navigateToScreen(Screen.EditConsultation)
+                navigateToScreen(Route.EditConsultation)
             },
             onError = { onError(it) },
         )
     }
 
-    composable<Screen.NewConsultation> {
+    composable<Route.NewConsultation> {
         NewConsultationScreen(
             pharmacyViewModel = pharmacyViewModel,
             centerViewModel = centerViewModel,
             consultationViewModel = consultationViewModel,
             onPatientCardClick = {
                 consultationViewModel.getMedicalRecord(it)
-                navigateToScreen(Screen.PatientMedicalRecord)
+                navigateToScreen(Route.PatientMedicalRecord)
             },
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { consultationViewModel.addNewConsultation() },
@@ -46,14 +46,14 @@ fun NavGraphBuilder.consultationsRoute(
         )
     }
 
-    composable<Screen.EditConsultation> {
+    composable<Route.EditConsultation> {
         EditConsultationScreen(
             pharmacyViewModel = pharmacyViewModel,
             centerViewModel = centerViewModel,
             consultationViewModel = consultationViewModel,
             onPatientCardClick = {
                 consultationViewModel.getMedicalRecord(it)
-                navigateToScreen(Screen.PatientMedicalRecord)
+                navigateToScreen(Route.PatientMedicalRecord)
             },
             onNavigationIconClicked = { onNavigationIconClicked() },
             onProceedButtonClicked = { consultationViewModel.updateConsultation() },

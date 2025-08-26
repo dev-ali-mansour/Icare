@@ -23,4 +23,5 @@ object Constants {
     const val ONE_DAY = 24 * 60 * 60 * 1000
     const val THREE_DAYS = 72 * 60 * 60 * 1000
     const val MAX_PARTS_LENGTH = 8
+    const val MAX_RATING = 5.0
 }
