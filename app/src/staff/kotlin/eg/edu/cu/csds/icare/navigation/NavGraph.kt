@@ -119,8 +119,6 @@ fun SetupNavGraph(
             mainViewModel = mainViewModel,
             homeViewModel = homeViewModel,
             clinicViewModel = clinicViewModel,
-            pharmacyViewModel = pharmacyViewModel,
-//            centerViewModel = centerViewModel,
             consultationViewModel = consultationViewModel,
             appointmentViewModel = appointmentViewModel,
             navigateToScreen = { screen -> navController.navigate(screen) },
