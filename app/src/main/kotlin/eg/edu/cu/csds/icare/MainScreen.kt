@@ -27,7 +27,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.view.BottomBarNavigation
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.navigation.SetupNavGraph
-import eg.edu.cu.csds.icare.splash.SplashSingleEvent
+import eg.edu.cu.csds.icare.splash.SplashEffect
 import eg.edu.cu.csds.icare.splash.SplashViewModel
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -59,7 +59,7 @@ fun MainScreen(splashViewModel: SplashViewModel) {
     }
 
     LaunchedEffect(navController, splashViewModel) {
-        splashViewModel.singleEvent.collect { event ->
+        splashViewModel.singleEvent.collect { effect ->
             runCatching {
                 val currentStartDestinationId = navController.graph.startDestinationId
                 val popUpToRoute = navController.graph.findNode(currentStartDestinationId)?.route
@@ -74,12 +74,12 @@ fun MainScreen(splashViewModel: SplashViewModel) {
                     }
                 }
 
-                when (event) {
-                    is SplashSingleEvent.NavigateToSignIn -> navigateAndPopUp(Route.SignIn)
-                    is SplashSingleEvent.NavigateToHome -> navigateAndPopUp(Route.Home)
-                    is SplashSingleEvent.NavigateToOnBoarding -> navigateAndPopUp(Route.OnBoarding)
-                    is SplashSingleEvent.ShowError -> {
-                        alertMessage = event.message.asString(context)
+                when (effect) {
+                    is SplashEffect.NavigateToSignIn -> navigateAndPopUp(Route.SignIn)
+                    is SplashEffect.NavigateToHome -> navigateAndPopUp(Route.Home)
+                    is SplashEffect.NavigateToOnBoarding -> navigateAndPopUp(Route.OnBoarding)
+                    is SplashEffect.ShowError -> {
+                        alertMessage = effect.message.asString(context)
                         showAlert = true
                         delay(timeMillis = 5000)
                         showAlert = false
