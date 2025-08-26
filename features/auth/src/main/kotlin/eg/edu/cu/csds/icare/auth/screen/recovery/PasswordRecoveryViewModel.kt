@@ -11,11 +11,10 @@ import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -28,37 +27,37 @@ class PasswordRecoveryViewModel(
     private val sendRecoveryMailUseCase: SendRecoveryMailUseCase,
 ) : ViewModel() {
     private var sendRecoveryMailJob: Job? = null
-    private val _state = MutableStateFlow(PasswordRecoveryState())
-    val state =
-        _state.stateIn(
+    private val _uiState = MutableStateFlow(PasswordRecoveryState())
+    val uiState =
+        _uiState.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
-            initialValue = _state.value,
+            initialValue = _uiState.value,
         )
-    private val _singleEvent = MutableSharedFlow<PasswordRecoverySingleEvent>()
-    val singleEvent = _singleEvent.asSharedFlow()
+    val effect = _uiState.map { it.effect }
 
-    fun processIntent(intent: PasswordRecoveryIntent) {
-        when (intent) {
-            is PasswordRecoveryIntent.UpdateEmail -> {
-                _state.update { it.copy(email = intent.email) }
+    fun processEvent(event: PasswordRecoveryEvent) {
+        when (event) {
+            is PasswordRecoveryEvent.UpdateEmail -> {
+                _uiState.update { it.copy(email = event.email) }
             }
 
-            is PasswordRecoveryIntent.SubmitRecovery ->
+            is PasswordRecoveryEvent.SubmitRecovery ->
                 viewModelScope.launch {
                     when {
-                        !_state.value.email.isValidEmail -> {
-                            _singleEvent.emit(
-                                PasswordRecoverySingleEvent
-                                    .ShowError(
-                                        message =
-                                            StringResourceId(
-                                                R.string.error_invalid_email,
-                                            ),
-                                    ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
-                        }
+                        !_uiState.value.email.isValidEmail ->
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        PasswordRecoveryEffect.ShowError(
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_auth_error_invalid_email,
+                                                ),
+                                        ),
+                                )
+                            }
 
                         else -> {
                             sendRecoveryMailJob?.cancel()
@@ -67,31 +66,38 @@ class PasswordRecoveryViewModel(
                     }
                 }
 
-            PasswordRecoveryIntent.NavigateToSignInScreen -> Unit
+            PasswordRecoveryEvent.NavigateToSignInScreen -> Unit
+
+            PasswordRecoveryEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
         }
     }
 
     private fun launchSendRecoveryMail() =
         viewModelScope.launch(dispatcher) {
-            _state.update { it.copy(isLoading = true) }
-            sendRecoveryMailUseCase(email = _state.value.email)
+            _uiState.update { it.copy(isLoading = true) }
+            sendRecoveryMailUseCase(email = _uiState.value.email)
                 .onEach { result ->
                     result
                         .onSuccess {
-                            _state.update { it.copy(isLoading = false) }
-                            _singleEvent.emit(
-                                PasswordRecoverySingleEvent
-                                    .ShowInfo(
-                                        message =
-                                            StringResourceId(R.string.recovery_email_sent),
-                                    ),
-                            )
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        PasswordRecoveryEffect.ShowInfo(
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_auth_recovery_email_sent,
+                                                ),
+                                        ),
+                                )
+                            }
                         }.onError { error ->
-                            _state.update { it.copy(isLoading = false) }
-                            _singleEvent.emit(
-                                PasswordRecoverySingleEvent
-                                    .ShowError(message = error.toUiText()),
-                            )
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect = PasswordRecoveryEffect.ShowError(message = error.toUiText()),
+                                )
+                            }
                         }
                 }.launchIn(viewModelScope)
         }
