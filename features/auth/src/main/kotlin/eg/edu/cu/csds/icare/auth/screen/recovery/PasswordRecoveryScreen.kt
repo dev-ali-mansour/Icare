@@ -22,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +43,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.auth.R
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
@@ -69,25 +69,27 @@ internal fun PasswordRecoveryScreen(
     onRecoveryCompleted: () -> Unit,
     context: Context = LocalContext.current,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        viewModel.singleEvent.collect { event ->
-            when (event) {
-                PasswordRecoverySingleEvent.RecoverySuccess -> onRecoveryCompleted()
-                is PasswordRecoverySingleEvent.ShowInfo -> {
-                    alertMessage = context.getString(R.string.recovery_email_sent)
+    LaunchedUiEffectHandler(
+        viewModel.effect,
+        onConsumeEffect = { viewModel.processEvent(PasswordRecoveryEvent.ConsumeEffect) },
+        onEffect = { effect ->
+            when (effect) {
+                PasswordRecoveryEffect.RecoverySuccess -> onRecoveryCompleted()
+                is PasswordRecoveryEffect.ShowInfo -> {
+                    alertMessage = context.getString(R.string.features_auth_recovery_email_sent)
                     showAlert = true
                     delay(timeMillis = 3000)
                     showAlert = false
                     onRecoveryCompleted()
                 }
 
-                is PasswordRecoverySingleEvent.ShowError -> {
-                    alertMessage = event.message.asString(context)
+                is PasswordRecoveryEffect.ShowError -> {
+                    alertMessage = effect.message.asString(context)
                     scope.launch {
                         showAlert = true
                         delay(timeMillis = 3000)
@@ -95,8 +97,8 @@ internal fun PasswordRecoveryScreen(
                     }
                 }
             }
-        }
-    }
+        },
+    )
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -112,10 +114,10 @@ internal fun PasswordRecoveryScreen(
         ) {
             PasswordRecoveryContent(
                 state = state,
-                onIntent = { intent ->
+                onEvent = { intent ->
                     when (intent) {
-                        is PasswordRecoveryIntent.NavigateToSignInScreen -> onSignInClicked()
-                        else -> viewModel.processIntent(intent)
+                        is PasswordRecoveryEvent.NavigateToSignInScreen -> onSignInClicked()
+                        else -> viewModel.processEvent(intent)
                     }
                 },
             )
@@ -128,7 +130,7 @@ internal fun PasswordRecoveryScreen(
 @Composable
 private fun PasswordRecoveryContent(
     state: PasswordRecoveryState,
-    onIntent: (PasswordRecoveryIntent) -> Unit,
+    onEvent: (PasswordRecoveryEvent) -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize(),
@@ -159,7 +161,7 @@ private fun PasswordRecoveryContent(
             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                 val (txtLogin) = createRefs()
                 Text(
-                    text = stringResource(id = R.string.forgot_password),
+                    text = stringResource(id = R.string.features_auth_forgot_password),
                     modifier =
                         Modifier.constrainAs(txtLogin) {
                             top.linkTo(parent.top)
@@ -217,11 +219,11 @@ private fun PasswordRecoveryContent(
                             TextField(
                                 value = state.email,
                                 onValueChange = {
-                                    onIntent(PasswordRecoveryIntent.UpdateEmail(it))
+                                    onEvent(PasswordRecoveryEvent.UpdateEmail(it))
                                 },
                                 label = {
                                     Text(
-                                        text = stringResource(id = R.string.email),
+                                        text = stringResource(id = R.string.features_auth_email),
                                         fontFamily = helveticaFamily,
                                         color = textColor,
                                     )
@@ -251,13 +253,13 @@ private fun PasswordRecoveryContent(
                                 modifier =
                                     Modifier
                                         .fillMaxWidth(fraction = 0.8f),
-                                text = stringResource(id = R.string.reset),
+                                text = stringResource(id = R.string.features_auth_reset),
                                 color = buttonBackgroundColor,
-                                onClick = { onIntent(PasswordRecoveryIntent.SubmitRecovery) },
+                                onClick = { onEvent(PasswordRecoveryEvent.SubmitRecovery) },
                             )
 
                             Text(
-                                text = stringResource(R.string.sign_in),
+                                text = stringResource(R.string.features_auth_sign_in),
                                 fontSize = MaterialTheme.typography.titleLarge.fontSize,
                                 fontFamily = helveticaFamily,
                                 color = textColor,
@@ -265,8 +267,8 @@ private fun PasswordRecoveryContent(
                                     Modifier
                                         .padding(L_PADDING)
                                         .clickable {
-                                            onIntent(
-                                                PasswordRecoveryIntent.NavigateToSignInScreen,
+                                            onEvent(
+                                                PasswordRecoveryEvent.NavigateToSignInScreen,
                                             )
                                         },
                             )
@@ -299,7 +301,7 @@ private fun PasswordRecoveryContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         PasswordRecoveryContent(
             state = PasswordRecoveryState(),
-            onIntent = {},
+            onEvent = {},
         )
     }
 }

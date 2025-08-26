@@ -17,8 +17,8 @@ import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
 import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.appointment.navigation.appointmentsRoute
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
-import eg.edu.cu.csds.icare.auth.screen.profile.ProfileIntent
-import eg.edu.cu.csds.icare.auth.screen.profile.ProfileSingleEvent
+import eg.edu.cu.csds.icare.auth.screen.profile.ProfileEffect
+import eg.edu.cu.csds.icare.auth.screen.profile.ProfileEvent
 import eg.edu.cu.csds.icare.auth.screen.profile.ProfileViewModel
 import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
 import eg.edu.cu.csds.icare.consultation.screen.navigation.consultationsRoute
@@ -202,9 +202,9 @@ private suspend fun handleError(
 ) {
     when (error) {
         is UserNotAuthenticatedException -> {
-            profileViewModel.processEvent(ProfileIntent.SignOut)
-            profileViewModel.singleEvent.collect { event ->
-                if (event is ProfileSingleEvent.SignOutSuccess) {
+            profileViewModel.processEvent(ProfileEvent.SignOut)
+            profileViewModel.uiState.collect { uiState ->
+                if (uiState.effect is ProfileEffect.SignOutSuccess) {
                     navController.navigate(Route.SignIn) {
                         popUpTo(navController.graph.id) { inclusive = true }
                     }

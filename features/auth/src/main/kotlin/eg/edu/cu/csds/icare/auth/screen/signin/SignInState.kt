@@ -6,4 +6,5 @@ data class SignInState(
     val password: String = "",
     val isPasswordVisible: Boolean = false,
     val googleSignInToken: String = "",
+    val effect: SignInEffect? = null,
 )
