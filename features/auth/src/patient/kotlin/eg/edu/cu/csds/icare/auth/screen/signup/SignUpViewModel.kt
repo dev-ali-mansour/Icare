@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @KoinViewModel
 class SignUpViewModel(
@@ -45,7 +44,7 @@ class SignUpViewModel(
     private val _singleEvent = MutableSharedFlow<SignUpSingleEvent>()
     val singleEvent = _singleEvent.asSharedFlow()
 
-    fun processIntent(intent: SignUpIntent) {
+    fun processEvent(intent: SignUpIntent) {
         when (intent) {
             is SignUpIntent.UpdateFirstName -> {
                 _state.update { it.copy(firstName = intent.firstName) }
@@ -121,7 +120,12 @@ class SignUpViewModel(
                         _state.value.firstName.isBlank() -> {
                             _singleEvent.emit(
                                 SignUpSingleEvent
-                                    .ShowError(message = StringResourceId(R.string.error_blank_first_name)),
+                                    .ShowError(
+                                        message =
+                                            StringResourceId(
+                                                R.string.features_auth_error_blank_first_name,
+                                            ),
+                                    ),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
@@ -129,7 +133,12 @@ class SignUpViewModel(
                         _state.value.lastName.isBlank() -> {
                             _singleEvent.emit(
                                 SignUpSingleEvent
-                                    .ShowError(message = StringResourceId(R.string.error_blank_last_name)),
+                                    .ShowError(
+                                        message =
+                                            StringResourceId(
+                                                R.string.features_auth_error_blank_last_name,
+                                            ),
+                                    ),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
@@ -137,7 +146,12 @@ class SignUpViewModel(
                         !_state.value.email.isValidEmail -> {
                             _singleEvent.emit(
                                 SignUpSingleEvent
-                                    .ShowError(message = StringResourceId(R.string.error_invalid_email)),
+                                    .ShowError(
+                                        message =
+                                            StringResourceId(
+                                                R.string.features_auth_error_invalid_email,
+                                            ),
+                                    ),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
@@ -145,16 +159,12 @@ class SignUpViewModel(
                         _state.value.gender == 0.toShort() -> {
                             _singleEvent.emit(
                                 SignUpSingleEvent
-                                    .ShowError(message = StringResourceId(R.string.error_invalid_gender)),
-                            )
-                            _state.update { it.copy(isLoading = false) }
-                        }
-
-                        _state.value.nationalId.isBlank() ||
-                            _state.value.nationalId.length < Constants.NATIONAL_ID_LENGTH -> {
-                            _singleEvent.emit(
-                                SignUpSingleEvent
-                                    .ShowError(message = StringResourceId(CoreR.string.error_invalid_national_id)),
+                                    .ShowError(
+                                        message =
+                                            StringResourceId(
+                                                R.string.features_auth_error_invalid_gender,
+                                            ),
+                                    ),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
@@ -163,7 +173,12 @@ class SignUpViewModel(
                             _state.value.phone.length < Constants.PHONE_LENGTH -> {
                             _singleEvent.emit(
                                 SignUpSingleEvent
-                                    .ShowError(message = StringResourceId(R.string.error_invalid_phone)),
+                                    .ShowError(
+                                        message =
+                                            StringResourceId(
+                                                R.string.features_auth_error_invalid_phone,
+                                            ),
+                                    ),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
@@ -171,7 +186,12 @@ class SignUpViewModel(
                         _state.value.chronicDiseases.isBlank() -> {
                             _singleEvent.emit(
                                 SignUpSingleEvent
-                                    .ShowError(message = StringResourceId(R.string.error_blank_chronic_diseases)),
+                                    .ShowError(
+                                        message =
+                                            StringResourceId(
+                                                R.string.features_auth_error_blank_chronic_diseases,
+                                            ),
+                                    ),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
@@ -179,7 +199,12 @@ class SignUpViewModel(
                         _state.value.currentMedications.isBlank() -> {
                             _singleEvent.emit(
                                 SignUpSingleEvent
-                                    .ShowError(message = StringResourceId(R.string.error_blank_current_medications)),
+                                    .ShowError(
+                                        message =
+                                            StringResourceId(
+                                                R.string.features_auth_error_blank_current_medications,
+                                            ),
+                                    ),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
@@ -187,7 +212,12 @@ class SignUpViewModel(
                         _state.value.allergies.isBlank() -> {
                             _singleEvent.emit(
                                 SignUpSingleEvent
-                                    .ShowError(message = StringResourceId(R.string.error_blank_allergies)),
+                                    .ShowError(
+                                        message =
+                                            StringResourceId(
+                                                R.string.features_auth_error_blank_allergies,
+                                            ),
+                                    ),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
@@ -195,7 +225,12 @@ class SignUpViewModel(
                         _state.value.pastSurgeries.isBlank() -> {
                             _singleEvent.emit(
                                 SignUpSingleEvent
-                                    .ShowError(message = StringResourceId(R.string.error_blank_past_surgeries)),
+                                    .ShowError(
+                                        message =
+                                            StringResourceId(
+                                                R.string.features_auth_error_blank_past_surgeries,
+                                            ),
+                                    ),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
@@ -203,7 +238,12 @@ class SignUpViewModel(
                         !_state.value.password.isValidPassword -> {
                             _singleEvent.emit(
                                 SignUpSingleEvent
-                                    .ShowError(message = StringResourceId(R.string.error_invalid_password)),
+                                    .ShowError(
+                                        message =
+                                            StringResourceId(
+                                                R.string.features_auth_error_invalid_password,
+                                            ),
+                                    ),
                             )
                             _state.update { it.copy(isLoading = false) }
                         }
@@ -248,7 +288,12 @@ class SignUpViewModel(
                                         .onSuccess {
                                             _singleEvent.emit(
                                                 SignUpSingleEvent
-                                                    .ShowInfo(message = StringResourceId(R.string.register_message)),
+                                                    .ShowInfo(
+                                                        message =
+                                                            StringResourceId(
+                                                                R.string.features_auth_register_message,
+                                                            ),
+                                                    ),
                                             )
                                             _state.update { it.copy(isLoading = false) }
                                         }.onError { error ->

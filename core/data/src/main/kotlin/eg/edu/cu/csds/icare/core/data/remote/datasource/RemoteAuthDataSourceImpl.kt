@@ -168,7 +168,6 @@ class RemoteAuthDataSourceImpl(
             }
         }.catch {
             Timber.e("signInWithEmailAndPassword() Error ${it.javaClass.simpleName}: ${it.message}")
-            Timber.e("signInWithEmailAndPassword() Error ${it.toRemoteError()}")
             emit(Result.Error(it.toRemoteError()))
         }
 

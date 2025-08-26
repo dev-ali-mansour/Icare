@@ -2,14 +2,14 @@ package eg.edu.cu.csds.icare.auth.screen.recovery
 
 import eg.edu.cu.csds.icare.core.ui.util.UiText
 
-sealed interface PasswordRecoverySingleEvent {
-    object RecoverySuccess : PasswordRecoverySingleEvent
+sealed interface PasswordRecoveryEffect {
+    object RecoverySuccess : PasswordRecoveryEffect
 
     data class ShowInfo(
         val message: UiText,
-    ) : PasswordRecoverySingleEvent
+    ) : PasswordRecoveryEffect
 
     data class ShowError(
         val message: UiText,
-    ) : PasswordRecoverySingleEvent
+    ) : PasswordRecoveryEffect
 }
