@@ -29,7 +29,6 @@ import eg.edu.cu.csds.icare.core.ui.util.activity
 import eg.edu.cu.csds.icare.core.ui.util.getErrorMessage
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.home.navigation.homeRoute
-import eg.edu.cu.csds.icare.home.screen.home.HomeViewModel
 import eg.edu.cu.csds.icare.notification.navigation.notificationsRoute
 import eg.edu.cu.csds.icare.onboarding.navigation.onBoardingRoute
 import eg.edu.cu.csds.icare.settings.navigation.settingsRoute
@@ -42,7 +41,6 @@ import kotlin.system.exitProcess
 fun SetupNavGraph(
     navController: NavHostController,
     mainViewModel: MainViewModel = koinViewModel(),
-    homeViewModel: HomeViewModel = koinViewModel(),
     clinicViewModel: ClinicViewModel = koinViewModel(),
     pharmacyViewModel: PharmacyViewModel = koinViewModel(),
     centerViewModel: CenterViewModel = koinViewModel(),
@@ -108,10 +106,6 @@ fun SetupNavGraph(
         )
 
         homeRoute(
-            mainViewModel = mainViewModel,
-            homeViewModel = homeViewModel,
-            appointmentViewModel = appointmentViewModel,
-            clinicViewModel = clinicViewModel,
             pharmacyViewModel = pharmacyViewModel,
             centerViewModel = centerViewModel,
             navigateToScreen = { screen -> navController.navigate(screen) },
