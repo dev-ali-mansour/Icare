@@ -10,7 +10,7 @@ fun DataError.toUiText(): UiText {
             DataError.Local.UNKNOWN -> R.string.error_generic
             DataError.Remote.REQUEST_TIMEOUT -> R.string.error_request_timeout
             DataError.Remote.TOO_MANY_REQUESTS -> R.string.error_too_many_requests
-            DataError.Remote.NO_INTERNET -> R.string.error_no_internet
+            DataError.Remote.NO_INTERNET -> R.string.error_internet_connection
             DataError.Remote.SERVER -> R.string.error_server
             DataError.Remote.SERIALIZATION -> R.string.error_serialization
             DataError.Remote.INVALID_CREDENTIALS -> R.string.error_invalid_credentials

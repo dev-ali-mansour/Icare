@@ -65,7 +65,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.auth.R
 import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
 import eg.edu.cu.csds.icare.core.ui.common.GenderItem
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.theme.Blue200
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
@@ -83,7 +83,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -92,12 +91,11 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 @Composable
 internal fun SignUpScreen(
     viewModel: SignUpViewModel = koinViewModel(),
-    navigateToScreen: (Screen) -> Unit,
+    navigateToScreen: (Route) -> Unit,
     onSignUpSuccess: () -> Unit,
     context: Context = LocalContext.current,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val scope: CoroutineScope = rememberCoroutineScope()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
@@ -107,20 +105,16 @@ internal fun SignUpScreen(
                 is SignUpSingleEvent.LoginSuccess -> onSignUpSuccess()
                 is SignUpSingleEvent.ShowError -> {
                     alertMessage = event.message.asString(context)
-                    scope.launch {
-                        showAlert = true
-                        delay(timeMillis = 3000)
-                        showAlert = false
-                    }
+                    showAlert = true
+                    delay(timeMillis = 3000)
+                    showAlert = false
                 }
 
                 is SignUpSingleEvent.ShowInfo -> {
                     alertMessage = event.message.asString(context)
-                    scope.launch {
-                        showAlert = true
-                        delay(timeMillis = 3000)
-                        showAlert = false
-                    }
+                    showAlert = true
+                    delay(timeMillis = 3000)
+                    showAlert = false
                 }
             }
         }
@@ -143,7 +137,7 @@ internal fun SignUpScreen(
                 onIntent = { intent ->
                     when (intent) {
                         is SignUpIntent.NavigateToSignInScreen -> {
-                            navigateToScreen(Screen.SignIn)
+                            navigateToScreen(Route.SignIn)
                         }
 
                         else -> viewModel.processIntent(intent)

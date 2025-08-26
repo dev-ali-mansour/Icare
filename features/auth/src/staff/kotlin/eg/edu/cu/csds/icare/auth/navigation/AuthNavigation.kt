@@ -5,7 +5,7 @@ import androidx.navigation.compose.composable
 import eg.edu.cu.csds.icare.auth.screen.profile.ProfileScreen
 import eg.edu.cu.csds.icare.auth.screen.recovery.PasswordRecoveryScreen
 import eg.edu.cu.csds.icare.auth.screen.signin.SignInScreen
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 
 fun NavGraphBuilder.authenticationRoute(
     onRecoveryClicked: () -> Unit,
@@ -14,7 +14,7 @@ fun NavGraphBuilder.authenticationRoute(
     onSignInSuccess: () -> Unit,
     onRecoveryCompleted: () -> Unit,
 ) {
-    composable<Screen.SignIn> {
+    composable<Route.SignIn> {
         SignInScreen(
             onRecoveryClicked = { onRecoveryClicked() },
             onLoginSuccess = { onSignInSuccess() },
@@ -22,14 +22,14 @@ fun NavGraphBuilder.authenticationRoute(
         )
     }
 
-    composable<Screen.PasswordRecovery> {
+    composable<Route.PasswordRecovery> {
         PasswordRecoveryScreen(
             onSignInClicked = { onSignInClicked() },
             onRecoveryCompleted = { onRecoveryCompleted() },
         )
     }
 
-    composable<Screen.Profile> {
+    composable<Route.Profile> {
         ProfileScreen()
     }
 }

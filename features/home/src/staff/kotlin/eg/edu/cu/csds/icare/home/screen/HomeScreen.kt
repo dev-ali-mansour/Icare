@@ -38,7 +38,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
@@ -55,13 +54,12 @@ import eg.edu.cu.csds.icare.core.ui.theme.tintColor
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
 import eg.edu.cu.csds.icare.home.HomeViewModel
 import eg.edu.cu.csds.icare.home.R
+import org.koin.compose.koinInject
 import kotlin.system.exitProcess
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreen(
-    firebaseAuth: FirebaseAuth,
-    mediaHelper: MediaHelper,
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
     clinicViewModel: ClinicViewModel,
@@ -74,6 +72,7 @@ internal fun HomeScreen(
     onSectionsAdminClicked: () -> Unit,
     onConfirm: (Appointment) -> Unit,
     onError: suspend (Throwable?) -> Unit,
+    mediaHelper: MediaHelper = koinInject<MediaHelper>(),
     context: Context = LocalContext.current,
 ) {
     val appVersion: String =
@@ -241,7 +240,7 @@ internal fun HomeScreen(
                 showLoading = { isRefreshing = it },
                 onUserClicked = { navigateToScreen(Profile) },
                 onSectionsAdminClicked = { onSectionsAdminClicked() },
-                onPriceCardClicked = { onPriceCardClicked(firebaseAuth.currentUser?.uid.toString()) },
+                onPriceCardClicked = { userId -> onPriceCardClicked(userId) },
                 onAppointmentClick = { onAppointmentClick(it) },
                 onSeeAllClick = { onSeeAllClick() },
                 onConfirm = { onConfirm(it) },
