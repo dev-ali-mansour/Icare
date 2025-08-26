@@ -1,6 +1,5 @@
 package eg.edu.cu.csds.icare
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,6 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,9 +25,11 @@ import eg.edu.cu.csds.icare.core.ui.common.BottomNavItem
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.view.BottomBarNavigation
+import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.navigation.SetupNavGraph
 import eg.edu.cu.csds.icare.splash.SplashSingleEvent
 import eg.edu.cu.csds.icare.splash.SplashViewModel
+import kotlinx.coroutines.delay
 import timber.log.Timber
 import kotlin.system.exitProcess
 
@@ -37,6 +39,10 @@ fun MainScreen(splashViewModel: SplashViewModel) {
     var isBottomBarVisible by remember { mutableStateOf(false) }
     val layoutDirection = LocalLayoutDirection.current
     val context = LocalContext.current
+    rememberCoroutineScope()
+    var alertMessage by remember { mutableStateOf("") }
+    var showAlert by remember { mutableStateOf(false) }
+
     val bottomNavItems =
         listOf(
             BottomNavItem.Home,
@@ -73,7 +79,10 @@ fun MainScreen(splashViewModel: SplashViewModel) {
                     is SplashSingleEvent.NavigateToHome -> navigateAndPopUp(Route.Home)
                     is SplashSingleEvent.NavigateToOnBoarding -> navigateAndPopUp(Route.OnBoarding)
                     is SplashSingleEvent.ShowError -> {
-                        Toast.makeText(context, event.message.asString(context), Toast.LENGTH_LONG).show()
+                        alertMessage = event.message.asString(context)
+                        showAlert = true
+                        delay(timeMillis = 5000)
+                        showAlert = false
                         exitProcess(0)
                     }
                 }
@@ -106,6 +115,8 @@ fun MainScreen(splashViewModel: SplashViewModel) {
                     ),
         ) {
             SetupNavGraph(navController = navController)
+
+            if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
         }
     }
 }

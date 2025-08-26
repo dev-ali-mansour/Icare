@@ -1,10 +1,9 @@
-package eg.edu.cu.csds.icare.onboarding
+package eg.edu.cu.csds.icare.onboarding.screen
 
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.util.Constants.LAST_ON_BOARDING_PAGE
 import eg.edu.cu.csds.icare.core.domain.util.Constants.ON_BOARDING_PAGE_COUNT
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.common.OnBoardingPage
 import eg.edu.cu.csds.icare.core.ui.theme.PAGING_INDICATOR_SPACING
 import eg.edu.cu.csds.icare.core.ui.theme.PAGING_INDICATOR_WIDTH
@@ -58,9 +58,11 @@ import eg.edu.cu.csds.icare.core.ui.theme.descriptionColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.inactiveIndicatorColor
 import eg.edu.cu.csds.icare.core.ui.theme.titleColor
+import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.HorizontalPagerIndicator
 import eg.edu.cu.csds.icare.core.ui.view.VerticalPagerIndicator
+import eg.edu.cu.csds.icare.onboarding.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -74,40 +76,23 @@ internal fun OnBoardingScreen(
     viewModel: OnBoardingViewModel = koinViewModel(),
     context: Context = LocalContext.current,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scope: CoroutineScope = rememberCoroutineScope()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
     val pagerState = rememberPagerState { ON_BOARDING_PAGE_COUNT }
 
-    val pages =
-        listOf(
-            OnBoardingPage(
-                image = R.drawable.first_page_image,
-                title = stringResource(R.string.first_page_title),
-                description = stringResource(R.string.first_page_description),
-            ),
-            OnBoardingPage(
-                image = R.drawable.second_page_image,
-                title = stringResource(R.string.second_page_title),
-                description = stringResource(R.string.second_page_description),
-            ),
-            OnBoardingPage(
-                image = R.drawable.third_page_image,
-                title = stringResource(R.string.third_page_title),
-                description = stringResource(R.string.third_page_description),
-            ),
-        )
-
-    LaunchedEffect(Unit) {
-        viewModel.singleEvent.collect { event ->
-            when (event) {
-                is OnBoardingSingleEvent.OnBoardingFinished -> {
+    LaunchedUiEffectHandler(
+        viewModel.effect,
+        onConsumeEffect = { viewModel.processEvent(OnBoardingEvent.ConsumeEffect) },
+        onEffect = { effect ->
+            when (effect) {
+                is OnBoardingEffect.OnBoardingFinished -> {
                     onFinished()
                 }
 
-                is OnBoardingSingleEvent.ShowError -> {
-                    alertMessage = event.message.asString(context)
+                is OnBoardingEffect.ShowError -> {
+                    alertMessage = effect.message.asString(context)
                     scope.launch {
                         showAlert = true
                         delay(timeMillis = 3000)
@@ -115,22 +100,22 @@ internal fun OnBoardingScreen(
                     }
                 }
             }
-        }
-    }
+        },
+    )
 
     when (configuration.orientation) {
         Configuration.ORIENTATION_LANDSCAPE ->
             WelcomeScreenInLandscape(backgroundColor, pagerState, pages) {
-                viewModel.processIntent(OnBoardingIntent.FinishOnBoarding)
+                viewModel.processEvent(OnBoardingEvent.FinishOnBoarding)
             }
 
         else ->
             WelcomeScreenInPortrait(backgroundColor, pagerState, pages) {
-                viewModel.processIntent(OnBoardingIntent.FinishOnBoarding)
+                viewModel.processEvent(OnBoardingEvent.FinishOnBoarding)
             }
     }
 
-    if (state.isLoading) CircularProgressIndicator()
+    if (uiState.isLoading) CircularProgressIndicator()
 
     if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
 }
@@ -168,7 +153,7 @@ private fun WelcomeScreenInPortrait(
         )
         FinishButton(
             modifier = Modifier.weight(weight = 1f),
-            pagerState = pagerState,
+            visible = pagerState.currentPage == LAST_ON_BOARDING_PAGE,
         ) { onFinishClicked() }
     }
 }
@@ -213,13 +198,16 @@ private fun WelcomeScreenInLandscape(
         }
         FinishButton(
             modifier = Modifier.weight(weight = 1f),
-            pagerState = pagerState,
+            pagerState.currentPage == LAST_ON_BOARDING_PAGE,
         ) { onFinishClicked() }
     }
 }
 
 @Composable
-internal fun PagerScreen(onBoardingPage: OnBoardingPage) {
+internal fun PagerScreen(
+    onBoardingPage: OnBoardingPage,
+    context: Context = LocalContext.current,
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = CenterHorizontally,
@@ -235,7 +223,7 @@ internal fun PagerScreen(onBoardingPage: OnBoardingPage) {
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = onBoardingPage.title,
+            text = onBoardingPage.title.asString(context),
             fontFamily = helveticaFamily,
             color = titleColor,
             fontSize = MaterialTheme.typography.headlineMedium.fontSize,
@@ -248,7 +236,7 @@ internal fun PagerScreen(onBoardingPage: OnBoardingPage) {
                     .fillMaxWidth()
                     .padding(horizontal = XL_PADDING)
                     .padding(top = S_PADDING),
-            text = onBoardingPage.description,
+            text = onBoardingPage.description.asString(context),
             fontFamily = helveticaFamily,
             color = descriptionColor,
             fontSize = MaterialTheme.typography.titleMedium.fontSize,
@@ -261,7 +249,7 @@ internal fun PagerScreen(onBoardingPage: OnBoardingPage) {
 @Composable
 internal fun FinishButton(
     modifier: Modifier,
-    pagerState: PagerState,
+    visible: Boolean = false,
     onClick: () -> Unit,
 ) {
     Row(
@@ -274,7 +262,7 @@ internal fun FinishButton(
     ) {
         AnimatedVisibility(
             modifier = modifier.fillMaxWidth(),
-            visible = pagerState.currentPage == LAST_ON_BOARDING_PAGE,
+            visible = visible,
         ) {
             Button(
                 onClick = onClick,
@@ -297,45 +285,41 @@ internal fun FinishButton(
 @Preview(showBackground = true, locale = "ar")
 @Preview(showBackground = true, device = Devices.AUTOMOTIVE_1024p)
 @Preview(showBackground = true, locale = "ar", device = Devices.AUTOMOTIVE_1024p)
+@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES, device = Devices.AUTOMOTIVE_1024p)
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES, locale = "ar")
 @Composable
 internal fun OnBoardingScreenPreview() {
-    Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(backgroundColor),
-    ) {
-        PagerScreen(
-            onBoardingPage =
-                OnBoardingPage(
-                    image = R.drawable.first_page_image,
-                    title = stringResource(R.string.first_page_title),
-                    description = stringResource(R.string.first_page_description),
-                ),
-        )
+    val configuration: Configuration = LocalConfiguration.current
+    val pagerState = rememberPagerState { ON_BOARDING_PAGE_COUNT }
+
+    LaunchedEffect(Unit) {
+        pagerState.animateScrollToPage(page = 3)
+    }
+    when (configuration.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE ->
+            WelcomeScreenInLandscape(backgroundColor, pagerState, pages) { }
+
+        else ->
+            WelcomeScreenInPortrait(backgroundColor, pagerState, pages) { }
     }
 }
 
-@ExperimentalFoundationApi
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, device = Devices.AUTOMOTIVE_1024p)
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES, locale = "ar")
-@Composable
-internal fun FinishButtonPreview() {
-    Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .background(backgroundColor)
-                .padding(S_PADDING),
-    ) {
-        FinishButton(
-            modifier = Modifier.fillMaxWidth(),
-            pagerState = rememberPagerState { ON_BOARDING_PAGE_COUNT },
-        ) { }
-    }
-}
+val pages =
+    listOf(
+        OnBoardingPage(
+            image = R.drawable.features_on_boarding_first_page_image,
+            title = StringResourceId(R.string.features_on_boarding_first_page_title),
+            description = StringResourceId(R.string.features_on_boarding_first_page_description),
+        ),
+        OnBoardingPage(
+            image = R.drawable.features_on_boarding_second_page_image,
+            title = StringResourceId(R.string.features_on_boarding_second_page_title),
+            description = StringResourceId(R.string.features_on_boarding_second_page_description),
+        ),
+        OnBoardingPage(
+            image = R.drawable.features_on_boarding_third_page_image,
+            title = StringResourceId(R.string.features_on_boarding_third_page_title),
+            description = StringResourceId(R.string.features_on_boarding_third_page_description),
+        ),
+    )
