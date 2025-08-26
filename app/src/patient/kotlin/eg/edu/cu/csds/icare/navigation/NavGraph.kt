@@ -24,7 +24,7 @@ import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
 import eg.edu.cu.csds.icare.consultation.screen.navigation.consultationsRoute
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
 import eg.edu.cu.csds.icare.core.ui.MainViewModel
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.util.activity
 import eg.edu.cu.csds.icare.core.ui.util.getErrorMessage
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
@@ -64,23 +64,23 @@ fun SetupNavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash,
+        startDestination = Route.Splash,
     ) {
-        composable<Screen.Splash> {
+        composable<Route.Splash> {
             SplashScreen()
         }
 
         onBoardingRoute(onFinished = {
-            navController.navigate(Screen.SignIn) {
+            navController.navigate(Route.SignIn) {
                 popUpTo(navController.graph.id) { inclusive = true }
             }
         })
 
         authenticationRoute(
-            onRecoveryClicked = { navController.navigate(Screen.PasswordRecovery) },
-            onCreateAccountClicked = { navController.navigate(Screen.SignUp) },
+            onRecoveryClicked = { navController.navigate(Route.PasswordRecovery) },
+            onCreateAccountClicked = { navController.navigate(Route.SignUp) },
             onLoginClicked = {
-                navController.navigate(Screen.SignIn) {
+                navController.navigate(Route.SignIn) {
                     popUpTo(navController.graph.id) {
                         inclusive = true
                     }
@@ -92,14 +92,14 @@ fun SetupNavGraph(
                 context.startActivity(intent)
             },
             onRecoveryCompleted = {
-                navController.navigate(Screen.SignIn) {
+                navController.navigate(Route.SignIn) {
                     popUpTo(navController.graph.id) {
                         inclusive = true
                     }
                 }
             },
             onRegisterCompleted = {
-                navController.navigate(Screen.SignIn) {
+                navController.navigate(Route.SignIn) {
                     popUpTo(navController.graph.id) {
                         inclusive = true
                     }
@@ -185,7 +185,7 @@ fun SetupNavGraph(
 
 private fun NavHostController.navigateUpSafely() {
     if (previousBackStackEntry == null) {
-        navigate(Screen.Home)
+        navigate(Route.Home)
     } else {
         navigateUp()
     }
@@ -202,10 +202,10 @@ private suspend fun handleError(
 ) {
     when (error) {
         is UserNotAuthenticatedException -> {
-            profileViewModel.processIntent(ProfileIntent.SignOut)
+            profileViewModel.processEvent(ProfileIntent.SignOut)
             profileViewModel.singleEvent.collect { event ->
                 if (event is ProfileSingleEvent.SignOutSuccess) {
-                    navController.navigate(Screen.SignIn) {
+                    navController.navigate(Route.SignIn) {
                         popUpTo(navController.graph.id) { inclusive = true }
                     }
                 }

@@ -13,8 +13,15 @@ import androidx.navigation.compose.composable
 import eg.edu.cu.csds.icare.MainActivity
 import eg.edu.cu.csds.icare.admin.navigation.adminRoute
 import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
+import eg.edu.cu.csds.icare.admin.screen.center.SelectedCenterViewModel
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
+import eg.edu.cu.csds.icare.admin.screen.clinic.SelectedClinicViewModel
+import eg.edu.cu.csds.icare.admin.screen.clinician.SelectedClinicianViewModel
+import eg.edu.cu.csds.icare.admin.screen.doctor.SelectedDoctorViewModel
+import eg.edu.cu.csds.icare.admin.screen.pharmacist.SelectedPharmacistViewModel
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.SelectedPharmacyViewModel
+import eg.edu.cu.csds.icare.admin.screen.staff.SelectedStaffViewModel
 import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.appointment.navigation.appointmentsRoute
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
@@ -42,16 +49,23 @@ import kotlin.system.exitProcess
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
-    mainViewModel: MainViewModel = koinViewModel(),
-    homeViewModel: HomeViewModel = koinViewModel(),
-    clinicViewModel: ClinicViewModel = koinViewModel(),
-    pharmacyViewModel: PharmacyViewModel = koinViewModel(),
-    centerViewModel: CenterViewModel = koinViewModel(),
-    appointmentViewModel: AppointmentViewModel = koinViewModel(),
-    consultationViewModel: ConsultationViewModel = koinViewModel(),
-    profileViewModel: ProfileViewModel = koinViewModel(),
     context: Context = LocalContext.current,
 ) {
+    val mainViewModel: MainViewModel = koinViewModel()
+    val homeViewModel: HomeViewModel = koinViewModel()
+    val selectedClinicViewModel: SelectedClinicViewModel = koinViewModel()
+    val selectedDoctorViewModel: SelectedDoctorViewModel = koinViewModel()
+    val selectedClinicianViewModel: SelectedClinicianViewModel = koinViewModel()
+    val selectedPharmacyViewModel: SelectedPharmacyViewModel = koinViewModel()
+    val selectedPharmacistViewModel: SelectedPharmacistViewModel = koinViewModel()
+    val selectedCenterViewModel: SelectedCenterViewModel = koinViewModel()
+    val selectedStaffViewModel: SelectedStaffViewModel = koinViewModel()
+    val clinicViewModel: ClinicViewModel = koinViewModel()
+    val pharmacyViewModel: PharmacyViewModel = koinViewModel()
+    val centerViewModel: CenterViewModel = koinViewModel()
+    val appointmentViewModel: AppointmentViewModel = koinViewModel()
+    val consultationViewModel: ConsultationViewModel = koinViewModel()
+    val profileViewModel: ProfileViewModel = koinViewModel()
     val alertMessage = remember { mutableStateOf("") }
     val showAlert = remember { mutableStateOf(false) }
     val exitApp = remember { mutableStateOf(false) }
@@ -127,25 +141,18 @@ fun SetupNavGraph(
         notificationsRoute()
 
         adminRoute(
-            mainViewModel = mainViewModel,
-            clinicViewModel = clinicViewModel,
-            pharmacyViewModel = pharmacyViewModel,
-            centerViewModel = centerViewModel,
+            selectedClinicViewModel = selectedClinicViewModel,
+            selectedDoctorViewModel = selectedDoctorViewModel,
+            selectedClinicianViewModel = selectedClinicianViewModel,
+            selectedPharmacyViewModel = selectedPharmacyViewModel,
+            selectedPharmacistViewModel = selectedPharmacistViewModel,
+            selectedCenterViewModel = selectedCenterViewModel,
+            selectedStaffViewModel = selectedStaffViewModel,
             onNavigationIconClicked = {
                 navController.navigateUpSafely()
             },
-            navigateToScreen = { screen -> navController.navigate(screen) },
-            onError = { error ->
-                exitApp.value = false
-                handleError(
-                    error,
-                    exitApp,
-                    context,
-                    profileViewModel,
-                    navController,
-                    alertMessage,
-                    showAlert,
-                )
+            navigateToRoute = { screen ->
+                navController.navigate(screen)
             },
         )
 
@@ -224,7 +231,7 @@ private suspend fun handleError(
 ) {
     when (error) {
         is UserNotAuthenticatedException -> {
-            profileViewModel.processIntent(ProfileIntent.SignOut)
+            profileViewModel.processEvent(ProfileIntent.SignOut)
             profileViewModel.singleEvent.collect { event ->
                 if (event is ProfileSingleEvent.SignOutSuccess) {
                     navController.navigate(Route.SignIn) {
