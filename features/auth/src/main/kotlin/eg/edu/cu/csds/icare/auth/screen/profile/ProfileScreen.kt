@@ -21,7 +21,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +50,7 @@ import eg.edu.cu.csds.icare.auth.R
 import eg.edu.cu.csds.icare.auth.util.handleSignIn
 import eg.edu.cu.csds.icare.core.domain.model.Language
 import eg.edu.cu.csds.icare.core.domain.model.User
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.Blue700
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
@@ -80,22 +80,24 @@ internal fun ProfileScreen(
     credentialManager: CredentialManager = koinInject(),
     context: Context = LocalContext.current,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        viewModel.singleEvent.collect { event ->
-            when (event) {
-                is ProfileSingleEvent.SignOutSuccess -> {
+    LaunchedUiEffectHandler(
+        viewModel.effect,
+        onConsumeEffect = { viewModel.processEvent(ProfileEvent.ConsumeEffect) },
+        onEffect = { effect ->
+            when (effect) {
+                is ProfileEffect.SignOutSuccess -> {
                     delay(timeMillis = 100)
                     exitProcess(0)
                 }
 
-                is ProfileSingleEvent.ShowError -> {
-                    alertMessage = event.message.asString(context)
+                is ProfileEffect.ShowError -> {
+                    alertMessage = effect.message.asString(context)
                     scope.launch {
                         showAlert = true
                         delay(timeMillis = 3000)
@@ -103,8 +105,8 @@ internal fun ProfileScreen(
                     }
                 }
             }
-        }
-    }
+        },
+    )
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -118,17 +120,17 @@ internal fun ProfileScreen(
         ) {
             ProfileContent(
                 state = state,
-                onIntent = { intent ->
+                onEvent = { intent ->
                     scope.launch {
                         when (intent) {
-                            is ProfileIntent.LinkWithGoogle -> {
+                            is ProfileEvent.LinkWithGoogle -> {
                                 val result =
                                     credentialManager.getCredential(request = request, context = context)
                                 handleSignIn(
                                     result,
                                     onSuccess = { token ->
-                                        viewModel.processIntent(ProfileIntent.UpdateGoogleSignInToken(token))
-                                        viewModel.processIntent(intent)
+                                        viewModel.processEvent(ProfileEvent.UpdateGoogleSignInToken(token))
+                                        viewModel.processEvent(intent)
                                     },
                                     onError = { error ->
                                         Timber.e("Google Sign-In failed: $error")
@@ -136,7 +138,7 @@ internal fun ProfileScreen(
                                 )
                             }
 
-                            else -> viewModel.processIntent(intent)
+                            else -> viewModel.processEvent(intent)
                         }
                     }
                 },
@@ -150,7 +152,7 @@ internal fun ProfileScreen(
 @Composable
 private fun ProfileContent(
     state: ProfileState,
-    onIntent: (profileIntent: ProfileIntent) -> Unit,
+    onEvent: (profileEvent: ProfileEvent) -> Unit,
     context: Context = LocalContext.current,
 ) {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
@@ -176,7 +178,7 @@ private fun ProfileContent(
                 },
             user = state.currentUser,
             context = context,
-            onGoogleClicked = { onIntent(it) },
+            onGoogleClicked = { onEvent(it) },
         )
 
         AnimatedButton(
@@ -188,9 +190,9 @@ private fun ProfileContent(
                         bottom.linkTo(parent.bottom, margin = L_PADDING)
                         width = Dimension.fillToConstraints
                     },
-            text = stringResource(id = R.string.sign_out),
+            text = stringResource(id = R.string.features_auth_sign_out),
             color = Color.Red.copy(alpha = 0.6f),
-            onClick = { onIntent(ProfileIntent.SignOut) },
+            onClick = { onEvent(ProfileEvent.SignOut) },
         )
     }
 }
@@ -198,7 +200,7 @@ private fun ProfileContent(
 @Composable
 private fun CurrentUserInfo(
     user: User,
-    onGoogleClicked: (ProfileIntent) -> Unit,
+    onGoogleClicked: (ProfileEvent) -> Unit,
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
 ) {
@@ -227,8 +229,8 @@ private fun CurrentUserInfo(
                     ImageRequest
                         .Builder(context)
                         .data(data = user.photoUrl)
-                        .placeholder(CoreR.drawable.user_placeholder)
-                        .error(CoreR.drawable.user_placeholder)
+                        .placeholder(R.drawable.features_auth_user_placeholder)
+                        .error(R.drawable.features_auth_user_placeholder)
                         .build(),
                 ),
             contentDescription = null,
@@ -242,7 +244,7 @@ private fun CurrentUserInfo(
                     start.linkTo(image.end, margin = XS_PADDING)
                     end.linkTo(parent.end)
                 },
-            text = user.displayName.toString(),
+            text = user.displayName,
             color = contentColor,
             fontSize = MaterialTheme.typography.titleLarge.fontSize,
             fontWeight = FontWeight.Bold,
@@ -258,7 +260,7 @@ private fun CurrentUserInfo(
                     start.linkTo(image.end)
                     end.linkTo(parent.end)
                 },
-            text = user.email.toString(),
+            text = user.email,
             color = contentColor,
             fontSize = MaterialTheme.typography.titleMedium.fontSize,
             fontWeight = FontWeight.Bold,
@@ -286,7 +288,7 @@ private fun CurrentUserInfo(
             ) {
                 Icon(
                     modifier = Modifier.size(MEDIUM_ICON_SIZE),
-                    painter = painterResource(R.drawable.baseline_verified_user_24),
+                    painter = painterResource(R.drawable.features_auth_baseline_verified_user_24),
                     contentDescription = null,
                     tint = Color.Green,
                 )
@@ -300,9 +302,9 @@ private fun CurrentUserInfo(
                             start.linkTo(verified.end)
                         }.clickable {
                             if (user.linkedWithGoogle) {
-                                onGoogleClicked(ProfileIntent.UnlinkWithGoogle)
+                                onGoogleClicked(ProfileEvent.UnlinkWithGoogle)
                             } else {
-                                onGoogleClicked(ProfileIntent.LinkWithGoogle)
+                                onGoogleClicked(ProfileEvent.LinkWithGoogle)
                             }
                         },
             ) {
@@ -315,7 +317,7 @@ private fun CurrentUserInfo(
                     )
                 } else {
                     Text(
-                        text = stringResource(R.string.link_google),
+                        text = stringResource(R.string.features_auth_link_google),
                         color = Blue700,
                         fontSize = MaterialTheme.typography.titleSmall.fontSize,
                         fontWeight = FontWeight.Bold,
@@ -353,7 +355,7 @@ private fun ProfileContentPreview() {
     Column(modifier = Modifier.background(color = backgroundColor)) {
         ProfileContent(
             state = ProfileState(),
-            onIntent = {},
+            onEvent = {},
         )
     }
 }

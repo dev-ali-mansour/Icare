@@ -25,6 +25,7 @@ class PharmacyViewModel(
     val pharmaciesResFlow: StateFlow<Resource<List<Pharmacy>>> = _pharmaciesResFlow
     var isRefreshing = mutableStateOf(false)
     var searchQueryState = mutableStateOf("")
+    var pharmaciesExpandedState = mutableStateOf(false)
 
     fun listPharmacies(forceRefresh: Boolean = false) {
         viewModelScope.launch(dispatcher) {
