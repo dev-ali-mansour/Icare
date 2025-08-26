@@ -285,10 +285,9 @@ internal fun FinishButton(
 @Preview(showBackground = true, locale = "ar")
 @Preview(showBackground = true, device = Devices.AUTOMOTIVE_1024p)
 @Preview(showBackground = true, locale = "ar", device = Devices.AUTOMOTIVE_1024p)
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES,device = Devices.AUTOMOTIVE_1024p)
+@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES, device = Devices.AUTOMOTIVE_1024p)
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES, locale = "ar")
-
 @Composable
 internal fun OnBoardingScreenPreview() {
     val configuration: Configuration = LocalConfiguration.current
@@ -309,18 +308,18 @@ internal fun OnBoardingScreenPreview() {
 val pages =
     listOf(
         OnBoardingPage(
-            image = R.drawable.first_page_image,
-            title = StringResourceId(R.string.first_page_title),
-            description = StringResourceId(R.string.first_page_description),
+            image = R.drawable.features_on_boarding_first_page_image,
+            title = StringResourceId(R.string.features_on_boarding_first_page_title),
+            description = StringResourceId(R.string.features_on_boarding_first_page_description),
         ),
         OnBoardingPage(
-            image = R.drawable.second_page_image,
-            title = StringResourceId(R.string.second_page_title),
-            description = StringResourceId(R.string.second_page_description),
+            image = R.drawable.features_on_boarding_second_page_image,
+            title = StringResourceId(R.string.features_on_boarding_second_page_title),
+            description = StringResourceId(R.string.features_on_boarding_second_page_description),
         ),
         OnBoardingPage(
-            image = R.drawable.third_page_image,
-            title = StringResourceId(R.string.third_page_title),
-            description = StringResourceId(R.string.third_page_description),
+            image = R.drawable.features_on_boarding_third_page_image,
+            title = StringResourceId(R.string.features_on_boarding_third_page_title),
+            description = StringResourceId(R.string.features_on_boarding_third_page_description),
         ),
     )
