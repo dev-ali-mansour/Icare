@@ -84,7 +84,7 @@ class RemoteAuthDataSourceImpl(
 
                     else -> emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
                 }
-            } ?: run { emit(Result.Error(DataError.Remote.INVALID_CREDENTIALS)) }
+            } ?: run { emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED)) }
         }.catch {
             Timber.e("getUserInfo() Error ${it.javaClass.simpleName}: ${it.message}")
             emit(Result.Error(it.toRemoteError()))
