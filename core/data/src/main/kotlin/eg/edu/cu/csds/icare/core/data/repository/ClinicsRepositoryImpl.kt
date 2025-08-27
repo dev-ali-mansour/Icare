@@ -130,10 +130,10 @@ class ClinicsRepositoryImpl(
                 }
         }
 
-    override fun getDoctorSchedule(uid: String): Flow<Result<DoctorSchedule, DataError.Remote>> =
+    override fun getDoctorSchedule(): Flow<Result<DoctorSchedule, DataError.Remote>> =
         flow {
             remoteClinicsDataSource
-                .getDoctorSchedule(uid)
+                .getDoctorSchedule()
                 .collect { result ->
                     result
                         .onSuccess { scheduleDto ->
