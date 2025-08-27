@@ -9,6 +9,5 @@ import kotlinx.coroutines.flow.Flow
 class GetDoctorScheduleUseCase(
     private val repository: ClinicsRepository,
 ) {
-    operator fun invoke(uid: String): Flow<Result<DoctorSchedule, DataError.Remote>> =
-        repository.getDoctorSchedule(uid)
+    operator fun invoke(): Flow<Result<DoctorSchedule, DataError.Remote>> = repository.getDoctorSchedule()
 }
