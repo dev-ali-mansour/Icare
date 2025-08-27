@@ -241,17 +241,17 @@ class RemoteClinicsDataSourceImpl(
             emit(Result.Error(it.toRemoteError()))
         }
 
-    override fun getDoctorSchedule(uid: String): Flow<Result<DoctorScheduleDto, DataError.Remote>> =
+    override fun getDoctorSchedule(): Flow<Result<DoctorScheduleDto, DataError.Remote>> =
         flow {
-            auth.currentUser?.let {
-                auth.currentUser
-                    ?.getIdToken(false)
-                    ?.await()
+            auth.currentUser?.let { currentUser ->
+                currentUser
+                    .getIdToken(false)
+                    .await()
                     ?.token
                     ?.let { token ->
                         val map = HashMap<String, String>()
                         map["token"] = token
-                        map["uid"] = uid
+                        map["uid"] = currentUser.uid
                         val response = service.getDoctorSchedule(map)
                         when (response.code()) {
                             HTTP_OK -> {
@@ -277,6 +277,8 @@ class RemoteClinicsDataSourceImpl(
                             else -> emit(Result.Error(DataError.Remote.UNKNOWN))
                         }
                     }
+            } ?: run {
+                emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
             }
         }.catch {
             Timber.e("getDoctorSchedule() error ${it.javaClass.simpleName}: ${it.message}")
