@@ -49,6 +49,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.util.toFormattedString
@@ -71,7 +72,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.mintAccent
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.theme.trustBlue
-import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
 import eg.edu.cu.csds.icare.home.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -79,13 +79,14 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 fun DoctorContent(
-    modifier: Modifier = Modifier,
     schedule: DoctorSchedule,
+    modifier: Modifier = Modifier,
     onPriceCardClicked: () -> Unit,
     onAppointmentClick: (Appointment) -> Unit,
     onSeeAllClick: () -> Unit,
-    scope: CoroutineScope = rememberCoroutineScope(),
 ) {
+    val     scope: CoroutineScope = rememberCoroutineScope()
+
     ConstraintLayout(
         modifier =
             modifier
@@ -93,7 +94,7 @@ fun DoctorContent(
                 .verticalScroll(rememberScrollState())
                 .padding(M_PADDING),
     ) {
-        var (patientsCard, confirmedCard, priceCard, slotsCard, appointments, list, seeAll) = createRefs()
+        val (patientsCard, confirmedCard, priceCard, slotsCard, appointments, list, seeAll) = createRefs()
 
         TotalPatientsCard(
             totalPatients = schedule.totalPatients,
