@@ -22,12 +22,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.navigation.compose.rememberNavController
 import eg.edu.cu.csds.icare.core.ui.common.BottomNavItem
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.view.BottomBarNavigation
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.navigation.SetupNavGraph
 import eg.edu.cu.csds.icare.splash.SplashEffect
+import eg.edu.cu.csds.icare.splash.SplashEvent
 import eg.edu.cu.csds.icare.splash.SplashViewModel
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -58,8 +60,10 @@ fun MainScreen(splashViewModel: SplashViewModel) {
         }
     }
 
-    LaunchedEffect(navController, splashViewModel) {
-        splashViewModel.singleEvent.collect { effect ->
+    LaunchedUiEffectHandler(
+        splashViewModel.effect,
+        onConsumeEffect = { splashViewModel.processEvent(SplashEvent.ConsumeEffect) },
+        onEffect = { effect ->
             runCatching {
                 val currentStartDestinationId = navController.graph.startDestinationId
                 val popUpToRoute = navController.graph.findNode(currentStartDestinationId)?.route
@@ -75,9 +79,8 @@ fun MainScreen(splashViewModel: SplashViewModel) {
                 }
 
                 when (effect) {
-                    is SplashEffect.NavigateToSignIn -> navigateAndPopUp(Route.SignIn)
-                    is SplashEffect.NavigateToHome -> navigateAndPopUp(Route.Home)
-                    is SplashEffect.NavigateToOnBoarding -> navigateAndPopUp(Route.OnBoarding)
+                    is SplashEffect.NavigateToRoute -> navigateAndPopUp(effect.route)
+
                     is SplashEffect.ShowError -> {
                         alertMessage = effect.message.asString(context)
                         showAlert = true
@@ -89,8 +92,8 @@ fun MainScreen(splashViewModel: SplashViewModel) {
             }.onFailure {
                 Timber.e(it, "Error during navigation in MainScreen")
             }
-        }
-    }
+        },
+    )
 
     Scaffold(
         bottomBar = {
