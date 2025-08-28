@@ -5,186 +5,216 @@ import androidx.lifecycle.viewModelScope
 import eg.edu.cu.csds.icare.core.domain.model.DataError
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
+import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfoUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCentersUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinicsUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctorsUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoardingUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.ListPharmaciesUseCase
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
-import timber.log.Timber
 
 @KoinViewModel
 class SplashViewModel(
     private val dispatcher: CoroutineDispatcher,
     private val readOnBoardingUseCase: ReadOnBoardingUseCase,
+    private val getUserInfoUseCase: GetUserInfoUseCase,
     private val listClinicsUseCase: ListClinicsUseCase,
     private val listDoctorsUseCase: ListDoctorsUseCase,
     private val listPharmaciesUseCase: ListPharmaciesUseCase,
     private val listCentersUseCase: ListCentersUseCase,
 ) : ViewModel() {
-    private val _state = MutableStateFlow(SplashState())
-    val state =
-        _state
+    private val _uiState = MutableStateFlow(SplashState())
+    val uiState =
+        _uiState
             .onStart {
                 observeOnBoardingStatus()
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
-                initialValue = _state.value,
+                initialValue = _uiState.value,
             )
 
-    private val _singleEvent = Channel<SplashSingleEvent>(Channel.BUFFERED)
-    val singleEvent = _singleEvent.receiveAsFlow()
+    val effect = _uiState.map { it.effect }
 
-    @Suppress("ktlint:standard:max-line-length")
+    fun processEvent(event: SplashEvent) {
+        when (event) {
+            is SplashEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+        }
+    }
+
     private fun observeOnBoardingStatus() =
         viewModelScope.launch(dispatcher) {
             readOnBoardingUseCase()
-                .onStart { _state.update { it.copy(isLoading = true) } }
+                .onStart { _uiState.update { it.copy(isLoading = true) } }
                 .onEach { result ->
                     result
                         .onSuccess { isOnBoardingCompleted ->
-                            _state.update { it.copy(isOnBoardingCompleted = isOnBoardingCompleted) }
+                            _uiState.update { it.copy(isOnBoardingCompleted = isOnBoardingCompleted) }
                             if (isOnBoardingCompleted) {
-                                Timber
-                                    .tag("Splash-Debug")
-                                    .d("On-boarding completed, fetching initial data...")
-                                listClinicsUseCase(forceUpdate = true)
-                                    .onEach { clinicsResult ->
-                                        clinicsResult
-                                            .onSuccess {
-                                                listDoctorsUseCase(
-                                                    forceUpdate = true,
-                                                ).onEach { doctorsResult ->
-                                                    doctorsResult
-                                                        .onSuccess {
-                                                            listPharmaciesUseCase(
-                                                                forceUpdate = true,
-                                                            ).onEach { pharmaciesResult ->
-                                                                pharmaciesResult
-                                                                    .onSuccess {
-                                                                        listCentersUseCase(
-                                                                            forceUpdate = true,
-                                                                        ).onEach { centersResult ->
-                                                                            centersResult
-                                                                                .onSuccess {
-                                                                                    Timber
-                                                                                        .tag("Splash-Debug")
-                                                                                        .d(
-                                                                                            "Clinics loaded successfully",
-                                                                                        )
-                                                                                    _state.update {
-                                                                                        it.copy(
-                                                                                            isLoading = false,
-                                                                                        )
-                                                                                    }
-                                                                                    Timber
-                                                                                        .tag(
-                                                                                            "Splash-Debug",
-                                                                                        ).d(
-                                                                                            "Navigating to Home",
-                                                                                        )
-                                                                                    _singleEvent.send(
-                                                                                        SplashSingleEvent.NavigateToHome,
-                                                                                    )
-                                                                                }.onError { error ->
-                                                                                    when (error) {
-                                                                                        DataError.Remote.USER_NOT_AUTHORIZED -> {
-                                                                                            _singleEvent.send(
-                                                                                                SplashSingleEvent.NavigateToSignIn,
-                                                                                            )
-                                                                                        }
-
-                                                                                        else -> {
-                                                                                            _singleEvent.send(
-                                                                                                SplashSingleEvent
-                                                                                                    .ShowError(
-                                                                                                        error
-                                                                                                            .toUiText(),
-                                                                                                    ),
-                                                                                            )
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                        }.launchIn(viewModelScope)
-                                                                    }.onError { error ->
-                                                                        when (error) {
-                                                                            DataError.Remote.USER_NOT_AUTHORIZED,
-                                                                            -> {
-                                                                                _singleEvent.send(
-                                                                                    SplashSingleEvent.NavigateToSignIn,
-                                                                                )
-                                                                            }
-
-                                                                            else -> {
-                                                                                _singleEvent.send(
-                                                                                    SplashSingleEvent
-                                                                                        .ShowError(
-                                                                                            error.toUiText(),
-                                                                                        ),
-                                                                                )
-                                                                            }
-                                                                        }
-                                                                    }
-                                                            }.launchIn(viewModelScope)
-                                                        }.onError { error ->
-                                                            when (error) {
-                                                                DataError.Remote.USER_NOT_AUTHORIZED -> {
-                                                                    _singleEvent.send(
-                                                                        SplashSingleEvent.NavigateToSignIn,
-                                                                    )
-                                                                }
-
-                                                                else -> {
-                                                                    _singleEvent.send(
-                                                                        SplashSingleEvent.ShowError(
-                                                                            error.toUiText(),
-                                                                        ),
-                                                                    )
-                                                                }
-                                                            }
-                                                        }
-                                                }.launchIn(viewModelScope)
-                                            }.onError { error ->
-                                                Timber.tag("Splash-Debug").e("error: $error")
-                                                _state.update { it.copy(isLoading = false) }
-                                                when (error) {
-                                                    DataError.Remote.USER_NOT_AUTHORIZED -> {
-                                                        _singleEvent.send(
-                                                            SplashSingleEvent.NavigateToSignIn,
-                                                        )
-                                                    }
-
-                                                    else -> {
-                                                        _singleEvent.send(
-                                                            SplashSingleEvent.ShowError(error.toUiText()),
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                    }.launchIn(viewModelScope)
+                                getCurrentUser()
                             } else {
-                                Timber.tag("Splash-Debug").d("On-boarding not completed")
-                                _state.update { it.copy(isLoading = false) }
-                                _singleEvent.send(SplashSingleEvent.NavigateToOnBoarding)
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        effect = SplashEffect.NavigateToRoute(Route.OnBoarding),
+                                    )
+                                }
                             }
                         }.onError { error ->
-                            Timber.tag("Splash-Debug").e("error: $error")
-                            _state.update { it.copy(isLoading = false) }
-                            _singleEvent.send(SplashSingleEvent.ShowError(error.toUiText()))
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect = SplashEffect.ShowError(error.toUiText()),
+                                )
+                            }
                         }
                 }.launchIn(viewModelScope)
         }
+
+    private fun getCurrentUser() =
+        viewModelScope.launch(dispatcher) {
+            _uiState.update { it.copy(isLoading = true) }
+            getUserInfoUseCase(forceUpdate = true).collect { result ->
+                result
+                    .onSuccess {
+                        fetchClinics()
+                    }.onError { error ->
+                        _uiState.update { it.copy(isLoading = false) }
+                        when (error) {
+                            DataError.Remote.USER_NOT_AUTHORIZED ->
+                                _uiState.update {
+                                    it.copy(
+                                        effect = SplashEffect.NavigateToRoute(Route.SignIn),
+                                    )
+                                }
+
+                            else ->
+                                _uiState.update {
+                                    it.copy(
+                                        effect =
+                                            SplashEffect.ShowError(error.toUiText()),
+                                    )
+                                }
+                        }
+                    }
+            }
+        }
+
+    private fun fetchClinics() {
+        listClinicsUseCase(forceUpdate = true)
+            .onEach { clinicsResult ->
+                clinicsResult
+                    .onSuccess {
+                        fetchDoctors()
+                    }.onError { error ->
+                        _uiState.update { it.copy(isLoading = false) }
+                        when (error) {
+                            DataError.Remote.USER_NOT_AUTHORIZED ->
+                                _uiState.update {
+                                    it.copy(
+                                        effect =
+                                            SplashEffect.NavigateToRoute(Route.SignIn),
+                                    )
+                                }
+
+                            else ->
+                                _uiState.update {
+                                    it.copy(
+                                        effect =
+                                            SplashEffect.ShowError(error.toUiText()),
+                                    )
+                                }
+                        }
+                    }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun fetchDoctors() {
+        listDoctorsUseCase(
+            forceUpdate = true,
+        ).onEach { doctorsResult ->
+            doctorsResult
+                .onSuccess {
+                    fetchPharmacies()
+                }.onError { error ->
+                    when (error) {
+                        DataError.Remote.USER_NOT_AUTHORIZED ->
+                            _uiState.update { it.copy(effect = SplashEffect.NavigateToRoute(Route.SignIn)) }
+
+                        else ->
+                            _uiState.update {
+                                it.copy(
+                                    effect =
+                                        SplashEffect.ShowError(error.toUiText()),
+                                )
+                            }
+                    }
+                }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun fetchPharmacies() {
+        listPharmaciesUseCase(
+            forceUpdate = true,
+        ).onEach { pharmaciesResult ->
+            pharmaciesResult
+                .onSuccess {
+                    fetchCenters()
+                }.onError { error ->
+                    when (error) {
+                        DataError.Remote.USER_NOT_AUTHORIZED ->
+                            _uiState.update { it.copy(effect = SplashEffect.NavigateToRoute(Route.SignIn)) }
+
+                        else ->
+                            _uiState.update {
+                                it.copy(
+                                    effect =
+                                        SplashEffect.ShowError(error.toUiText()),
+                                )
+                            }
+                    }
+                }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun fetchCenters() {
+        listCentersUseCase(
+            forceUpdate = true,
+        ).onEach { centersResult ->
+            centersResult
+                .onSuccess {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            effect = SplashEffect.NavigateToRoute(Route.Home),
+                        )
+                    }
+                }.onError { error ->
+                    when (error) {
+                        DataError.Remote.USER_NOT_AUTHORIZED ->
+                            _uiState.update { it.copy(effect = SplashEffect.NavigateToRoute(Route.SignIn)) }
+
+                        else ->
+                            _uiState.update {
+                                it.copy(
+                                    effect =
+                                        SplashEffect.ShowError(error.toUiText()),
+                                )
+                            }
+                    }
+                }
+        }.launchIn(viewModelScope)
+    }
 }
