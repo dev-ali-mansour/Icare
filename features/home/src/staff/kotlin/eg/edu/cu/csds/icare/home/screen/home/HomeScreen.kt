@@ -4,25 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -33,60 +22,45 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
-import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
+import eg.edu.cu.csds.icare.appointment.statusList
 import eg.edu.cu.csds.icare.core.domain.model.AdminStatistics
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
+import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
-import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.domain.model.User
-import eg.edu.cu.csds.icare.core.ui.MainViewModel
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.common.Role
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
-import eg.edu.cu.csds.icare.core.ui.theme.CATEGORY_ICON_SIZE
-import eg.edu.cu.csds.icare.core.ui.theme.HEADER_ICON_SIZE
-import eg.edu.cu.csds.icare.core.ui.theme.HEADER_PROFILE_CARD_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Orange200
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.U_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
-import eg.edu.cu.csds.icare.core.ui.theme.Yellow700
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.contentColor
-import eg.edu.cu.csds.icare.core.ui.theme.dialogTint
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
-import eg.edu.cu.csds.icare.core.ui.theme.kufamFamily
-import eg.edu.cu.csds.icare.core.ui.theme.textColor
-import eg.edu.cu.csds.icare.core.ui.theme.tintColor
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
-import eg.edu.cu.csds.icare.home.HomeViewModel
+import eg.edu.cu.csds.icare.core.ui.view.ConfirmDialog
+import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.home.R
+import eg.edu.cu.csds.icare.home.component.UserTitleView
 import eg.edu.cu.csds.icare.home.screen.admin.AdminContent
-import eg.edu.cu.csds.icare.home.screen.clinic.ClinicStaffContent
+import eg.edu.cu.csds.icare.home.screen.clinic.ClinicianContent
 import eg.edu.cu.csds.icare.home.screen.doctor.DoctorContent
+import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import kotlin.system.exitProcess
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
@@ -94,223 +68,111 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreen(
-    mainViewModel: MainViewModel,
-    homeViewModel: HomeViewModel,
-    clinicViewModel: ClinicViewModel,
-    appointmentViewModel: AppointmentViewModel,
-    loadContentData: (User) -> Unit,
-    navigateToScreen: (Route) -> Unit,
-    onPriceCardClicked: (String) -> Unit,
-    onAppointmentClick: (Appointment) -> Unit,
-    onSeeAllClick: () -> Unit,
-    onSectionsAdminClicked: () -> Unit,
-    onConfirm: (Appointment) -> Unit,
-    onError: suspend (Throwable?) -> Unit,
-    mediaHelper: MediaHelper = koinInject<MediaHelper>(),
-    context: Context = LocalContext.current,
+    viewModel: HomeViewModel = koinViewModel(),
+    navigateToRoute: (Route) -> Unit,
+    navigateToUpdateDoctorScreen: (Doctor) -> Unit,
+    navigateToNewConsultation: (Appointment) -> Unit,
 ) {
+    val context: Context = LocalContext.current
+    val refreshState = rememberPullToRefreshState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var alertMessage by remember { mutableStateOf("") }
+    var showAlert by remember { mutableStateOf(false) }
+    val mediaHelper: MediaHelper = koinInject()
     val appVersion: String =
         context.packageManager
             .getPackageInfo(context.packageName, 0)
             .versionName ?: ""
-    var openDialog by homeViewModel.openDialog
-    var isPlayed by homeViewModel.isPlayed
-    val userResource by mainViewModel.currentUserFlow.collectAsStateWithLifecycle()
-    val doctorScheduleRes by clinicViewModel.doctorScheduleResFlow.collectAsStateWithLifecycle()
-    val adminStatsRes by appointmentViewModel.adminStatsRes.collectAsStateWithLifecycle()
-    val appointmentsRes by appointmentViewModel.appointmentsResFlow.collectAsStateWithLifecycle()
-    val appointmentsActionResource by appointmentViewModel.actionResFlow
-        .collectAsStateWithLifecycle(initialValue = Resource.Unspecified())
-    var isRefreshing by appointmentViewModel.isRefreshing
-    val state = rememberPullToRefreshState()
 
     BackHandler {
-        openDialog = true
+        viewModel.processEvent(HomeEvent.UpdateOpenDialog(isOpen = true))
     }
 
-    LaunchedEffect(key1 = isPlayed) {
-        if (!isPlayed) {
+    LaunchedEffect(key1 = mediaHelper.isGreetingPlayed) {
+        if (!mediaHelper.isGreetingPlayed) {
             mediaHelper.play(R.raw.welcome)
-            isPlayed = true
         }
     }
-    userResource.data?.let {
-        LaunchedEffect(key1 = userResource) {
-            loadContentData(it)
-        }
-    }
+
+    LaunchedUiEffectHandler(
+        viewModel.effect,
+        onConsumeEffect = { viewModel.processEvent(HomeEvent.ConsumeEffect) },
+        onEffect = { effect ->
+            when (effect) {
+                is HomeEffect.NavigateToRoute -> navigateToRoute(effect.route)
+                is HomeEffect.NavigateToUpdateDoctorScreen -> navigateToUpdateDoctorScreen(effect.doctor)
+                is HomeEffect.NavigateToNewConsultation -> navigateToNewConsultation(effect.appointment)
+
+                is HomeEffect.ShowError -> {
+                    alertMessage = effect.message.asString(context)
+                    showAlert = true
+                    delay(timeMillis = 3000)
+                    showAlert = false
+                }
+            }
+        },
+    )
 
     Box(
         modifier =
             Modifier
                 .fillMaxSize()
-                .pullToRefresh(state = state, isRefreshing = isRefreshing, onRefresh = {
-                    userResource.data?.let { user ->
-                        loadContentData(user)
-                    }
-                }),
+                .pullToRefresh(
+                    state = refreshState,
+                    isRefreshing = uiState.isLoading,
+                    onRefresh = {
+                        viewModel.processEvent(HomeEvent.Refresh)
+                    },
+                ),
     ) {
         Column(
             modifier =
                 Modifier
                     .fillMaxSize(),
         ) {
-            if (openDialog) {
-                Dialog(
+            if (uiState.openDialog) {
+                ConfirmDialog(
+                    backgroundColor = backgroundColor,
+                    title = stringResource(id = CoreR.string.exit_dialog_title),
+                    message = stringResource(id = CoreR.string.exit_dialog),
                     onDismissRequest = {
-                        openDialog = false
+                        viewModel.processEvent(HomeEvent.UpdateOpenDialog(isOpen = false))
                     },
-                ) {
-                    Surface(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight(),
-                        shape = RoundedCornerShape(size = S_PADDING),
-                    ) {
-                        Column(modifier = Modifier.padding(all = 16.dp)) {
-                            Row(
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement =
-                                    Arrangement.spacedBy(
-                                        space = 6.dp,
-                                        alignment = Alignment.Start,
-                                    ),
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.exit_dialog_title),
-                                    color = dialogTint.copy(alpha = 0.6f),
-                                    fontSize = MaterialTheme.typography.headlineSmall.fontSize,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = helveticaFamily,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-                            }
-
-                            Text(
-                                text = stringResource(id = R.string.exit_dialog),
-                                color = dialogTint.copy(alpha = 0.6f),
-                                fontSize = MaterialTheme.typography.titleMedium.fontSize,
-                                fontFamily = helveticaFamily,
-                                fontWeight = FontWeight.Bold,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                            Spacer(modifier = Modifier.height(S_PADDING))
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement =
-                                    Arrangement.spacedBy(
-                                        space = 10.dp,
-                                        alignment = Alignment.End,
-                                    ),
-                            ) {
-                                // Cancel button
-                                Box(
-                                    modifier =
-                                        Modifier
-                                            .clickable {
-                                                openDialog = false
-                                            }.border(
-                                                width = 1.dp,
-                                                color = contentColor,
-                                                shape = RoundedCornerShape(S_PADDING),
-                                            ).padding(
-                                                top = 6.dp,
-                                                bottom = 8.dp,
-                                                start = 24.dp,
-                                                end = 24.dp,
-                                            ),
-                                ) {
-                                    Text(
-                                        text = stringResource(id = android.R.string.cancel),
-                                        color = dialogTint,
-                                        fontFamily = helveticaFamily,
-                                    )
-                                }
-                                Box(
-                                    modifier =
-                                        Modifier
-                                            .background(
-                                                color = tintColor,
-                                                shape = RoundedCornerShape(S_PADDING),
-                                            ).border(
-                                                width = 1.dp,
-                                                color = contentColor,
-                                                shape = RoundedCornerShape(S_PADDING),
-                                            ).clickable {
-                                                openDialog = false
-                                                (context as Activity).finish()
-                                                exitProcess(0)
-                                            }.padding(
-                                                top = 6.dp,
-                                                bottom = 8.dp,
-                                                start = 24.dp,
-                                                end = 24.dp,
-                                            ),
-                                ) {
-                                    Text(
-                                        text = stringResource(id = android.R.string.ok),
-                                        color = Color.White,
-                                        fontFamily = helveticaFamily,
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
+                    onConfirmed = {
+                        viewModel.processEvent(HomeEvent.UpdateOpenDialog(isOpen = false))
+                        (context as Activity).finish()
+                        exitProcess(0)
+                    },
+                    onCancelled = {
+                        viewModel.processEvent(HomeEvent.UpdateOpenDialog(isOpen = false))
+                    },
+                )
             }
 
             HomeContent(
-                userResource = userResource,
+                uiState = uiState,
                 appVersion = appVersion,
-                adminStatsRes = adminStatsRes,
-                doctorScheduleRes = doctorScheduleRes,
-                appointmentsRes = appointmentsRes,
-                appointmentsActionResource = appointmentsActionResource,
-                showLoading = { isRefreshing = it },
-                onUserClicked = { navigateToScreen(Route.Profile) },
-                onSectionsAdminClicked = { onSectionsAdminClicked() },
-                onPriceCardClicked = { userId -> onPriceCardClicked(userId) },
-                onAppointmentClick = { onAppointmentClick(it) },
-                onSeeAllClick = { onSeeAllClick() },
-                onConfirm = { onConfirm(it) },
-                onSuccess = {},
-                onError = { onError(it) },
+                onEvent = viewModel::processEvent,
             )
         }
 
         Indicator(
             modifier = Modifier.align(Alignment.TopCenter),
-            isRefreshing = isRefreshing,
-            state = state,
+            isRefreshing = uiState.isLoading,
+            state = refreshState,
         )
+
+        if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
     }
 }
 
 @Composable
 private fun HomeContent(
-    userResource: Resource<User>,
+    uiState: HomeState,
     appVersion: String,
-    adminStatsRes: Resource<AdminStatistics>,
-    doctorScheduleRes: Resource<DoctorSchedule>,
-    appointmentsRes: Resource<List<Appointment>>,
-    appointmentsActionResource: Resource<Unit>,
-    showLoading: (Boolean) -> Unit,
-    onUserClicked: () -> Unit,
-    onPriceCardClicked: (String) -> Unit,
-    onAppointmentClick: (Appointment) -> Unit,
-    onSeeAllClick: () -> Unit,
-    onSectionsAdminClicked: () -> Unit,
-    onConfirm: (Appointment) -> Unit,
-    onSuccess: () -> Unit,
-    onError: suspend (Throwable?) -> Unit,
-    modifier: Modifier = Modifier,
+    onEvent: (HomeEvent) -> Unit,
 ) {
-    ConstraintLayout(modifier = modifier.fillMaxSize()) {
+    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (titleContainer, line, content, marquee) = createRefs()
         Surface(
             modifier =
@@ -323,15 +185,14 @@ private fun HomeContent(
             color = backgroundColor,
             tonalElevation = S_PADDING,
         ) {
-            userResource.data?.let { user ->
-                TitleView(
-                    modifier = Modifier,
-                    appVersion = appVersion,
-                    user = user,
-                    onUserClicked = { onUserClicked() },
-                )
-            }
+            UserTitleView(
+                modifier = Modifier,
+                appVersion = appVersion,
+                user = uiState.currentUser,
+                onUserClicked = { onEvent(HomeEvent.NavigateToProfileScreen) },
+            )
         }
+
         Box(
             modifier =
                 Modifier
@@ -344,95 +205,54 @@ private fun HomeContent(
                     .height(XS_PADDING)
                     .background(Yellow500),
         )
-        userResource.data?.let { user ->
+        uiState.currentUser?.let { user ->
             when (user.roleId) {
                 Role.AdminRole.code -> {
-                    when (adminStatsRes) {
-                        is Resource.Unspecified ->
-                            LaunchedEffect(key1 = adminStatsRes) {
-                                showLoading(false)
-                            }
-
-                        is Resource.Loading ->
-                            LaunchedEffect(key1 = adminStatsRes) {
-                                showLoading(true)
-                            }
-
-                        is Resource.Success -> {
-                            LaunchedEffect(key1 = adminStatsRes) { showLoading(false) }
-
-                            adminStatsRes.data?.let { stats ->
-                                AdminContent(
-                                    modifier =
-                                        Modifier.constrainAs(content) {
-                                            top.linkTo(line.bottom)
-                                            start.linkTo(parent.start)
-                                            end.linkTo(parent.end)
-                                            bottom.linkTo(marquee.top, margin = M_PADDING)
-                                            width = Dimension.fillToConstraints
-                                            height = Dimension.fillToConstraints
-                                        },
-                                    stats = stats,
-                                    onSectionsAdminClicked = {
-                                        onSectionsAdminClicked()
-                                    },
-                                )
-                            }
-                        }
-
-                        is Resource.Error ->
-                            LaunchedEffect(key1 = adminStatsRes) {
-                                showLoading(false)
-                                onError(adminStatsRes.error)
-                            }
+                    uiState.adminStatistics?.let { stats ->
+                        AdminContent(
+                            modifier =
+                                Modifier.constrainAs(content) {
+                                    top.linkTo(line.bottom)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                    bottom.linkTo(marquee.top, margin = M_PADDING)
+                                    width = Dimension.fillToConstraints
+                                    height = Dimension.fillToConstraints
+                                },
+                            stats = stats,
+                            onSectionsAdminClicked = {
+                                onEvent(HomeEvent.NavigateToSectionsAdminScreen)
+                            },
+                        )
                     }
                 }
 
                 Role.DoctorRole.code -> {
-                    when (doctorScheduleRes) {
-                        is Resource.Unspecified ->
-                            LaunchedEffect(key1 = doctorScheduleRes) {
-                                showLoading(false)
-                            }
-
-                        is Resource.Loading ->
-                            LaunchedEffect(key1 = doctorScheduleRes) {
-                                showLoading(true)
-                            }
-
-                        is Resource.Success -> {
-                            LaunchedEffect(key1 = doctorScheduleRes) { showLoading(false) }
-
-                            doctorScheduleRes.data?.let { schedule ->
-
-                                DoctorContent(
-                                    modifier =
-                                        Modifier.constrainAs(content) {
-                                            top.linkTo(line.bottom)
-                                            start.linkTo(parent.start)
-                                            end.linkTo(parent.end)
-                                            bottom.linkTo(marquee.top, margin = M_PADDING)
-                                            width = Dimension.fillToConstraints
-                                            height = Dimension.fillToConstraints
-                                        },
-                                    schedule = schedule,
-                                    onPriceCardClicked = { onPriceCardClicked(user.userId) },
-                                    onAppointmentClick = { onAppointmentClick(it) },
-                                    onSeeAllClick = { onSeeAllClick() },
-                                )
-                            }
-                        }
-
-                        is Resource.Error ->
-                            LaunchedEffect(key1 = doctorScheduleRes) {
-                                showLoading(false)
-                                onError(doctorScheduleRes.error)
-                            }
+                    uiState.doctorSchedule?.let { schedule ->
+                        DoctorContent(
+                            modifier =
+                                Modifier.constrainAs(content) {
+                                    top.linkTo(line.bottom)
+                                    start.linkTo(parent.start)
+                                    end.linkTo(parent.end)
+                                    bottom.linkTo(marquee.top, margin = M_PADDING)
+                                    width = Dimension.fillToConstraints
+                                    height = Dimension.fillToConstraints
+                                },
+                            schedule = schedule,
+                            onPriceCardClicked = {
+                                uiState.currentDoctor?.let { doctor ->
+                                    onEvent(HomeEvent.NavigateToUpdateDoctorScreen(doctor))
+                                }
+                            },
+                            onAppointmentClick = { onEvent(HomeEvent.NavigateToNewConsultation(it)) },
+                            onSeeAllClick = { onEvent(HomeEvent.NavigateToAppointmentsScreen) },
+                        )
                     }
                 }
 
-                Role.ClinicStaffRole.code -> {
-                    ClinicStaffContent(
+                Role.ClinicianRole.code -> {
+                    ClinicianContent(
                         modifier =
                             Modifier.constrainAs(content) {
                                 top.linkTo(line.bottom)
@@ -442,16 +262,17 @@ private fun HomeContent(
                                 width = Dimension.fillToConstraints
                                 height = Dimension.fillToConstraints
                             },
-                        appointmentsRes = appointmentsRes,
-                        actionResource = appointmentsActionResource,
-                        showLoading = { showLoading(it) },
-                        onConfirm = { onConfirm(it) },
-                        onSuccess = { onSuccess() },
-                        onError = { onError },
+                        appointments =
+                            uiState.appointments.map { appointment ->
+                                statusList.find { it.code == appointment.statusId }?.let {
+                                    appointment.copy(status = stringResource(it.textResId))
+                                } ?: appointment
+                            },
+                        onConfirm = { onEvent(HomeEvent.ConfirmAppointment(it)) },
                     )
                 }
 
-                else -> {}
+                else -> Unit
             }
         }
 
@@ -475,127 +296,6 @@ private fun HomeContent(
     }
 }
 
-@Composable
-private fun TitleView(
-    appVersion: String,
-    user: User,
-    modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
-    onUserClicked: () -> Unit,
-) {
-    ConstraintLayout(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(horizontal = S_PADDING, vertical = XS_PADDING),
-    ) {
-        val (logo, title, version, card) = createRefs()
-
-        Image(
-            modifier =
-                Modifier
-                    .constrainAs(logo) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                    }.size(HEADER_ICON_SIZE),
-            painter = painterResource(CoreR.drawable.logo),
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-        )
-
-        Text(
-            modifier =
-                Modifier.constrainAs(title) {
-                    start.linkTo(logo.end)
-                    end.linkTo(card.end)
-                    bottom.linkTo(logo.bottom)
-                    width = Dimension.fillToConstraints
-                },
-            text = stringResource(CoreR.string.app_name),
-            fontFamily = kufamFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = MaterialTheme.typography.labelLarge.fontSize,
-            color = textColor,
-        )
-
-        Surface(
-            modifier =
-                Modifier
-                    .constrainAs(card) {
-                        top.linkTo(logo.top, S_PADDING)
-                        end.linkTo(parent.end, S_PADDING)
-                    }.clickable { onUserClicked() },
-            color = contentBackgroundColor,
-            shape = RoundedCornerShape(S_PADDING),
-        ) {
-            ConstraintLayout(
-                modifier =
-                    Modifier
-                        .width(HEADER_PROFILE_CARD_WIDTH)
-                        .padding(U_PADDING),
-            ) {
-                val (image, name) = createRefs()
-
-                Image(
-                    modifier =
-                        Modifier
-                            .clip(CircleShape)
-                            .size(CATEGORY_ICON_SIZE)
-                            .constrainAs(image) {
-                                top.linkTo(parent.top)
-                                start.linkTo(parent.start)
-                                bottom.linkTo(parent.bottom)
-                            },
-                    painter =
-                        rememberAsyncImagePainter(
-                            ImageRequest
-                                .Builder(context)
-                                .data(data = user.photoUrl)
-                                .placeholder(R.drawable.user_placeholder)
-                                .error(R.drawable.user_placeholder)
-                                .build(),
-                        ),
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                )
-
-                Text(
-                    modifier =
-                        Modifier.constrainAs(name) {
-                            top.linkTo(image.top)
-                            start.linkTo(image.end, margin = XS_PADDING)
-                            bottom.linkTo(image.bottom)
-                        },
-                    text = user.displayName,
-                    color = contentColor,
-                    fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = helveticaFamily,
-                    maxLines = 1,
-                    textAlign = TextAlign.Center,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-        }
-
-        Text(
-            text = "V. $appVersion",
-            modifier =
-                Modifier
-                    .constrainAs(version) {
-                        top.linkTo(title.top)
-                        end.linkTo(parent.end, S_PADDING)
-                    },
-            color = Yellow700,
-            fontSize = MaterialTheme.typography.titleMedium.fontSize,
-            fontFamily = helveticaFamily,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Preview(locale = "ar", showBackground = true)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -610,69 +310,56 @@ private fun HomeContentPreview() {
                 .padding(XS_PADDING),
     ) {
         HomeContent(
-            userResource =
-                Resource.Success(
-                    User(
-                        roleId = Role.AdminRole.code,
-                        displayName = "Ali Mansour",
-                        email = "",
-                        photoUrl = "",
-                    ),
+            uiState =
+                HomeState(
+                    currentUser =
+                        User(
+                            roleId = Role.AdminRole.code,
+                            displayName = "Ali Mansour",
+                            email = "",
+                            photoUrl = "",
+                        ),
+                    adminStatistics =
+                        AdminStatistics(
+                            totalUsers = 2500,
+                            doctors = 150,
+                            pharmacies = 35,
+                            scanCenters = 25,
+                            labCenters = 15,
+                            pending = 4590,
+                            confirmed = 178,
+                            completed = 2850,
+                            cancelled = 12,
+                        ),
+                    doctorSchedule =
+                        DoctorSchedule(
+                            totalPatients = 2000,
+                            confirmed = 16,
+                            price = 500.0,
+                            availableSlots = 5,
+                            appointments =
+                                listOf(
+                                    Appointment(
+                                        patientName = "محمد السيد عثمان",
+                                        dateTime = System.currentTimeMillis(),
+                                    ),
+                                    Appointment(
+                                        patientName = "ابراهيم محمد",
+                                        dateTime = System.currentTimeMillis(),
+                                    ),
+                                    Appointment(
+                                        patientName = "شاكر محمد العربي",
+                                        dateTime = System.currentTimeMillis(),
+                                    ),
+                                    Appointment(
+                                        patientName = "أحمد عبد الحليم مهران",
+                                        dateTime = System.currentTimeMillis(),
+                                    ),
+                                ),
+                        ),
                 ),
             appVersion = "1.0.0",
-            adminStatsRes =
-                Resource.Success(
-                    AdminStatistics(
-                        totalUsers = 2500,
-                        doctors = 150,
-                        pharmacies = 35,
-                        scanCenters = 25,
-                        labCenters = 15,
-                        pending = 4590,
-                        confirmed = 178,
-                        completed = 2850,
-                        cancelled = 12,
-                    ),
-                ),
-            doctorScheduleRes =
-                Resource.Success(
-                    DoctorSchedule(
-                        totalPatients = 2000,
-                        confirmed = 16,
-                        price = 500.0,
-                        availableSlots = 5,
-                        appointments =
-                            listOf(
-                                Appointment(
-                                    patientName = "محمد السيد عثمان",
-                                    dateTime = System.currentTimeMillis(),
-                                ),
-                                Appointment(
-                                    patientName = "ابراهيم محمد",
-                                    dateTime = System.currentTimeMillis(),
-                                ),
-                                Appointment(
-                                    patientName = "شاكر محمد العربي",
-                                    dateTime = System.currentTimeMillis(),
-                                ),
-                                Appointment(
-                                    patientName = "أحمد عبد الحليم مهران",
-                                    dateTime = System.currentTimeMillis(),
-                                ),
-                            ),
-                    ),
-                ),
-            appointmentsRes = Resource.Success(emptyList()),
-            appointmentsActionResource = Resource.Unspecified(),
-            onConfirm = {},
-            onSuccess = {},
-            showLoading = {},
-            onUserClicked = {},
-            onPriceCardClicked = {},
-            onAppointmentClick = {},
-            onSeeAllClick = {},
-            onSectionsAdminClicked = {},
-            onError = {},
+            onEvent = {},
         )
     }
 }
