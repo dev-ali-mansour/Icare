@@ -11,9 +11,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import eg.edu.cu.csds.icare.MainActivity
-import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
 import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
+import eg.edu.cu.csds.icare.admin.screen.doctor.SelectedDoctorViewModel
 import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.appointment.navigation.appointmentsRoute
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
@@ -28,7 +27,6 @@ import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.util.activity
 import eg.edu.cu.csds.icare.core.ui.util.getErrorMessage
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
-import eg.edu.cu.csds.icare.home.HomeViewModel
 import eg.edu.cu.csds.icare.home.navigation.homeRoute
 import eg.edu.cu.csds.icare.notification.navigation.notificationsRoute
 import eg.edu.cu.csds.icare.onboarding.navigation.onBoardingRoute
@@ -41,11 +39,9 @@ import kotlin.system.exitProcess
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
+    selectedDoctorViewModel: SelectedDoctorViewModel = koinViewModel(),
     mainViewModel: MainViewModel = koinViewModel(),
-    homeViewModel: HomeViewModel = koinViewModel(),
     clinicViewModel: ClinicViewModel = koinViewModel(),
-    pharmacyViewModel: PharmacyViewModel = koinViewModel(),
-    centerViewModel: CenterViewModel = koinViewModel(),
     appointmentViewModel: AppointmentViewModel = koinViewModel(),
     consultationViewModel: ConsultationViewModel = koinViewModel(),
     profileViewModel: ProfileViewModel = koinViewModel(),
@@ -108,27 +104,10 @@ fun SetupNavGraph(
         )
 
         homeRoute(
-            mainViewModel = mainViewModel,
-            homeViewModel = homeViewModel,
-            appointmentViewModel = appointmentViewModel,
-            clinicViewModel = clinicViewModel,
-            pharmacyViewModel = pharmacyViewModel,
-            centerViewModel = centerViewModel,
-            navigateToScreen = { screen -> navController.navigate(screen) },
+            selectedDoctorViewModel = selectedDoctorViewModel,
+            navigateToRoute = { screen -> navController.navigate(screen) },
             onNavigationIconClicked = {
                 navController.navigateUpSafely()
-            },
-            onError = { error ->
-                exitApp.value = false
-                handleError(
-                    error,
-                    exitApp,
-                    context,
-                    profileViewModel,
-                    navController,
-                    alertMessage,
-                    showAlert,
-                )
             },
         )
 
@@ -142,6 +121,7 @@ fun SetupNavGraph(
         )
 
         appointmentsRoute(
+            selectedDoctorViewModel = selectedDoctorViewModel,
             mainViewModel = mainViewModel,
             clinicViewModel = clinicViewModel,
             appointmentsViewModel = appointmentViewModel,

@@ -12,7 +12,7 @@ sealed class Role(
 
     data object DoctorRole : Role(code = 2, name = R.string.doctors)
 
-    data object ClinicStaffRole : Role(code = 3, name = R.string.clinic_staffs)
+    data object ClinicianRole : Role(code = 3, name = R.string.clinic_staffs)
 
     data object PharmacistRole : Role(code = 4, name = R.string.pharmacists)
 

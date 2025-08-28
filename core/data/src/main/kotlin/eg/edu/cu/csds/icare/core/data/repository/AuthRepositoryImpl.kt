@@ -118,19 +118,16 @@ class AuthRepositoryImpl(
                             return@flow
                         }
                     }
-                remoteAuthDataSource
-                    .getUserInfo()
-                    .collect { result ->
-                        when (result) {
-                            is Result.Success -> {
-                                localAuthDataSource.saveEmployee(entity = result.data.toUserEntity())
-                                emit(Result.Success(data = result.data.toUser()))
-                            }
-
-                            is Result.Error ->
-                                emit(Result.Error(result.error))
+                remoteAuthDataSource.getUserInfo().collect { result ->
+                    when (result) {
+                        is Result.Success -> {
+                            localAuthDataSource.saveEmployee(entity = result.data.toUserEntity())
+                            emit(Result.Success(data = result.data.toUser()))
                         }
+
+                        is Result.Error -> emit(Result.Error(result.error))
                     }
+                }
             }.onFailure {
                 emit(Result.Error(DataError.Remote.UNKNOWN))
             }

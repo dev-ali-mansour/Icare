@@ -56,7 +56,7 @@ fun TopDoctorCard(
                 Modifier
                     .height(PROMOTION_ITEM_HEIGHT)
                     .fillMaxWidth(),
-            error = painterResource(R.drawable.doctor_placeholder),
+            error = painterResource(R.drawable.features_home_doctor_placeholder),
             contentScale = ContentScale.FillBounds,
         )
         Text(

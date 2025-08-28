@@ -55,13 +55,13 @@ fun AdminContent(
                 .verticalScroll(rememberScrollState())
                 .padding(M_PADDING),
     ) {
-        var (
+        val (
             overview, usersCard, pending, confirmedCard, completedCard, cancelledCard,
             doctorsCard, pharmaciesCard, labsCard, scanCentersCard, button,
         ) = createRefs()
 
         Text(
-            text = stringResource(R.string.overview),
+            text = stringResource(R.string.features_home_overview),
             modifier =
                 Modifier.constrainAs(overview) {
                     top.linkTo(parent.top)
@@ -84,7 +84,7 @@ fun AdminContent(
         )
 
         StatCard(
-            title = stringResource(R.string.users),
+            title = stringResource(R.string.features_home_users),
             value = stats.totalUsers.toString(),
             modifier =
                 Modifier.constrainAs(usersCard) {
