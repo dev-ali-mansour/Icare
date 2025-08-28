@@ -59,7 +59,7 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LabCenterListScreen(
+internal fun LabCenterListScreen(
     viewModel: LabListViewModel = koinViewModel(),
     onNavigationIconClicked: () -> Unit,
 ) {
