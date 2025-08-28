@@ -60,7 +60,7 @@ fun PromotionItem(promotion: Promotion) {
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
                     },
-                error = painterResource(R.drawable.promo_placeholder),
+                error = painterResource(R.drawable.features_home_promo_placeholder),
                 contentScale = ContentScale.Crop,
             )
 
