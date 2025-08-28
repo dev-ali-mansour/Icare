@@ -41,6 +41,7 @@ import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetMedicalRecordUse
 import eg.edu.cu.csds.icare.core.domain.usecase.consultation.GetMedicationsByStatusUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.consultation.UpdateConsultationUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.AddNewDoctorUseCase
+import eg.edu.cu.csds.icare.core.domain.usecase.doctor.GetCurrentDoctorUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.GetDoctorScheduleUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctorsUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListTopDoctorsUseCase
@@ -102,6 +103,9 @@ class UseCaseModule {
 
     @Single
     fun provideListDoctors(repository: ClinicsRepository) = ListDoctorsUseCase(repository)
+
+    @Single
+    fun provideGetCurrentDoctor(repository: ClinicsRepository) = GetCurrentDoctorUseCase(repository)
 
     @Single
     fun provideGetDoctorSchedule(repository: ClinicsRepository) = GetDoctorScheduleUseCase(repository)
