@@ -14,7 +14,6 @@ import eg.edu.cu.csds.icare.MainActivity
 import eg.edu.cu.csds.icare.admin.navigation.adminRoute
 import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
 import eg.edu.cu.csds.icare.admin.screen.center.SelectedCenterViewModel
-import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.admin.screen.clinic.SelectedClinicViewModel
 import eg.edu.cu.csds.icare.admin.screen.clinician.SelectedClinicianViewModel
 import eg.edu.cu.csds.icare.admin.screen.doctor.SelectedDoctorViewModel
@@ -23,6 +22,7 @@ import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.SelectedPharmacyViewModel
 import eg.edu.cu.csds.icare.admin.screen.staff.SelectedStaffViewModel
 import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
+import eg.edu.cu.csds.icare.appointment.SelectedAppointmentViewModel
 import eg.edu.cu.csds.icare.appointment.navigation.appointmentsRoute
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
 import eg.edu.cu.csds.icare.auth.screen.profile.ProfileEffect
@@ -31,12 +31,10 @@ import eg.edu.cu.csds.icare.auth.screen.profile.ProfileViewModel
 import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
 import eg.edu.cu.csds.icare.consultation.screen.navigation.consultationsRoute
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
-import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.util.activity
 import eg.edu.cu.csds.icare.core.ui.util.getErrorMessage
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
-import eg.edu.cu.csds.icare.home.HomeViewModel
 import eg.edu.cu.csds.icare.home.navigation.homeRoute
 import eg.edu.cu.csds.icare.notification.navigation.notificationsRoute
 import eg.edu.cu.csds.icare.onboarding.navigation.onBoardingRoute
@@ -51,8 +49,6 @@ fun SetupNavGraph(
     navController: NavHostController,
     context: Context = LocalContext.current,
 ) {
-    val mainViewModel: MainViewModel = koinViewModel()
-    val homeViewModel: HomeViewModel = koinViewModel()
     val selectedClinicViewModel: SelectedClinicViewModel = koinViewModel()
     val selectedDoctorViewModel: SelectedDoctorViewModel = koinViewModel()
     val selectedClinicianViewModel: SelectedClinicianViewModel = koinViewModel()
@@ -60,7 +56,7 @@ fun SetupNavGraph(
     val selectedPharmacistViewModel: SelectedPharmacistViewModel = koinViewModel()
     val selectedCenterViewModel: SelectedCenterViewModel = koinViewModel()
     val selectedStaffViewModel: SelectedStaffViewModel = koinViewModel()
-    val clinicViewModel: ClinicViewModel = koinViewModel()
+    val selectedAppointmentViewModel: SelectedAppointmentViewModel = koinViewModel()
     val pharmacyViewModel: PharmacyViewModel = koinViewModel()
     val centerViewModel: CenterViewModel = koinViewModel()
     val appointmentViewModel: AppointmentViewModel = koinViewModel()
@@ -116,24 +112,9 @@ fun SetupNavGraph(
         )
 
         homeRoute(
-            mainViewModel = mainViewModel,
-            homeViewModel = homeViewModel,
-            clinicViewModel = clinicViewModel,
-            consultationViewModel = consultationViewModel,
-            appointmentViewModel = appointmentViewModel,
-            navigateToScreen = { screen -> navController.navigate(screen) },
-            onError = { error ->
-                exitApp.value = false
-                handleError(
-                    error,
-                    exitApp,
-                    context,
-                    profileViewModel,
-                    navController,
-                    alertMessage,
-                    showAlert,
-                )
-            },
+            selectedDoctorViewModel = selectedDoctorViewModel,
+            selectedAppointmentViewModel = selectedAppointmentViewModel,
+            navigateToRoute = { screen -> navController.navigate(screen) },
         )
 
         notificationsRoute()
@@ -183,6 +164,7 @@ fun SetupNavGraph(
         )
 
         consultationsRoute(
+            selectedAppointmentViewModel = selectedAppointmentViewModel,
             pharmacyViewModel = pharmacyViewModel,
             centerViewModel = centerViewModel,
             consultationViewModel = consultationViewModel,
