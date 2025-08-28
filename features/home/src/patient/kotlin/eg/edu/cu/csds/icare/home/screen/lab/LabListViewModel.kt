@@ -111,14 +111,8 @@ class LabListViewModel(
                                 center.type == CenterTypeItem.LabCenter.code &&
                                     (
                                         query.isEmpty() ||
-                                            center.name.contains(
-                                                query,
-                                                ignoreCase = true,
-                                            ) ||
-                                            center.address.contains(
-                                                query,
-                                                ignoreCase = true,
-                                            )
+                                            center.name.contains(query, ignoreCase = true) ||
+                                            center.address.contains(query, ignoreCase = true)
                                     )
                             }
                         _uiState.update { it.copy(isLoading = false, labs = queryResults) }
