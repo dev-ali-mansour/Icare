@@ -198,7 +198,7 @@ private fun ImagingCentersListContent(
                             end.linkTo(parent.end, M_PADDING)
                             width = Dimension.fillToConstraints
                         },
-                placeholder = stringResource(R.string.search_by_center_name_or_address),
+                placeholder = stringResource(R.string.features_home_search_by_center_name_or_address),
                 value = uiState.searchQuery,
                 focus = false,
                 onValueChange = { onEvent(ImagingCenterListEvent.UpdateSearchQuery(it)) },
@@ -218,7 +218,7 @@ private fun ImagingCentersListContent(
                                 width = Dimension.fillToConstraints
                                 height = Dimension.fillToConstraints
                             },
-                    text = stringResource(R.string.no_data_matched),
+                    text = stringResource(R.string.features_home_no_data_matched),
                 )
             } else {
                 LazyColumn(

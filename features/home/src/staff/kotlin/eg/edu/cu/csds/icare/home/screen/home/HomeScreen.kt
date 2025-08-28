@@ -90,7 +90,7 @@ internal fun HomeScreen(
 
     LaunchedEffect(key1 = mediaHelper.isGreetingPlayed) {
         if (!mediaHelper.isGreetingPlayed) {
-            mediaHelper.play(R.raw.welcome)
+            mediaHelper.play(R.raw.features_home_welcome)
         }
     }
 
