@@ -17,6 +17,10 @@
     <string name="users">المستخدمين</string>
     <string name="till_now">حتى الآن</string>
     <string name="overview">نظرة عامة</string>
+    <string name="search_by_lab_name_or_address">ابحث باسم المعمل أو عنوانه</string>
+    <string name="search_by_center_name_or_address">ابحث باسم المركز أو عنوانه</string>
+    <string name="search_by_pharmacy_name_or_address">ابحث باسم الصدلية أو عنوانها</string>
+    <string name="no_data_matched">لا توجد بيانات مطابقة</string>
 
     <!--Multilingual Resources of Application-->
 </resources>

@@ -17,5 +17,10 @@
     <string name="users">Users</string>
     <string name="till_now">till now</string>
     <string name="overview">Overview</string>
+    <string name="search_by_lab_name_or_address">Search by lab\'s name or address</string>
+    <string name="search_by_center_name_or_address">Search by center\'s name or address</string>
+    <string name="search_by_pharmacy_name_or_address">Search by pharmacy\'s name or address</string>
+    <string name="no_data_matched">No data is matched</string>
+
     <!--Multilingual Resources of Application-->
 </resources>
