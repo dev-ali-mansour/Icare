@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.appointment.screen
+package eg.edu.cu.csds.icare.appointment.components
 
 import android.content.Context
 import android.content.res.Configuration
@@ -31,6 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.appointment.R
+import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
+import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.domain.util.getNextDaysTimestamps
 import eg.edu.cu.csds.icare.core.ui.theme.CARD_ROUND_CORNER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.DATE_SELECTOR_HEIGHT
@@ -41,12 +43,10 @@ import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
-import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
-import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
-fun TimeSlotSelector(
+internal fun TimeSlotSelector(
     dates: List<Long>,
     selectedSlot: Long,
     onSlotSelected: (Long) -> Unit,
@@ -111,7 +111,7 @@ fun TimeSlotSelector(
                 },
         ) {
             items(dates) { date ->
-                var isSelected = date == selectedSlot
+                val isSelected = date == selectedSlot
 
                 Column(
                     modifier =
@@ -169,7 +169,7 @@ fun TimeSlotSelector(
     locale = "ar",
 )
 @Composable
-internal fun TimeSlotSelectorPreview() {
+private fun TimeSlotSelectorPreview() {
     Box(
         modifier =
             Modifier
@@ -177,7 +177,7 @@ internal fun TimeSlotSelectorPreview() {
                 .background(backgroundColor),
     ) {
         TimeSlotSelector(
-            dates = getNextDaysTimestamps(14),
+            dates = getNextDaysTimestamps(count = 14),
             selectedSlot = System.currentTimeMillis(),
             onSlotSelected = {},
         )
