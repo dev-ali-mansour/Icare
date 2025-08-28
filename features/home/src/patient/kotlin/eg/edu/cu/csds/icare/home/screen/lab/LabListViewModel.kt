@@ -28,7 +28,7 @@ class LabListViewModel(
     private val dispatcher: CoroutineDispatcher,
     private val listCentersUseCase: ListCentersUseCase,
 ) : ViewModel() {
-    private var fetchCentersJob: Job? = null
+    private var fetchLabsJob: Job? = null
     private val _uiState = MutableStateFlow(LabListState())
     val uiState =
         _uiState
@@ -48,8 +48,8 @@ class LabListViewModel(
             }
 
             is LabListEvent.Refresh -> {
-                fetchCentersJob?.cancel()
-                fetchCentersJob = refreshLabCenters()
+                fetchLabsJob?.cancel()
+                fetchLabsJob = refreshLabCenters()
             }
 
             is LabListEvent.UpdateSearchQuery -> {
@@ -57,8 +57,8 @@ class LabListViewModel(
             }
 
             is LabListEvent.Search -> {
-                fetchCentersJob?.cancel()
-                fetchCentersJob = launchSearchLabCenters(query = _uiState.value.searchQuery)
+                fetchLabsJob?.cancel()
+                fetchLabsJob = launchSearchLabCenters(query = _uiState.value.searchQuery)
             }
 
             LabListEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
@@ -95,8 +95,8 @@ class LabListViewModel(
             .distinctUntilChanged()
             .debounce(timeoutMillis = 500L)
             .onEach { query ->
-                fetchCentersJob?.cancel()
-                fetchCentersJob = launchSearchLabCenters(query)
+                fetchLabsJob?.cancel()
+                fetchLabsJob = launchSearchLabCenters(query)
             }.launchIn(viewModelScope)
     }
 
