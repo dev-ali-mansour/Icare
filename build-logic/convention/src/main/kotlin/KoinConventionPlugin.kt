@@ -29,8 +29,10 @@ class KoinConventionPlugin : Plugin<Project> {
         with(target) {
             pluginManager.apply("com.google.devtools.ksp")
 
-            extensions.configure<KspExtension> {
-                arg("KOIN_DEFAULT_MODULE", "true")
+            if (name == "app") {
+                extensions.configure<KspExtension> {
+                    arg("KOIN_DEFAULT_MODULE", "true")
+                }
             }
 
             dependencies {
@@ -44,7 +46,6 @@ class KoinConventionPlugin : Plugin<Project> {
                 dependencies {
                     // Compose-specific Koin support
                     "implementation"(libs.findLibrary("koin.androidx.compose").get())
-                    "implementation"(libs.findLibrary("koin-androidx-compose-navigation").get())
                     "implementation"(libs.findLibrary("koin-androidx-compose-navigation").get())
                     "implementation"(libs.findLibrary("koin-androidx-workmanager").get())
                 }
