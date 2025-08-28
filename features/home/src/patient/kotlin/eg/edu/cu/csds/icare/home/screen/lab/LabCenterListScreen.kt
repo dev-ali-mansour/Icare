@@ -173,7 +173,7 @@ fun LabCenterListScreen(
 }
 
 @Composable
-fun LabCenterListContent(
+private fun LabCenterListContent(
     uiState: LabListState,
     modifier: Modifier = Modifier,
     onEvent: (LabListEvent) -> Unit,
@@ -198,7 +198,7 @@ fun LabCenterListContent(
                             end.linkTo(parent.end, M_PADDING)
                             width = Dimension.fillToConstraints
                         },
-                placeholder = stringResource(CoreR.string.search_by_lab_name_or_address),
+                placeholder = stringResource(R.string.search_by_lab_name_or_address),
                 value = uiState.searchQuery,
                 focus = false,
                 onValueChange = { onEvent(LabListEvent.UpdateSearchQuery(it)) },
@@ -222,7 +222,15 @@ fun LabCenterListContent(
                 )
             } else {
                 LazyColumn(
-                    modifier = modifier.fillMaxSize(),
+                    modifier =
+                        modifier.constrainAs(details) {
+                            top.linkTo(search.bottom, margin = M_PADDING)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                            width = Dimension.fillToConstraints
+                            height = Dimension.fillToConstraints
+                        },
                     verticalArrangement = Arrangement.spacedBy(S_PADDING),
                 ) {
                     items(uiState.labs) { center ->
@@ -244,7 +252,7 @@ fun LabCenterListContent(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
 @Composable
-fun LabListContentPreview() {
+private fun LabListContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         LabCenterListContent(
             uiState =
