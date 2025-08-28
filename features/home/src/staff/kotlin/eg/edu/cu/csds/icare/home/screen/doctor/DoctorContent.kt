@@ -144,7 +144,7 @@ fun DoctorContent(
         )
 
         Text(
-            text = stringResource(R.string.today_appointment),
+            text = stringResource(R.string.features_home_today_appointment),
             modifier =
                 Modifier.constrainAs(appointments) {
                     top.linkTo(confirmedCard.bottom, margin = M_PADDING)
@@ -216,7 +216,7 @@ fun TotalPatientsCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    stringResource(R.string.total_appointments),
+                    stringResource(R.string.features_home_total_appointments),
                     fontFamily = helveticaFamily,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
@@ -232,7 +232,7 @@ fun TotalPatientsCard(
                     maxLines = 1,
                 )
                 Text(
-                    stringResource(R.string.till_today),
+                    stringResource(R.string.features_home_till_today),
                     style = MaterialTheme.typography.titleMedium,
                     fontFamily = helveticaFamily,
                     color = Color.White,

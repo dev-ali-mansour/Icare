@@ -62,7 +62,6 @@ import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.Promotion
 import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.domain.util.Constants
-import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.common.AppService
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
@@ -89,6 +88,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
 import eg.edu.cu.csds.icare.core.ui.view.ConfirmDialog
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
+import eg.edu.cu.csds.icare.home.R
 import eg.edu.cu.csds.icare.home.component.PromotionItem
 import eg.edu.cu.csds.icare.home.component.ServiceItem
 import eg.edu.cu.csds.icare.home.component.TopDoctorCard
@@ -97,7 +97,7 @@ import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import kotlin.system.exitProcess
-import eg.edu.cu.csds.icare.home.R as CoreR
+import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun HomeScreen(
@@ -121,7 +121,7 @@ internal fun HomeScreen(
 
     LaunchedEffect(key1 = mediaHelper.isGreetingPlayed) {
         if (!mediaHelper.isGreetingPlayed) {
-            mediaHelper.play(CoreR.raw.welcome)
+            mediaHelper.play(R.raw.features_home_welcome)
         }
     }
 
@@ -150,8 +150,8 @@ internal fun HomeScreen(
         if (uiState.openDialog) {
             ConfirmDialog(
                 backgroundColor = backgroundColor,
-                title = stringResource(id = R.string.exit_dialog_title),
-                message = stringResource(id = R.string.exit_dialog),
+                title = stringResource(id = R.string.features_home_exit_dialog_title),
+                message = stringResource(id = R.string.features_home_exit_dialog),
                 onDismissRequest = {
                     viewModel.processEvent(HomeEvent.UpdateOpenDialog(isOpen = false))
                 },
@@ -246,7 +246,7 @@ private fun HomeContent(
                 ) {
                     Column(modifier = Modifier.padding(M_PADDING)) {
                         Text(
-                            text = stringResource(CoreR.string.cosmetics),
+                            text = stringResource(R.string.features_home_cosmetics),
                             fontWeight = FontWeight.Bold,
                             fontSize = MaterialTheme.typography.titleMedium.fontSize,
                             fontFamily = helveticaFamily,
@@ -254,8 +254,8 @@ private fun HomeContent(
                             maxLines = 1,
                         )
                         Text(
-                            text = " ${stringResource(CoreR.string.discount_50)} ${
-                                stringResource(CoreR.string.off)
+                            text = " ${stringResource(R.string.features_home_discount_50)} ${
+                                stringResource(R.string.features_home_off)
                             }",
                             fontWeight = FontWeight.Bold,
                             fontSize = MaterialTheme.typography.bodyMedium.fontSize,
@@ -272,7 +272,7 @@ private fun HomeContent(
                                 ),
                         ) {
                             Text(
-                                text = stringResource(CoreR.string.buy_now),
+                                text = stringResource(R.string.features_home_buy_now),
                                 fontSize = MaterialTheme.typography.bodySmall.fontSize,
                                 fontFamily = helveticaFamily,
                                 color = Color.White,
@@ -281,7 +281,7 @@ private fun HomeContent(
                         }
                     }
                     Image(
-                        painter = painterResource(id = CoreR.drawable.doctor_announcement),
+                        painter = painterResource(id = R.drawable.features_home_doctor_announcement),
                         contentDescription = null,
                         modifier = Modifier.size(ANNOUNCEMENT_IMAGE_SIZE),
                     )
@@ -291,7 +291,7 @@ private fun HomeContent(
             Spacer(modifier = Modifier.height(M_PADDING))
 
             Text(
-                text = stringResource(CoreR.string.services),
+                text = stringResource(R.string.features_home_services),
                 fontWeight = FontWeight.Bold,
                 fontSize = MaterialTheme.typography.titleLarge.fontSize,
                 fontFamily = helveticaFamily,
@@ -329,7 +329,7 @@ private fun HomeContent(
             Spacer(modifier = Modifier.height(M_PADDING))
 
             Text(
-                stringResource(CoreR.string.next_appointment),
+                stringResource(R.string.features_home_next_appointment),
                 fontWeight = FontWeight.Bold,
                 fontSize = MaterialTheme.typography.titleLarge.fontSize,
                 fontFamily = helveticaFamily,
@@ -373,7 +373,7 @@ private fun HomeContent(
                                             ?.let {
                                                 stringResource(it.textResId)
                                             }
-                                            ?: stringResource(R.string.undefined),
+                                            ?: stringResource(CoreR.string.undefined),
                                 )
                             }
 
@@ -388,11 +388,11 @@ private fun HomeContent(
                             AsyncImage(
                                 model = appointment.doctorImage,
                                 contentDescription = null,
-                                placeholder = painterResource(R.drawable.user_placeholder),
+                                placeholder = painterResource(CoreR.drawable.user_placeholder),
                                 modifier =
                                     Modifier
                                         .clip(RoundedCornerShape(M_PADDING)),
-                                error = painterResource(R.drawable.user_placeholder),
+                                error = painterResource(CoreR.drawable.user_placeholder),
                                 contentScale = ContentScale.Crop,
                             )
                         }
@@ -469,7 +469,7 @@ private fun HomeContent(
                         )
 
                         Icon(
-                            painterResource(CoreR.drawable.baseline_access_time_24),
+                            painterResource(R.drawable.features_home_baseline_access_time_24),
                             contentDescription = null,
                             modifier =
                                 Modifier.constrainAs(timeIcon) {
@@ -493,7 +493,7 @@ private fun HomeContent(
                         )
                     } else {
                         Text(
-                            text = stringResource(CoreR.string.no_upcoming_appointments),
+                            text = stringResource(R.string.features_home_no_upcoming_appointments),
                             modifier =
                                 Modifier.constrainAs(message) {
                                     top.linkTo(parent.top)
@@ -513,7 +513,7 @@ private fun HomeContent(
             Spacer(modifier = Modifier.height(M_PADDING))
 
             Text(
-                stringResource(CoreR.string.promotions),
+                stringResource(R.string.features_home_promotions),
                 fontWeight = FontWeight.Bold,
                 fontSize = MaterialTheme.typography.titleLarge.fontSize,
                 fontFamily = helveticaFamily,
@@ -535,7 +535,7 @@ private fun HomeContent(
             Spacer(modifier = Modifier.height(M_PADDING))
 
             Text(
-                stringResource(CoreR.string.top_doctors),
+                stringResource(R.string.features_home_top_doctors),
                 fontWeight = FontWeight.Bold,
                 fontSize = MaterialTheme.typography.titleLarge.fontSize,
                 fontFamily = helveticaFamily,
@@ -556,7 +556,7 @@ private fun HomeContent(
         }
 
         Text(
-            text = stringResource(id = R.string.made_by),
+            text = stringResource(id = CoreR.string.made_by),
             modifier =
                 Modifier
                     .constrainAs(marquee) {
@@ -632,12 +632,12 @@ private fun HomeContentPreview() {
                             Promotion(
                                 id = 1,
                                 imageUrl = "https://i.postimg.cc/5jjyk7Jn/promo1.png",
-                                discount = stringResource(CoreR.string.discount_30),
+                                discount = stringResource(R.string.features_home_discount_30),
                             ),
                             Promotion(
                                 id = 2,
                                 imageUrl = "https://i.postimg.cc/vDjTRrHM/promo2.png",
-                                discount = stringResource(CoreR.string.discount_50),
+                                discount = stringResource(R.string.features_home_discount_50),
                             ),
                         ),
                 ),
