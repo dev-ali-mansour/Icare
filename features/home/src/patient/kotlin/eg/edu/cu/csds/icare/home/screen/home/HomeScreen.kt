@@ -177,7 +177,7 @@ internal fun HomeScreen(
 }
 
 @Composable
-internal fun HomeContent(
+private fun HomeContent(
     uiState: HomeState,
     appVersion: String,
     context: Context = LocalContext.current,
