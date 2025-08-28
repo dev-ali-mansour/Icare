@@ -55,7 +55,7 @@ fun AdminContent(
                 .verticalScroll(rememberScrollState())
                 .padding(M_PADDING),
     ) {
-        var (
+        val (
             overview, usersCard, pending, confirmedCard, completedCard, cancelledCard,
             doctorsCard, pharmaciesCard, labsCard, scanCentersCard, button,
         ) = createRefs()
