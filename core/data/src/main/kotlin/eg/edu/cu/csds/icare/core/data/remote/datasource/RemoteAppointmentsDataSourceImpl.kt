@@ -3,6 +3,7 @@ package eg.edu.cu.csds.icare.core.data.remote.datasource
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.data.dto.AdminStatisticsDto
 import eg.edu.cu.csds.icare.core.data.dto.AppointmentDto
+import eg.edu.cu.csds.icare.core.data.mappers.toRemoteError
 import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import eg.edu.cu.csds.icare.core.domain.model.DataError
 import eg.edu.cu.csds.icare.core.domain.model.Result
@@ -58,7 +59,7 @@ class RemoteAppointmentsDataSourceImpl(
             }
         }.catch {
             Timber.e("getPatientAppointments() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun getAppointments(): Flow<Result<List<AppointmentDto>, DataError.Remote>> =
@@ -99,7 +100,7 @@ class RemoteAppointmentsDataSourceImpl(
                 }
         }.catch {
             Timber.e("getAppointments() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun getAppointments(statusId: Short): Flow<Result<List<AppointmentDto>, DataError.Remote>> =
@@ -140,7 +141,7 @@ class RemoteAppointmentsDataSourceImpl(
                 }
         }.catch {
             Timber.e("getAppointmentsByStatus() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun bookAppointment(appointment: AppointmentDto): Flow<Result<Unit, DataError.Remote>> =
@@ -180,7 +181,7 @@ class RemoteAppointmentsDataSourceImpl(
                 }
         }.catch {
             Timber.e("bookAppointment() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun updateAppointment(appointment: AppointmentDto): Flow<Result<Unit, DataError.Remote>> =
@@ -219,7 +220,7 @@ class RemoteAppointmentsDataSourceImpl(
                 }
         }.catch {
             Timber.e("updateAppointment() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun getAdminStatistics(): Flow<Result<AdminStatisticsDto, DataError.Remote>> =
@@ -259,6 +260,6 @@ class RemoteAppointmentsDataSourceImpl(
             }
         }.catch {
             Timber.e("getAdminStatistics() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 }
