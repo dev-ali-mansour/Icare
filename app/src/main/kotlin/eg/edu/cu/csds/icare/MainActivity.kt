@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         var isLoadingSplash by mutableStateOf(true)
         lifecycleScope.launch {
-            splashViewModel.state
+            splashViewModel.uiState
                 .onEach {
                     isLoadingSplash = it.isLoading
                 }.launchIn(this)
