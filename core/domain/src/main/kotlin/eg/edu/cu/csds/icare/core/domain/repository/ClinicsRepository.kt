@@ -17,7 +17,9 @@ interface ClinicsRepository {
 
     fun listDoctors(forceUpdate: Boolean): Flow<Result<List<Doctor>, DataError.Remote>>
 
-    fun getDoctorSchedule(uid: String): Flow<Result<DoctorSchedule, DataError.Remote>>
+    fun getCurrentDoctor(): Flow<Result<Doctor, DataError.Remote>>
+
+    fun getDoctorSchedule(): Flow<Result<DoctorSchedule, DataError.Remote>>
 
     fun listTopDoctors(): Flow<Result<List<Doctor>, DataError.Remote>>
 

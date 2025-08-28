@@ -1,67 +1,33 @@
 package eg.edu.cu.csds.icare.home.navigation
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
-import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
-import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
-import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
-import eg.edu.cu.csds.icare.core.ui.MainViewModel
-import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
-import eg.edu.cu.csds.icare.core.ui.common.Role
+import eg.edu.cu.csds.icare.admin.screen.doctor.SelectedDoctorViewModel
+import eg.edu.cu.csds.icare.appointment.SelectedAppointmentViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
-import eg.edu.cu.csds.icare.home.HomeViewModel
-import eg.edu.cu.csds.icare.home.screen.HomeScreen
+import eg.edu.cu.csds.icare.home.screen.home.HomeScreen
 
 fun NavGraphBuilder.homeRoute(
-    mainViewModel: MainViewModel,
-    homeViewModel: HomeViewModel,
-    clinicViewModel: ClinicViewModel,
-    pharmacyViewModel: PharmacyViewModel,
-    centerViewModel: CenterViewModel,
-    consultationViewModel: ConsultationViewModel,
-    appointmentViewModel: AppointmentViewModel,
-    navigateToScreen: (Route) -> Unit,
-    onError: suspend (Throwable?) -> Unit,
+    selectedDoctorViewModel: SelectedDoctorViewModel,
+    selectedAppointmentViewModel: SelectedAppointmentViewModel,
+    navigateToRoute: (Route) -> Unit,
 ) {
     composable<Route.Home> {
+        LaunchedEffect(true) {
+            selectedDoctorViewModel.onSelectDoctor(null)
+            selectedAppointmentViewModel.onSelectAppointment(null)
+        }
         HomeScreen(
-            mainViewModel = mainViewModel,
-            homeViewModel = homeViewModel,
-            clinicViewModel = clinicViewModel,
-            appointmentViewModel = appointmentViewModel,
-            loadContentData = { user ->
-                when (user.roleId) {
-                    Role.AdminRole.code -> appointmentViewModel.getAdminStatistics()
-                    Role.DoctorRole.code -> clinicViewModel.getDoctorSchedule(user.userId)
-                    Role.ClinicStaffRole.code -> appointmentViewModel.getAppointments()
-                    Role.PharmacistRole.code -> {}
-                    Role.CenterStaffRole.code -> {}
-                }
+            navigateToRoute = { navigateToRoute(it) },
+            navigateToUpdateDoctorScreen = { doctor ->
+                selectedDoctorViewModel.onSelectDoctor(doctor)
+                navigateToRoute(Route.UpdateDoctor)
             },
-            navigateToScreen = { navigateToScreen(it) },
-            onPriceCardClicked = {
-                clinicViewModel.listClinics()
-                clinicViewModel.selectCurrentDoctor(it)
-                navigateToScreen(Route.EditDoctor)
+            navigateToNewConsultation = {
+                selectedAppointmentViewModel.onSelectAppointment(it)
+                navigateToRoute(Route.NewConsultation)
             },
-            onAppointmentClick = {
-                consultationViewModel.appointmentState.value = it
-                pharmacyViewModel.listPharmacies()
-                centerViewModel.listCenters()
-                navigateToScreen(Route.NewConsultation)
-            },
-            onSeeAllClick = {
-            },
-            onSectionsAdminClicked = { navigateToScreen(Route.Admin) },
-            onConfirm = {
-                appointmentViewModel.selectedAppointmentState.value =
-                    it.copy(statusId = AppointmentStatus.ConfirmedStatus.code)
-                appointmentViewModel.updateAppointment()
-                appointmentViewModel.getAppointments()
-            },
-            onError = { onError(it) },
         )
     }
 }
