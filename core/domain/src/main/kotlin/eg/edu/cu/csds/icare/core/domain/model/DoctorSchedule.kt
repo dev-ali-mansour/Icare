@@ -8,5 +8,5 @@ data class DoctorSchedule(
     val fromTime: Long = System.currentTimeMillis(),
     val toTime: Long = System.currentTimeMillis().plus(other = 5 * 60 * 60 * 60 * 1000),
     val availableSlots: Short = 0,
-    val appointments: List<Appointment>,
+    val appointments: List<Appointment> = emptyList(),
 )
