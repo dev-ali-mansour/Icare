@@ -18,11 +18,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -51,14 +49,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import eg.edu.cu.csds.icare.appointment.statusList
 import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
 import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
@@ -76,10 +71,7 @@ import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.theme.ACTION_BUTTON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.ANNOUNCEMENT_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.CARD_ROUND_CORNER_SIZE
-import eg.edu.cu.csds.icare.core.ui.theme.CATEGORY_ICON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.DeepTeal
-import eg.edu.cu.csds.icare.core.ui.theme.HEADER_ICON_SIZE
-import eg.edu.cu.csds.icare.core.ui.theme.HEADER_PROFILE_CARD_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.LightGreen
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Orange200
@@ -89,13 +81,9 @@ import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.U_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
-import eg.edu.cu.csds.icare.core.ui.theme.Yellow700
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
-import eg.edu.cu.csds.icare.core.ui.theme.kufamFamily
 import eg.edu.cu.csds.icare.core.ui.theme.statusColor
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
@@ -104,6 +92,7 @@ import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.home.component.PromotionItem
 import eg.edu.cu.csds.icare.home.component.ServiceItem
 import eg.edu.cu.csds.icare.home.component.TopDoctorCard
+import eg.edu.cu.csds.icare.home.component.UserTitleView
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
@@ -113,7 +102,7 @@ import eg.edu.cu.csds.icare.home.R as CoreR
 @Composable
 internal fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
-    navigateToScreen: (Route) -> Unit,
+    navigateToRoute: (Route) -> Unit,
     navigateToDoctorDetails: (Doctor) -> Unit,
 ) {
     val context: Context = LocalContext.current
@@ -141,7 +130,7 @@ internal fun HomeScreen(
         onConsumeEffect = { viewModel.processEvent(HomeEvent.ConsumeEffect) },
         onEffect = { effect ->
             when (effect) {
-                is HomeEffect.NavigateToRoute -> navigateToScreen(effect.route)
+                is HomeEffect.NavigateToRoute -> navigateToRoute(effect.route)
                 is HomeEffect.NavigateToDoctorDetails -> navigateToDoctorDetails(effect.doctor)
                 is HomeEffect.ShowError -> {
                     alertMessage = effect.message.asString(context)
@@ -207,7 +196,7 @@ internal fun HomeContent(
             color = backgroundColor,
             tonalElevation = S_PADDING,
         ) {
-            TitleView(
+            UserTitleView(
                 modifier = Modifier,
                 appVersion = appVersion,
                 user = uiState.currentUser,
@@ -581,127 +570,6 @@ internal fun HomeContent(
             fontFamily = helveticaFamily,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Start,
-            maxLines = 1,
-        )
-    }
-}
-
-@Composable
-private fun TitleView(
-    appVersion: String,
-    user: User?,
-    modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
-    onUserClicked: () -> Unit,
-) {
-    ConstraintLayout(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(horizontal = S_PADDING, vertical = XS_PADDING),
-    ) {
-        val (logo, title, version, card) = createRefs()
-
-        Image(
-            modifier =
-                Modifier
-                    .constrainAs(logo) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                    }.size(HEADER_ICON_SIZE),
-            painter = painterResource(R.drawable.logo),
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-        )
-
-        Text(
-            modifier =
-                Modifier.constrainAs(title) {
-                    start.linkTo(logo.end)
-                    end.linkTo(card.end)
-                    bottom.linkTo(logo.bottom)
-                    width = Dimension.fillToConstraints
-                },
-            text = stringResource(R.string.app_name),
-            fontFamily = kufamFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = MaterialTheme.typography.labelLarge.fontSize,
-            color = textColor,
-        )
-
-        Surface(
-            modifier =
-                Modifier
-                    .constrainAs(card) {
-                        top.linkTo(logo.top, S_PADDING)
-                        end.linkTo(parent.end, S_PADDING)
-                    }.clickable { onUserClicked() },
-            color = contentBackgroundColor,
-            shape = RoundedCornerShape(S_PADDING),
-        ) {
-            ConstraintLayout(
-                modifier =
-                    Modifier
-                        .width(HEADER_PROFILE_CARD_WIDTH)
-                        .padding(U_PADDING),
-            ) {
-                val (image, name) = createRefs()
-
-                Image(
-                    modifier =
-                        Modifier
-                            .clip(CircleShape)
-                            .size(CATEGORY_ICON_SIZE)
-                            .constrainAs(image) {
-                                top.linkTo(parent.top)
-                                start.linkTo(parent.start)
-                                bottom.linkTo(parent.bottom)
-                            },
-                    painter =
-                        rememberAsyncImagePainter(
-                            ImageRequest
-                                .Builder(context)
-                                .data(data = user?.photoUrl)
-                                .placeholder(R.drawable.user_placeholder)
-                                .error(R.drawable.user_placeholder)
-                                .build(),
-                        ),
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                )
-
-                Text(
-                    modifier =
-                        Modifier.constrainAs(name) {
-                            top.linkTo(image.top)
-                            start.linkTo(image.end, margin = XS_PADDING)
-                            bottom.linkTo(image.bottom)
-                        },
-                    text = user?.displayName ?: "",
-                    color = contentColor,
-                    fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = helveticaFamily,
-                    maxLines = 1,
-                    textAlign = TextAlign.Center,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-        }
-
-        Text(
-            text = "V. $appVersion",
-            modifier =
-                Modifier
-                    .constrainAs(version) {
-                        top.linkTo(title.top)
-                        end.linkTo(parent.end, S_PADDING)
-                    },
-            color = Yellow700,
-            fontSize = MaterialTheme.typography.titleMedium.fontSize,
-            fontFamily = helveticaFamily,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
             maxLines = 1,
         )
     }
