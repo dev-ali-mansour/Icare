@@ -120,6 +120,19 @@ class ClinicsRepositoryImpl(
             }
         }
 
+    override fun getCurrentDoctor(): Flow<Result<Doctor, DataError.Remote>> =
+        flow {
+            runCatching {
+                localDoctorDataSource.getCurrentDoctor()?.let { doctorEntity ->
+                    emit(Result.Success(data = doctorEntity.toDoctor(context)))
+                } ?: run {
+                    emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                }
+            }.onFailure {
+                emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+            }
+        }
+
     override fun listClinicDoctors(clinicId: Long): Flow<Result<List<Doctor>, DataError.Remote>> =
         flow {
             localDoctorDataSource
