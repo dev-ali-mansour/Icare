@@ -90,8 +90,8 @@ class HomeViewModel(
             _uiState.update { it.copy(isLoading = true) }
             getPatientAppointmentUseCase().collect { result ->
                 result
-                    .onSuccess {
-                        _uiState.update { it.copy(isLoading = false, myAppointments = it.myAppointments) }
+                    .onSuccess { appointments ->
+                        _uiState.update { it.copy(isLoading = false, myAppointments = appointments) }
                     }.onError { error ->
                         _uiState.update {
                             it.copy(
