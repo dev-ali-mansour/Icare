@@ -21,9 +21,7 @@ import eg.edu.cu.csds.icare.admin.screen.pharmacist.SelectedPharmacistViewModel
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.SelectedPharmacyViewModel
 import eg.edu.cu.csds.icare.admin.screen.staff.SelectedStaffViewModel
-import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.appointment.SelectedAppointmentViewModel
-import eg.edu.cu.csds.icare.appointment.navigation.appointmentsRoute
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
 import eg.edu.cu.csds.icare.auth.screen.profile.ProfileEffect
 import eg.edu.cu.csds.icare.auth.screen.profile.ProfileEvent
@@ -59,7 +57,6 @@ fun SetupNavGraph(
     val selectedAppointmentViewModel: SelectedAppointmentViewModel = koinViewModel()
     val pharmacyViewModel: PharmacyViewModel = koinViewModel()
     val centerViewModel: CenterViewModel = koinViewModel()
-    val appointmentViewModel: AppointmentViewModel = koinViewModel()
     val consultationViewModel: ConsultationViewModel = koinViewModel()
     val profileViewModel: ProfileViewModel = koinViewModel()
     val alertMessage = remember { mutableStateOf("") }
@@ -141,25 +138,6 @@ fun SetupNavGraph(
             },
             onNavigationIconClicked = {
                 navController.navigateUpSafely()
-            },
-        )
-
-        appointmentsRoute(
-            appointmentViewModel = appointmentViewModel,
-            onNavigationIconClicked = {
-                navController.navigateUpSafely()
-            },
-            onError = { error ->
-                exitApp.value = false
-                handleError(
-                    error,
-                    exitApp,
-                    context,
-                    profileViewModel,
-                    navController,
-                    alertMessage,
-                    showAlert,
-                )
             },
         )
 
