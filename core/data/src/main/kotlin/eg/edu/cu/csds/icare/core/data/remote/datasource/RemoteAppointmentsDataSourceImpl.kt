@@ -160,6 +160,7 @@ class RemoteAppointmentsDataSourceImpl(
                                 patientId = currentUser.uid,
                                 doctorId = doctorId,
                                 dateTime = dateTime,
+                                statusId = 1,
                             )
                         val response =
                             service.bookAppointment(appointment)
