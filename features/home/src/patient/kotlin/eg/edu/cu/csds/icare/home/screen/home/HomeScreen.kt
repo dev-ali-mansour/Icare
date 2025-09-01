@@ -54,7 +54,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import eg.edu.cu.csds.icare.appointment.statusList
 import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
 import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
@@ -644,3 +643,11 @@ private fun HomeContentPreview() {
         )
     }
 }
+
+val statusList =
+    listOf(
+        AppointmentStatus.PendingStatus,
+        AppointmentStatus.ConfirmedStatus,
+        AppointmentStatus.CancelledStatus,
+        AppointmentStatus.CompletedStatus,
+    )
