@@ -55,8 +55,10 @@ class AppointmentsRepositoryImpl(
                 }
         }
 
-    override fun bookAppointment(appointment: Appointment): Flow<Result<Unit, DataError.Remote>> =
-        remoteAppointmentsDataSource.bookAppointment(appointment.toAppointmentDto())
+    override fun bookAppointment(
+        doctorId: String,
+        dateTime: Long,
+    ): Flow<Result<Unit, DataError.Remote>> = remoteAppointmentsDataSource.bookAppointment(doctorId, dateTime)
 
     override fun updateAppointment(appointment: Appointment): Flow<Result<Unit, DataError.Remote>> =
         remoteAppointmentsDataSource.updateAppointment(appointment.toAppointmentDto())
