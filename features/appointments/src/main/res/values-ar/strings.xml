@@ -9,4 +9,6 @@
     <string name="features_appointments_no_appointments_data">لا توجد بيانات مواعيد متاحة</string>
     <string name="features_appointments_booking">حجز موعد</string>
     <string name="features_appointments_doctor_list">قائمة الأطباء</string>
+    <string name="features_appointments_error_no_doctor">عفواً لم يتم اختيار طبيب لحجز موعد!</string>
+    <string name="features_appointments_error_selected_slot">خطأ في تحديد الموعد!</string>
 </resources>
