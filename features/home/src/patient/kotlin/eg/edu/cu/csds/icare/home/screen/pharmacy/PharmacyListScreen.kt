@@ -39,7 +39,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import eg.edu.cu.csds.icare.appointment.R
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
@@ -53,6 +52,7 @@ import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import eg.edu.cu.csds.icare.core.ui.view.PharmacyView
 import eg.edu.cu.csds.icare.core.ui.view.SearchTextField
+import eg.edu.cu.csds.icare.home.R
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
@@ -218,7 +218,7 @@ private fun PharmacyListContent(
                                 width = Dimension.fillToConstraints
                                 height = Dimension.fillToConstraints
                             },
-                    text = stringResource(R.string.no_doctors_available),
+                    text = stringResource(R.string.features_home_no_data_matched),
                 )
             } else {
                 LazyColumn(
