@@ -24,7 +24,7 @@ fun NavGraphBuilder.homeRoute(
             navigateToRoute = { navigateToRoute(it) },
             navigateToDoctorDetails = {
                 selectedDoctorViewModel.onSelectDoctor(it)
-                navigateToRoute(Route.DoctorProfile)
+                navigateToRoute(Route.Booking)
             },
         )
     }
