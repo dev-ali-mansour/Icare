@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.appointment.components
+package eg.edu.cu.csds.icare.appointment.component
 
 import android.content.Context
 import android.content.res.Configuration
@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import eg.edu.cu.csds.icare.appointment.R
+import eg.edu.cu.csds.icare.core.data.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
@@ -35,7 +36,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
-import eg.edu.cu.csds.icare.core.data.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
@@ -100,7 +100,7 @@ fun AppointmentCard(
                         if (showConfirm) {
                             TextButton(onClick = { onConfirm() }) {
                                 Text(
-                                    text = stringResource(R.string.confirm),
+                                    text = stringResource(R.string.features_appointments_confirm),
                                     fontFamily = helveticaFamily,
                                 )
                             }
@@ -114,7 +114,7 @@ fun AppointmentCard(
                             Spacer(modifier = Modifier.width(S_PADDING))
                             TextButton(onClick = { onCancel() }) {
                                 Text(
-                                    text = stringResource(R.string.cancel),
+                                    text = stringResource(android.R.string.cancel),
                                     fontFamily = helveticaFamily,
                                 )
                             }
