@@ -30,8 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import eg.edu.cu.csds.icare.appointment.components.AppointmentCard
-import eg.edu.cu.csds.icare.appointment.statusList
+import eg.edu.cu.csds.icare.appointment.component.AppointmentCard
+import eg.edu.cu.csds.icare.home.util.statusList
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus

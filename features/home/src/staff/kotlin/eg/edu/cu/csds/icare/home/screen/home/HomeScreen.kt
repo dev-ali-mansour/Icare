@@ -35,7 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import eg.edu.cu.csds.icare.appointment.statusList
 import eg.edu.cu.csds.icare.core.domain.model.AdminStatistics
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
@@ -59,6 +58,7 @@ import eg.edu.cu.csds.icare.home.component.UserTitleView
 import eg.edu.cu.csds.icare.home.screen.admin.AdminContent
 import eg.edu.cu.csds.icare.home.screen.clinic.ClinicianContent
 import eg.edu.cu.csds.icare.home.screen.doctor.DoctorContent
+import eg.edu.cu.csds.icare.home.util.statusList
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject

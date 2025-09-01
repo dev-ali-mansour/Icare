@@ -85,6 +85,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.statusColor
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
+import eg.edu.cu.csds.icare.home.util.statusList
 import eg.edu.cu.csds.icare.core.ui.view.ConfirmDialog
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.home.R
@@ -643,11 +644,3 @@ private fun HomeContentPreview() {
         )
     }
 }
-
-val statusList =
-    listOf(
-        AppointmentStatus.PendingStatus,
-        AppointmentStatus.ConfirmedStatus,
-        AppointmentStatus.CancelledStatus,
-        AppointmentStatus.CompletedStatus,
-    )
