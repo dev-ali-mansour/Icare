@@ -11,10 +11,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import eg.edu.cu.csds.icare.MainActivity
-import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
 import eg.edu.cu.csds.icare.admin.screen.doctor.SelectedDoctorViewModel
-import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
 import eg.edu.cu.csds.icare.appointment.navigation.appointmentsRoute
+import eg.edu.cu.csds.icare.appointment.screen.SelectedAppointmentViewModel
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
 import eg.edu.cu.csds.icare.auth.screen.profile.ProfileEffect
 import eg.edu.cu.csds.icare.auth.screen.profile.ProfileEvent
@@ -22,7 +21,6 @@ import eg.edu.cu.csds.icare.auth.screen.profile.ProfileViewModel
 import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
 import eg.edu.cu.csds.icare.consultation.screen.navigation.consultationsRoute
 import eg.edu.cu.csds.icare.core.domain.model.UserNotAuthenticatedException
-import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.util.activity
 import eg.edu.cu.csds.icare.core.ui.util.getErrorMessage
@@ -37,16 +35,12 @@ import org.koin.androidx.compose.koinViewModel
 import kotlin.system.exitProcess
 
 @Composable
-fun SetupNavGraph(
-    navController: NavHostController,
-    selectedDoctorViewModel: SelectedDoctorViewModel = koinViewModel(),
-    mainViewModel: MainViewModel = koinViewModel(),
-    clinicViewModel: ClinicViewModel = koinViewModel(),
-    appointmentViewModel: AppointmentViewModel = koinViewModel(),
-    consultationViewModel: ConsultationViewModel = koinViewModel(),
-    profileViewModel: ProfileViewModel = koinViewModel(),
-    context: Context = LocalContext.current,
-) {
+fun SetupNavGraph(navController: NavHostController) {
+    val selectedDoctorViewModel: SelectedDoctorViewModel = koinViewModel()
+    val selectedAppointmentViewModel: SelectedAppointmentViewModel = koinViewModel()
+    val consultationViewModel: ConsultationViewModel = koinViewModel()
+    val profileViewModel: ProfileViewModel = koinViewModel()
+    val context: Context = LocalContext.current
     val alertMessage = remember { mutableStateOf("") }
     val showAlert = remember { mutableStateOf(false) }
     val exitApp = remember { mutableStateOf(false) }
@@ -122,25 +116,11 @@ fun SetupNavGraph(
 
         appointmentsRoute(
             selectedDoctorViewModel = selectedDoctorViewModel,
-            mainViewModel = mainViewModel,
-            clinicViewModel = clinicViewModel,
-            appointmentsViewModel = appointmentViewModel,
+            selectedAppointmentViewModel = selectedAppointmentViewModel,
             onNavigationIconClicked = {
                 navController.navigateUpSafely()
             },
-            navigateToScreen = { navController.navigate(it) },
-            onError = { error ->
-                exitApp.value = false
-                handleError(
-                    error,
-                    exitApp,
-                    context,
-                    profileViewModel,
-                    navController,
-                    alertMessage,
-                    showAlert,
-                )
-            },
+            navigateToRoute = { navController.navigate(it) },
         )
 
         consultationsRoute(
