@@ -73,7 +73,8 @@ class SignInViewModel(
                                     isLoading = false,
                                     effect =
                                         SignInEffect.ShowError(
-                                            message = StringResourceId(R.string.features_auth_error_invalid_email),
+                                            message =
+                                                StringResourceId(R.string.features_auth_error_invalid_email),
                                         ),
                                 )
                             }
@@ -84,7 +85,8 @@ class SignInViewModel(
                                     isLoading = false,
                                     effect =
                                         SignInEffect.ShowError(
-                                            message = StringResourceId(R.string.features_auth_empty_password_error),
+                                            message =
+                                                StringResourceId(R.string.features_auth_empty_password_error),
                                         ),
                                 )
                             }
