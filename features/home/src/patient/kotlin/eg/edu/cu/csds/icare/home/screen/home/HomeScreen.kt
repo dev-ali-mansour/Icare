@@ -359,139 +359,137 @@ private fun HomeContent(
                         doctorImage, doctorName, doctorSpecialty, status, dateIcon, date,
                         timeIcon, time, message,
                     ) = createRefs()
-                    if (uiState.myAppointments.any {
-                            it.statusId == AppointmentStatus.PendingStatus.code ||
-                                it.statusId == AppointmentStatus.ConfirmedStatus.code
-                        }
-                    ) {
-                        val appointment =
-                            uiState.myAppointments.first().let { firstAppointment ->
-                                firstAppointment.copy(
+                    uiState.myAppointments
+                        .firstOrNull { appointment ->
+                            appointment.statusId == AppointmentStatus.PendingStatus.code ||
+                                appointment.statusId == AppointmentStatus.ConfirmedStatus.code
+                        }?.let { nextAppointment ->
+                            val appointment =
+                                nextAppointment.copy(
                                     status =
                                         statusList
-                                            .find { it.code == firstAppointment.statusId }
+                                            .find { it.code == nextAppointment.statusId }
                                             ?.let {
                                                 stringResource(it.textResId)
                                             }
                                             ?: stringResource(CoreR.string.undefined),
                                 )
-                            }
 
-                        Box(
-                            modifier =
-                                Modifier
-                                    .constrainAs(doctorImage) {
-                                        top.linkTo(parent.top)
-                                        start.linkTo(parent.start)
-                                    }.size(ACTION_BUTTON_SIZE),
-                        ) {
-                            AsyncImage(
-                                model = appointment.doctorImage,
-                                contentDescription = null,
-                                placeholder = painterResource(CoreR.drawable.user_placeholder),
+                            Box(
                                 modifier =
                                     Modifier
-                                        .clip(RoundedCornerShape(M_PADDING)),
-                                error = painterResource(CoreR.drawable.user_placeholder),
-                                contentScale = ContentScale.Crop,
+                                        .constrainAs(doctorImage) {
+                                            top.linkTo(parent.top)
+                                            start.linkTo(parent.start)
+                                        }.size(ACTION_BUTTON_SIZE),
+                            ) {
+                                AsyncImage(
+                                    model = nextAppointment.doctorImage,
+                                    contentDescription = null,
+                                    placeholder = painterResource(CoreR.drawable.user_placeholder),
+                                    modifier =
+                                        Modifier
+                                            .clip(RoundedCornerShape(M_PADDING)),
+                                    error = painterResource(CoreR.drawable.user_placeholder),
+                                    contentScale = ContentScale.Crop,
+                                )
+                            }
+                            Text(
+                                text = appointment.doctorName,
+                                modifier =
+                                    Modifier.constrainAs(doctorName) {
+                                        top.linkTo(doctorImage.top)
+                                        start.linkTo(
+                                            doctorImage.end,
+                                            margin = S_PADDING,
+                                        )
+                                    },
+                                fontWeight = FontWeight.Bold,
+                                fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                                fontFamily = helveticaFamily,
+                                color = textColor,
+                                maxLines = 1,
                             )
-                        }
-                        Text(
-                            text = appointment.doctorName,
-                            modifier =
-                                Modifier.constrainAs(doctorName) {
-                                    top.linkTo(doctorImage.top)
-                                    start.linkTo(
-                                        doctorImage.end,
-                                        margin = S_PADDING,
-                                    )
-                                },
-                            fontWeight = FontWeight.Bold,
-                            fontSize = MaterialTheme.typography.titleSmall.fontSize,
-                            fontFamily = helveticaFamily,
-                            color = textColor,
-                            maxLines = 1,
-                        )
-                        Text(
-                            text = appointment.doctorSpecialty,
-                            modifier =
-                                Modifier.constrainAs(doctorSpecialty) {
-                                    top.linkTo(doctorName.bottom)
-                                    start.linkTo(doctorName.start)
-                                    end.linkTo(doctorName.end)
-                                },
-                            fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                            fontFamily = helveticaFamily,
-                            color = textColor,
-                            maxLines = 1,
-                        )
+                            Text(
+                                text = appointment.doctorSpecialty,
+                                modifier =
+                                    Modifier.constrainAs(doctorSpecialty) {
+                                        top.linkTo(doctorName.bottom)
+                                        start.linkTo(doctorName.start)
+                                        end.linkTo(doctorName.end)
+                                    },
+                                fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                fontFamily = helveticaFamily,
+                                color = textColor,
+                                maxLines = 1,
+                            )
 
-                        Text(
-                            text = appointment.status,
-                            modifier =
-                                Modifier.constrainAs(status) {
-                                    top.linkTo(doctorName.top)
-                                    end.linkTo(parent.end)
-                                },
-                            color =
-                                if (appointment.statusId ==
-                                    AppointmentStatus.ConfirmedStatus.code
-                                ) {
-                                    Color.Green
-                                } else {
-                                    statusColor
-                                },
-                        )
-                        Icon(
-                            Icons.Default.DateRange,
-                            contentDescription = null,
-                            modifier =
-                                Modifier.constrainAs(dateIcon) {
-                                    top.linkTo(
-                                        doctorImage.bottom,
-                                        margin = XS_PADDING,
-                                    )
-                                    start.linkTo(doctorImage.start)
-                                },
-                        )
-                        Text(
-                            text = appointment.dateTime.getFormattedDate(context),
-                            modifier =
-                                Modifier.constrainAs(date) {
-                                    top.linkTo(dateIcon.top)
-                                    start.linkTo(dateIcon.end, margin = U_PADDING)
-                                    bottom.linkTo(dateIcon.bottom)
-                                },
-                            fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                            fontFamily = helveticaFamily,
-                            color = textColor,
-                            maxLines = 1,
-                        )
+                            Text(
+                                text = appointment.status,
+                                modifier =
+                                    Modifier.constrainAs(status) {
+                                        top.linkTo(doctorName.top)
+                                        end.linkTo(parent.end)
+                                    },
+                                color =
+                                    if (appointment.statusId ==
+                                        AppointmentStatus.ConfirmedStatus.code
+                                    ) {
+                                        Color.Green
+                                    } else {
+                                        statusColor
+                                    },
+                            )
+                            Icon(
+                                Icons.Default.DateRange,
+                                contentDescription = null,
+                                modifier =
+                                    Modifier.constrainAs(dateIcon) {
+                                        top.linkTo(
+                                            doctorImage.bottom,
+                                            margin = XS_PADDING,
+                                        )
+                                        start.linkTo(doctorImage.start)
+                                    },
+                            )
+                            Text(
+                                text = appointment.dateTime.getFormattedDate(context),
+                                modifier =
+                                    Modifier.constrainAs(date) {
+                                        top.linkTo(dateIcon.top)
+                                        start.linkTo(dateIcon.end, margin = U_PADDING)
+                                        bottom.linkTo(dateIcon.bottom)
+                                    },
+                                fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                                fontFamily = helveticaFamily,
+                                color = textColor,
+                                maxLines = 1,
+                            )
 
-                        Icon(
-                            painterResource(R.drawable.features_home_baseline_access_time_24),
-                            contentDescription = null,
-                            modifier =
-                                Modifier.constrainAs(timeIcon) {
-                                    top.linkTo(dateIcon.top)
-                                    end.linkTo(time.start, margin = U_PADDING)
-                                },
-                        )
+                            Icon(
+                                painterResource(R.drawable.features_home_baseline_access_time_24),
+                                contentDescription = null,
+                                modifier =
+                                    Modifier.constrainAs(timeIcon) {
+                                        top.linkTo(dateIcon.top)
+                                        end.linkTo(time.start, margin = U_PADDING)
+                                    },
+                            )
 
-                        Text(
-                            text = appointment.dateTime.getFormattedTime(context),
-                            modifier =
-                                Modifier.constrainAs(time) {
-                                    top.linkTo(timeIcon.top)
-                                    end.linkTo(status.end)
-                                    bottom.linkTo(timeIcon.bottom)
-                                },
-                            fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                            fontFamily = helveticaFamily,
-                            color = textColor,
-                            maxLines = 1,
-                        )
-                    } else {
+                            Text(
+                                text = appointment.dateTime.getFormattedTime(context),
+                                modifier =
+                                    Modifier.constrainAs(time) {
+                                        top.linkTo(timeIcon.top)
+                                        end.linkTo(status.end)
+                                        bottom.linkTo(timeIcon.bottom)
+                                    },
+                                fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                                fontFamily = helveticaFamily,
+                                color = textColor,
+                                maxLines = 1,
+                            )
+                        } ?: run {
                         Text(
                             text = stringResource(R.string.features_home_no_upcoming_appointments),
                             modifier =
@@ -602,7 +600,7 @@ private fun HomeContentPreview() {
                         listOf(
                             Appointment(
                                 appointmentId = 1,
-                                doctorName = "Dr. John Smith",
+                                doctorName = "Dr. Ahmed Gad",
                                 doctorSpecialty = "Cardiologist",
                                 doctorImage = "https://i.ibb.co/JRkcZzhR/doctor.webp",
                                 dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
