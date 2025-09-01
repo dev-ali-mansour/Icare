@@ -62,7 +62,7 @@ fun TimeSlotSelector(
         val (title, prev, dateSelector, next) = createRefs()
 
         Text(
-            text = stringResource(R.string.book_your_appointment_time),
+            text = stringResource(R.string.features_appointments_book_your_appointment_time),
             modifier =
                 Modifier.constrainAs(title) {
                     top.linkTo(parent.top)
