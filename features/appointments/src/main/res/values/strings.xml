@@ -9,4 +9,6 @@
     <string name="features_appointments_no_appointments_data">No appointments data available</string>
     <string name="features_appointments_booking">Appointment Booking</string>
     <string name="features_appointments_doctor_list">Doctors List</string>
+    <string name="features_appointments_error_no_doctor">There is no solected doctor for booking!</string>
+    <string name="features_appointments_error_selected_slot">Invalid selected error!</string>
 </resources>
