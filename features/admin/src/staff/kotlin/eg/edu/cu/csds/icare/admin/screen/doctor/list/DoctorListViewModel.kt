@@ -36,19 +36,19 @@ class DoctorListViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: DoctorLisEvent) {
+    fun processEvent(event: DoctorListEvent) {
         when (event) {
-            is DoctorLisEvent.Refresh -> {
+            is DoctorListEvent.Refresh -> {
                 fetchDoctors(forceUpdate = true)
             }
 
-            is DoctorLisEvent.SelectDoctor -> {
+            is DoctorListEvent.SelectDoctor -> {
                 _uiState.update {
                     it.copy(effect = NavigateToDoctorDetails(doctor = event.doctor))
                 }
             }
 
-            is DoctorLisEvent.UpdateFabExpanded -> {
+            is DoctorListEvent.UpdateFabExpanded -> {
                 _uiState.update {
                     it.copy(
                         effect =
@@ -58,7 +58,7 @@ class DoctorListViewModel(
                 }
             }
 
-            DoctorLisEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            DoctorListEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
         }
     }
 

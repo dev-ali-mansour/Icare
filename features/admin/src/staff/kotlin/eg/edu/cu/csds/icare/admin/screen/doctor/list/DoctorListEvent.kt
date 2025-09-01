@@ -2,16 +2,16 @@ package eg.edu.cu.csds.icare.admin.screen.doctor.list
 
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 
-sealed interface DoctorLisEvent {
-    object Refresh : DoctorLisEvent
+sealed interface DoctorListEvent {
+    object Refresh : DoctorListEvent
 
     data class SelectDoctor(
         val doctor: Doctor,
-    ) : DoctorLisEvent
+    ) : DoctorListEvent
 
     data class UpdateFabExpanded(
         val isExpanded: Boolean,
-    ) : DoctorLisEvent
+    ) : DoctorListEvent
 
-    object ConsumeEffect : DoctorLisEvent
+    object ConsumeEffect : DoctorListEvent
 }
