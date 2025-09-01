@@ -21,7 +21,7 @@ import eg.edu.cu.csds.icare.admin.screen.pharmacist.SelectedPharmacistViewModel
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
 import eg.edu.cu.csds.icare.admin.screen.pharmacy.SelectedPharmacyViewModel
 import eg.edu.cu.csds.icare.admin.screen.staff.SelectedStaffViewModel
-import eg.edu.cu.csds.icare.appointment.SelectedAppointmentViewModel
+import eg.edu.cu.csds.icare.appointment.screen.SelectedAppointmentViewModel
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
 import eg.edu.cu.csds.icare.auth.screen.profile.ProfileEffect
 import eg.edu.cu.csds.icare.auth.screen.profile.ProfileEvent
