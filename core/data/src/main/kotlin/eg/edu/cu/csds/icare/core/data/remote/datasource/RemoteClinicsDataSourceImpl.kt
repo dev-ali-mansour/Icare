@@ -241,7 +241,7 @@ class RemoteClinicsDataSourceImpl(
             emit(Result.Error(it.toRemoteError()))
         }
 
-    override fun getDoctorSchedule(): Flow<Result<DoctorScheduleDto, DataError.Remote>> =
+    override fun getDoctorSchedule(uid: String?): Flow<Result<DoctorScheduleDto, DataError.Remote>> =
         flow {
             auth.currentUser?.let { currentUser ->
                 currentUser
@@ -251,7 +251,7 @@ class RemoteClinicsDataSourceImpl(
                     ?.let { token ->
                         val map = HashMap<String, String>()
                         map["token"] = token
-                        map["uid"] = currentUser.uid
+                        map["uid"] = uid ?: currentUser.uid
                         val response = service.getDoctorSchedule(map)
                         when (response.code()) {
                             HTTP_OK -> {
