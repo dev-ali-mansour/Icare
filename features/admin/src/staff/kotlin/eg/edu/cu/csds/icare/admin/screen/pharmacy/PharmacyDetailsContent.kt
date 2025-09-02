@@ -42,8 +42,8 @@ import eg.edu.cu.csds.icare.core.ui.R as CoreR
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun PharmacyDetailsContent(
-    modifier: Modifier = Modifier,
     uiState: PharmacyState,
+    modifier: Modifier = Modifier,
     onEvent: (PharmacyEvent) -> Unit,
 ) {
     ConstraintLayout(
