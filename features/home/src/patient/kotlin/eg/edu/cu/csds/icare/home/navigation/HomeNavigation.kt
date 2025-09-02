@@ -12,7 +12,7 @@ import eg.edu.cu.csds.icare.home.screen.pharmacy.PharmacyListScreen
 
 fun NavGraphBuilder.homeRoute(
     selectedDoctorViewModel: SelectedDoctorViewModel,
-    onNavigationIconClicked: () -> Unit,
+    navigateUp: () -> Unit,
     navigateToRoute: (Route) -> Unit,
 ) {
     composable<Route.Home> {
@@ -31,19 +31,19 @@ fun NavGraphBuilder.homeRoute(
 
     composable<Route.LabCenters> {
         LabCenterListScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
         )
     }
 
     composable<Route.ScanCenters> {
         ImagingCentersListScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
         )
     }
 
     composable<Route.Pharmacies> {
         PharmacyListScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
         )
     }
 }
