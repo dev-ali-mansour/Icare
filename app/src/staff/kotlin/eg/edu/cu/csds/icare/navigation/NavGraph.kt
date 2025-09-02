@@ -3,8 +3,6 @@ package eg.edu.cu.csds.icare.navigation
 import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -25,14 +23,12 @@ import eg.edu.cu.csds.icare.consultation.screen.SelectedConsultationViewModel
 import eg.edu.cu.csds.icare.consultation.screen.SelectedPatientViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.util.activity
-import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.home.navigation.homeRoute
 import eg.edu.cu.csds.icare.notification.navigation.notificationsRoute
 import eg.edu.cu.csds.icare.onboarding.navigation.onBoardingRoute
 import eg.edu.cu.csds.icare.settings.navigation.settingsRoute
 import eg.edu.cu.csds.icare.splash.SplashScreen
 import org.koin.androidx.compose.koinViewModel
-import kotlin.system.exitProcess
 
 @Composable
 fun SetupNavGraph(
@@ -49,16 +45,6 @@ fun SetupNavGraph(
     val selectedAppointmentViewModel: SelectedAppointmentViewModel = koinViewModel()
     val selectedConsultationViewModel: SelectedConsultationViewModel = koinViewModel()
     val selectedPatientViewModel: SelectedPatientViewModel = koinViewModel()
-    val alertMessage = remember { mutableStateOf("") }
-    val showAlert = remember { mutableStateOf(false) }
-    val exitApp = remember { mutableStateOf(false) }
-
-    if (showAlert.value) {
-        DialogWithIcon(text = alertMessage.value) {
-            showAlert.value = false
-            if (exitApp.value) exitProcess(0)
-        }
-    }
 
     NavHost(
         navController = navController,
