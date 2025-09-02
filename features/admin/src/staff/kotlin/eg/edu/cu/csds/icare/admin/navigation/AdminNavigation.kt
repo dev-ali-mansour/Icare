@@ -52,7 +52,7 @@ fun NavGraphBuilder.adminRoute(
     selectedPharmacistViewModel: SelectedPharmacistViewModel,
     selectedCenterViewModel: SelectedCenterViewModel,
     selectedStaffViewModel: SelectedStaffViewModel,
-    onNavigationIconClicked: () -> Unit,
+    navigateUp: () -> Unit,
     navigateToRoute: (Route) -> Unit,
 ) {
     composable<Route.Admin> {
@@ -67,7 +67,7 @@ fun NavGraphBuilder.adminRoute(
         }
 
         AdminScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
             navigateToRoute = {
                 navigateToRoute(it)
             },
@@ -104,7 +104,7 @@ fun NavGraphBuilder.adminRoute(
 
     composable<Route.NewClinic> {
         NewClinicScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
@@ -118,14 +118,14 @@ fun NavGraphBuilder.adminRoute(
             }
         }
         UpdateClinicScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
     composable<Route.NewDoctor> {
         NewDoctorScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
@@ -139,14 +139,14 @@ fun NavGraphBuilder.adminRoute(
             }
         }
         UpdateDoctorScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
     composable<Route.NewClinician> {
         NewClinicStaffScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
@@ -160,14 +160,14 @@ fun NavGraphBuilder.adminRoute(
             }
         }
         UpdateClinicianScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
     composable<Route.NewPharmacy> {
         NewPharmacyScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
@@ -181,14 +181,14 @@ fun NavGraphBuilder.adminRoute(
             }
         }
         UpdatePharmacyScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
     composable<Route.NewPharmacist> {
         NewPharmacistScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
@@ -203,14 +203,14 @@ fun NavGraphBuilder.adminRoute(
         }
 
         UpdatePharmacistScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
     composable<Route.NewCenter> {
         NewCenterScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
@@ -224,14 +224,14 @@ fun NavGraphBuilder.adminRoute(
             }
         }
         UpdateCenterScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
     composable<Route.NewStaff> {
         NewStaffScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
@@ -245,7 +245,7 @@ fun NavGraphBuilder.adminRoute(
             }
         }
         UpdateStaffScreen(
-            onNavigationIconClicked = { onNavigationIconClicked() },
+            onNavigationIconClicked = { navigateUp() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
