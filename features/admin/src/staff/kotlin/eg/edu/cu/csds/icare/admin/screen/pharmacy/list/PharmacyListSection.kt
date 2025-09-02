@@ -141,7 +141,7 @@ private fun PharmacyListContent(
             EmptyContentView(
                 modifier =
                     Modifier.fillMaxSize(),
-                text = stringResource(CoreR.string.no_pharmacies_data),
+                text = stringResource(CoreR.string.core_ui_no_pharmacies_data),
             )
         } else {
             LazyColumn(

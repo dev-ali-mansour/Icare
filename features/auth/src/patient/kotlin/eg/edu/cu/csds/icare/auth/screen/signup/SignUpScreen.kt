@@ -160,8 +160,8 @@ private fun SignUpContent(
 ) {
     val genders =
         listOf(
-            GenderItem(code = 1, textResId = CoreR.string.male),
-            GenderItem(code = 2, textResId = CoreR.string.female),
+            GenderItem(code = 1, textResId = CoreR.string.core_ui_male),
+            GenderItem(code = 2, textResId = CoreR.string.core_ui_female),
         )
     val interactionSource = remember { MutableInteractionSource() }
     val scope = rememberCoroutineScope()
@@ -381,7 +381,7 @@ private fun SignUpContent(
                     readOnly = true,
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.birth_date),
+                            text = stringResource(CoreR.string.core_ui_birth_date),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -440,7 +440,7 @@ private fun SignUpContent(
                         onValueChange = { },
                         label = {
                             Text(
-                                text = stringResource(CoreR.string.gender),
+                                text = stringResource(CoreR.string.core_ui_gender),
                                 color = dropDownTextColor,
                             )
                         },
@@ -589,7 +589,7 @@ private fun SignUpContent(
                     },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.weight),
+                            text = stringResource(CoreR.string.core_ui_weight),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -622,7 +622,7 @@ private fun SignUpContent(
                     onValueChange = { onEvent(SignUpIntent.UpdateChronicDiseases(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.chronic_diseases),
+                            text = stringResource(CoreR.string.core_ui_chronic_diseases),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -663,7 +663,7 @@ private fun SignUpContent(
                     onValueChange = { onEvent(SignUpIntent.UpdateCurrentMedications(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.current_medications),
+                            text = stringResource(CoreR.string.core_ui_current_medications),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -704,7 +704,7 @@ private fun SignUpContent(
                     onValueChange = { onEvent(SignUpIntent.UpdateAllergies(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.allergies),
+                            text = stringResource(CoreR.string.core_ui_allergies),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -741,7 +741,7 @@ private fun SignUpContent(
                     onValueChange = { onEvent(SignUpIntent.UpdatePastSurgeries(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.past_surgeries),
+                            text = stringResource(CoreR.string.core_ui_past_surgeries),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )

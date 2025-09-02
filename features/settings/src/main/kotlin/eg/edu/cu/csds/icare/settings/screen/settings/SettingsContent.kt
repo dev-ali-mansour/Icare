@@ -63,11 +63,11 @@ internal fun SettingsContent(
                 when (settingsItem.id) {
                     Constants.CHANGE_LANGUAGE_CODE ->
                         RadioButtonGroupWithHeader(
-                            stringResource(id = CoreR.string.choose_app_lang),
+                            stringResource(id = CoreR.string.core_ui_choose_app_lang),
                             radioOptions =
                                 listOf(
-                                    stringResource(id = CoreR.string.radio_lang_english),
-                                    stringResource(id = CoreR.string.radio_lang_arabic),
+                                    stringResource(id = CoreR.string.core_ui_radio_lang_english),
+                                    stringResource(id = CoreR.string.core_ui_radio_lang_arabic),
                                 ),
                             selected = selectedLanguage,
                         ) { languageCode ->

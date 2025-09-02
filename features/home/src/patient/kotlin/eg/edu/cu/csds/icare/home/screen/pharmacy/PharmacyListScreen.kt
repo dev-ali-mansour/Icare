@@ -89,7 +89,7 @@ fun PharmacyListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(CoreR.string.pharmacies)) },
+                title = { Text(text = stringResource(CoreR.string.core_ui_pharmacies)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,
@@ -198,7 +198,7 @@ private fun PharmacyListContent(
                             end.linkTo(parent.end, M_PADDING)
                             width = Dimension.fillToConstraints
                         },
-                placeholder = stringResource(CoreR.string.search_for_pharmacy),
+                placeholder = stringResource(CoreR.string.core_ui_search_for_pharmacy),
                 value = uiState.searchQuery,
                 focus = false,
                 onValueChange = { onEvent(PharmacyListEvent.UpdateSearchQuery(it)) },

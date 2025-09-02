@@ -62,8 +62,7 @@ internal fun AdminScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(id = CoreR.string.sections_admin)) },
+            TopAppBar(title = { Text(text = stringResource(id = CoreR.string.core_ui_sections_admin)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,
@@ -86,7 +85,7 @@ internal fun AdminScreen(
             ExtendedFloatingActionButton(
                 text = {
                     Text(
-                        text = stringResource(CoreR.string.add),
+                        text = stringResource(CoreR.string.core_ui_add),
                         color = Color.White,
                     )
                 },

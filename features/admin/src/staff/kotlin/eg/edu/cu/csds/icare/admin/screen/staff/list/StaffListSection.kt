@@ -142,7 +142,7 @@ private fun StaffListContent(
         if (uiState.staffList.isEmpty()) {
             EmptyContentView(
                 modifier = Modifier.fillMaxSize(),
-                text = stringResource(CoreR.string.no_center_staff_data),
+                text = stringResource(CoreR.string.core_ui_no_center_staff_data),
             )
         } else {
             LazyColumn(

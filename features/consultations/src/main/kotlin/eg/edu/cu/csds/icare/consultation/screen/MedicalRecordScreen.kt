@@ -113,7 +113,7 @@ internal fun MedicalRecordScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = CoreR.string.medical_record)) },
+                title = { Text(text = stringResource(id = CoreR.string.core_ui_medical_record)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,
@@ -216,10 +216,10 @@ private fun MedicalRecordContent(
                 record.copy(
                     genderValue =
                         if (record.gender == 'M') {
-                            stringResource(CoreR.string.male)
+                            stringResource(CoreR.string.core_ui_male)
                         } else {
                             stringResource(
-                                CoreR.string.female,
+                                CoreR.string.core_ui_female,
                             )
                         },
                 )
@@ -272,7 +272,7 @@ private fun MedicalRecordContent(
                     )
 
                     Text(
-                        text = "${stringResource(CoreR.string.name)}: ${medicalRecord.patientName}",
+                        text = "${stringResource(CoreR.string.core_ui_name)}: ${medicalRecord.patientName}",
                         modifier =
                             Modifier.constrainAs(name) {
                                 top.linkTo(image.bottom, margin = S_PADDING)
@@ -288,7 +288,7 @@ private fun MedicalRecordContent(
                     )
 
                     Text(
-                        text = "${stringResource(CoreR.string.gender)}: ${medicalRecord.genderValue}",
+                        text = "${stringResource(CoreR.string.core_ui_gender)}: ${medicalRecord.genderValue}",
                         modifier =
                             Modifier.constrainAs(gender) {
                                 top.linkTo(name.bottom)
@@ -304,7 +304,7 @@ private fun MedicalRecordContent(
 
                     Text(
                         text = "${stringResource(
-                            CoreR.string.chronic_diseases,
+                            CoreR.string.core_ui_chronic_diseases,
                         )}: ${medicalRecord.chronicDiseases}",
                         modifier =
                             Modifier.constrainAs(diseases) {
@@ -321,7 +321,7 @@ private fun MedicalRecordContent(
 
                     Text(
                         text = "${stringResource(
-                            CoreR.string.current_medications,
+                            CoreR.string.core_ui_current_medications,
                         )}: ${medicalRecord.currentMedications}",
                         modifier =
                             Modifier.constrainAs(medications) {
@@ -338,7 +338,7 @@ private fun MedicalRecordContent(
 
                     Text(
                         text = "${stringResource(
-                            CoreR.string.allergies,
+                            CoreR.string.core_ui_allergies,
                         )}: ${medicalRecord.allergies}",
                         modifier =
                             Modifier.constrainAs(allergies) {
@@ -355,7 +355,7 @@ private fun MedicalRecordContent(
 
                     Text(
                         text = "${stringResource(
-                            CoreR.string.past_surgeries,
+                            CoreR.string.core_ui_past_surgeries,
                         )}: ${medicalRecord.pastSurgeries}",
                         modifier =
                             Modifier.constrainAs(surgeries) {
@@ -373,9 +373,9 @@ private fun MedicalRecordContent(
                     Text(
                         text = "${
                             stringResource(
-                                CoreR.string.weight,
+                                CoreR.string.core_ui_weight,
                             )
-                        }: ${medicalRecord.weight} ${stringResource(CoreR.string.kgm)}",
+                        }: ${medicalRecord.weight} ${stringResource(CoreR.string.core_ui_kgm)}",
                         modifier =
                             Modifier.constrainAs(weight) {
                                 top.linkTo(surgeries.bottom)

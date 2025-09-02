@@ -1,44 +1,44 @@
 <resources>
     <!--General Resources -->
-    <string name="radio_lang_english" translatable="false">English</string>
-    <string name="radio_lang_arabic" translatable="false">اللغة العربية</string>
-    <string name="toast_setup_lang_english" translatable="false">Please wait while we setup English language.</string>
-    <string name="toast_setup_lang_arabic" translatable="false">برجاء الانتظار لحين إعداد اللغة العربية للتطبيق.</string>
-    <string name="locale_lang" translatable="false">Locale Language</string>
-    <string name="website_url" translatable="false">http://issr.cu.edu.eg/</string>
-    <string name="facebook_url" translatable="false">https://www.facebook.com/@FGSSR.CU</string>
-    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
-    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
-    <string name="support_email" translatable="false">dev.ali.mansour@gmail.com</string>
-    <string name="privacy_policy_url" translatable="false">https://sites.google.com/view/scedc-privacy-policy</string>
-    <string name="app_url" translatable="false">https://play.google.com/store/apps/details?id=</string>
-    <string name="app_market_url" translatable="false">market://details?id=</string>
-    <string name="our_apps_market_url" translatable="false">market://dev?id=6772948665272481116</string>
-    <string name="our_apps_url" translatable="false">https://play.google.com/store/apps/dev?id=6772948665272481116</string>
-    <string name="contact_us_url" translatable="false">https://scedc.gov.eg/ContactUs.aspx</string>
+    <string name="core_ui_radio_lang_english" translatable="false">English</string>
+    <string name="core_ui_radio_lang_arabic" translatable="false">اللغة العربية</string>
+    <string name="core_ui_toast_setup_lang_english" translatable="false">Please wait while we setup English language.</string>
+    <string name="core_ui_toast_setup_lang_arabic" translatable="false">برجاء الانتظار لحين إعداد اللغة العربية للتطبيق.</string>
+    <string name="core_ui_locale_lang" translatable="false">Locale Language</string>
+    <string name="core_ui_website_url" translatable="false">http://issr.cu.edu.eg/</string>
+    <string name="core_ui_facebook_url" translatable="false">https://www.facebook.com/@FGSSR.CU</string>
+    <string name="core_ui_navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="core_ui_navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="core_ui_support_email" translatable="false">dev.ali.mansour@gmail.com</string>
+    <string name="core_ui_privacy_policy_url" translatable="false">https://sites.google.com/view/scedc-privacy-policy</string>
+    <string name="core_ui_app_url" translatable="false">https://play.google.com/store/apps/details?id=</string>
+    <string name="core_ui_app_market_url" translatable="false">market://details?id=</string>
+    <string name="core_ui_our_apps_market_url" translatable="false">market://dev?id=6772948665272481116</string>
+    <string name="core_ui_our_apps_url" translatable="false">https://play.google.com/store/apps/dev?id=6772948665272481116</string>
+    <string name="core_ui_contact_us_url" translatable="false">https://scedc.gov.eg/ContactUs.aspx</string>
 
     <!--Multilingual General resources-->
-    <string name="app_share">Share Application</string>
-    <string name="app_rate">Rate Application</string>
-    <string name="contact_us">Contact Us</string>
-    <string name="report_us">Error Reporting</string>
-    <string name="privacy_policy">Privacy Policy</string>
-    <string name="share">Share</string>
-    <string name="our_apps">Our Apps</string>
-    <string name="about_us">About</string>
-    <string name="choose_app_lang">Choose application language:</string>
-    <string name="no_email_client">Sorry There is no Email client.</string>
-    <string name="made_by">Made with pleasure by a team of computer science diploma students at the Graduate School of Statistical Research, Cairo University</string>
-    <string name="app_version">Version No: </string>
-    <string name="android_version">"Android : "</string>
-    <string name="enter_your_phone">Please enter your phone here:"</string>
-    <string name="input_error_details">Please enter error details here:</string>
-    <string name="version">"Version No:"</string>
-    <string name="exit_dialog_title">Exit</string>
-    <string name="exit_dialog">Are you sure you want to exit the application?</string>
+    <string name="core_ui_app_share">Share Application</string>
+    <string name="core_ui_app_rate">Rate Application</string>
+    <string name="core_ui_contact_us">Contact Us</string>
+    <string name="core_ui_report_us">Error Reporting</string>
+    <string name="core_ui_privacy_policy">Privacy Policy</string>
+    <string name="core_ui_share">Share</string>
+    <string name="core_ui_our_apps">Our Apps</string>
+    <string name="core_ui_about_us">About</string>
+    <string name="core_ui_choose_app_lang">Choose application language:</string>
+    <string name="core_ui_no_email_client">Sorry There is no Email client.</string>
+    <string name="core_ui_made_by">Made with pleasure by a team of computer science diploma students at the Graduate School of Statistical Research, Cairo University</string>
+    <string name="core_ui_app_version">Version No: </string>
+    <string name="core_ui_android_version">"Android : "</string>
+    <string name="core_ui_enter_your_phone">Please enter your phone here:"</string>
+    <string name="core_ui_input_error_details">Please enter error details here:</string>
+    <string name="core_ui_version">"Version No:"</string>
+    <string name="core_ui_exit_dialog_title">Exit</string>
+    <string name="core_ui_exit_dialog">Are you sure you want to exit the application?</string>
     <!--Multilingual Resources of Application-->
-    <string name="app_name" translatable="false">ICare</string>
-    <string name="about">
+    <string name="core_ui_app_name" translatable="false">ICare</string>
+    <string name="core_ui_about">
 ICare is an Android app for patient care and private practice management\n\n
 Our Mission
 To provide a high quality and reliable supply of information and tools that enable us to achieve the required governance within all sectors of the organisation.
@@ -47,47 +47,47 @@ Keeping pace with technological development to improve the level of performance 
 Objectives:\n
 1- Accuracy and quality of information provided to help decision makers.
     </string>
-    <string name="share_app_text">I used [ICare] application on my android phone and found it very useful for getting a lot of information, and help me to get the job done . You can download it from the link below:</string>
-    <string name="egp">EGP</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
-    <string name="error_generic">Something wrong happened. Please try again.</string>
-    <string name="error_user_collision">This account has already been registered! You can use forget password.</string>
-    <string name="error_user_not_authorized">Sorry! You don\'t have permission to do this task</string>
-    <string name="error_server">Failed to connect to the server!</string>
-    <string name="account_link_error">Failed to link your account!</string>
-    <string name="error_invalid_credentials">Invalid Email or password!</string>
-    <string name="error_email_not_verified">Please verify your email first! Check the new verification message sent to your email.</string>
-    <string name="credentials_error">Username or password is invalid!</string>
-    <string name="error_email_verification">Failed to send verification email.</string>
-    <string name="error_invalid_national_id">Please enter a valid national id.</string>
-    <string name="error_disk_full">Oops, it seems like your disk is full.</string>
-    <string name="error_request_timeout">The request timed out.</string>
-    <string name="error_internet_connection">Couldn\'t reach server, please check your internet connection.</string>
-    <string name="error_too_many_requests">Your quota seems to be exceeded.</string>
-    <string name="error_serialization">Couldn\'t parse data.</string>
-    <string name="proceed">Proceed</string>
-    <string name="undefined">Undefined</string>
-    <string name="month">Month</string>
-    <string name="year">Year</string>
-    <string name="day_from">Day From</string>
-    <string name="day_to">Day To</string>
-    <string name="loading">Loading</string>
-    <string name="value">Value</string>
-    <string name="count">Count</string>
-    <string name="percentage">Percentage</string>
-    <string name="no_data">No Data!</string>
-    <string name="notes">Notes</string>
-    <string name="employee_identity_error">Failed to validate your employee identity!</string>
-    <string name="date_range_error">Please enter valid period dates!</string>
-    <string name="hide">Hide</string>
-    <string name="start_date">Start Date</string>
-    <string name="end_date">End Date</string>
-    <string name="select_period">Pick a Period</string>
-    <string name="total">Total</string>
-    <string name="finish">Finish</string>
+    <string name="core_ui_share_app_text">I used [ICare] application on my android phone and found it very useful for getting a lot of information, and help me to get the job done . You can download it from the link below:</string>
+    <string name="core_ui_egp">EGP</string>
+    <string name="core_ui_ok">OK</string>
+    <string name="core_ui_cancel">Cancel</string>
+    <string name="core_ui_error_generic">Something wrong happened. Please try again.</string>
+    <string name="core_ui_error_user_collision">This account has already been registered! You can use forget password.</string>
+    <string name="core_ui_error_user_not_authorized">Sorry! You don\'t have permission to do this task</string>
+    <string name="core_ui_error_server">Failed to connect to the server!</string>
+    <string name="core_ui_account_link_error">Failed to link your account!</string>
+    <string name="core_ui_error_invalid_credentials">Invalid Email or password!</string>
+    <string name="core_ui_error_email_not_verified">Please verify your email first! Check the new verification message sent to your email.</string>
+    <string name="core_ui_credentials_error">Username or password is invalid!</string>
+    <string name="core_ui_error_email_verification">Failed to send verification email.</string>
+    <string name="core_ui_error_invalid_national_id">Please enter a valid national id.</string>
+    <string name="core_ui_error_disk_full">Oops, it seems like your disk is full.</string>
+    <string name="core_ui_error_request_timeout">The request timed out.</string>
+    <string name="core_ui_error_internet_connection">Couldn\'t reach server, please check your internet connection.</string>
+    <string name="core_ui_error_too_many_requests">Your quota seems to be exceeded.</string>
+    <string name="core_ui_error_serialization">Couldn\'t parse data.</string>
+    <string name="core_ui_proceed">Proceed</string>
+    <string name="core_ui_undefined">Undefined</string>
+    <string name="core_ui_month">Month</string>
+    <string name="core_ui_year">Year</string>
+    <string name="core_ui_day_from">Day From</string>
+    <string name="core_ui_day_to">Day To</string>
+    <string name="core_ui_loading">Loading</string>
+    <string name="core_ui_value">Value</string>
+    <string name="core_ui_count">Count</string>
+    <string name="core_ui_percentage">Percentage</string>
+    <string name="core_ui_no_data">No Data!</string>
+    <string name="core_ui_notes">Notes</string>
+    <string name="core_ui_employee_identity_error">Failed to validate your employee identity!</string>
+    <string name="core_ui_date_range_error">Please enter valid period dates!</string>
+    <string name="core_ui_hide">Hide</string>
+    <string name="core_ui_start_date">Start Date</string>
+    <string name="core_ui_end_date">End Date</string>
+    <string name="core_ui_select_period">Pick a Period</string>
+    <string name="core_ui_total">Total</string>
+    <string name="core_ui_finish">Finish</string>
 
-    <string-array name="month_names">
+    <string-array name="core_ui_month_names">
         <item>January</item>
         <item>February</item>
         <item>March</item>
@@ -101,7 +101,7 @@ Objectives:\n
         <item>November</item>
         <item>December</item>
     </string-array>
-    <string-array name="price_levels">
+    <string-array name="core_ui_price_levels">
         <item>First Level</item>
         <item>Second Level</item>
         <item>Third Level</item>
@@ -111,70 +111,70 @@ Objectives:\n
         <item>Seventh Level</item>
     </string-array>
 
-    <string name="nav_home">Home</string>
-    <string name="nav_notifications">Notifications</string>
-    <string name="nav_profile">Account</string>
-    <string name="nav_settings">Settings</string>
-    <string name="processing">Processing</string>
-    <string name="search_here">Search here</string>
-    <string name="Successful_operation">Successful Operation</string>
-    <string name="or">Or</string>
+    <string name="core_ui_nav_home">Home</string>
+    <string name="core_ui_nav_notifications">Notifications</string>
+    <string name="core_ui_nav_profile">Account</string>
+    <string name="core_ui_nav_settings">Settings</string>
+    <string name="core_ui_processing">Processing</string>
+    <string name="core_ui_search_here">Search here</string>
+    <string name="core_ui_Successful_operation">Successful Operation</string>
+    <string name="core_ui_or">Or</string>
 
-    <string name="sections_admin">Sections Admin</string>
-    <string name="clinics">Clinics</string>
-    <string name="pharmacies">Pharmacies</string>
-    <string name="centers">Centers</string>
-    <string name="doctors">Doctors</string>
-    <string name="clinic_staffs">Clinic Staffs</string>
-    <string name="center_staffs">Center Staffs</string>
-    <string name="pharmacists">Pharmacists</string>
-    <string name="no_clinics_data">No clinics data</string>
-    <string name="no_doctors_data">No Doctors data</string>
-    <string name="no_clinicians_data">No clinicians data</string>
-    <string name="no_pharmacies_data">No pharmacies data</string>
-    <string name="no_pharmacists_data">No pharmacists data</string>
-    <string name="no_centers_data">No centers data</string>
-    <string name="no_center_staff_data">No center staff data</string>
-    <string name="add">Add</string>
-    <string name="appointments">Appointments</string>
-    <string name="pending">Pending</string>
-    <string name="confirmed">Confirmed</string>
-    <string name="completed">Completed</string>
-    <string name="cancelled">Cancelled</string>
-    <string name="scan_center">Scan Center</string>
-    <string name="appointment_booking">Appointment Booking</string>
-    <string name="lab_center">Lab Center</string>
-    <string name="pharmacy">Pharmacy</string>
-    <string name="price">Price</string>
-    <string name="available_slots">Available Slots</string>
-    <string name="see_all">See All</string>
-    <string name="admins">Admins</string>
-    <string name="patients">Patients</string>
-    <string name="rating">Rating</string>
-    <string name="medical_record">Medical Record</string>
-    <string name="male">Male</string>
-    <string name="female">Female</string>
-    <string name="gender">Gender</string>
-    <string name="weight">Weight</string>
-    <string name="kgm">KGM</string>
-    <string name="birth_date">Birth Date</string>
-    <string name="allergies">Allergies</string>
-    <string name="past_surgeries">Past Surgeries</string>
-    <string name="chronic_diseases">Chronic Diseases</string>
-    <string name="current_medications">Current Medications</string>
-    <string name="view_medical_record">Click to view medical record</string>
-    <string name="name">Name</string>
-    <string name="speciality">Speciality</string>
-    <string name="total_appointments">Total Appointments</string>
-    <string name="appointment_price">Appointment Price</string>
-    <string name="imaging_center">Imaging Center</string>
-    <string name="search">Search</string>
-    <string name="book_now">Book Now</string>
-    <string name="search_by_doctor_name_or_speciality">Search by doctor name or speciality</string>
-    <string name="open">Open</string>
-    <string name="closed">Closed</string>
-    <string name="scan_centers">Scan Centers</string>
-    <string name="lab_centers">Lab Centers</string>
-    <string name="search_for_pharmacy">Search by pharmacy name</string>
-    <string name="reschedule">Reschedule</string>
+    <string name="core_ui_sections_admin">Sections Admin</string>
+    <string name="core_ui_clinics">Clinics</string>
+    <string name="core_ui_pharmacies">Pharmacies</string>
+    <string name="core_ui_centers">Centers</string>
+    <string name="core_ui_doctors">Doctors</string>
+    <string name="core_ui_clinic_staffs">Clinic Staffs</string>
+    <string name="core_ui_center_staffs">Center Staffs</string>
+    <string name="core_ui_pharmacists">Pharmacists</string>
+    <string name="core_ui_no_clinics_data">No clinics data</string>
+    <string name="core_ui_no_doctors_data">No Doctors data</string>
+    <string name="core_ui_no_clinicians_data">No clinicians data</string>
+    <string name="core_ui_no_pharmacies_data">No pharmacies data</string>
+    <string name="core_ui_no_pharmacists_data">No pharmacists data</string>
+    <string name="core_ui_no_centers_data">No centers data</string>
+    <string name="core_ui_no_center_staff_data">No center staff data</string>
+    <string name="core_ui_add">Add</string>
+    <string name="core_ui_appointments">Appointments</string>
+    <string name="core_ui_pending">Pending</string>
+    <string name="core_ui_confirmed">Confirmed</string>
+    <string name="core_ui_completed">Completed</string>
+    <string name="core_ui_cancelled">Cancelled</string>
+    <string name="core_ui_scan_center">Scan Center</string>
+    <string name="core_ui_appointment_booking">Appointment Booking</string>
+    <string name="core_ui_lab_center">Lab Center</string>
+    <string name="core_ui_pharmacy">Pharmacy</string>
+    <string name="core_ui_price">Price</string>
+    <string name="core_ui_available_slots">Available Slots</string>
+    <string name="core_ui_see_all">See All</string>
+    <string name="core_ui_admins">Admins</string>
+    <string name="core_ui_patients">Patients</string>
+    <string name="core_ui_rating">Rating</string>
+    <string name="core_ui_medical_record">Medical Record</string>
+    <string name="core_ui_male">Male</string>
+    <string name="core_ui_female">Female</string>
+    <string name="core_ui_gender">Gender</string>
+    <string name="core_ui_weight">Weight</string>
+    <string name="core_ui_kgm">KGM</string>
+    <string name="core_ui_birth_date">Birth Date</string>
+    <string name="core_ui_allergies">Allergies</string>
+    <string name="core_ui_past_surgeries">Past Surgeries</string>
+    <string name="core_ui_chronic_diseases">Chronic Diseases</string>
+    <string name="core_ui_current_medications">Current Medications</string>
+    <string name="core_ui_view_medical_record">Click to view medical record</string>
+    <string name="core_ui_name">Name</string>
+    <string name="core_ui_speciality">Speciality</string>
+    <string name="core_ui_total_appointments">Total Appointments</string>
+    <string name="core_ui_appointment_price">Appointment Price</string>
+    <string name="core_ui_imaging_center">Imaging Center</string>
+    <string name="core_ui_search">Search</string>
+    <string name="core_ui_book_now">Book Now</string>
+    <string name="core_ui_search_by_doctor_name_or_speciality">Search by doctor name or speciality</string>
+    <string name="core_ui_open">Open</string>
+    <string name="core_ui_closed">Closed</string>
+    <string name="core_ui_scan_centers">Scan Centers</string>
+    <string name="core_ui_lab_centers">Lab Centers</string>
+    <string name="core_ui_search_for_pharmacy">Search by pharmacy name</string>
+    <string name="core_ui_reschedule">Reschedule</string>
 </resources>

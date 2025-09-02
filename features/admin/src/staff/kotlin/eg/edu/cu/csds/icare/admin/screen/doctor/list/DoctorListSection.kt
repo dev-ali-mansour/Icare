@@ -137,7 +137,7 @@ private fun DoctorListContent(
         if (state.doctors.isEmpty()) {
             EmptyContentView(
                 modifier = Modifier.fillMaxSize(),
-                text = stringResource(CoreR.string.no_doctors_data),
+                text = stringResource(CoreR.string.core_ui_no_doctors_data),
             )
         } else {
             LazyColumn(

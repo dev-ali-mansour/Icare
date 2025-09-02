@@ -57,7 +57,7 @@ internal fun AboutContent(
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                 },
-            text = "${stringResource(id = CoreR.string.version)} $appVersion",
+            text = "${stringResource(id = CoreR.string.core_ui_version)} $appVersion",
             color = textColor,
             fontSize = MaterialTheme.typography.titleLarge.fontSize,
             fontFamily = helveticaFamily,
@@ -71,7 +71,7 @@ internal fun AboutContent(
                     top.linkTo(version.bottom)
                     start.linkTo(version.start)
                 },
-            text = stringResource(id = CoreR.string.about),
+            text = stringResource(id = CoreR.string.core_ui_about),
             color = textColor.copy(alpha = 0.6f),
             fontSize = MaterialTheme.typography.titleMedium.fontSize,
             fontFamily = helveticaFamily,
@@ -86,7 +86,7 @@ internal fun AboutContent(
                         top.linkTo(about.bottom)
                         start.linkTo(version.start)
                     },
-            text = stringResource(CoreR.string.made_by),
+            text = stringResource(CoreR.string.core_ui_made_by),
             color = textColor,
             textAlign = TextAlign.Center,
             fontSize = MaterialTheme.typography.titleLarge.fontSize,
@@ -104,7 +104,7 @@ internal fun AboutContent(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     }.clickable {
-                        context.openLink(context.getString(CoreR.string.website_url))
+                        context.openLink(context.getString(CoreR.string.core_ui_website_url))
                     },
             painter = painterResource(id = CoreR.drawable.logo),
             contentScale = ContentScale.Fit,
@@ -128,7 +128,7 @@ internal fun AboutContent(
                             top.linkTo(logo.bottom, margin = S_PADDING)
                             start.linkTo(parent.start)
                         }.clickable {
-                            context.openLink(context.getString(CoreR.string.facebook_url))
+                            context.openLink(context.getString(CoreR.string.core_ui_facebook_url))
                         },
                 painter = painterResource(id = CoreR.drawable.ic_social_facebook),
                 contentScale = ContentScale.Fit,

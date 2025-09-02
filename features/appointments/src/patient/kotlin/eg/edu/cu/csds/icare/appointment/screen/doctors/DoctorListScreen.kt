@@ -203,7 +203,7 @@ private fun DoctorsListContent(
                             end.linkTo(parent.end, M_PADDING)
                             width = Dimension.fillToConstraints
                         },
-                placeholder = stringResource(CoreR.string.search_by_doctor_name_or_speciality),
+                placeholder = stringResource(CoreR.string.core_ui_search_by_doctor_name_or_speciality),
                 value = uiState.searchQuery,
                 focus = false,
                 onValueChange = { onEvent(DoctorListEvent.UpdateSearchQuery(it)) },

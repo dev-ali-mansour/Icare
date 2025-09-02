@@ -382,7 +382,7 @@ private fun SignInContent(
                 Spacer(modifier = Modifier.height(S_PADDING))
 
                 Text(
-                    text = stringResource(id = CoreR.string.or),
+                    text = stringResource(id = CoreR.string.core_ui_or),
                     fontSize = MaterialTheme.typography.titleSmall.fontSize,
                     fontFamily = helveticaFamily,
                     textAlign = TextAlign.Center,

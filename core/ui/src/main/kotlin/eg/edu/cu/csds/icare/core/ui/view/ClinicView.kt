@@ -106,7 +106,7 @@ fun ClinicView(
                 }
                 Spacer(modifier = Modifier.height(S_PADDING))
                 Text(
-                    text = stringResource(if (clinic.isOpen)R.string.open else R.string.closed),
+                    text = stringResource(if (clinic.isOpen)R.string.core_ui_open else R.string.core_ui_closed),
                     color = if (clinic.isOpen) PaidColor else UnPaidColor,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium,

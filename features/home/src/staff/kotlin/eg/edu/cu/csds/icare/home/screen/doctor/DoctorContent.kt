@@ -85,7 +85,7 @@ fun DoctorContent(
     onAppointmentClick: (Appointment) -> Unit,
     onSeeAllClick: () -> Unit,
 ) {
-    val     scope: CoroutineScope = rememberCoroutineScope()
+    val scope: CoroutineScope = rememberCoroutineScope()
 
     ConstraintLayout(
         modifier =
@@ -117,8 +117,8 @@ fun DoctorContent(
         )
 
         StatCard(
-            title = stringResource(CoreR.string.price),
-            value = "${schedule.price.toFormattedString()} ${stringResource(CoreR.string.egp)}",
+            title = stringResource(CoreR.string.core_ui_price),
+            value = "${schedule.price.toFormattedString()} ${stringResource(CoreR.string.core_ui_egp)}",
             modifier =
                 Modifier
                     .constrainAs(priceCard) {
@@ -134,7 +134,7 @@ fun DoctorContent(
         )
 
         StatCard(
-            title = stringResource(CoreR.string.available_slots),
+            title = stringResource(CoreR.string.core_ui_available_slots),
             value = schedule.availableSlots.toString(),
             modifier =
                 Modifier.constrainAs(slotsCard) {
@@ -158,7 +158,7 @@ fun DoctorContent(
             maxLines = 1,
         )
         Text(
-            text = stringResource(CoreR.string.see_all),
+            text = stringResource(CoreR.string.core_ui_see_all),
             modifier =
                 Modifier
                     .constrainAs(seeAll) {

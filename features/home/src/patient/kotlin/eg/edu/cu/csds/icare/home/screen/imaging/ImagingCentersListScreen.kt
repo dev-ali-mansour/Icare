@@ -89,7 +89,7 @@ internal fun ImagingCentersListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(CoreR.string.scan_centers)) },
+                title = { Text(text = stringResource(CoreR.string.core_ui_scan_centers)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,

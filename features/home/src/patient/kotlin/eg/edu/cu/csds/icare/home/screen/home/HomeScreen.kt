@@ -372,7 +372,7 @@ private fun HomeContent(
                                             ?.let {
                                                 stringResource(it.textResId)
                                             }
-                                            ?: stringResource(CoreR.string.undefined),
+                                            ?: stringResource(CoreR.string.core_ui_undefined),
                                 )
 
                             Box(
@@ -554,7 +554,7 @@ private fun HomeContent(
         }
 
         Text(
-            text = stringResource(id = CoreR.string.made_by),
+            text = stringResource(id = CoreR.string.core_ui_made_by),
             modifier =
                 Modifier
                     .constrainAs(marquee) {

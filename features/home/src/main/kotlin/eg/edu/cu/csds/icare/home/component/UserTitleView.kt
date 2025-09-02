@@ -77,7 +77,7 @@ fun UserTitleView(
                     bottom.linkTo(logo.bottom)
                     width = Dimension.fillToConstraints
                 },
-            text = stringResource(R.string.app_name),
+            text = stringResource(R.string.core_ui_app_name),
             fontFamily = kufamFamily,
             fontWeight = FontWeight.Bold,
             fontSize = MaterialTheme.typography.labelLarge.fontSize,

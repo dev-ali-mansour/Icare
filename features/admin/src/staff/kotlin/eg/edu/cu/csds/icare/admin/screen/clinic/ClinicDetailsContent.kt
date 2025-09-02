@@ -86,7 +86,7 @@ internal fun ClinicDetailsContent(
                     onValueChange = { onEvent(ClinicEvent.UpdateName(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.name),
+                            text = stringResource(CoreR.string.core_ui_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -240,10 +240,10 @@ internal fun ClinicDetailsContent(
                         text =
                             if (state.isOpen) {
                                 stringResource(
-                                    CoreR.string.open,
+                                    CoreR.string.core_ui_open,
                                 )
                             } else {
-                                stringResource(CoreR.string.closed)
+                                stringResource(CoreR.string.core_ui_closed)
                             },
                         fontFamily = helveticaFamily,
                         color = textColor,
@@ -256,7 +256,7 @@ internal fun ClinicDetailsContent(
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(CoreR.string.proceed),
+                    text = stringResource(CoreR.string.core_ui_proceed),
                     color = buttonBackgroundColor,
                     onClick = { onEvent(ClinicEvent.Proceed) },
                 )

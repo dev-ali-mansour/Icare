@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="blue_500">#FF024680</color>
-    <color name="blue_700">#FF01345F</color>
-    <color name="blue_200">#FF30AEC5</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="core_ui_blue_500">#FF024680</color>
+    <color name="core_ui_blue_700">#FF01345F</color>
+    <color name="core_ui_blue_200">#FF30AEC5</color>
+    <color name="core_ui_black">#FF000000</color>
+    <color name="core_ui_white">#FFFFFFFF</color>
 </resources>

@@ -12,25 +12,25 @@ sealed class BottomNavItem(
 ) {
     data object Home : BottomNavItem(
         R.drawable.ic_home,
-        R.string.nav_home,
+        R.string.core_ui_nav_home,
         Route.Home,
     )
 
     data object Notifications : BottomNavItem(
         R.drawable.ic_notifications,
-        R.string.nav_notifications,
+        R.string.core_ui_nav_notifications,
         Route.Notifications,
     )
 
     data object Profile : BottomNavItem(
         R.drawable.ic_profile,
-        R.string.nav_profile,
+        R.string.core_ui_nav_profile,
         Route.Profile,
     )
 
     data object Settings : BottomNavItem(
         R.drawable.ic_nav_settings,
-        R.string.nav_settings,
+        R.string.core_ui_nav_settings,
         Route.Settings,
     )
 }

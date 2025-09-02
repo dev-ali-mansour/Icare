@@ -88,7 +88,7 @@ internal fun CenterDetailsContent(
                     onValueChange = { onEvent(CenterEvent.UpdateName(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.name),
+                            text = stringResource(CoreR.string.core_ui_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -251,7 +251,7 @@ internal fun CenterDetailsContent(
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(CoreR.string.proceed),
+                    text = stringResource(CoreR.string.core_ui_proceed),
                     color = buttonBackgroundColor,
                     onClick = { onEvent(CenterEvent.Proceed) },
                 )
