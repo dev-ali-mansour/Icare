@@ -31,7 +31,7 @@ sealed interface ClinicianEvent {
         val profilePicture: String,
     ) : ClinicianEvent
 
-    data class SelectClinician(
+    data class LoadClinician(
         val clinician: Clinician,
     ) : ClinicianEvent
 
