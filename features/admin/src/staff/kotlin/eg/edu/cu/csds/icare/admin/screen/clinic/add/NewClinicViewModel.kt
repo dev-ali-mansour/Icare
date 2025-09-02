@@ -63,7 +63,7 @@ class NewClinicViewModel(
                 _uiState.update { it.copy(isOpen = event.isOpen) }
             }
 
-            is ClinicEvent.SelectClinic -> Unit
+            is ClinicEvent.LoadClinic -> Unit
             is ClinicEvent.Proceed ->
                 viewModelScope.launch {
                     when {

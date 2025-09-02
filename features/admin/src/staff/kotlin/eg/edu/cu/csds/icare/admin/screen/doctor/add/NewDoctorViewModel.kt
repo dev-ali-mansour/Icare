@@ -97,7 +97,7 @@ class NewDoctorViewModel(
                 _uiState.update { it.copy(profilePicture = event.profilePicture) }
             }
 
-            is DoctorEvent.SelectDoctor -> Unit
+            is DoctorEvent.LoadDoctor -> Unit
             is DoctorEvent.Proceed ->
                 viewModelScope.launch {
                     when {

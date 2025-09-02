@@ -57,7 +57,7 @@ class UpdateCenterViewModel(
             is CenterEvent.UpdateAddress ->
                 _uiState.update { it.copy(address = event.address) }
 
-            is CenterEvent.SelectCenter -> {
+            is CenterEvent.LoadCenter -> {
                 _uiState.update {
                     it.copy(
                         id = event.center.id,

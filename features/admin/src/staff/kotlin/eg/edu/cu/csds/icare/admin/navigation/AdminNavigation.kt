@@ -114,7 +114,7 @@ fun NavGraphBuilder.adminRoute(
         val selectedClinic by selectedClinicViewModel.selectedClinic.collectAsStateWithLifecycle()
         LaunchedEffect(selectedClinic) {
             selectedClinic?.let { clinic ->
-                viewModel.processEvent(ClinicEvent.SelectClinic(clinic))
+                viewModel.processEvent(ClinicEvent.LoadClinic(clinic))
             }
         }
         UpdateClinicScreen(
@@ -135,7 +135,7 @@ fun NavGraphBuilder.adminRoute(
         val selectedDoctor by selectedDoctorViewModel.selectedDoctor.collectAsStateWithLifecycle()
         LaunchedEffect(selectedDoctor) {
             selectedDoctor?.let { doctor ->
-                viewModel.processEvent(DoctorEvent.SelectDoctor(doctor))
+                viewModel.processEvent(DoctorEvent.LoadDoctor(doctor))
             }
         }
         UpdateDoctorScreen(
@@ -156,7 +156,7 @@ fun NavGraphBuilder.adminRoute(
         val selectedClinician by selectedClinicianViewModel.selectedClinician.collectAsStateWithLifecycle()
         LaunchedEffect(selectedClinician) {
             selectedClinician?.let { clinician ->
-                viewModel.processEvent(ClinicianEvent.SelectClinician(clinician))
+                viewModel.processEvent(ClinicianEvent.LoadClinician(clinician))
             }
         }
         UpdateClinicianScreen(
@@ -177,7 +177,7 @@ fun NavGraphBuilder.adminRoute(
         val selectedPharmacy by selectedPharmacyViewModel.selectedPharmacy.collectAsStateWithLifecycle()
         LaunchedEffect(selectedPharmacy) {
             selectedPharmacy?.let { pharmacy ->
-                viewModel.processEvent(PharmacyEvent.SelectPharmacy(pharmacy))
+                viewModel.processEvent(PharmacyEvent.LoadPharmacy(pharmacy))
             }
         }
         UpdatePharmacyScreen(
@@ -198,7 +198,7 @@ fun NavGraphBuilder.adminRoute(
         val selectedPharmacist by selectedPharmacistViewModel.selectedPharmacist.collectAsStateWithLifecycle()
         LaunchedEffect(selectedPharmacist) {
             selectedPharmacist?.let { pharmacist ->
-                viewModel.processEvent(PharmacistEvent.SelectPharmacist(pharmacist))
+                viewModel.processEvent(PharmacistEvent.LoadPharmacist(pharmacist))
             }
         }
 
@@ -220,7 +220,7 @@ fun NavGraphBuilder.adminRoute(
         val selectedCenter by selectedCenterViewModel.selectedCenter.collectAsStateWithLifecycle()
         LaunchedEffect(selectedCenter) {
             selectedCenter?.let { center ->
-                viewModel.processEvent(CenterEvent.SelectCenter(center))
+                viewModel.processEvent(CenterEvent.LoadCenter(center))
             }
         }
         UpdateCenterScreen(
@@ -241,7 +241,7 @@ fun NavGraphBuilder.adminRoute(
         val selectedStaff by selectedStaffViewModel.selectedStaff.collectAsStateWithLifecycle()
         LaunchedEffect(selectedStaff) {
             selectedStaff?.let { staff ->
-                viewModel.processEvent(StaffEvent.SelectStaff(staff))
+                viewModel.processEvent(StaffEvent.LoadStaff(staff))
             }
         }
         UpdateStaffScreen(

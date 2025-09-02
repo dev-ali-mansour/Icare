@@ -58,7 +58,7 @@ class NewCenterViewModel(
             is CenterEvent.UpdateAddress ->
                 _uiState.update { it.copy(address = event.address) }
 
-            is CenterEvent.SelectCenter -> Unit
+            is CenterEvent.LoadCenter -> Unit
             is CenterEvent.Proceed ->
                 viewModelScope.launch {
                     when {

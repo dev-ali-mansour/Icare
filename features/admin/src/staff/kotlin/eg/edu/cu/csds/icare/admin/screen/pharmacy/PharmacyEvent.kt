@@ -15,7 +15,7 @@ sealed interface PharmacyEvent {
         val address: String,
     ) : PharmacyEvent
 
-    data class SelectPharmacy(
+    data class LoadPharmacy(
         val pharmacy: Pharmacy,
     ) : PharmacyEvent
 

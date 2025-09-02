@@ -73,7 +73,7 @@ class NewPharmacistViewModel(
             is PharmacistEvent.UpdateProfilePicture ->
                 _uiState.update { it.copy(profilePicture = event.profilePicture) }
 
-            is PharmacistEvent.SelectPharmacist -> Unit
+            is PharmacistEvent.LoadPharmacist -> Unit
 
             is PharmacistEvent.Proceed ->
                 viewModelScope.launch {

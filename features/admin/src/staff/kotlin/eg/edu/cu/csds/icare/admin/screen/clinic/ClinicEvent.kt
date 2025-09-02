@@ -23,7 +23,7 @@ sealed interface ClinicEvent {
         val isOpen: Boolean,
     ) : ClinicEvent
 
-    data class SelectClinic(
+    data class LoadClinic(
         val clinic: Clinic,
     ) : ClinicEvent
 

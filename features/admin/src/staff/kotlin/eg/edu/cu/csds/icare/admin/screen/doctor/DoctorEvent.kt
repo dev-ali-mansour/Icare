@@ -51,7 +51,7 @@ sealed interface DoctorEvent {
         val profilePicture: String,
     ) : DoctorEvent
 
-    data class SelectDoctor(
+    data class LoadDoctor(
         val doctor: Doctor,
     ) : DoctorEvent
 

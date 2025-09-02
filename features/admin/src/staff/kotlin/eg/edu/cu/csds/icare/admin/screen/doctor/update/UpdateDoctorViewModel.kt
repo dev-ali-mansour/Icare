@@ -97,7 +97,7 @@ class UpdateDoctorViewModel(
                 _uiState.update { it.copy(profilePicture = event.profilePicture) }
             }
 
-            is DoctorEvent.SelectDoctor -> {
+            is DoctorEvent.LoadDoctor -> {
                 _uiState.update {
                     it.copy(
                         id = event.doctor.id,

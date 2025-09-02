@@ -31,7 +31,7 @@ sealed interface StaffEvent {
         val profilePicture: String,
     ) : StaffEvent
 
-    data class SelectStaff(
+    data class LoadStaff(
         val staff: Staff,
     ) : StaffEvent
 
