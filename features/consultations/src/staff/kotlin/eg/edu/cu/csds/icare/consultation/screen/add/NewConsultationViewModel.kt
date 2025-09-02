@@ -39,7 +39,7 @@ class NewConsultationViewModel(
     val uiState =
         _uiState
             .onStart {
-                _uiState.update { it.copy(readOnly = false) }
+                _uiState.update { it.copy(dateTime = System.currentTimeMillis(), readOnly = false) }
                 fetchPharmacies()
                 fetchCenters()
             }.stateIn(
