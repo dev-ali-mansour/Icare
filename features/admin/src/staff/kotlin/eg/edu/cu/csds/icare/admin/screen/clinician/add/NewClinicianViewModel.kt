@@ -71,7 +71,7 @@ class NewClinicianViewModel(
             is ClinicianEvent.UpdateProfilePicture ->
                 _uiState.update { it.copy(profilePicture = event.profilePicture) }
 
-            is ClinicianEvent.SelectClinician -> Unit
+            is ClinicianEvent.LoadClinician -> Unit
 
             is ClinicianEvent.Proceed ->
                 viewModelScope.launch {

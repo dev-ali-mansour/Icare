@@ -63,7 +63,7 @@ class UpdateClinicViewModel(
                 _uiState.update { it.copy(isOpen = event.isOpen) }
             }
 
-            is ClinicEvent.SelectClinic -> {
+            is ClinicEvent.LoadClinic -> {
                 _uiState.update {
                     it.copy(
                         id = event.clinic.id,

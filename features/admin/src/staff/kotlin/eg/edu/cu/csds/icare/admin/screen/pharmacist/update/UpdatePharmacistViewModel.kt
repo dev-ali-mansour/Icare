@@ -71,7 +71,7 @@ class UpdatePharmacistViewModel(
             is PharmacistEvent.UpdateProfilePicture ->
                 _uiState.update { it.copy(profilePicture = intent.profilePicture) }
 
-            is PharmacistEvent.SelectPharmacist -> {
+            is PharmacistEvent.LoadPharmacist -> {
                 _uiState.update {
                     it.copy(
                         id = intent.pharmacist.id,

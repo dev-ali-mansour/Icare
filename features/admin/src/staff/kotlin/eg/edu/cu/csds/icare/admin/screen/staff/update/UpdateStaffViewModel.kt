@@ -71,7 +71,7 @@ class UpdateStaffViewModel(
             is StaffEvent.UpdateProfilePicture ->
                 _uiState.update { it.copy(profilePicture = event.profilePicture) }
 
-            is StaffEvent.SelectStaff -> {
+            is StaffEvent.LoadStaff -> {
                 _uiState.update {
                     it.copy(
                         id = event.staff.id,

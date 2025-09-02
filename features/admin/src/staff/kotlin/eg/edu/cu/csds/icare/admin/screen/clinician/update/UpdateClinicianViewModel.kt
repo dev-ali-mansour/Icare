@@ -76,7 +76,7 @@ class UpdateClinicianViewModel(
                 _uiState.update { it.copy(profilePicture = event.profilePicture) }
             }
 
-            is ClinicianEvent.SelectClinician -> {
+            is ClinicianEvent.LoadClinician -> {
                 _uiState.update {
                     it.copy(
                         id = event.clinician.id,

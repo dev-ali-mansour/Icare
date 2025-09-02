@@ -55,7 +55,7 @@ class UpdatePharmacyViewModel(
                 _uiState.update { it.copy(address = event.address) }
             }
 
-            is PharmacyEvent.SelectPharmacy -> {
+            is PharmacyEvent.LoadPharmacy -> {
                 _uiState.update {
                     it.copy(
                         id = event.pharmacy.id,

@@ -55,7 +55,7 @@ class NewPharmacyViewModel(
                 _uiState.update { it.copy(address = intent.address) }
             }
 
-            is PharmacyEvent.SelectPharmacy -> Unit
+            is PharmacyEvent.LoadPharmacy -> Unit
             is PharmacyEvent.Proceed ->
                 viewModelScope.launch {
                     when {

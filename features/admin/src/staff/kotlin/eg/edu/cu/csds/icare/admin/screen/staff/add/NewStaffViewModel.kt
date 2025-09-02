@@ -72,7 +72,7 @@ class NewStaffViewModel(
             is StaffEvent.UpdateProfilePicture ->
                 _uiState.update { it.copy(profilePicture = event.profilePicture) }
 
-            is StaffEvent.SelectStaff -> Unit
+            is StaffEvent.LoadStaff -> Unit
 
             is StaffEvent.Proceed ->
                 viewModelScope.launch {
