@@ -1,26 +1,41 @@
-package eg.edu.cu.csds.icare.consultation.screen.navigation
+package eg.edu.cu.csds.icare.consultation.navigation
 
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import eg.edu.cu.csds.icare.consultation.ConsultationViewModel
+import eg.edu.cu.csds.icare.consultation.screen.MedicalRecordEvent
 import eg.edu.cu.csds.icare.consultation.screen.MedicalRecordScreen
+import eg.edu.cu.csds.icare.consultation.screen.MedicalRecordViewModel
+import eg.edu.cu.csds.icare.consultation.screen.SelectedConsultationViewModel
+import eg.edu.cu.csds.icare.consultation.screen.SelectedPatientViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
+import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.consultationsRoute(
-    consultationViewModel: ConsultationViewModel,
-    onNavigationIconClicked: () -> Unit,
-    navigateToScreen: (Route) -> Unit,
-    onError: suspend (Throwable?) -> Unit,
+    selectedConsultationViewModel: SelectedConsultationViewModel,
+    selectedPatientViewModel: SelectedPatientViewModel,
+    navigateUp: () -> Unit,
+    navigateToRoute: (Route) -> Unit,
 ) {
     composable<Route.PatientMedicalRecord> {
-        MedicalRecordScreen(
-            consultationViewModel = consultationViewModel,
-            onNavigationIconClicked = { onNavigationIconClicked() },
-            onConsultationClicked = {
-                consultationViewModel.selectedConsultationState.value = it
-                navigateToScreen(Route.UpdateConsultation)
-            },
-            onError = { onError(it) },
-        )
+        composable<Route.PatientMedicalRecord> {
+            val viewModel: MedicalRecordViewModel = koinViewModel()
+            val selectedPatientId by selectedPatientViewModel.selectedPatientId
+                .collectAsStateWithLifecycle()
+            LaunchedEffect(selectedPatientId) {
+                selectedPatientId?.let { patientId ->
+                    viewModel.processEvent(MedicalRecordEvent.LoadMedicalRecord(patientId))
+                }
+            }
+            MedicalRecordScreen(
+                navigateUp = { navigateUp() },
+                navigateToConsultationRoute = {
+                    selectedConsultationViewModel.onSelectConsultation(it)
+                    navigateToRoute(Route.UpdateConsultation)
+                },
+            )
+        }
     }
 }
