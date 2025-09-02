@@ -44,7 +44,7 @@ fun SuccessesDialog(onDismissRequest: () -> Unit) {
                             .fillMaxHeight(fraction = 0.7f),
                 )
                 Text(
-                    text = stringResource(R.string.Successful_operation),
+                    text = stringResource(R.string.core_ui_Successful_operation),
                     modifier = Modifier,
                     fontSize = MaterialTheme.typography.headlineSmall.fontSize,
                     fontFamily = helveticaFamily,

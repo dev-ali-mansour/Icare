@@ -107,7 +107,7 @@ fun AppointmentCard(
                         } else {
                             TextButton(onClick = { onReschedule() }) {
                                 Text(
-                                    text = stringResource(CoreR.string.reschedule),
+                                    text = stringResource(CoreR.string.core_ui_reschedule),
                                     fontFamily = helveticaFamily,
                                 )
                             }

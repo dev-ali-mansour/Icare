@@ -39,7 +39,7 @@ internal fun AboutScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = CoreR.string.about_us)) },
+                title = { Text(text = stringResource(id = CoreR.string.core_ui_about_us)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,

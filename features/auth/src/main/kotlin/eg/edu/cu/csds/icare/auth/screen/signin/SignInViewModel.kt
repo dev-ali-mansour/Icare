@@ -157,7 +157,7 @@ class SignInViewModel(
                         isLoading = false,
                         effect =
                             SignInEffect.ShowError(
-                                message = StringResourceId(CoreR.string.error_invalid_credentials),
+                                message = StringResourceId(CoreR.string.core_ui_error_invalid_credentials),
                             ),
                     )
                 }

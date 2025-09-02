@@ -279,7 +279,7 @@ internal fun PharmacistDetailsContent(
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(CoreR.string.proceed),
+                    text = stringResource(CoreR.string.core_ui_proceed),
                     color = buttonBackgroundColor,
                     onClick = { onEvent(PharmacistEvent.Proceed) },
                 )

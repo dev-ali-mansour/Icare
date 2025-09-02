@@ -288,48 +288,48 @@ internal fun AdminContentPreview() {
 val adminCategories =
     listOf(
         SectionCategory(
-            titleResId = R.string.clinics,
+            titleResId = R.string.core_ui_clinics,
             sections =
                 listOf(
                     SectionItem(
                         iconResId = R.drawable.ic_clinic,
-                        titleResId = R.string.clinics,
+                        titleResId = R.string.core_ui_clinics,
                     ),
                     SectionItem(
                         iconResId = R.drawable.ic_doctor,
-                        titleResId = R.string.doctors,
+                        titleResId = R.string.core_ui_doctors,
                     ),
                     SectionItem(
                         iconResId = R.drawable.ic_staff,
-                        titleResId = R.string.clinic_staffs,
+                        titleResId = R.string.core_ui_clinic_staffs,
                     ),
                 ),
         ),
         SectionCategory(
-            titleResId = R.string.pharmacies,
+            titleResId = R.string.core_ui_pharmacies,
             sections =
                 listOf(
                     SectionItem(
                         iconResId = R.drawable.ic_pharmacy,
-                        titleResId = R.string.pharmacies,
+                        titleResId = R.string.core_ui_pharmacies,
                     ),
                     SectionItem(
                         iconResId = R.drawable.ic_pharmacist,
-                        titleResId = R.string.pharmacists,
+                        titleResId = R.string.core_ui_pharmacists,
                     ),
                 ),
         ),
         SectionCategory(
-            titleResId = R.string.centers,
+            titleResId = R.string.core_ui_centers,
             sections =
                 listOf(
                     SectionItem(
                         iconResId = R.drawable.ic_lab,
-                        titleResId = R.string.centers,
+                        titleResId = R.string.core_ui_centers,
                     ),
                     SectionItem(
                         iconResId = R.drawable.ic_staff2,
-                        titleResId = R.string.center_staffs,
+                        titleResId = R.string.core_ui_center_staffs,
                     ),
                 ),
         ),

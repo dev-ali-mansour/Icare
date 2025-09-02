@@ -42,7 +42,6 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -100,7 +99,6 @@ internal fun ConsultationDetailsContent(
     onEvent: (ConsultationEvent) -> Unit,
 ) {
     val context = LocalContext.current
-    var selectedDate by remember { mutableLongStateOf(uiState.followUpdDate) }
     var selectedDateFormatted by remember { mutableStateOf("") }
     val interactionSource = remember { MutableInteractionSource() }
     val scope = rememberCoroutineScope()
@@ -118,7 +116,6 @@ internal fun ConsultationDetailsContent(
                 TextButton(
                     onClick = {
                         datePickerState.selectedDateMillis?.let {
-                            selectedDate = it
                             selectedDateFormatted = it.getFormattedDate(context)
                             onEvent(ConsultationEvent.UpdateFollowUpdDate(it))
                         }
@@ -262,7 +259,7 @@ internal fun ConsultationDetailsContent(
                         )
 
                         Text(
-                            text = stringResource(CoreR.string.view_medical_record),
+                            text = stringResource(CoreR.string.core_ui_view_medical_record),
                             modifier =
                                 Modifier.constrainAs(message) {
                                     top.linkTo(name.bottom, margin = S_PADDING)
@@ -435,7 +432,7 @@ internal fun ConsultationDetailsContent(
                 val prescriptionStatus =
                     stringResource(
                         statusList.firstOrNull { it.code == uiState.prescriptionStatusId }?.textResId
-                            ?: CoreR.string.pending,
+                            ?: CoreR.string.core_ui_pending,
                     )
                 Text(
                     text = "${stringResource(R.string.prescription_status)}: $prescriptionStatus",
@@ -551,7 +548,7 @@ internal fun ConsultationDetailsContent(
                 val labTestsStatus =
                     stringResource(
                         statusList.firstOrNull { it.code == uiState.labTestStatusId }?.textResId
-                            ?: CoreR.string.pending,
+                            ?: CoreR.string.core_ui_pending,
                     )
                 Text(
                     text = "${stringResource(R.string.lab_tests_status)}: $labTestsStatus",
@@ -585,7 +582,7 @@ internal fun ConsultationDetailsContent(
                         onValueChange = { },
                         label = {
                             Text(
-                                text = stringResource(CoreR.string.imaging_center),
+                                text = stringResource(CoreR.string.core_ui_imaging_center),
                                 color = dropDownTextColor,
                             )
                         },
@@ -668,7 +665,7 @@ internal fun ConsultationDetailsContent(
                 val imagingTestsStatus =
                     stringResource(
                         statusList.firstOrNull { it.code == uiState.imgTestStatusId }?.textResId
-                            ?: CoreR.string.pending,
+                            ?: CoreR.string.core_ui_pending,
                     )
                 Text(
                     text = "${stringResource(R.string.imaging_tests_status)}: $imagingTestsStatus",
@@ -735,7 +732,7 @@ internal fun ConsultationDetailsContent(
                         modifier =
                             Modifier
                                 .fillMaxWidth(fraction = 0.6f),
-                        text = stringResource(CoreR.string.proceed),
+                        text = stringResource(CoreR.string.core_ui_proceed),
                         color = buttonBackgroundColor,
                         onClick = { onEvent(ConsultationEvent.Proceed) },
                     )

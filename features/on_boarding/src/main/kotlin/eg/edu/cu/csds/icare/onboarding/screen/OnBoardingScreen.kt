@@ -273,7 +273,7 @@ internal fun FinishButton(
                     ),
             ) {
                 Text(
-                    text = stringResource(CoreR.string.finish),
+                    text = stringResource(CoreR.string.core_ui_finish),
                     fontFamily = helveticaFamily,
                 )
             }

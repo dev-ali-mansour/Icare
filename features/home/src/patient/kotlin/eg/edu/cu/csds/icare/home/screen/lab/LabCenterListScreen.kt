@@ -89,7 +89,7 @@ internal fun LabCenterListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(CoreR.string.lab_centers)) },
+                title = { Text(text = stringResource(CoreR.string.core_ui_lab_centers)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,

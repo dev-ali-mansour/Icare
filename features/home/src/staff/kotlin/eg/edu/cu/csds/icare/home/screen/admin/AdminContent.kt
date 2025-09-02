@@ -73,7 +73,7 @@ fun AdminContent(
             color = textColor,
         )
         StatCard(
-            title = stringResource(CoreR.string.doctors),
+            title = stringResource(CoreR.string.core_ui_doctors),
             value = stats.doctors.toString(),
             modifier =
                 Modifier.constrainAs(doctorsCard) {
@@ -95,7 +95,7 @@ fun AdminContent(
         )
 
         StatCard(
-            title = stringResource(CoreR.string.pharmacies),
+            title = stringResource(CoreR.string.core_ui_pharmacies),
             value = stats.pharmacies.toString(),
             modifier =
                 Modifier.constrainAs(pharmaciesCard) {
@@ -106,7 +106,7 @@ fun AdminContent(
         )
 
         StatCard(
-            title = stringResource(CoreR.string.scan_centers),
+            title = stringResource(CoreR.string.core_ui_scan_centers),
             value = stats.scanCenters.toString(),
             modifier =
                 Modifier.constrainAs(scanCentersCard) {
@@ -117,7 +117,7 @@ fun AdminContent(
         )
 
         StatCard(
-            title = stringResource(CoreR.string.lab_centers),
+            title = stringResource(CoreR.string.core_ui_lab_centers),
             value = stats.labCenters.toString(),
             modifier =
                 Modifier.constrainAs(labsCard) {
@@ -128,7 +128,7 @@ fun AdminContent(
         )
 
         StatCard(
-            title = stringResource(CoreR.string.pending),
+            title = stringResource(CoreR.string.core_ui_pending),
             value = stats.pending.toString(),
             modifier =
                 Modifier.constrainAs(pending) {
@@ -139,7 +139,7 @@ fun AdminContent(
         )
 
         StatCard(
-            title = stringResource(CoreR.string.confirmed),
+            title = stringResource(CoreR.string.core_ui_confirmed),
             value = stats.confirmed.toString(),
             modifier =
                 Modifier.constrainAs(confirmedCard) {
@@ -150,7 +150,7 @@ fun AdminContent(
         )
 
         StatCard(
-            title = stringResource(CoreR.string.cancelled),
+            title = stringResource(CoreR.string.core_ui_cancelled),
             value = stats.cancelled.toString(),
             modifier =
                 Modifier.constrainAs(cancelledCard) {
@@ -161,7 +161,7 @@ fun AdminContent(
         )
 
         StatCard(
-            title = stringResource(CoreR.string.completed),
+            title = stringResource(CoreR.string.core_ui_completed),
             value = stats.completed.toString(),
             modifier =
                 Modifier.constrainAs(completedCard) {
@@ -179,7 +179,7 @@ fun AdminContent(
                         start.linkTo(completedCard.start)
                         end.linkTo(completedCard.end)
                     }.fillMaxWidth(fraction = 0.6f),
-            text = stringResource(CoreR.string.sections_admin),
+            text = stringResource(CoreR.string.core_ui_sections_admin),
             color = buttonBackgroundColor,
             onClick = { onSectionsAdminClicked() },
         )

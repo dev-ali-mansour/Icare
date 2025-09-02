@@ -50,7 +50,7 @@ internal fun NotificationsContent(modifier: Modifier = Modifier) {
                 )
 
             Text(
-                text = stringResource(CoreR.string.nav_notifications),
+                text = stringResource(CoreR.string.core_ui_nav_notifications),
                 fontWeight = FontWeight.Bold,
                 fontSize = MaterialTheme.typography.titleLarge.fontSize,
                 fontFamily = helveticaFamily,

@@ -273,7 +273,7 @@ private fun BookingContent(
                             )
 
                             Text(
-                                text = "${stringResource(CoreR.string.name)}: ${doctor.name}",
+                                text = "${stringResource(CoreR.string.core_ui_name)}: ${doctor.name}",
                                 modifier =
                                     Modifier.constrainAs(name) {
                                         top.linkTo(image.bottom, margin = S_PADDING)
@@ -290,7 +290,7 @@ private fun BookingContent(
 
                             Text(
                                 text = "${stringResource(
-                                    CoreR.string.speciality,
+                                    CoreR.string.core_ui_speciality,
                                 )}: ${doctor.specialty}",
                                 modifier =
                                     Modifier.constrainAs(speciality) {
@@ -307,10 +307,10 @@ private fun BookingContent(
 
                             Text(
                                 text = "${stringResource(
-                                    CoreR.string.appointment_price,
+                                    CoreR.string.core_ui_appointment_price,
                                 )}: ${doctor.price} ${
                                     stringResource(
-                                        CoreR.string.egp,
+                                        CoreR.string.core_ui_egp,
                                     )
                                 }",
                                 modifier =
@@ -328,7 +328,7 @@ private fun BookingContent(
 
                             Text(
                                 text = "${stringResource(
-                                    CoreR.string.total_appointments,
+                                    CoreR.string.core_ui_total_appointments,
                                 )}: ${schedule.totalPatients}",
                                 modifier =
                                     Modifier.constrainAs(totalApp) {
@@ -352,7 +352,7 @@ private fun BookingContent(
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Text(
-                                    text = "${stringResource(CoreR.string.rating)}: ",
+                                    text = "${stringResource(CoreR.string.core_ui_rating)}: ",
                                     fontWeight = FontWeight.Bold,
                                     fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                     textAlign = TextAlign.Start,
@@ -406,7 +406,7 @@ private fun BookingContent(
                             modifier =
                                 Modifier
                                     .fillMaxWidth(fraction = 0.6f),
-                            text = stringResource(CoreR.string.book_now),
+                            text = stringResource(CoreR.string.core_ui_book_now),
                             color = buttonBackgroundColor,
                             onClick = {
                                 onEvent(BookingEvent.Proceed)

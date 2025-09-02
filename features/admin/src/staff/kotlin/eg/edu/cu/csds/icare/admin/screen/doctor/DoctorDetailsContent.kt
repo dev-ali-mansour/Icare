@@ -288,7 +288,7 @@ internal fun DoctorDetailsContent(
                     onValueChange = { onEvent(DoctorEvent.UpdateSpeciality(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.speciality),
+                            text = stringResource(CoreR.string.core_ui_speciality),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -318,14 +318,14 @@ internal fun DoctorDetailsContent(
                 DoubleTextField(
                     value = uiState.price,
                     onValueChanged = { onEvent(DoctorEvent.UpdatePrice(it)) },
-                    label = stringResource(CoreR.string.price),
+                    label = stringResource(CoreR.string.core_ui_price),
                     textColor = textColor,
                 )
 
                 DoubleTextField(
                     value = uiState.rating,
                     onValueChanged = { onEvent(DoctorEvent.UpdateRating(it)) },
-                    label = stringResource(CoreR.string.rating),
+                    label = stringResource(CoreR.string.core_ui_rating),
                     textColor = textColor,
                     readOnly = uiState.ratingReadOnly,
                     imeAction = ImeAction.Done,
@@ -462,7 +462,7 @@ internal fun DoctorDetailsContent(
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(CoreR.string.proceed),
+                    text = stringResource(CoreR.string.core_ui_proceed),
                     color = buttonBackgroundColor,
                     onClick = { onEvent(DoctorEvent.Proceed) },
                 )

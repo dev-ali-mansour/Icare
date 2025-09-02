@@ -272,7 +272,9 @@ private fun AppointmentRescheduleContent(
                             )
 
                             Text(
-                                text = "${stringResource(CoreR.string.name)}: ${appointment.doctorName}",
+                                text = "${stringResource(
+                                    CoreR.string.core_ui_name,
+                                )}: ${appointment.doctorName}",
                                 modifier =
                                     Modifier.constrainAs(name) {
                                         top.linkTo(image.bottom, margin = S_PADDING)
@@ -288,9 +290,11 @@ private fun AppointmentRescheduleContent(
                             )
 
                             Text(
-                                text = "${stringResource(
-                                    CoreR.string.speciality,
-                                )}: ${appointment.doctorSpecialty}",
+                                text = "${
+                                    stringResource(
+                                        CoreR.string.core_ui_speciality,
+                                    )
+                                }: ${appointment.doctorSpecialty}",
                                 modifier =
                                     Modifier.constrainAs(speciality) {
                                         top.linkTo(name.bottom)
@@ -305,11 +309,13 @@ private fun AppointmentRescheduleContent(
                             )
 
                             Text(
-                                text = "${stringResource(
-                                    CoreR.string.appointment_price,
-                                )}: ${schedule.price} ${
+                                text = "${
                                     stringResource(
-                                        CoreR.string.egp,
+                                        CoreR.string.core_ui_appointment_price,
+                                    )
+                                }: ${schedule.price} ${
+                                    stringResource(
+                                        CoreR.string.core_ui_egp,
                                     )
                                 }",
                                 modifier =
@@ -326,9 +332,11 @@ private fun AppointmentRescheduleContent(
                             )
 
                             Text(
-                                text = "${stringResource(
-                                    CoreR.string.total_appointments,
-                                )}: ${schedule.totalPatients}",
+                                text = "${
+                                    stringResource(
+                                        CoreR.string.core_ui_total_appointments,
+                                    )
+                                }: ${schedule.totalPatients}",
                                 modifier =
                                     Modifier.constrainAs(totalApp) {
                                         top.linkTo(price.bottom)
@@ -351,7 +359,7 @@ private fun AppointmentRescheduleContent(
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Text(
-                                    text = "${stringResource(CoreR.string.rating)}: ",
+                                    text = "${stringResource(CoreR.string.core_ui_rating)}: ",
                                     fontWeight = FontWeight.Bold,
                                     fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                     textAlign = TextAlign.Start,
@@ -405,7 +413,7 @@ private fun AppointmentRescheduleContent(
                             modifier =
                                 Modifier
                                     .fillMaxWidth(fraction = 0.6f),
-                            text = stringResource(CoreR.string.reschedule),
+                            text = stringResource(CoreR.string.core_ui_reschedule),
                             color = buttonBackgroundColor,
                             onClick = {
                                 onEvent(RescheduleEvent.Proceed)

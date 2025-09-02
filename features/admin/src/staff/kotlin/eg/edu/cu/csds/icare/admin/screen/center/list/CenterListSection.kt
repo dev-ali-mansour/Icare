@@ -141,7 +141,7 @@ fun CenterListContent(
             EmptyContentView(
                 modifier =
                     Modifier.fillMaxSize(),
-                text = stringResource(CoreR.string.no_centers_data),
+                text = stringResource(CoreR.string.core_ui_no_centers_data),
             )
         } else {
             LazyColumn(

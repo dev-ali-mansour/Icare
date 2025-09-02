@@ -78,7 +78,7 @@ internal fun PharmacyDetailsContent(
                     onValueChange = { onEvent(PharmacyEvent.UpdateName(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.name),
+                            text = stringResource(CoreR.string.core_ui_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -176,7 +176,7 @@ internal fun PharmacyDetailsContent(
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(CoreR.string.proceed),
+                    text = stringResource(CoreR.string.core_ui_proceed),
                     color = buttonBackgroundColor,
                     onClick = { onEvent(PharmacyEvent.Proceed) },
                 )

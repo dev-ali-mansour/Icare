@@ -13,13 +13,13 @@ sealed class CenterTypeItem(
 ) {
     data object LabCenter : CenterTypeItem(
         code = 1,
-        textResId = R.string.lab_center,
+        textResId = R.string.core_ui_lab_center,
         iconResId = R.drawable.ic_lab_colored,
     )
 
     data object ImagingCenter : CenterTypeItem(
         code = 2,
-        textResId = R.string.imaging_center,
+        textResId = R.string.core_ui_imaging_center,
         iconResId = R.drawable.ic_scan,
     )
 }
