@@ -116,9 +116,7 @@ class RemoteConsultationsDataSourceImpl(
                             response.body()?.let { res ->
                                 when (res.statusCode) {
                                     Constants.ERROR_CODE_OK ->
-                                        emit(
-                                            Result.Success(res.medicalRecord),
-                                        )
+                                        emit(Result.Success(res.medicalRecord))
 
                                     Constants.ERROR_CODE_EXPIRED_TOKEN ->
                                         emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
