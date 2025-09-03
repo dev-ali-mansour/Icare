@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_appointments_my_appointments">My Appointments</string>
+    <string name="feature_appointments_tomorrow">Tomorrow</string>
+    <string name="feature_appointments_pending_for_confirmation">Pending for confirmation</string>
+    <string name="feature_appointments_book_your_appointment_time">Book your appointment time</string>
+    <string name="feature_appointments_no_doctors_available">No doctors available</string>
+    <string name="feature_appointments_confirm">Confirm</string>
+    <string name="feature_appointments_no_appointments_data">No appointments data available</string>
+    <string name="feature_appointments_booking">Appointment Booking</string>
+    <string name="feature_appointments_doctor_list">Doctors List</string>
+    <string name="feature_appointments_error_no_doctor">There is no solected doctor for booking!</string>
+    <string name="feature_appointments_error_selected_slot">Invalid selected error!</string>
+    <string name="feature_appointments_error_no_appointment_selected">No appointment selected for reschedule!</string>
+    <string name="feature_appointments_appointment_reschedule">Appointment Reschedule</string>
+</resources>

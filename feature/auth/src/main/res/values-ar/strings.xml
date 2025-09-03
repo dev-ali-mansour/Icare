@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_auth_email">البريد الإلكتروني</string>
+    <string name="feature_auth_password">كلمة المرور</string>
+    <string name="feature_auth_last_name">الاسم الأخير</string>
+    <string name="feature_auth_national_id">الرقم القومي</string>
+    <string name="feature_auth_error_blank_first_name">يرجى كتابة اسمك الأول بشكل صحيح.</string>
+    <string name="feature_auth_error_blank_last_name">يرجى كتابة اسمك الأخير بشكل صحيح.</string>
+    <string name="feature_auth_error_invalid_email">يرجى كتابة بريدك الإلكتروني بشكل صحيح.</string>
+    <string name="feature_auth_error_invalid_gender">يرجى تحديد النوع بشكل صحيح.</string>
+    <string name="feature_auth_error_invalid_phone">يرجى كتابة رقم الهاتف بشكل صحيح.</string>
+    <string name="feature_auth_try_again">إعادة المحاولة</string>
+    <string name="feature_auth_sign_in">تسجيل الدخول</string>
+    <string name="feature_auth_sign_in_details">يرجى إدخال بيانات حسابك</string>
+    <string name="feature_auth_forgot_password">استرجاع كلمة المرور</string>
+    <string name="feature_auth_reset">استرجاع</string>
+    <string name="feature_auth_forgot_your_password">هل نسيت كلمة المرور؟</string>
+    <string name="feature_auth_recovery_email_sent">تم إرسال رسالة إلى بريدك الإلكتروني لاستعادة حسابك.</string>
+    <string name="feature_auth_empty_password_error">يرجى إدخال كلمة المرور.</string>
+    <string name="feature_auth_do_not_have_account">ليس لديك حساب؟</string>
+    <string name="feature_auth_error_invalid_password">يجب أن تتكون كلمة المرور من 8 أحرف على الأقل ، يجب أن تحتوي على أحرف كبيرة وصغيرة مثال (aA) ، ويجب أن تحتوي على رقم واحد على الأقل</string>
+    <string name="feature_auth_sign_out">تسجيل الخروج</string>
+    <string name="feature_auth_create_account">تسجيل حساب</string>
+    <string name="feature_auth_complete_registration">استكمال التسجيل</string>
+    <string name="feature_auth_sign_up">تسجيل</string>
+    <string name="feature_auth_sign_in_instead">لديك حساب بالفعل؟</string>
+    <string name="feature_auth_first_name">الاسم الأول</string>
+    <string name="feature_auth_phone_number">رقم الموبايل</string>
+    <string name="feature_auth_register_message">تم إنشاء حسابك بنجاح! برجاء مراجعة بريدك الإلكتروني لتأكيده وتفعيل حسابك.</string>
+    <string name="feature_auth_complete_message">تم استكمال بيانات تسجيل حسابك بنجاح!</string>
+    <string name="feature_auth_choose_gender">اختر النوع</string>
+    <string name="feature_auth_chronic_diseases_hint">إذا لم يكن لديك أمراض مزمنة مثل السكري أو الضغط برجاء كتابة لا يوجد</string>
+    <string name="feature_auth_current_medications_hint">إذا لم تكن تتناول أدوية حالية اكتب لا يوجد</string>
+    <string name="feature_auth_allergies_hint">إذا لم تكن لديك أي نوع حساسية اكتب لا يوجد</string>
+    <string name="feature_auth_past_surgeries_hint">إذا لم تكن قد خضعت لأي عمليات جراحية اكتب لا يوجد</string>
+    <string name="feature_auth_error_blank_chronic_diseases">يرجى إدخال الأمراض المزمنة أو اكتب "لايوجد".</string>
+    <string name="feature_auth_error_blank_current_medications">يرجى إدخال الأدوية الحالية أو اكتب "لايوجد".</string>
+    <string name="feature_auth_error_blank_allergies">يرجى إدخال الحساسية أو اكتب "لايوجد".</string>
+    <string name="feature_auth_error_blank_past_surgeries">يرجى إدخال العمليات السابقة أو اكتب "لايوجد".</string>
+    <string name="feature_auth_address">العنوان</string>
+    <string name="feature_auth_verify_email">تأكيد البريد الإلكترني</string>
+    <string name="feature_auth_link_google">ربط Google</string>
+</resources>
