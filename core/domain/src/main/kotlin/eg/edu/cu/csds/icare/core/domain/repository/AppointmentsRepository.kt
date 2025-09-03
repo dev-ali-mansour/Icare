@@ -13,7 +13,10 @@ interface AppointmentsRepository {
 
     fun getAppointments(statusId: Short): Flow<Result<List<Appointment>, DataError.Remote>>
 
-    fun bookAppointment(appointment: Appointment): Flow<Result<Unit, DataError.Remote>>
+    fun bookAppointment(
+        doctorId: String,
+        dateTime: Long,
+    ): Flow<Result<Unit, DataError.Remote>>
 
     fun updateAppointment(appointment: Appointment): Flow<Result<Unit, DataError.Remote>>
 

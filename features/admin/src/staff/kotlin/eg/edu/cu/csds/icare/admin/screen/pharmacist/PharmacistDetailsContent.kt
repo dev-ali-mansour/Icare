@@ -44,7 +44,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,7 +85,7 @@ internal fun PharmacistDetailsContent(
                     onValueChange = { onEvent(PharmacistEvent.UpdateFirstName(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.first_name),
+                            text = stringResource(R.string.features_admin_first_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -119,7 +118,7 @@ internal fun PharmacistDetailsContent(
                     onValueChange = { onEvent(PharmacistEvent.UpdateLastName(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.last_name),
+                            text = stringResource(R.string.features_admin_last_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -164,7 +163,7 @@ internal fun PharmacistDetailsContent(
                         onValueChange = { },
                         label = {
                             Text(
-                                text = stringResource(R.string.pharmacy),
+                                text = stringResource(R.string.features_admin_pharmacy),
                                 color = dropDownTextColor,
                             )
                         },
@@ -214,7 +213,7 @@ internal fun PharmacistDetailsContent(
                     onValueChange = { onEvent(PharmacistEvent.UpdateEmail(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.email),
+                            text = stringResource(R.string.features_admin_email),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -246,7 +245,7 @@ internal fun PharmacistDetailsContent(
                     onValueChange = { if (it.length < 14) onEvent(PharmacistEvent.UpdatePhone(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.phone_number),
+                            text = stringResource(R.string.features_admin_phone_number),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -279,7 +278,7 @@ internal fun PharmacistDetailsContent(
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(CoreR.string.proceed),
+                    text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
                     color = buttonBackgroundColor,
                     onClick = { onEvent(PharmacistEvent.Proceed) },
                 )

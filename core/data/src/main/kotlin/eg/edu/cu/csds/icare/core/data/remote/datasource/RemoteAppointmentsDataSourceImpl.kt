@@ -143,41 +143,54 @@ class RemoteAppointmentsDataSourceImpl(
             emit(Result.Error(DataError.Remote.UNKNOWN))
         }
 
-    override fun bookAppointment(appointment: AppointmentDto): Flow<Result<Unit, DataError.Remote>> =
+    override fun bookAppointment(
+        doctorId: String,
+        dateTime: Long,
+    ): Flow<Result<Unit, DataError.Remote>> =
         flow {
-            auth.currentUser
-                ?.getIdToken(false)
-                ?.await()
-                ?.token
-                ?.let { token ->
-                    val response =
-                        service.bookAppointment(appointment.copy(token = token))
-                    when (response.code()) {
-                        HTTP_OK ->
-                            response.body()?.let { res ->
-                                when (res.statusCode) {
-                                    Constants.ERROR_CODE_OK ->
-                                        emit(
-                                            Result.Success(Unit),
-                                        )
+            auth.currentUser?.let { currentUser ->
+                currentUser
+                    .getIdToken(false)
+                    .await()
+                    ?.token
+                    ?.let { token ->
+                        val appointment =
+                            AppointmentDto(
+                                token = token,
+                                patientId = currentUser.uid,
+                                doctorId = doctorId,
+                                dateTime = dateTime,
+                                statusId = 1,
+                            )
+                        val response =
+                            service.bookAppointment(appointment)
+                        when (response.code()) {
+                            HTTP_OK ->
+                                response.body()?.let { res ->
+                                    when (res.statusCode) {
+                                        Constants.ERROR_CODE_OK ->
+                                            emit(
+                                                Result.Success(Unit),
+                                            )
 
-                                    Constants.ERROR_CODE_EXPIRED_TOKEN ->
-                                        emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                                        Constants.ERROR_CODE_EXPIRED_TOKEN ->
+                                            emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
 
-                                    Constants.ERROR_CODE_SERVER_ERROR ->
-                                        emit(Result.Error(DataError.Remote.SERVER))
+                                        Constants.ERROR_CODE_SERVER_ERROR ->
+                                            emit(Result.Error(DataError.Remote.SERVER))
 
-                                    else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                                        else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                                    }
                                 }
-                            }
 
-                        HttpURLConnection.HTTP_UNAUTHORIZED ->
-                            emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                            HttpURLConnection.HTTP_UNAUTHORIZED ->
+                                emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
 
-                        else ->
-                            emit(Result.Error(DataError.Remote.UNKNOWN))
+                            else ->
+                                emit(Result.Error(DataError.Remote.UNKNOWN))
+                        }
                     }
-                }
+            } ?: run { emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED)) }
         }.catch {
             Timber.e("bookAppointment() error ${it.javaClass.simpleName}: ${it.message}")
             emit(Result.Error(DataError.Remote.UNKNOWN))
@@ -216,7 +229,7 @@ class RemoteAppointmentsDataSourceImpl(
                         else ->
                             emit(Result.Error(DataError.Remote.UNKNOWN))
                     }
-                }
+                } ?: run { emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED)) }
         }.catch {
             Timber.e("updateAppointment() error ${it.javaClass.simpleName}: ${it.message}")
             emit(Result.Error(DataError.Remote.UNKNOWN))

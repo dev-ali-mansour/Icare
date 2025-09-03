@@ -31,7 +31,7 @@ sealed interface PharmacistEvent {
         val profilePicture: String,
     ) : PharmacistEvent
 
-    data class SelectPharmacist(
+    data class LoadPharmacist(
         val pharmacist: Pharmacist,
     ) : PharmacistEvent
 

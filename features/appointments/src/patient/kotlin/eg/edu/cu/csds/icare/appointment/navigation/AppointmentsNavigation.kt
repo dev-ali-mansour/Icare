@@ -1,102 +1,84 @@
 package eg.edu.cu.csds.icare.appointment.navigation
 
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
-import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
-import eg.edu.cu.csds.icare.appointment.screen.AppointmentRescheduleScreen
-import eg.edu.cu.csds.icare.appointment.screen.DoctorProfileScreen
-import eg.edu.cu.csds.icare.appointment.screen.DoctorsListScreen
-import eg.edu.cu.csds.icare.appointment.screen.MyAppointmentsScreen
-import eg.edu.cu.csds.icare.core.ui.MainViewModel
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
+import eg.edu.cu.csds.icare.admin.screen.doctor.SelectedDoctorViewModel
+import eg.edu.cu.csds.icare.appointment.screen.SelectedAppointmentViewModel
+import eg.edu.cu.csds.icare.appointment.screen.appointments.MyAppointmentsScreen
+import eg.edu.cu.csds.icare.appointment.screen.booking.BookingEvent
+import eg.edu.cu.csds.icare.appointment.screen.booking.BookingScreen
+import eg.edu.cu.csds.icare.appointment.screen.booking.BookingViewModel
+import eg.edu.cu.csds.icare.appointment.screen.doctors.DoctorListScreen
+import eg.edu.cu.csds.icare.appointment.screen.reschedule.AppointmentRescheduleScreen
+import eg.edu.cu.csds.icare.appointment.screen.reschedule.RescheduleEvent
+import eg.edu.cu.csds.icare.appointment.screen.reschedule.RescheduleViewModel
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
+import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.appointmentsRoute(
-    mainViewModel: MainViewModel,
-    clinicViewModel: ClinicViewModel,
-    appointmentsViewModel: AppointmentViewModel,
+    selectedDoctorViewModel: SelectedDoctorViewModel,
+    selectedAppointmentViewModel: SelectedAppointmentViewModel,
     onNavigationIconClicked: () -> Unit,
-    navigateToScreen: (Screen) -> Unit,
-    onError: suspend (Throwable?) -> Unit,
+    navigateToRoute: (Route) -> Unit,
 ) {
-    composable<Screen.MyAppointments> {
+    composable<Route.MyAppointments> {
+        LaunchedEffect(true) {
+            selectedAppointmentViewModel.onSelectAppointment(null)
+        }
+
         MyAppointmentsScreen(
-            appointmentViewModel = appointmentsViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onReschedule = {
-                appointmentsViewModel.selectedAppointmentState.value = it
-                clinicViewModel.getDoctorSchedule(it.doctorId)
-                navigateToScreen(Screen.AppointmentReschedule)
+            navigateToRescheduleRoute = {
+                selectedAppointmentViewModel.onSelectAppointment(it)
+                navigateToRoute(Route.AppointmentReschedule)
             },
-            onCancel = {
-                appointmentsViewModel.selectedAppointmentState.value = it
-                appointmentsViewModel.updateAppointment()
-            },
-            onSuccess = {
-                appointmentsViewModel.selectedAppointmentState.value = null
-                appointmentsViewModel.getPatientAppointments()
-            },
-            onError = { onError(it) },
         )
     }
 
-    composable<Screen.DoctorList> {
-        DoctorsListScreen(
-            clinicViewModel = clinicViewModel,
+    composable<Route.DoctorList> {
+        LaunchedEffect(true) {
+            selectedDoctorViewModel.onSelectDoctor(null)
+        }
+
+        DoctorListScreen(
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onSearch = {
-                if (clinicViewModel.searchQueryState.value.isEmpty()) {
-                    clinicViewModel.listDoctors()
-                } else {
-                    clinicViewModel.searchDoctors()
-                }
+            navigateToBookingRoute = {
+                selectedDoctorViewModel.onSelectDoctor(it)
+                navigateToRoute(Route.Booking)
             },
-            onClear = { clinicViewModel.listDoctors() },
-            onDoctorClicked = {
-                clinicViewModel.selectedDoctorState.value = it
-                clinicViewModel.getDoctorSchedule(it.id)
-                navigateToScreen(Screen.DoctorProfile)
-            },
-            onError = { onError(it) },
         )
     }
 
-    composable<Screen.DoctorProfile> {
-        DoctorProfileScreen(
-            mainViewModel = mainViewModel,
-            clinicViewModel = clinicViewModel,
-            appointmentViewModel = appointmentsViewModel,
+    composable<Route.Booking> {
+        val viewModel: BookingViewModel = koinViewModel()
+        val selectedDoctor by selectedDoctorViewModel.selectedDoctor.collectAsStateWithLifecycle()
+        LaunchedEffect(selectedDoctor) {
+            selectedDoctor?.let { doctor ->
+                viewModel.processEvent(BookingEvent.SelectDoctor(doctor))
+            }
+        }
+
+        BookingScreen(
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onProceedButtonClicked = { doctorId, userId ->
-                appointmentsViewModel.doctorIdState.value = doctorId
-                appointmentsViewModel.patientIdState.value = userId
-                appointmentsViewModel.bookAppointment()
-            },
-            onSuccess = {
-                appointmentsViewModel.selectedSlotState.longValue = 0
-                appointmentsViewModel.getPatientAppointments()
-                onNavigationIconClicked()
-            },
-            onError = { onError(it) },
+            onSuccess = { onNavigationIconClicked() },
         )
     }
 
-    composable<Screen.AppointmentReschedule> {
+    composable<Route.AppointmentReschedule> {
+        val viewModel: RescheduleViewModel = koinViewModel()
+        val selectAppointment by selectedAppointmentViewModel.selectedAppointment
+            .collectAsStateWithLifecycle()
+        LaunchedEffect(selectAppointment) {
+            selectAppointment?.let { appointment ->
+                viewModel.processEvent(RescheduleEvent.SelectAppointment(appointment))
+            }
+        }
+
         AppointmentRescheduleScreen(
-            clinicViewModel = clinicViewModel,
-            appointmentViewModel = appointmentsViewModel,
             onNavigationIconClicked = { onNavigationIconClicked() },
-            onRescheduleClicked = {
-                appointmentsViewModel.selectedAppointmentState.value = it
-                appointmentsViewModel.updateAppointment()
-            },
-            onSuccess = {
-                appointmentsViewModel.selectedAppointmentState.value = null
-                appointmentsViewModel.selectedSlotState.longValue = 0
-                appointmentsViewModel.getPatientAppointments()
-                onNavigationIconClicked()
-            },
-            onError = { onError(it) },
         )
     }
 }

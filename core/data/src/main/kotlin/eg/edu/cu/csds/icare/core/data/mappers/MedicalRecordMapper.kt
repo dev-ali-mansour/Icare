@@ -3,7 +3,7 @@ package eg.edu.cu.csds.icare.core.data.mappers
 import eg.edu.cu.csds.icare.core.data.dto.MedicalRecordDto
 import eg.edu.cu.csds.icare.core.domain.model.MedicalRecord
 
-fun MedicalRecordDto.toMedicalRecord(): MedicalRecord =
+fun MedicalRecordDto.toMedicalRecord(uid: String?): MedicalRecord =
     MedicalRecord(
         patientId = this.patientId,
         patientName = this.patientName,
@@ -14,5 +14,5 @@ fun MedicalRecordDto.toMedicalRecord(): MedicalRecord =
         allergies = this.allergies,
         pastSurgeries = this.pastSurgeries,
         weight = this.weight,
-        consultations = this.consultations.map { it.toConsultation() },
+        consultations = this.consultations.map { it.toConsultation(uid) },
     )

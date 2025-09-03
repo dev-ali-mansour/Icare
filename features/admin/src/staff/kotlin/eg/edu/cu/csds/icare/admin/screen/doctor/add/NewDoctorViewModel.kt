@@ -97,7 +97,7 @@ class NewDoctorViewModel(
                 _uiState.update { it.copy(profilePicture = event.profilePicture) }
             }
 
-            is DoctorEvent.SelectDoctor -> Unit
+            is DoctorEvent.LoadDoctor -> Unit
             is DoctorEvent.Proceed ->
                 viewModelScope.launch {
                     when {
@@ -107,7 +107,10 @@ class NewDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.error_first_name),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_first_name,
+                                                ),
                                         ),
                                 )
                             }
@@ -119,7 +122,10 @@ class NewDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.error_last_name),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_last_name,
+                                                ),
                                         ),
                                 )
                             }
@@ -131,7 +137,7 @@ class NewDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.error_clinic),
+                                            message = StringResourceId(R.string.features_admin_error_clinic),
                                         ),
                                 )
                             }
@@ -143,7 +149,10 @@ class NewDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.error_invalid_email),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_invalid_email,
+                                                ),
                                         ),
                                 )
                             }
@@ -156,7 +165,7 @@ class NewDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.error_phone),
+                                            message = StringResourceId(R.string.features_admin_error_phone),
                                         ),
                                 )
                             }
@@ -168,7 +177,10 @@ class NewDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.speciality_error),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_speciality,
+                                                ),
                                         ),
                                 )
                             }
@@ -180,7 +192,10 @@ class NewDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.service_price_error),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_service_price,
+                                                ),
                                         ),
                                 )
                             }
@@ -192,7 +207,10 @@ class NewDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.doctor_times_error),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_doctor_times,
+                                                ),
                                         ),
                                 )
                             }

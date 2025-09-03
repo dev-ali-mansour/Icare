@@ -178,7 +178,7 @@ class HomeViewModel(
     private fun launchGetDoctorSchedule() =
         viewModelScope.launch(dispatcher) {
             _uiState.update { it.copy(isLoading = true) }
-            getDoctorScheduleUseCase().collect { result ->
+            getDoctorScheduleUseCase(null).collect { result ->
                 result
                     .onSuccess { schedule ->
                         _uiState.update { it.copy(isLoading = false, doctorSchedule = schedule) }

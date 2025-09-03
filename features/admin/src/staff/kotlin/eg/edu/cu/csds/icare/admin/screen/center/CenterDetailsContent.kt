@@ -45,7 +45,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,7 +87,7 @@ internal fun CenterDetailsContent(
                     onValueChange = { onEvent(CenterEvent.UpdateName(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.name),
+                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -136,7 +135,7 @@ internal fun CenterDetailsContent(
                         onValueChange = { },
                         label = {
                             Text(
-                                text = stringResource(R.string.type),
+                                text = stringResource(R.string.features_admin_type),
                                 color = dropDownTextColor,
                             )
                         },
@@ -186,7 +185,7 @@ internal fun CenterDetailsContent(
                     onValueChange = { if (it.length < 14) onEvent(CenterEvent.UpdatePhone(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.phone_number),
+                            text = stringResource(R.string.features_admin_phone_number),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -218,7 +217,7 @@ internal fun CenterDetailsContent(
                     onValueChange = { onEvent(CenterEvent.UpdateAddress(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.address),
+                            text = stringResource(R.string.features_admin_address),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -251,7 +250,7 @@ internal fun CenterDetailsContent(
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(CoreR.string.proceed),
+                    text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
                     color = buttonBackgroundColor,
                     onClick = { onEvent(CenterEvent.Proceed) },
                 )

@@ -1,5 +1,6 @@
 package eg.edu.cu.csds.icare.core.data.repository
 
+import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.data.mappers.toConsultation
 import eg.edu.cu.csds.icare.core.data.mappers.toConsultationDto
 import eg.edu.cu.csds.icare.core.data.mappers.toMedicalRecord
@@ -17,6 +18,7 @@ import org.koin.core.annotation.Single
 
 @Single
 class ConsultationsRepositoryImpl(
+    private val auth: FirebaseAuth,
     private val remoteConsultationsDataSource: RemoteConsultationsDataSource,
 ) : ConsultationsRepository {
     override fun addNewConsultation(consultation: Consultation): Flow<Result<Unit, DataError.Remote>> =
@@ -32,7 +34,7 @@ class ConsultationsRepositoryImpl(
                 .collect { result ->
                     result
                         .onSuccess { entities ->
-                            emit(Result.Success(data = entities.toMedicalRecord()))
+                            emit(Result.Success(data = entities.toMedicalRecord(auth.currentUser?.uid)))
                         }.onError { emit(Result.Error(it)) }
                 }
         }
@@ -46,7 +48,11 @@ class ConsultationsRepositoryImpl(
                 .collect { result ->
                     result
                         .onSuccess { entities ->
-                            emit(Result.Success(data = entities.map { it.toConsultation() }))
+                            emit(
+                                Result.Success(
+                                    data = entities.map { it.toConsultation(auth.currentUser?.uid) },
+                                ),
+                            )
                         }.onError { emit(Result.Error(it)) }
                 }
         }
@@ -58,7 +64,11 @@ class ConsultationsRepositoryImpl(
                 .collect { result ->
                     result
                         .onSuccess { entities ->
-                            emit(Result.Success(data = entities.map { it.toConsultation() }))
+                            emit(
+                                Result.Success(
+                                    data = entities.map { it.toConsultation(auth.currentUser?.uid) },
+                                ),
+                            )
                         }.onError { emit(Result.Error(it)) }
                 }
         }
@@ -72,7 +82,11 @@ class ConsultationsRepositoryImpl(
                 .collect { result ->
                     result
                         .onSuccess { entities ->
-                            emit(Result.Success(data = entities.map { it.toConsultation() }))
+                            emit(
+                                Result.Success(
+                                    data = entities.map { it.toConsultation(auth.currentUser?.uid) },
+                                ),
+                            )
                         }.onError { emit(Result.Error(it)) }
                 }
         }

@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.tintColor
 
@@ -52,7 +51,7 @@ fun ConfirmDialog(
                 onClick = { onConfirmed() },
             ) {
                 Text(
-                    text = stringResource(id = R.string.ok),
+                    text = stringResource(id = android.R.string.ok),
                     color = Color.White,
                     fontFamily = helveticaFamily,
                 )
@@ -64,7 +63,7 @@ fun ConfirmDialog(
                 onClick = { onCancelled() },
             ) {
                 Text(
-                    text = stringResource(id = R.string.cancel),
+                    text = stringResource(id = android.R.string.cancel),
                     color = Color.White,
                     fontFamily = helveticaFamily,
                 )

@@ -67,7 +67,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun OnBoardingScreen(
@@ -273,7 +272,7 @@ internal fun FinishButton(
                     ),
             ) {
                 Text(
-                    text = stringResource(CoreR.string.finish),
+                    text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_finish),
                     fontFamily = helveticaFamily,
                 )
             }

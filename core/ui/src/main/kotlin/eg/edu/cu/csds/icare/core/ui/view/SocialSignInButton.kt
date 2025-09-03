@@ -58,5 +58,5 @@ fun SocialSignInButton(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
 @Composable
 internal fun SocialSignInButtonPreview() {
-    SocialSignInButton(iconId = R.drawable.ic_social_google) { }
+    SocialSignInButton(iconId = R.drawable.core_ui_ic_social_google) { }
 }

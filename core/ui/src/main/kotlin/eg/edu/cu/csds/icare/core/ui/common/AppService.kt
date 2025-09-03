@@ -13,26 +13,26 @@ sealed class AppService(
     val route: Route,
 ) {
     data object ScanCenter : AppService(
-        iconResId = R.drawable.ic_scan,
-        textResId = R.string.scan_center,
+        iconResId = R.drawable.core_ui_ic_scan,
+        textResId = R.string.core_ui_scan_center,
         route = Route.ScanCenters,
     )
 
     data object BookAppointment : AppService(
-        iconResId = R.drawable.ic_appointment,
-        textResId = R.string.appointment_booking,
+        iconResId = R.drawable.core_ui_ic_appointment,
+        textResId = R.string.core_ui_appointment_booking,
         route = Route.DoctorList,
     )
 
     data object LabCenter : AppService(
-        iconResId = R.drawable.ic_lab_colored,
-        textResId = R.string.lab_center,
+        iconResId = R.drawable.core_ui_ic_lab_colored,
+        textResId = R.string.core_ui_lab_center,
         route = Route.LabCenters,
     )
 
     data object Pharmacy : AppService(
-        iconResId = R.drawable.ic_pharmacy_colored,
-        textResId = R.string.pharmacies,
+        iconResId = R.drawable.core_ui_ic_pharmacy_colored,
+        textResId = R.string.core_ui_pharmacy,
         route = Route.Pharmacies,
     )
 }

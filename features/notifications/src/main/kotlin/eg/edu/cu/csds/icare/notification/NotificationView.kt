@@ -102,7 +102,7 @@ fun NotificationView(
 fun NotificationViewPreview() {
     Column(modifier = Modifier.background(color = backgroundColor)) {
         NotificationView(
-            text = stringResource(R.string.welcome_message),
+            text = stringResource(R.string.features_notifications_welcome_message),
             date = Calendar.getInstance().time,
         )
     }

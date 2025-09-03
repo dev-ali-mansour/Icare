@@ -35,7 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import eg.edu.cu.csds.icare.appointment.statusList
 import eg.edu.cu.csds.icare.core.domain.model.AdminStatistics
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
@@ -59,11 +58,11 @@ import eg.edu.cu.csds.icare.home.component.UserTitleView
 import eg.edu.cu.csds.icare.home.screen.admin.AdminContent
 import eg.edu.cu.csds.icare.home.screen.clinic.ClinicianContent
 import eg.edu.cu.csds.icare.home.screen.doctor.DoctorContent
+import eg.edu.cu.csds.icare.home.util.statusList
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import kotlin.system.exitProcess
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -133,8 +132,14 @@ internal fun HomeScreen(
             if (uiState.openDialog) {
                 ConfirmDialog(
                     backgroundColor = backgroundColor,
-                    title = stringResource(id = CoreR.string.exit_dialog_title),
-                    message = stringResource(id = CoreR.string.exit_dialog),
+                    title =
+                        stringResource(
+                            id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_exit_dialog_title,
+                        ),
+                    message =
+                        stringResource(
+                            id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_exit_dialog,
+                        ),
                     onDismissRequest = {
                         viewModel.processEvent(HomeEvent.UpdateOpenDialog(isOpen = false))
                     },
@@ -277,7 +282,7 @@ private fun HomeContent(
         }
 
         Text(
-            text = stringResource(id = CoreR.string.made_by),
+            text = stringResource(id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_made_by),
             modifier =
                 Modifier
                     .constrainAs(marquee) {

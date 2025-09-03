@@ -80,7 +80,7 @@ internal fun UpdateClinicScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.update_clinic)) },
+                title = { Text(text = stringResource(id = R.string.features_admin_update_clinic)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,

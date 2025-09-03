@@ -80,7 +80,7 @@ internal fun NewDoctorScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.new_doctor)) },
+                title = { Text(text = stringResource(id = R.string.features_admin_new_doctor)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,

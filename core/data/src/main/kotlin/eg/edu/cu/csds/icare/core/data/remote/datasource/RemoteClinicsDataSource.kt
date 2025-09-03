@@ -21,7 +21,7 @@ interface RemoteClinicsDataSource {
 
     fun updateDoctor(doctor: DoctorDto): Flow<Result<Unit, DataError.Remote>>
 
-    fun getDoctorSchedule(): Flow<Result<DoctorScheduleDto, DataError.Remote>>
+    fun getDoctorSchedule(uid: String?): Flow<Result<DoctorScheduleDto, DataError.Remote>>
 
     fun listClinicians(): Flow<Result<List<ClinicianDto>, DataError.Remote>>
 
