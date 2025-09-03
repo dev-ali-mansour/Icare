@@ -58,7 +58,7 @@ icare/
 
 ## 🧩 Architecture
 
-- **MVVM** (Model-View-ViewModel)
+- **MVI** (Model-View-Intent)
 - **Clean Architecture**
     - Presentation: `ViewModel`s + Composables
     - Domain: `UseCase`s + `Model`s
