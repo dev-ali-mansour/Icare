@@ -23,7 +23,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import eg.edu.cu.csds.icare.core.ui.theme.SPLASH_LOGO_SIZE
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun SplashScreen() {
@@ -71,7 +70,7 @@ private fun Splash(degrees: Float) {
                 Modifier
                     .size(SPLASH_LOGO_SIZE)
                     .rotate(degrees = degrees),
-            painter = painterResource(id = CoreR.drawable.logo),
+            painter = painterResource(id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_logo),
             contentScale = ContentScale.Fit,
             contentDescription = null,
         )

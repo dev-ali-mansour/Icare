@@ -50,7 +50,7 @@ fun StaffView(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     onClick: () -> Unit,
-    ) {
+) {
     Card(
         onClick = onClick,
         modifier =
@@ -83,8 +83,8 @@ fun StaffView(
                         ImageRequest
                             .Builder(context)
                             .data(data = staff.profilePicture)
-                            .placeholder(R.drawable.user_placeholder)
-                            .error(R.drawable.user_placeholder)
+                            .placeholder(R.drawable.core_ui_user_placeholder)
+                            .error(R.drawable.core_ui_user_placeholder)
                             .build(),
                     ),
                 contentDescription = null,

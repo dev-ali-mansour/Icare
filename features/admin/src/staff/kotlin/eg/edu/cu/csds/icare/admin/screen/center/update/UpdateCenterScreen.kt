@@ -80,7 +80,7 @@ internal fun UpdateCenterScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.update_center)) },
+                title = { Text(text = stringResource(id = R.string.features_admin_update_center)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,

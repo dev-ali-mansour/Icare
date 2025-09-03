@@ -63,7 +63,6 @@ import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import kotlin.system.exitProcess
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -133,8 +132,14 @@ internal fun HomeScreen(
             if (uiState.openDialog) {
                 ConfirmDialog(
                     backgroundColor = backgroundColor,
-                    title = stringResource(id = CoreR.string.core_ui_exit_dialog_title),
-                    message = stringResource(id = CoreR.string.core_ui_exit_dialog),
+                    title =
+                        stringResource(
+                            id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_exit_dialog_title,
+                        ),
+                    message =
+                        stringResource(
+                            id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_exit_dialog,
+                        ),
                     onDismissRequest = {
                         viewModel.processEvent(HomeEvent.UpdateOpenDialog(isOpen = false))
                     },
@@ -277,7 +282,7 @@ private fun HomeContent(
         }
 
         Text(
-            text = stringResource(id = CoreR.string.core_ui_made_by),
+            text = stringResource(id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_made_by),
             modifier =
                 Modifier
                     .constrainAs(marquee) {

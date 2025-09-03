@@ -72,6 +72,7 @@ class UpdateClinicianViewModel(
             is ClinicianEvent.UpdatePhone -> {
                 _uiState.update { it.copy(phone = event.phone) }
             }
+
             is ClinicianEvent.UpdateProfilePicture -> {
                 _uiState.update { it.copy(profilePicture = event.profilePicture) }
             }
@@ -99,7 +100,10 @@ class UpdateClinicianViewModel(
                                     isLoading = false,
                                     effect =
                                         ClinicianEffect.ShowError(
-                                            message = StringResourceId(R.string.error_first_name),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_first_name,
+                                                ),
                                         ),
                                 )
                             }
@@ -110,7 +114,10 @@ class UpdateClinicianViewModel(
                                     isLoading = false,
                                     effect =
                                         ClinicianEffect.ShowError(
-                                            message = StringResourceId(R.string.error_last_name),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_last_name,
+                                                ),
                                         ),
                                 )
                             }
@@ -121,7 +128,7 @@ class UpdateClinicianViewModel(
                                     isLoading = false,
                                     effect =
                                         ClinicianEffect.ShowError(
-                                            message = StringResourceId(R.string.error_clinic),
+                                            message = StringResourceId(R.string.features_admin_error_clinic),
                                         ),
                                 )
                             }
@@ -132,7 +139,10 @@ class UpdateClinicianViewModel(
                                     isLoading = false,
                                     effect =
                                         ClinicianEffect.ShowError(
-                                            message = StringResourceId(R.string.error_invalid_email),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_invalid_email,
+                                                ),
                                         ),
                                 )
                             }
@@ -144,7 +154,7 @@ class UpdateClinicianViewModel(
                                     isLoading = false,
                                     effect =
                                         ClinicianEffect.ShowError(
-                                            message = StringResourceId(R.string.error_phone),
+                                            message = StringResourceId(R.string.features_admin_error_phone),
                                         ),
                                 )
                             }
@@ -155,6 +165,7 @@ class UpdateClinicianViewModel(
                         }
                     }
                 }
+
             ClinicianEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
         }
     }

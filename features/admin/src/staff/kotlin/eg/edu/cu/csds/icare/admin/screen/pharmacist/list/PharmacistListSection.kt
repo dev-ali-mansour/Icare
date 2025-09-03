@@ -36,7 +36,6 @@ import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import eg.edu.cu.csds.icare.core.ui.view.PharmacistView
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -137,7 +136,7 @@ private fun PharmacistListContent(
             EmptyContentView(
                 modifier =
                     Modifier.fillMaxSize(),
-                text = stringResource(CoreR.string.core_ui_no_pharmacies_data),
+                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_no_pharmacies_data),
             )
         } else {
             LazyColumn(

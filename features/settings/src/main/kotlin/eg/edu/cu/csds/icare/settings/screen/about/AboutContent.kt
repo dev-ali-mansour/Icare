@@ -36,7 +36,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.util.currentLanguage
 import eg.edu.cu.csds.icare.core.ui.util.openLink
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun AboutContent(
@@ -57,7 +56,11 @@ internal fun AboutContent(
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                 },
-            text = "${stringResource(id = CoreR.string.core_ui_version)} $appVersion",
+            text = "${
+                stringResource(
+                    id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_version,
+                )
+            } $appVersion",
             color = textColor,
             fontSize = MaterialTheme.typography.titleLarge.fontSize,
             fontFamily = helveticaFamily,
@@ -71,7 +74,7 @@ internal fun AboutContent(
                     top.linkTo(version.bottom)
                     start.linkTo(version.start)
                 },
-            text = stringResource(id = CoreR.string.core_ui_about),
+            text = stringResource(id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_about),
             color = textColor.copy(alpha = 0.6f),
             fontSize = MaterialTheme.typography.titleMedium.fontSize,
             fontFamily = helveticaFamily,
@@ -86,7 +89,7 @@ internal fun AboutContent(
                         top.linkTo(about.bottom)
                         start.linkTo(version.start)
                     },
-            text = stringResource(CoreR.string.core_ui_made_by),
+            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_made_by),
             color = textColor,
             textAlign = TextAlign.Center,
             fontSize = MaterialTheme.typography.titleLarge.fontSize,
@@ -104,9 +107,11 @@ internal fun AboutContent(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     }.clickable {
-                        context.openLink(context.getString(CoreR.string.core_ui_website_url))
+                        context.openLink(
+                            context.getString(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_website_url),
+                        )
                     },
-            painter = painterResource(id = CoreR.drawable.logo),
+            painter = painterResource(id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_logo),
             contentScale = ContentScale.Fit,
             contentDescription = null,
         )
@@ -128,9 +133,14 @@ internal fun AboutContent(
                             top.linkTo(logo.bottom, margin = S_PADDING)
                             start.linkTo(parent.start)
                         }.clickable {
-                            context.openLink(context.getString(CoreR.string.core_ui_facebook_url))
+                            context.openLink(
+                                context.getString(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_facebook_url),
+                            )
                         },
-                painter = painterResource(id = CoreR.drawable.ic_social_facebook),
+                painter =
+                    painterResource(
+                        id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_ic_social_facebook,
+                    ),
                 contentScale = ContentScale.Fit,
                 contentDescription = null,
             )
@@ -145,7 +155,10 @@ internal fun AboutContent(
                         }.clickable {
                             // context.openLink(context.getString(AppText.twitter_url))
                         },
-                painter = painterResource(id = CoreR.drawable.ic_social_twitter),
+                painter =
+                    painterResource(
+                        id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_ic_social_twitter,
+                    ),
                 contentScale = ContentScale.Fit,
                 contentDescription = null,
             )
@@ -160,7 +173,10 @@ internal fun AboutContent(
                         }.clickable {
                             // context.openLink(context.getString(AppText.linkedin_url))
                         },
-                painter = painterResource(id = CoreR.drawable.ic_social_linkedin),
+                painter =
+                    painterResource(
+                        id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_ic_social_linkedin,
+                    ),
                 contentScale = ContentScale.Fit,
                 contentDescription = null,
             )
@@ -175,7 +191,10 @@ internal fun AboutContent(
                         .clickable {
                             // context.openLink(context.getString(AppText.youtube_channel_url))
                         },
-                painter = painterResource(id = CoreR.drawable.ic_social_youtube),
+                painter =
+                    painterResource(
+                        id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_ic_social_youtube,
+                    ),
                 contentScale = ContentScale.Fit,
                 contentDescription = null,
             )

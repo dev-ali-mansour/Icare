@@ -63,7 +63,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import eg.edu.cu.csds.icare.admin.R
+import eg.edu.cu.csds.icare.consultation.R
 import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
 import eg.edu.cu.csds.icare.core.data.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
@@ -89,7 +89,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import kotlinx.coroutines.launch
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -209,9 +208,11 @@ internal fun ConsultationDetailsContent(
                                     ImageRequest
                                         .Builder(context)
                                         .data(data = uiState.appointment.patientImage)
-                                        .placeholder(CoreR.drawable.user_placeholder)
-                                        .error(CoreR.drawable.user_placeholder)
-                                        .build(),
+                                        .placeholder(
+                                            eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
+                                        ).error(
+                                            eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
+                                        ).build(),
                                 ),
                             contentDescription = null,
                             contentScale = ContentScale.Fit,
@@ -234,9 +235,11 @@ internal fun ConsultationDetailsContent(
                                     ImageRequest
                                         .Builder(context)
                                         .data(data = uiState.appointment.patientImage)
-                                        .placeholder(CoreR.drawable.user_placeholder)
-                                        .error(CoreR.drawable.user_placeholder)
-                                        .build(),
+                                        .placeholder(
+                                            eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
+                                        ).error(
+                                            eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
+                                        ).build(),
                                 ),
                             contentDescription = null,
                             contentScale = ContentScale.Fit,
@@ -259,7 +262,10 @@ internal fun ConsultationDetailsContent(
                         )
 
                         Text(
-                            text = stringResource(CoreR.string.core_ui_view_medical_record),
+                            text =
+                                stringResource(
+                                    eg.edu.cu.csds.icare.core.ui.R.string.core_ui_view_medical_record,
+                                ),
                             modifier =
                                 Modifier.constrainAs(message) {
                                     top.linkTo(name.bottom, margin = S_PADDING)
@@ -279,7 +285,7 @@ internal fun ConsultationDetailsContent(
                 val imagingCenters = uiState.centers.filter { it.type == 2.toShort() }
 
                 Text(
-                    text = "${stringResource(R.string.consultation_date)}: ${
+                    text = "${stringResource(R.string.features_consultations_consultation_date)}: ${
                         uiState.dateTime.getFormattedDateTime(
                             context,
                         )
@@ -297,7 +303,7 @@ internal fun ConsultationDetailsContent(
                     onValueChange = { onEvent(ConsultationEvent.UpdateDiagnosis(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.diagnosis),
+                            text = stringResource(R.string.features_consultations_diagnosis),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -349,7 +355,10 @@ internal fun ConsultationDetailsContent(
                         onValueChange = { },
                         label = {
                             Text(
-                                text = stringResource(R.string.pharmacy),
+                                text =
+                                    stringResource(
+                                        eg.edu.cu.csds.icare.admin.R.string.features_admin_pharmacy,
+                                    ),
                                 color = dropDownTextColor,
                             )
                         },
@@ -399,7 +408,7 @@ internal fun ConsultationDetailsContent(
                     onValueChange = { onEvent(ConsultationEvent.UpdateMedications(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.Prescription),
+                            text = stringResource(R.string.features_consultations_Prescription),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -432,10 +441,14 @@ internal fun ConsultationDetailsContent(
                 val prescriptionStatus =
                     stringResource(
                         statusList.firstOrNull { it.code == uiState.prescriptionStatusId }?.textResId
-                            ?: CoreR.string.core_ui_pending,
+                            ?: eg.edu.cu.csds.icare.core.ui.R.string.core_ui_pending,
                     )
                 Text(
-                    text = "${stringResource(R.string.prescription_status)}: $prescriptionStatus",
+                    text = "${
+                        stringResource(
+                            R.string.features_consultations_prescription_status,
+                        )
+                    }: $prescriptionStatus",
                     modifier =
                         Modifier
                             .padding(top = L_PADDING)
@@ -465,7 +478,10 @@ internal fun ConsultationDetailsContent(
                         onValueChange = { },
                         label = {
                             Text(
-                                text = stringResource(R.string.lab_center),
+                                text =
+                                    stringResource(
+                                        eg.edu.cu.csds.icare.admin.R.string.features_admin_lab_center,
+                                    ),
                                 color = dropDownTextColor,
                             )
                         },
@@ -515,7 +531,7 @@ internal fun ConsultationDetailsContent(
                     onValueChange = { onEvent(ConsultationEvent.UpdateLabTests(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.lab_tests),
+                            text = stringResource(R.string.features_consultations_lab_tests),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -548,10 +564,14 @@ internal fun ConsultationDetailsContent(
                 val labTestsStatus =
                     stringResource(
                         statusList.firstOrNull { it.code == uiState.labTestStatusId }?.textResId
-                            ?: CoreR.string.core_ui_pending,
+                            ?: eg.edu.cu.csds.icare.core.ui.R.string.core_ui_pending,
                     )
                 Text(
-                    text = "${stringResource(R.string.lab_tests_status)}: $labTestsStatus",
+                    text = "${
+                        stringResource(
+                            R.string.features_consultations_lab_tests_status,
+                        )
+                    }: $labTestsStatus",
                     modifier =
                         Modifier
                             .padding(top = L_PADDING)
@@ -582,7 +602,10 @@ internal fun ConsultationDetailsContent(
                         onValueChange = { },
                         label = {
                             Text(
-                                text = stringResource(CoreR.string.core_ui_imaging_center),
+                                text =
+                                    stringResource(
+                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_imaging_center,
+                                    ),
                                 color = dropDownTextColor,
                             )
                         },
@@ -632,7 +655,7 @@ internal fun ConsultationDetailsContent(
                     onValueChange = { onEvent(ConsultationEvent.UpdateImagingTests(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.imaging_tests),
+                            text = stringResource(R.string.features_consultations_imaging_tests),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -665,10 +688,14 @@ internal fun ConsultationDetailsContent(
                 val imagingTestsStatus =
                     stringResource(
                         statusList.firstOrNull { it.code == uiState.imgTestStatusId }?.textResId
-                            ?: CoreR.string.core_ui_pending,
+                            ?: eg.edu.cu.csds.icare.core.ui.R.string.core_ui_pending,
                     )
                 Text(
-                    text = "${stringResource(R.string.imaging_tests_status)}: $imagingTestsStatus",
+                    text = "${
+                        stringResource(
+                            R.string.features_consultations_imaging_tests_status,
+                        )
+                    }: $imagingTestsStatus",
                     modifier =
                         Modifier
                             .padding(top = L_PADDING)
@@ -683,7 +710,7 @@ internal fun ConsultationDetailsContent(
                     readOnly = true,
                     label = {
                         Text(
-                            text = stringResource(R.string.follow_up_date),
+                            text = stringResource(R.string.features_consultations_follow_up_date),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -718,7 +745,10 @@ internal fun ConsultationDetailsContent(
                     trailingIcon = {
                         Icon(
                             modifier = Modifier.clickable { openDatePicker() },
-                            painter = painterResource(id = CoreR.drawable.baseline_calendar_month_24),
+                            painter =
+                                painterResource(
+                                    id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_baseline_calendar_month_24,
+                                ),
                             contentDescription = "",
                         )
                     },
@@ -732,7 +762,7 @@ internal fun ConsultationDetailsContent(
                         modifier =
                             Modifier
                                 .fillMaxWidth(fraction = 0.6f),
-                        text = stringResource(CoreR.string.core_ui_proceed),
+                        text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
                         color = buttonBackgroundColor,
                         onClick = { onEvent(ConsultationEvent.Proceed) },
                     )

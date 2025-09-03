@@ -80,7 +80,6 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import timber.log.Timber
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun SignInScreen(
@@ -229,7 +228,7 @@ private fun SignInContent(
                             start.linkTo(txtLogin.end)
                             end.linkTo(parent.end)
                         },
-                    painter = painterResource(id = R.drawable.login),
+                    painter = painterResource(id = R.drawable.features_auth_login),
                     contentDescription = null,
                     alpha = .6f,
                 )
@@ -375,7 +374,7 @@ private fun SignInContent(
                 Spacer(modifier = Modifier.height(S_PADDING))
 
                 Text(
-                    text = stringResource(id = CoreR.string.core_ui_or),
+                    text = stringResource(id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_or),
                     fontSize = MaterialTheme.typography.titleSmall.fontSize,
                     fontFamily = helveticaFamily,
                     textAlign = TextAlign.Center,
@@ -395,7 +394,7 @@ private fun SignInContent(
                 ) {
                     SocialSignInButton(
                         modifier = Modifier.fillMaxWidth(fraction = 0.8f),
-                        iconId = CoreR.drawable.ic_social_google,
+                        iconId = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_ic_social_google,
                     ) {
                         onEvent(SignInEvent.SignInWithGoogle)
                     }

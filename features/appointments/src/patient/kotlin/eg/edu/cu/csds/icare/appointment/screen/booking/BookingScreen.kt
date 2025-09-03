@@ -80,7 +80,6 @@ import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -264,16 +263,22 @@ private fun BookingContent(
                                         ImageRequest
                                             .Builder(context)
                                             .data(data = doctor.profilePicture)
-                                            .placeholder(CoreR.drawable.user_placeholder)
-                                            .error(CoreR.drawable.user_placeholder)
-                                            .build(),
+                                            .placeholder(
+                                                eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
+                                            ).error(
+                                                eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
+                                            ).build(),
                                     ),
                                 contentDescription = null,
                                 contentScale = ContentScale.Fit,
                             )
 
                             Text(
-                                text = "${stringResource(CoreR.string.core_ui_name)}: ${doctor.name}",
+                                text = "${
+                                    stringResource(
+                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_name,
+                                    )
+                                }: ${doctor.name}",
                                 modifier =
                                     Modifier.constrainAs(name) {
                                         top.linkTo(image.bottom, margin = S_PADDING)
@@ -289,9 +294,11 @@ private fun BookingContent(
                             )
 
                             Text(
-                                text = "${stringResource(
-                                    CoreR.string.core_ui_speciality,
-                                )}: ${doctor.specialty}",
+                                text = "${
+                                    stringResource(
+                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_speciality,
+                                    )
+                                }: ${doctor.specialty}",
                                 modifier =
                                     Modifier.constrainAs(speciality) {
                                         top.linkTo(name.bottom)
@@ -306,11 +313,13 @@ private fun BookingContent(
                             )
 
                             Text(
-                                text = "${stringResource(
-                                    CoreR.string.core_ui_appointment_price,
-                                )}: ${doctor.price} ${
+                                text = "${
                                     stringResource(
-                                        CoreR.string.core_ui_egp,
+                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_appointment_price,
+                                    )
+                                }: ${doctor.price} ${
+                                    stringResource(
+                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_egp,
                                     )
                                 }",
                                 modifier =
@@ -327,9 +336,11 @@ private fun BookingContent(
                             )
 
                             Text(
-                                text = "${stringResource(
-                                    CoreR.string.core_ui_total_appointments,
-                                )}: ${schedule.totalPatients}",
+                                text = "${
+                                    stringResource(
+                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_total_appointments,
+                                    )
+                                }: ${schedule.totalPatients}",
                                 modifier =
                                     Modifier.constrainAs(totalApp) {
                                         top.linkTo(price.bottom)
@@ -352,7 +363,11 @@ private fun BookingContent(
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Text(
-                                    text = "${stringResource(CoreR.string.core_ui_rating)}: ",
+                                    text = "${
+                                        stringResource(
+                                            eg.edu.cu.csds.icare.core.ui.R.string.core_ui_rating,
+                                        )
+                                    }: ",
                                     fontWeight = FontWeight.Bold,
                                     fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                     textAlign = TextAlign.Start,
@@ -406,7 +421,7 @@ private fun BookingContent(
                             modifier =
                                 Modifier
                                     .fillMaxWidth(fraction = 0.6f),
-                            text = stringResource(CoreR.string.core_ui_book_now),
+                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_book_now),
                             color = buttonBackgroundColor,
                             onClick = {
                                 onEvent(BookingEvent.Proceed)

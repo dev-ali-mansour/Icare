@@ -27,7 +27,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.notification.NotificationView
 import eg.edu.cu.csds.icare.notification.R
 import java.util.Calendar
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun NotificationsContent(modifier: Modifier = Modifier) {
@@ -44,13 +43,13 @@ internal fun NotificationsContent(modifier: Modifier = Modifier) {
                 listOf(
                     Notification(
                         id = 1,
-                        text = stringResource(R.string.welcome_message),
+                        text = stringResource(R.string.features_notifications_welcome_message),
                         date = Calendar.getInstance().time,
                     ),
                 )
 
             Text(
-                text = stringResource(CoreR.string.core_ui_nav_notifications),
+                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_nav_notifications),
                 fontWeight = FontWeight.Bold,
                 fontSize = MaterialTheme.typography.titleLarge.fontSize,
                 fontFamily = helveticaFamily,

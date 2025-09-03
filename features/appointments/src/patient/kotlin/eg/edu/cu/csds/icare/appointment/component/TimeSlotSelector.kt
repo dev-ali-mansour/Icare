@@ -43,7 +43,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
 import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 fun TimeSlotSelector(
@@ -77,7 +76,7 @@ fun TimeSlotSelector(
         )
 
         Image(
-            painter = painterResource(CoreR.drawable.baseline_arrow_back_ios_24),
+            painter = painterResource(eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_baseline_arrow_back_ios_24),
             contentDescription = null,
             modifier =
                 Modifier
@@ -89,7 +88,7 @@ fun TimeSlotSelector(
             contentScale = ContentScale.Fit,
         )
         Image(
-            painter = painterResource(CoreR.drawable.baseline_arrow_forward_ios_24),
+            painter = painterResource(eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_baseline_arrow_forward_ios_24),
             contentDescription = null,
             modifier =
                 Modifier

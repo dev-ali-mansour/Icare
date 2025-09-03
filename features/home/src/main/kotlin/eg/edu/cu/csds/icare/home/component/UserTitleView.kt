@@ -64,7 +64,7 @@ fun UserTitleView(
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                     }.size(HEADER_ICON_SIZE),
-            painter = painterResource(R.drawable.logo),
+            painter = painterResource(R.drawable.core_ui_logo),
             contentDescription = null,
             contentScale = ContentScale.Fit,
         )
@@ -117,8 +117,8 @@ fun UserTitleView(
                             ImageRequest
                                 .Builder(context)
                                 .data(data = user?.photoUrl)
-                                .placeholder(R.drawable.user_placeholder)
-                                .error(R.drawable.user_placeholder)
+                                .placeholder(R.drawable.core_ui_user_placeholder)
+                                .error(R.drawable.core_ui_user_placeholder)
                                 .build(),
                         ),
                     contentDescription = null,

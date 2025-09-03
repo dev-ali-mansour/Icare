@@ -80,7 +80,7 @@ internal fun NewStaffScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.new_staff)) },
+                title = { Text(text = stringResource(id = R.string.features_admin_new_staff)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,

@@ -75,7 +75,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.trustBlue
 import eg.edu.cu.csds.icare.home.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 fun DoctorContent(
@@ -117,8 +116,12 @@ fun DoctorContent(
         )
 
         StatCard(
-            title = stringResource(CoreR.string.core_ui_price),
-            value = "${schedule.price.toFormattedString()} ${stringResource(CoreR.string.core_ui_egp)}",
+            title = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_price),
+            value = "${schedule.price.toFormattedString()} ${
+                stringResource(
+                    eg.edu.cu.csds.icare.core.ui.R.string.core_ui_egp,
+                )
+            }",
             modifier =
                 Modifier
                     .constrainAs(priceCard) {
@@ -134,7 +137,7 @@ fun DoctorContent(
         )
 
         StatCard(
-            title = stringResource(CoreR.string.core_ui_available_slots),
+            title = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_available_slots),
             value = schedule.availableSlots.toString(),
             modifier =
                 Modifier.constrainAs(slotsCard) {
@@ -158,7 +161,7 @@ fun DoctorContent(
             maxLines = 1,
         )
         Text(
-            text = stringResource(CoreR.string.core_ui_see_all),
+            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_see_all),
             modifier =
                 Modifier
                     .constrainAs(seeAll) {
@@ -329,8 +332,8 @@ fun AppointmentItem(
                     ImageRequest
                         .Builder(context)
                         .data(data = appointment.patientImage)
-                        .placeholder(CoreR.drawable.user_placeholder)
-                        .error(CoreR.drawable.user_placeholder)
+                        .placeholder(eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder)
+                        .error(eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder)
                         .build(),
                 ),
             contentDescription = null,

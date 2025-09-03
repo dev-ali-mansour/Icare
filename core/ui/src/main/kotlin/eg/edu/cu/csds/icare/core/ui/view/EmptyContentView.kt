@@ -35,7 +35,7 @@ fun EmptyContentView(
     ) {
         Icon(
             modifier = Modifier.size(120.dp),
-            painter = painterResource(id = R.drawable.ic_sad_face),
+            painter = painterResource(id = R.drawable.core_ui_ic_sad_face),
             contentDescription = null,
             tint = MediumGray,
         )

@@ -125,7 +125,10 @@ class UpdateDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.error_first_name),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_first_name,
+                                                ),
                                         ),
                                 )
                             }
@@ -137,7 +140,10 @@ class UpdateDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.error_last_name),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_last_name,
+                                                ),
                                         ),
                                 )
                             }
@@ -149,7 +155,7 @@ class UpdateDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.error_clinic),
+                                            message = StringResourceId(R.string.features_admin_error_clinic),
                                         ),
                                 )
                             }
@@ -161,7 +167,10 @@ class UpdateDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.error_invalid_email),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_invalid_email,
+                                                ),
                                         ),
                                 )
                             }
@@ -174,7 +183,7 @@ class UpdateDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.error_phone),
+                                            message = StringResourceId(R.string.features_admin_error_phone),
                                         ),
                                 )
                             }
@@ -186,7 +195,10 @@ class UpdateDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.speciality_error),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_speciality,
+                                                ),
                                         ),
                                 )
                             }
@@ -198,7 +210,10 @@ class UpdateDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.service_price_error),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_service_price,
+                                                ),
                                         ),
                                 )
                             }
@@ -210,7 +225,10 @@ class UpdateDoctorViewModel(
                                     isLoading = false,
                                     effect =
                                         DoctorEffect.ShowError(
-                                            message = StringResourceId(R.string.doctor_times_error),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_doctor_times,
+                                                ),
                                         ),
                                 )
                             }
