@@ -15,6 +15,9 @@ class MediaHelper(
     private val context: Context,
 ) {
     private var mediaPlayer: MediaPlayer? = null
+    var isGreetingPlayed: Boolean = false
+        private set
+
     private var playbackAttributes =
         AudioAttributes
             .Builder()
@@ -55,12 +58,18 @@ class MediaHelper(
                                 }.build()
 
                         when (audioManager?.requestAudioFocus(focusRequest)) {
-                            AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> player.start()
+                            AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
+                                player.start()
+                                isGreetingPlayed = true
+                            }
                             else -> Timber.d("Audio Focus Not Granted!")
                         }
                     }
 
-                    else -> player.start()
+                    else -> {
+                        player.start()
+                        isGreetingPlayed = true
+                    }
                 }
             }
         }.onFailure { Timber.e("MediaHelper Play Error: ${it.stackTrace}") }

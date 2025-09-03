@@ -46,11 +46,14 @@ fun String.isValidDoubleInput(): Boolean {
     }
 }
 
-fun Short.toFormattedString(): String = DecimalFormat("#,###", DecimalFormatSymbols(Locale.ENGLISH)).format(this)
+fun Short.toFormattedString(): String =
+    DecimalFormat("#,###", DecimalFormatSymbols(Locale.ENGLISH)).format(this)
 
-fun Int.toFormattedString(): String = DecimalFormat("#,###", DecimalFormatSymbols(Locale.ENGLISH)).format(this)
+fun Int.toFormattedString(): String =
+    DecimalFormat("#,###", DecimalFormatSymbols(Locale.ENGLISH)).format(this)
 
-fun Long.toFormattedString(): String = DecimalFormat("#,###", DecimalFormatSymbols(Locale.ENGLISH)).format(this)
+fun Long.toFormattedString(): String =
+    DecimalFormat("#,###", DecimalFormatSymbols(Locale.ENGLISH)).format(this)
 
 fun Long.isTomorrow(): Boolean {
     val tomorrowCalendar = Calendar.getInstance()
@@ -75,7 +78,9 @@ fun Double.toFormattedString(): String =
 fun Double.formatForDisplay(): String = if (this == 0.0) "" else String.format(Locale.ENGLISH, "%.2f", this)
 
 fun TimeSlot.divide(slotDurationMinutes: Short): List<TimeSlot> {
-    require(slotDurationMinutes > 0) { "lengthMinutes was $slotDurationMinutes. Must specify positive amount of minutes." }
+    require(slotDurationMinutes > 0) {
+        "lengthMinutes was $slotDurationMinutes. Must specify positive amount of minutes."
+    }
 
     val lengthMillis = slotDurationMinutes * Constants.MINUTES_TO_MILLIS
     val timeSlots = mutableListOf<TimeSlot>()

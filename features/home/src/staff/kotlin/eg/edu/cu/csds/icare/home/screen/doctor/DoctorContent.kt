@@ -49,6 +49,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.util.toFormattedString
@@ -71,21 +72,20 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.mintAccent
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.theme.trustBlue
-import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
 import eg.edu.cu.csds.icare.home.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 fun DoctorContent(
-    modifier: Modifier = Modifier,
     schedule: DoctorSchedule,
+    modifier: Modifier = Modifier,
     onPriceCardClicked: () -> Unit,
     onAppointmentClick: (Appointment) -> Unit,
     onSeeAllClick: () -> Unit,
-    scope: CoroutineScope = rememberCoroutineScope(),
 ) {
+    val scope: CoroutineScope = rememberCoroutineScope()
+
     ConstraintLayout(
         modifier =
             modifier
@@ -93,7 +93,7 @@ fun DoctorContent(
                 .verticalScroll(rememberScrollState())
                 .padding(M_PADDING),
     ) {
-        var (patientsCard, confirmedCard, priceCard, slotsCard, appointments, list, seeAll) = createRefs()
+        val (patientsCard, confirmedCard, priceCard, slotsCard, appointments, list, seeAll) = createRefs()
 
         TotalPatientsCard(
             totalPatients = schedule.totalPatients,
@@ -116,8 +116,12 @@ fun DoctorContent(
         )
 
         StatCard(
-            title = stringResource(CoreR.string.price),
-            value = "${schedule.price.toFormattedString()} ${stringResource(CoreR.string.egp)}",
+            title = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_price),
+            value = "${schedule.price.toFormattedString()} ${
+                stringResource(
+                    eg.edu.cu.csds.icare.core.ui.R.string.core_ui_egp,
+                )
+            }",
             modifier =
                 Modifier
                     .constrainAs(priceCard) {
@@ -133,7 +137,7 @@ fun DoctorContent(
         )
 
         StatCard(
-            title = stringResource(CoreR.string.available_slots),
+            title = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_available_slots),
             value = schedule.availableSlots.toString(),
             modifier =
                 Modifier.constrainAs(slotsCard) {
@@ -143,7 +147,7 @@ fun DoctorContent(
         )
 
         Text(
-            text = stringResource(R.string.today_appointment),
+            text = stringResource(R.string.features_home_today_appointment),
             modifier =
                 Modifier.constrainAs(appointments) {
                     top.linkTo(confirmedCard.bottom, margin = M_PADDING)
@@ -157,7 +161,7 @@ fun DoctorContent(
             maxLines = 1,
         )
         Text(
-            text = stringResource(CoreR.string.see_all),
+            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_see_all),
             modifier =
                 Modifier
                     .constrainAs(seeAll) {
@@ -215,7 +219,7 @@ fun TotalPatientsCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    stringResource(R.string.total_appointments),
+                    stringResource(R.string.features_home_total_appointments),
                     fontFamily = helveticaFamily,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
@@ -231,7 +235,7 @@ fun TotalPatientsCard(
                     maxLines = 1,
                 )
                 Text(
-                    stringResource(R.string.till_today),
+                    stringResource(R.string.features_home_till_today),
                     style = MaterialTheme.typography.titleMedium,
                     fontFamily = helveticaFamily,
                     color = Color.White,
@@ -328,8 +332,8 @@ fun AppointmentItem(
                     ImageRequest
                         .Builder(context)
                         .data(data = appointment.patientImage)
-                        .placeholder(CoreR.drawable.user_placeholder)
-                        .error(CoreR.drawable.user_placeholder)
+                        .placeholder(eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder)
+                        .error(eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder)
                         .build(),
                 ),
             contentDescription = null,

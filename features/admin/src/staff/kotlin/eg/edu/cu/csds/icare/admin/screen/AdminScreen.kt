@@ -18,83 +18,58 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
-import androidx.compose.material3.pulltorefresh.pullToRefresh
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
-import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
-import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
-import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
+import eg.edu.cu.csds.icare.core.domain.model.Clinician
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacist
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
-import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.ui.MainViewModel
+import eg.edu.cu.csds.icare.core.domain.model.Staff
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AdminScreen(
-    mainViewModel: MainViewModel,
-    clinicViewModel: ClinicViewModel,
-    pharmacyViewModel: PharmacyViewModel,
-    centerViewModel: CenterViewModel,
     onNavigationIconClicked: () -> Unit,
-    onRefresh: () -> Unit,
-    onFabClicked: () -> Unit,
-    onCategoryTabClicked: () -> Unit,
-    onSectionTabClicked: () -> Unit,
-    onClinicClicked: (Clinic) -> Unit,
-    onDoctorClicked: (Doctor) -> Unit,
-    onClinicStaffClicked: (ClinicStaff) -> Unit,
-    onPharmacyClicked: (Pharmacy) -> Unit,
-    onPharmacistClicked: (Pharmacist) -> Unit,
-    onCenterClicked: (LabImagingCenter) -> Unit,
-    onCenterStaffClicked: (CenterStaff) -> Unit,
-    onError: suspend (Throwable?) -> Unit,
+    navigateToRoute: (Route) -> Unit,
+    navigateToClinicDetails: (Clinic) -> Unit,
+    navigateToDoctorDetails: (Doctor) -> Unit,
+    navigateToClinicianDetails: (Clinician) -> Unit,
+    navigateToPharmacyDetails: (Pharmacy) -> Unit,
+    navigateToPharmacistDetails: (Pharmacist) -> Unit,
+    navigateToCenterDetails: (LabImagingCenter) -> Unit,
+    navigateToStaffDetails: (Staff) -> Unit,
 ) {
-    val categories = mainViewModel.adminCategories
-    val clinicsResource by clinicViewModel.clinicsResFlow.collectAsStateWithLifecycle()
-    val doctorsResource by clinicViewModel.doctorsResFlow.collectAsStateWithLifecycle()
-    val clinicStaffsResource by clinicViewModel.clinicStaffsResFlow.collectAsStateWithLifecycle()
-    val pharmaciesResource by pharmacyViewModel.pharmaciesResFlow.collectAsStateWithLifecycle()
-    val pharmacistsResource by pharmacyViewModel.pharmacistsResFlow.collectAsStateWithLifecycle()
-    val centersResource by centerViewModel.centersResFlow.collectAsStateWithLifecycle()
-    val centerStaffsResource by centerViewModel.centerStaffsResFlow.collectAsStateWithLifecycle()
-    val actionResource by clinicViewModel.actionResFlow.collectAsStateWithLifecycle(initialValue = Resource.Unspecified())
-    var selectedCategoryTabIndex by mainViewModel.selectedCategoryTabIndex
-    var selectedSectionTabIndex by mainViewModel.selectedSectionTabIndex
-    var expandedFab by clinicViewModel.expandedFab
-    var clinicIsRefreshing by clinicViewModel.isRefreshing
-    var pharmacyIsRefreshing by pharmacyViewModel.isRefreshing
-    var centerIsRefreshing by centerViewModel.isRefreshing
-    val state = rememberPullToRefreshState()
-
-    LaunchedEffect(key1 = Unit) {
-        clinicViewModel.listClinics()
-    }
+    var selectedCategoryTabIndex by remember { mutableIntStateOf(0) }
+    var selectedSectionTabIndex by remember { mutableIntStateOf(0) }
+    var expandedFab by remember { mutableStateOf(true) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = CoreR.string.sections_admin)) },
+                title = {
+                    Text(
+                        text =
+                            stringResource(
+                                id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_sections_admin,
+                            ),
+                    )
+                },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,
@@ -117,7 +92,7 @@ internal fun AdminScreen(
             ExtendedFloatingActionButton(
                 text = {
                     Text(
-                        text = stringResource(CoreR.string.add),
+                        text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_add),
                         color = Color.White,
                     )
                 },
@@ -128,7 +103,28 @@ internal fun AdminScreen(
                         tint = Color.White,
                     )
                 },
-                onClick = { onFabClicked() },
+                onClick = {
+                    when (selectedCategoryTabIndex) {
+                        0 ->
+                            when (selectedSectionTabIndex) {
+                                0 -> navigateToRoute(Route.NewClinic)
+                                1 -> navigateToRoute(Route.NewDoctor)
+                                2 -> navigateToRoute(Route.NewClinician)
+                            }
+
+                        1 ->
+                            when (selectedSectionTabIndex) {
+                                0 -> navigateToRoute(Route.NewPharmacy)
+                                1 -> navigateToRoute(Route.NewPharmacist)
+                            }
+
+                        2 ->
+                            when (selectedSectionTabIndex) {
+                                0 -> navigateToRoute(Route.NewCenter)
+                                1 -> navigateToRoute(Route.NewStaff)
+                            }
+                    }
+                },
                 containerColor = barBackgroundColor,
                 expanded = expandedFab,
             )
@@ -138,11 +134,7 @@ internal fun AdminScreen(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .pullToRefresh(
-                        state = state,
-                        isRefreshing = clinicIsRefreshing || pharmacyIsRefreshing || centerIsRefreshing,
-                        onRefresh = { onRefresh() },
-                    ).padding(paddingValues),
+                    .padding(paddingValues),
         ) {
             ConstraintLayout(
                 modifier =
@@ -150,7 +142,7 @@ internal fun AdminScreen(
                         .background(backgroundColor)
                         .fillMaxWidth(),
             ) {
-                val (refresh, line, content) = createRefs()
+                val (_, line, content) = createRefs()
                 Box(
                     modifier =
                         Modifier
@@ -173,46 +165,22 @@ internal fun AdminScreen(
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         },
-                    categories = categories,
                     selectedCategoryTabIndex = selectedCategoryTabIndex,
                     selectedSectionTabIndex = selectedSectionTabIndex,
-                    clinicsResource = clinicsResource,
-                    doctorsResource = doctorsResource,
-                    clinicStaffsResource = clinicStaffsResource,
-                    pharmaciesResource = pharmaciesResource,
-                    pharmacistsResource = pharmacistsResource,
-                    centersResource = centersResource,
-                    centerStaffsResource = centerStaffsResource,
-                    actionResource = actionResource,
-                    showLoading = { clinicIsRefreshing = it },
                     onCategoryTabClicked = {
                         selectedCategoryTabIndex = it
-                        onCategoryTabClicked()
                     },
                     onSectionTabClicked = {
                         selectedSectionTabIndex = it
-                        onSectionTabClicked()
                     },
                     onExpandStateChanged = { expandedFab = it },
-                    onClinicClicked = { onClinicClicked(it) },
-                    onDoctorClicked = { onDoctorClicked(it) },
-                    onClinicStaffClicked = { onClinicStaffClicked(it) },
-                    onPharmacyClicked = { onPharmacyClicked(it) },
-                    onPharmacistClicked = { onPharmacistClicked(it) },
-                    onCenterClicked = { onCenterClicked(it) },
-                    onCenterStaffClicked = { onCenterStaffClicked(it) },
-                    onError = onError,
-                )
-
-                Indicator(
-                    modifier =
-                        Modifier.constrainAs(refresh) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        },
-                    isRefreshing = clinicIsRefreshing || pharmacyIsRefreshing || centerIsRefreshing,
-                    state = state,
+                    navigateToClinicDetails = { navigateToClinicDetails(it) },
+                    navigateToDoctorDetails = { navigateToDoctorDetails(it) },
+                    navigateToClinicianDetails = { navigateToClinicianDetails(it) },
+                    navigateToPharmacyDetails = { navigateToPharmacyDetails(it) },
+                    navigateToPharmacistDetails = { navigateToPharmacistDetails(it) },
+                    navigateToCenterDetails = { navigateToCenterDetails(it) },
+                    navigateToStaffDetails = { navigateToStaffDetails(it) },
                 )
             }
         }

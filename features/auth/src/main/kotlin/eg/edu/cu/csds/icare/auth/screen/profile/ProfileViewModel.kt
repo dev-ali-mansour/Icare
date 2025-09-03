@@ -11,10 +11,10 @@ import eg.edu.cu.csds.icare.core.domain.usecase.auth.UnlinkGoogleAccountUseCase
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -34,40 +34,42 @@ class ProfileViewModel(
     private var linkGoogleJob: Job? = null
     private var unlinkGoogleJob: Job? = null
     private var signOutJob: Job? = null
-    private val _state =
+    private val _uiState =
         MutableStateFlow(ProfileState())
-    val state =
-        _state
+    val uiState =
+        _uiState
             .onStart {
                 observeCurrentUser(false)
             }.stateIn(
                 scope = viewModelScope,
-                started =
-                    kotlinx.coroutines.flow.SharingStarted
-                        .WhileSubscribed(stopTimeoutMillis = 5000L),
-                initialValue = _state.value,
+                started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
+                initialValue = _uiState.value,
             )
-    private val _singleEvent =
-        MutableSharedFlow<ProfileSingleEvent>()
-    val singleEvent = _singleEvent.asSharedFlow()
 
-    fun processIntent(intent: ProfileIntent) {
-        when (intent) {
-            is ProfileIntent.UpdateGoogleSignInToken -> {
-                _state.update { it.copy(googleToken = intent.token) }
+    val effect = _uiState.map { it.effect }
+
+    fun processEvent(event: ProfileEvent) {
+        when (event) {
+            is ProfileEvent.UpdateGoogleSignInToken -> {
+                _uiState.update { it.copy(googleToken = event.token) }
             }
-            is ProfileIntent.LinkWithGoogle -> {
+
+            is ProfileEvent.LinkWithGoogle -> {
                 linkGoogleJob?.cancel()
                 linkGoogleJob = launchGoogleLinking()
             }
-            is ProfileIntent.UnlinkWithGoogle -> {
+
+            is ProfileEvent.UnlinkWithGoogle -> {
                 unlinkGoogleJob?.cancel()
                 unlinkGoogleJob = launchGoogleUnlinking()
             }
-            is ProfileIntent.SignOut -> {
+
+            is ProfileEvent.SignOut -> {
                 signOutJob?.cancel()
                 signOutJob = launchSignOut()
             }
+
+            is ProfileEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
         }
     }
 
@@ -78,60 +80,78 @@ class ProfileViewModel(
                 .onEach { result ->
                     result
                         .onSuccess { user ->
-                            _state.update { it.copy(currentUser = user) }
+                            _uiState.update { it.copy(currentUser = user) }
                         }.onError { error ->
-                            _state.update { it.copy(isLoading = false) }
-                            _singleEvent.emit(ProfileSingleEvent.ShowError(error.toUiText()))
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect = ProfileEffect.ShowError(error.toUiText()),
+                                )
+                            }
                         }
                 }.launchIn(viewModelScope)
     }
 
     private fun launchGoogleLinking() =
         viewModelScope.launch(dispatcher) {
-            _state.update { it.copy(isLoading = true) }
-            linkGoogleAccountUseCase(_state.value.googleToken)
+            _uiState.update { it.copy(isLoading = true) }
+            linkGoogleAccountUseCase(_uiState.value.googleToken)
                 .onEach { result ->
                     result
                         .onSuccess {
-                            _state.update { it.copy(isLoading = false) }
+                            _uiState.update { it.copy(isLoading = false) }
                             observeCurrentUser(forceUpdate = true)
                         }.onError { error ->
-                            _state.update { it.copy(isLoading = false) }
-                            _singleEvent.emit(ProfileSingleEvent.ShowError(message = error.toUiText()))
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect = ProfileEffect.ShowError(message = error.toUiText()),
+                                )
+                            }
                         }
                 }.launchIn(viewModelScope)
         }
 
     private fun launchGoogleUnlinking() =
         viewModelScope.launch(dispatcher) {
-            _state.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(isLoading = true) }
             unlinkGoogleAccountUseCase()
                 .onEach { result ->
                     result
                         .onSuccess {
-                            _state.update { it.copy(isLoading = false) }
+                            _uiState.update { it.copy(isLoading = false) }
                             observeCurrentUser(forceUpdate = true)
                         }.onError { error ->
-                            _state.update { it.copy(isLoading = false) }
-                            _singleEvent.emit(ProfileSingleEvent.ShowError(message = error.toUiText()))
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect = ProfileEffect.ShowError(message = error.toUiText()),
+                                )
+                            }
                         }
                 }.launchIn(viewModelScope)
         }
 
     private fun launchSignOut() =
         viewModelScope.launch(dispatcher) {
-            _state.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(isLoading = true) }
             signOutUseCase()
                 .onEach { result ->
                     result
                         .onSuccess {
-                            _state.update { it.copy(isLoading = false) }
-                            _singleEvent.emit(ProfileSingleEvent.SignOutSuccess)
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect = ProfileEffect.SignOutSuccess,
+                                )
+                            }
                         }.onError { error ->
-                            _state.update { it.copy(isLoading = false) }
-                            _singleEvent.emit(
-                                ProfileSingleEvent.ShowError(message = error.toUiText()),
-                            )
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect = ProfileEffect.ShowError(message = error.toUiText()),
+                                )
+                            }
                         }
                 }.launchIn(viewModelScope)
         }

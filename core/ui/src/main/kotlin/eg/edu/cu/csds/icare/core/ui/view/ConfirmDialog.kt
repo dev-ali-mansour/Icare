@@ -6,81 +6,68 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.tintColor
 
 @Composable
 fun ConfirmDialog(
-    modifier: Modifier = Modifier,
-    openDialog: MutableState<Boolean>,
     backgroundColor: Color,
     title: String,
     message: String,
-    cancellable: Boolean,
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit,
     onConfirmed: () -> Unit,
     onCancelled: () -> Unit,
 ) {
-    if (openDialog.value) {
-        AlertDialog(
-            modifier = modifier,
-            containerColor = backgroundColor,
-            onDismissRequest = {
-                if (cancellable) openDialog.value = false
-            },
-            title = {
+    AlertDialog(
+        modifier = modifier,
+        containerColor = backgroundColor,
+        onDismissRequest = { onDismissRequest() },
+        title = {
+            Text(
+                text = title,
+                color = tintColor.copy(alpha = 0.6f),
+                fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                fontFamily = helveticaFamily,
+                overflow = TextOverflow.Ellipsis,
+            )
+        },
+        text = {
+            Text(
+                text = message,
+                color = tintColor.copy(alpha = 0.6f),
+                fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                fontFamily = helveticaFamily,
+                overflow = TextOverflow.Ellipsis,
+            )
+        },
+        confirmButton = {
+            Button(
+                colors = ButtonDefaults.buttonColors(containerColor = tintColor),
+                onClick = { onConfirmed() },
+            ) {
                 Text(
-                    text = title,
-                    color = tintColor.copy(alpha = 0.6f),
-                    fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                    text = stringResource(id = android.R.string.ok),
+                    color = Color.White,
                     fontFamily = helveticaFamily,
-                    overflow = TextOverflow.Ellipsis,
                 )
-            },
-            text = {
+            }
+        },
+        dismissButton = {
+            Button(
+                colors = ButtonDefaults.buttonColors(containerColor = tintColor),
+                onClick = { onCancelled() },
+            ) {
                 Text(
-                    text = message,
-                    color = tintColor.copy(alpha = 0.6f),
-                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                    text = stringResource(id = android.R.string.cancel),
+                    color = Color.White,
                     fontFamily = helveticaFamily,
-                    overflow = TextOverflow.Ellipsis,
                 )
-            },
-            confirmButton = {
-                Button(
-                    colors = ButtonDefaults.buttonColors(containerColor = tintColor),
-                    onClick = {
-                        openDialog.value = false
-                        onConfirmed()
-                    },
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.ok),
-                        color = Color.White,
-                        fontFamily = helveticaFamily,
-                    )
-                }
-            },
-            dismissButton = {
-                Button(
-                    colors = ButtonDefaults.buttonColors(containerColor = tintColor),
-                    onClick = {
-                        openDialog.value = false
-                        onCancelled()
-                    },
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.cancel),
-                        color = Color.White,
-                        fontFamily = helveticaFamily,
-                    )
-                }
-            },
-        )
-    }
+            }
+        },
+    )
 }

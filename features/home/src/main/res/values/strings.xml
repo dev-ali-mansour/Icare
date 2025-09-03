@@ -1,21 +1,24 @@
 <resources>
-    <string name="exit_dialog_title">Exit</string>
-    <string name="exit_dialog">Are you sure you want to exit the application?</string>
-    <string name="services">Services</string>
-    <string name="next_appointment">Next Appointment</string>
-    <string name="promotions">Promotions</string>
-    <string name="top_doctors">Top doctors</string>
-    <string name="discount_50" translatable="false">50%</string>
-    <string name="discount_30" translatable="false">30%</string>
-    <string name="buy_now">Buy now</string>
-    <string name="cosmetics">Cosmetics</string>
-    <string name="no_upcoming_appointments">No upcoming appointments</string>
-    <string name="off">OFF</string>
-    <string name="total_appointments">Total Patients</string>
-    <string name="till_today">Till Today</string>
-    <string name="today_appointment">Today\'s Appointment</string>
-    <string name="users">Users</string>
-    <string name="till_now">till now</string>
-    <string name="overview">Overview</string>
-    <!--Multilingual Resources of Application-->
+    <string name="features_home_exit_dialog_title">Exit</string>
+    <string name="features_home_exit_dialog">Are you sure you want to exit the application?</string>
+    <string name="features_home_services">Services</string>
+    <string name="features_home_next_appointment">Next Appointment</string>
+    <string name="features_home_promotions">Promotions</string>
+    <string name="features_home_top_doctors">Top doctors</string>
+    <string name="features_home_discount_50" translatable="false">50%</string>
+    <string name="features_home_discount_30" translatable="false">30%</string>
+    <string name="features_home_buy_now">Buy now</string>
+    <string name="features_home_cosmetics">Cosmetics</string>
+    <string name="features_home_no_upcoming_appointments">No upcoming appointments</string>
+    <string name="features_home_off">OFF</string>
+    <string name="features_home_total_appointments">Total Patients</string>
+    <string name="features_home_till_today">Till Today</string>
+    <string name="features_home_today_appointment">Today\'s Appointment</string>
+    <string name="features_home_users">Users</string>
+    <string name="features_home_till_now">till now</string>
+    <string name="features_home_overview">Overview</string>
+    <string name="features_home_search_by_lab_name_or_address">Search by lab\'s name or address</string>
+    <string name="features_home_search_by_center_name_or_address">Search by center\'s name or address</string>
+    <string name="features_home_search_by_pharmacy_name_or_address">Search by pharmacy\'s name or address</string>
+    <string name="features_home_no_data_matched">No data is matched</string>
 </resources>

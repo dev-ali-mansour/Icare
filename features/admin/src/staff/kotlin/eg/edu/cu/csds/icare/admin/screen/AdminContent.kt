@@ -18,6 +18,11 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -27,22 +32,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import eg.edu.cu.csds.icare.admin.screen.center.CentersContent
-import eg.edu.cu.csds.icare.admin.screen.center.staff.CenterStaffsContent
-import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicsContent
-import eg.edu.cu.csds.icare.admin.screen.clinic.doctor.DoctorsContent
-import eg.edu.cu.csds.icare.admin.screen.clinic.staff.ClinicStaffsContent
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyContent
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.pharmacist.PharmacistContent
-import eg.edu.cu.csds.icare.core.domain.model.CenterStaff
+import eg.edu.cu.csds.icare.admin.screen.center.list.CenterListSection
+import eg.edu.cu.csds.icare.admin.screen.clinic.list.ClinicListSection
+import eg.edu.cu.csds.icare.admin.screen.clinician.list.ClinicianListSection
+import eg.edu.cu.csds.icare.admin.screen.doctor.list.DoctorListSection
+import eg.edu.cu.csds.icare.admin.screen.pharmacist.list.PharmacistListSection
+import eg.edu.cu.csds.icare.admin.screen.pharmacy.list.PharmacyListSection
+import eg.edu.cu.csds.icare.admin.screen.staff.list.StaffListSection
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
-import eg.edu.cu.csds.icare.core.domain.model.ClinicStaff
+import eg.edu.cu.csds.icare.core.domain.model.Clinician
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacist
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
-import eg.edu.cu.csds.icare.core.domain.model.Resource
+import eg.edu.cu.csds.icare.core.domain.model.Staff
+import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.common.SectionCategory
+import eg.edu.cu.csds.icare.core.ui.common.SectionItem
 import eg.edu.cu.csds.icare.core.ui.theme.MEDIUM_ICON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.TAB_INDICATOR_HEIGHT
@@ -53,34 +59,28 @@ import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
+import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 
 @Composable
 internal fun AdminContent(
     modifier: Modifier = Modifier,
-    categories: List<SectionCategory>,
     selectedCategoryTabIndex: Int,
     selectedSectionTabIndex: Int,
-    clinicsResource: Resource<List<Clinic>>,
-    doctorsResource: Resource<List<Doctor>>,
-    clinicStaffsResource: Resource<List<ClinicStaff>>,
-    pharmaciesResource: Resource<List<Pharmacy>>,
-    pharmacistsResource: Resource<List<Pharmacist>>,
-    centersResource: Resource<List<LabImagingCenter>>,
-    centerStaffsResource: Resource<List<CenterStaff>>,
-    actionResource: Resource<Nothing?>,
-    showLoading: (Boolean) -> Unit,
     onCategoryTabClicked: (Int) -> Unit,
     onSectionTabClicked: (Int) -> Unit,
     onExpandStateChanged: (Boolean) -> Unit,
-    onClinicClicked: (Clinic) -> Unit,
-    onDoctorClicked: (Doctor) -> Unit,
-    onClinicStaffClicked: (ClinicStaff) -> Unit,
-    onPharmacyClicked: (Pharmacy) -> Unit,
-    onPharmacistClicked: (Pharmacist) -> Unit,
-    onCenterClicked: (LabImagingCenter) -> Unit,
-    onCenterStaffClicked: (CenterStaff) -> Unit,
-    onError: suspend (Throwable?) -> Unit,
+    navigateToClinicDetails: (Clinic) -> Unit,
+    navigateToDoctorDetails: (Doctor) -> Unit,
+    navigateToClinicianDetails: (Clinician) -> Unit,
+    navigateToPharmacyDetails: (Pharmacy) -> Unit,
+    navigateToPharmacistDetails: (Pharmacist) -> Unit,
+    navigateToCenterDetails: (LabImagingCenter) -> Unit,
+    navigateToStaffDetails: (Staff) -> Unit,
 ) {
+    rememberCoroutineScope()
+    var alertMessage by remember { mutableStateOf("") }
+    var showAlert by remember { mutableStateOf(false) }
+
     ConstraintLayout(
         modifier =
             modifier
@@ -115,7 +115,7 @@ internal fun AdminContent(
                 )
             },
         ) {
-            categories.forEachIndexed { index, category ->
+            adminCategories.forEachIndexed { index, category ->
                 Tab(
                     selected = selectedCategoryTabIndex == index,
                     onClick = {
@@ -163,7 +163,7 @@ internal fun AdminContent(
                 )
             },
         ) {
-            categories[selectedCategoryTabIndex].sections.forEachIndexed { index, section ->
+            adminCategories[selectedCategoryTabIndex].sections.forEachIndexed { index, section ->
                 Tab(
                     selected = selectedSectionTabIndex == index,
                     onClick = { onSectionTabClicked(index) },
@@ -207,91 +207,58 @@ internal fun AdminContent(
                 0 ->
                     when (selectedSectionTabIndex) {
                         0 ->
-                            ClinicsContent(
-                                modifier = Modifier,
-                                clinicsResource = clinicsResource,
-                                actionResource = actionResource,
-                                showLoading = { showLoading(it) },
+                            ClinicListSection(
+                                navigateToClinicDetails = { navigateToClinicDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
-                                onItemClicked = { onClinicClicked(it) },
-                                onError = onError,
                             )
 
                         1 ->
-                            DoctorsContent(
-                                modifier = Modifier,
-                                doctorsResource = doctorsResource,
-                                actionResource = actionResource,
-                                showLoading = { showLoading(it) },
+                            DoctorListSection(
+                                navigateToDoctorDetails = { navigateToDoctorDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
-                                onItemClicked = { onDoctorClicked(it) },
-                                onError = onError,
                             )
 
                         2 ->
-                            ClinicStaffsContent(
-                                modifier = Modifier,
-                                staffsResource = clinicStaffsResource,
-                                actionResource = actionResource,
-                                showLoading = { showLoading(it) },
+                            ClinicianListSection(
+                                navigateToClinicianDetails = { navigateToClinicianDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
-                                onItemClicked = { onClinicStaffClicked(it) },
-                                onError = onError,
                             )
                     }
 
                 1 ->
                     when (selectedSectionTabIndex) {
                         0 ->
-                            PharmacyContent(
-                                modifier = Modifier,
-                                pharmaciesResource = pharmaciesResource,
-                                actionResource = actionResource,
-                                showLoading = { showLoading(it) },
+                            PharmacyListSection(
+                                navigateToPharmacyDetails = { navigateToPharmacyDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
-                                onItemClicked = { onPharmacyClicked(it) },
-                                onError = onError,
                             )
 
                         1 ->
-                            PharmacistContent(
-                                modifier = Modifier,
-                                pharmacistsResource = pharmacistsResource,
-                                actionResource = actionResource,
-                                showLoading = { showLoading(it) },
+                            PharmacistListSection(
+                                navigateToPharmacistDetails = { navigateToPharmacistDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
-                                onItemClicked = { onPharmacistClicked(it) },
-                                onError = onError,
                             )
                     }
 
                 2 ->
                     when (selectedSectionTabIndex) {
                         0 ->
-                            CentersContent(
-                                modifier = Modifier,
-                                centersResource = centersResource,
-                                actionResource = actionResource,
-                                showLoading = { showLoading(it) },
+                            CenterListSection(
+                                navigateToCenterDetails = { navigateToCenterDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
-                                onItemClicked = { onCenterClicked(it) },
-                                onError = onError,
                             )
 
                         1 ->
-                            CenterStaffsContent(
-                                modifier = Modifier,
-                                staffsResource = centerStaffsResource,
-                                actionResource = actionResource,
-                                showLoading = { showLoading(it) },
+                            StaffListSection(
+                                navigateToStaffDetails = { navigateToStaffDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
-                                onItemClicked = { onCenterStaffClicked(it) },
-                                onError = onError,
                             )
                     }
             }
         }
     }
+
+    if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
 }
 
 @Preview(showBackground = true)
@@ -302,30 +269,68 @@ internal fun AdminContent(
 internal fun AdminContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         AdminContent(
-            categories =
-                listOf(),
             selectedCategoryTabIndex = 0,
             selectedSectionTabIndex = 0,
-            clinicsResource = Resource.Success(listOf()),
-            doctorsResource = Resource.Success(listOf()),
-            clinicStaffsResource = Resource.Success(listOf()),
-            pharmaciesResource = Resource.Success(listOf()),
-            pharmacistsResource = Resource.Success(listOf()),
-            centersResource = Resource.Success(listOf()),
-            centerStaffsResource = Resource.Success(listOf()),
-            actionResource = Resource.Success(null),
-            showLoading = {},
             onCategoryTabClicked = {},
             onSectionTabClicked = {},
             onExpandStateChanged = {},
-            onClinicClicked = {},
-            onDoctorClicked = {},
-            onClinicStaffClicked = {},
-            onPharmacyClicked = {},
-            onPharmacistClicked = {},
-            onCenterClicked = {},
-            onCenterStaffClicked = {},
-            onError = {},
+            navigateToClinicDetails = {},
+            navigateToDoctorDetails = {},
+            navigateToClinicianDetails = {},
+            navigateToPharmacyDetails = {},
+            navigateToPharmacistDetails = {},
+            navigateToCenterDetails = {},
+            navigateToStaffDetails = {},
         )
     }
 }
+
+val adminCategories =
+    listOf(
+        SectionCategory(
+            titleResId = R.string.core_ui_clinics,
+            sections =
+                listOf(
+                    SectionItem(
+                        iconResId = R.drawable.core_ui_ic_clinic,
+                        titleResId = R.string.core_ui_clinics,
+                    ),
+                    SectionItem(
+                        iconResId = R.drawable.core_ui_ic_doctor,
+                        titleResId = R.string.core_ui_doctors,
+                    ),
+                    SectionItem(
+                        iconResId = R.drawable.core_ui_ic_staff,
+                        titleResId = R.string.core_ui_clinic_staffs,
+                    ),
+                ),
+        ),
+        SectionCategory(
+            titleResId = R.string.core_ui_pharmacies,
+            sections =
+                listOf(
+                    SectionItem(
+                        iconResId = R.drawable.core_ui_ic_pharmacy,
+                        titleResId = R.string.core_ui_pharmacies,
+                    ),
+                    SectionItem(
+                        iconResId = R.drawable.core_ui_ic_pharmacist,
+                        titleResId = R.string.core_ui_pharmacists,
+                    ),
+                ),
+        ),
+        SectionCategory(
+            titleResId = R.string.core_ui_centers,
+            sections =
+                listOf(
+                    SectionItem(
+                        iconResId = R.drawable.core_ui_ic_lab,
+                        titleResId = R.string.core_ui_centers,
+                    ),
+                    SectionItem(
+                        iconResId = R.drawable.core_ui_ic_staff2,
+                        titleResId = R.string.core_ui_center_staffs,
+                    ),
+                ),
+        ),
+    )

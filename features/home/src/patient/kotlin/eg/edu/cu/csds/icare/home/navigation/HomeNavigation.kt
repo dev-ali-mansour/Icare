@@ -1,87 +1,49 @@
 package eg.edu.cu.csds.icare.home.navigation
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.google.firebase.auth.FirebaseAuth
-import eg.edu.cu.csds.icare.admin.screen.center.CenterViewModel
-import eg.edu.cu.csds.icare.admin.screen.clinic.ClinicViewModel
-import eg.edu.cu.csds.icare.admin.screen.pharmacy.PharmacyViewModel
-import eg.edu.cu.csds.icare.appointment.AppointmentViewModel
-import eg.edu.cu.csds.icare.core.ui.MainViewModel
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
-import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
-import eg.edu.cu.csds.icare.home.HomeViewModel
-import eg.edu.cu.csds.icare.home.screen.HomeScreen
-import eg.edu.cu.csds.icare.home.screen.lab.LabsListScreen
-import eg.edu.cu.csds.icare.home.screen.pharmacy.PharmaciesListScreen
-import eg.edu.cu.csds.icare.home.screen.scan.ScanCentersListScreen
+import eg.edu.cu.csds.icare.admin.screen.doctor.SelectedDoctorViewModel
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
+import eg.edu.cu.csds.icare.home.screen.home.HomeScreen
+import eg.edu.cu.csds.icare.home.screen.imaging.ImagingCentersListScreen
+import eg.edu.cu.csds.icare.home.screen.lab.LabCenterListScreen
+import eg.edu.cu.csds.icare.home.screen.pharmacy.PharmacyListScreen
 
 fun NavGraphBuilder.homeRoute(
-    firebaseAuth: FirebaseAuth,
-    mediaHelper: MediaHelper,
-    mainViewModel: MainViewModel,
-    homeViewModel: HomeViewModel,
-    clinicViewModel: ClinicViewModel,
-    pharmacyViewModel: PharmacyViewModel,
-    centerViewModel: CenterViewModel,
-    appointmentViewModel: AppointmentViewModel,
-    onNavigationIconClicked: () -> Unit,
-    navigateToScreen: (Screen) -> Unit,
-    onError: suspend (Throwable?) -> Unit,
+    selectedDoctorViewModel: SelectedDoctorViewModel,
+    navigateUp: () -> Unit,
+    navigateToRoute: (Route) -> Unit,
 ) {
-    composable<Screen.Home> {
+    composable<Route.Home> {
+        LaunchedEffect(true) {
+            selectedDoctorViewModel.onSelectDoctor(null)
+        }
+
         HomeScreen(
-            mediaHelper = mediaHelper,
-            mainViewModel = mainViewModel,
-            homeViewModel = homeViewModel,
-            appointmentViewModel = appointmentViewModel,
-            clinicViewModel = clinicViewModel,
-            navigateToScreen = {
-                when (it) {
-                    Screen.ScanCenters -> centerViewModel.listImagingCenters()
-                    Screen.DoctorList -> clinicViewModel.listDoctors()
-                    Screen.LabCenters -> centerViewModel.listLabCenters()
-                    Screen.Pharmacies -> pharmacyViewModel.listPharmacies()
-                    else -> {}
-                }
-                navigateToScreen(it)
+            navigateToRoute = { navigateToRoute(it) },
+            navigateToDoctorDetails = {
+                selectedDoctorViewModel.onSelectDoctor(it)
+                navigateToRoute(Route.Booking)
             },
-            onDoctorClicked = {
-                clinicViewModel.selectedDoctorState.value = it
-                clinicViewModel.getDoctorSchedule(it.id)
-                navigateToScreen(Screen.DoctorProfile)
-            },
-            onError = { onError(it) },
         )
     }
 
-    composable<Screen.LabCenters> {
-        LabsListScreen(
-            centerViewModel = centerViewModel,
-            onNavigationIconClicked = { onNavigationIconClicked() },
-            onSearch = { centerViewModel.searchLabCenters() },
-            onClear = { centerViewModel.listLabCenters() },
-            onError = { onError(it) },
+    composable<Route.LabCenters> {
+        LabCenterListScreen(
+            onNavigationIconClicked = { navigateUp() },
         )
     }
 
-    composable<Screen.ScanCenters> {
-        ScanCentersListScreen(
-            centerViewModel = centerViewModel,
-            onNavigationIconClicked = { onNavigationIconClicked() },
-            onSearch = { centerViewModel.searchImagingCenters() },
-            onClear = { centerViewModel.listImagingCenters() },
-            onError = { onError(it) },
+    composable<Route.ScanCenters> {
+        ImagingCentersListScreen(
+            onNavigationIconClicked = { navigateUp() },
         )
     }
 
-    composable<Screen.Pharmacies> {
-        PharmaciesListScreen(
-            pharmacyViewModel = pharmacyViewModel,
-            onNavigationIconClicked = { onNavigationIconClicked() },
-            onSearch = { pharmacyViewModel.searchPharmacies() },
-            onClear = { pharmacyViewModel.listPharmacies() },
-            onError = { onError(it) },
+    composable<Route.Pharmacies> {
+        PharmacyListScreen(
+            onNavigationIconClicked = { navigateUp() },
         )
     }
 }

@@ -22,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.admin.R
-import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow300
@@ -47,27 +45,13 @@ import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ClinicDetailsContent(
-    name: String,
-    type: String,
-    phone: String,
-    address: String,
-    isOpen: Boolean,
-    actionResource: Resource<Nothing?>,
-    showLoading: (Boolean) -> Unit,
-    onNameChanged: (String) -> Unit,
-    onTypeChanged: (String) -> Unit,
-    onPhoneChanged: (String) -> Unit,
-    onAddressChanged: (String) -> Unit,
-    onIsOpenChanged: (Boolean) -> Unit,
-    onProceedButtonClicked: () -> Unit,
-    onSuccess: () -> Unit,
-    onError: suspend (Throwable?) -> Unit,
     modifier: Modifier = Modifier,
+    state: ClinicState,
+    onEvent: (ClinicEvent) -> Unit,
 ) {
     ConstraintLayout(
         modifier =
@@ -97,11 +81,11 @@ internal fun ClinicDetailsContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 TextField(
-                    value = name,
-                    onValueChange = { onNameChanged(it) },
+                    value = state.name,
+                    onValueChange = { onEvent(ClinicEvent.UpdateName(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.name),
+                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -130,11 +114,11 @@ internal fun ClinicDetailsContent(
                 )
 
                 TextField(
-                    value = type,
-                    onValueChange = { onTypeChanged(it) },
+                    value = state.type,
+                    onValueChange = { onEvent(ClinicEvent.UpdateType(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.type),
+                            text = stringResource(R.string.features_admin_type),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -162,11 +146,11 @@ internal fun ClinicDetailsContent(
                 )
 
                 TextField(
-                    value = phone,
-                    onValueChange = { if (it.length < 14) onPhoneChanged(it) },
+                    value = state.phone,
+                    onValueChange = { if (it.length < 14) onEvent(ClinicEvent.UpdatePhone(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.phone_number),
+                            text = stringResource(R.string.features_admin_phone_number),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -194,11 +178,11 @@ internal fun ClinicDetailsContent(
                 )
 
                 TextField(
-                    value = address,
-                    onValueChange = { onAddressChanged(it) },
+                    value = state.address,
+                    onValueChange = { onEvent(ClinicEvent.UpdateAddress(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.address),
+                            text = stringResource(R.string.features_admin_address),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -238,8 +222,8 @@ internal fun ClinicDetailsContent(
                         ),
                 ) {
                     Switch(
-                        checked = isOpen,
-                        onCheckedChange = { onIsOpenChanged(it) },
+                        checked = state.isOpen,
+                        onCheckedChange = { onEvent(ClinicEvent.UpdateIsOpen(it)) },
                         colors =
                             SwitchDefaults.colors(
                                 checkedThumbColor = barBackgroundColor,
@@ -252,7 +236,14 @@ internal fun ClinicDetailsContent(
                     )
 
                     Text(
-                        text = if (isOpen) stringResource(CoreR.string.open) else stringResource(CoreR.string.closed),
+                        text =
+                            if (state.isOpen) {
+                                stringResource(
+                                    eg.edu.cu.csds.icare.core.ui.R.string.core_ui_open,
+                                )
+                            } else {
+                                stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_closed)
+                            },
                         fontFamily = helveticaFamily,
                         color = textColor,
                     )
@@ -264,28 +255,11 @@ internal fun ClinicDetailsContent(
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(CoreR.string.proceed),
+                    text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
                     color = buttonBackgroundColor,
-                    onClick = { onProceedButtonClicked() },
+                    onClick = { onEvent(ClinicEvent.Proceed) },
                 )
             }
-        }
-
-        when (actionResource) {
-            is Resource.Unspecified -> LaunchedEffect(key1 = actionResource) { showLoading(false) }
-            is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
-
-            is Resource.Success ->
-                LaunchedEffect(key1 = actionResource) {
-                    showLoading(false)
-                    onSuccess()
-                }
-
-            is Resource.Error ->
-                LaunchedEffect(key1 = actionResource) {
-                    showLoading(false)
-                    onError(actionResource.error)
-                }
         }
     }
 }
@@ -298,21 +272,8 @@ internal fun ClinicDetailsContent(
 internal fun ClinicDetailsContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         ClinicDetailsContent(
-            name = "",
-            type = "",
-            phone = "",
-            address = "",
-            isOpen = false,
-            actionResource = Resource.Success(null),
-            showLoading = {},
-            onNameChanged = {},
-            onTypeChanged = {},
-            onPhoneChanged = {},
-            onAddressChanged = {},
-            onIsOpenChanged = {},
-            onProceedButtonClicked = {},
-            onSuccess = {},
-            onError = {},
+            state = ClinicState(),
+            onEvent = {},
         )
     }
 }

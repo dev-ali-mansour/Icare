@@ -23,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,7 +33,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.admin.R
-import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.ui.common.CenterTypeItem
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
@@ -47,28 +45,13 @@ import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CenterDetailsContent(
-    name: String,
-    typesExpanded: Boolean,
-    type: Short,
-    phone: String,
-    address: String,
-    actionResource: Resource<Nothing?>,
-    showLoading: (Boolean) -> Unit,
-    onNameChanged: (String) -> Unit,
-    onTypesExpandedChange: (Boolean) -> Unit,
-    onTypesDismissRequest: () -> Unit,
-    onTypeClicked: (Short) -> Unit,
-    onPhoneChanged: (String) -> Unit,
-    onAddressChanged: (String) -> Unit,
-    onProceedButtonClicked: () -> Unit,
-    onSuccess: () -> Unit,
-    onError: suspend (Throwable?) -> Unit,
+    uiState: CenterState,
     modifier: Modifier = Modifier,
+    onEvent: (CenterEvent) -> Unit,
 ) {
     val types = listOf(CenterTypeItem.ImagingCenter, CenterTypeItem.LabCenter)
 
@@ -100,11 +83,11 @@ internal fun CenterDetailsContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 TextField(
-                    value = name,
-                    onValueChange = { onNameChanged(it) },
+                    value = uiState.name,
+                    onValueChange = { onEvent(CenterEvent.UpdateName(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.name),
+                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -134,9 +117,9 @@ internal fun CenterDetailsContent(
 
                 ExposedDropdownMenuBox(
                     modifier = Modifier.fillMaxWidth(fraction = 0.8f),
-                    expanded = typesExpanded,
+                    expanded = uiState.isTypesExpanded,
                     onExpandedChange = {
-                        onTypesExpandedChange(it)
+                        onEvent(CenterEvent.UpdateTypesExpanded(it))
                     },
                 ) {
                     OutlinedTextField(
@@ -146,19 +129,19 @@ internal fun CenterDetailsContent(
                                 .menuAnchor(MenuAnchorType.PrimaryNotEditable),
                         readOnly = true,
                         value =
-                            types.firstOrNull { it.code == type }?.let {
+                            types.firstOrNull { it.code == uiState.type }?.let {
                                 stringResource(it.textResId)
                             } ?: "",
                         onValueChange = { },
                         label = {
                             Text(
-                                text = stringResource(R.string.type),
+                                text = stringResource(R.string.features_admin_type),
                                 color = dropDownTextColor,
                             )
                         },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(
-                                expanded = typesExpanded,
+                                expanded = uiState.isTypesExpanded,
                             )
                         },
                         colors =
@@ -175,9 +158,9 @@ internal fun CenterDetailsContent(
                     )
 
                     ExposedDropdownMenu(
-                        expanded = typesExpanded,
+                        expanded = uiState.isTypesExpanded,
                         onDismissRequest = {
-                            onTypesDismissRequest()
+                            onEvent(CenterEvent.UpdateTypesExpanded(false))
                         },
                     ) {
                         types.forEach {
@@ -188,18 +171,21 @@ internal fun CenterDetailsContent(
                                         color = dropDownTextColor,
                                     )
                                 },
-                                onClick = { onTypeClicked(it.code) },
+                                onClick = {
+                                    onEvent(CenterEvent.UpdateType(it.code))
+                                    onEvent(CenterEvent.UpdateTypesExpanded(false))
+                                },
                             )
                         }
                     }
                 }
 
                 TextField(
-                    value = phone,
-                    onValueChange = { if (it.length < 14) onPhoneChanged(it) },
+                    value = uiState.phone,
+                    onValueChange = { if (it.length < 14) onEvent(CenterEvent.UpdatePhone(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.phone_number),
+                            text = stringResource(R.string.features_admin_phone_number),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -227,11 +213,11 @@ internal fun CenterDetailsContent(
                 )
 
                 TextField(
-                    value = address,
-                    onValueChange = { onAddressChanged(it) },
+                    value = uiState.address,
+                    onValueChange = { onEvent(CenterEvent.UpdateAddress(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.address),
+                            text = stringResource(R.string.features_admin_address),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -264,28 +250,11 @@ internal fun CenterDetailsContent(
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(CoreR.string.proceed),
+                    text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
                     color = buttonBackgroundColor,
-                    onClick = { onProceedButtonClicked() },
+                    onClick = { onEvent(CenterEvent.Proceed) },
                 )
             }
-        }
-
-        when (actionResource) {
-            is Resource.Unspecified -> LaunchedEffect(key1 = actionResource) { showLoading(false) }
-            is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
-
-            is Resource.Success ->
-                LaunchedEffect(key1 = Unit) {
-                    showLoading(false)
-                    onSuccess()
-                }
-
-            is Resource.Error ->
-                LaunchedEffect(key1 = actionResource) {
-                    showLoading(false)
-                    onError(actionResource.error)
-                }
         }
     }
 }
@@ -298,22 +267,8 @@ internal fun CenterDetailsContent(
 internal fun CenterDetailsContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         CenterDetailsContent(
-            name = "",
-            typesExpanded = false,
-            type = 1,
-            phone = "",
-            address = "",
-            actionResource = Resource.Success(null),
-            showLoading = {},
-            onNameChanged = {},
-            onTypesExpandedChange = {},
-            onTypesDismissRequest = {},
-            onTypeClicked = {},
-            onPhoneChanged = {},
-            onAddressChanged = {},
-            onProceedButtonClicked = {},
-            onSuccess = {},
-            onError = {},
+            uiState = CenterState(),
+            onEvent = {},
         )
     }
 }

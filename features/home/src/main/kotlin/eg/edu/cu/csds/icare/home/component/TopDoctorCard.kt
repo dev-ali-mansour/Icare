@@ -30,7 +30,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.Yellow300
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.home.R
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 fun TopDoctorCard(
@@ -50,13 +49,13 @@ fun TopDoctorCard(
                     .data(doctor.profilePicture)
                     .crossfade(true)
                     .build(),
-            placeholder = painterResource(CoreR.drawable.placeholder),
+            placeholder = painterResource(eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_placeholder),
             contentDescription = null,
             modifier =
                 Modifier
                     .height(PROMOTION_ITEM_HEIGHT)
                     .fillMaxWidth(),
-            error = painterResource(R.drawable.doctor_placeholder),
+            error = painterResource(R.drawable.features_home_doctor_placeholder),
             contentScale = ContentScale.FillBounds,
         )
         Text(

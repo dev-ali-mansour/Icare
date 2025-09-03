@@ -11,31 +11,40 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.google.firebase.auth.FirebaseAuth
-import eg.edu.cu.csds.icare.core.ui.MainViewModel
 import eg.edu.cu.csds.icare.core.ui.common.BottomNavItem
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
 import eg.edu.cu.csds.icare.core.ui.view.BottomBarNavigation
+import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.navigation.SetupNavGraph
-import org.koin.java.KoinJavaComponent.inject
+import eg.edu.cu.csds.icare.splash.SplashEffect
+import eg.edu.cu.csds.icare.splash.SplashEvent
+import eg.edu.cu.csds.icare.splash.SplashViewModel
+import kotlinx.coroutines.delay
+import timber.log.Timber
+import kotlin.system.exitProcess
 
 @Composable
-fun MainScreen(
-    mainViewModel: MainViewModel,
-    mediaHelper: MediaHelper,
-) {
-    val layoutDirection = LocalLayoutDirection.current
+fun MainScreen(splashViewModel: SplashViewModel) {
     val navController = rememberNavController()
-    val firebaseAuth: FirebaseAuth by inject(FirebaseAuth::class.java)
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
+    var isBottomBarVisible by remember { mutableStateOf(false) }
+    val layoutDirection = LocalLayoutDirection.current
+    val context = LocalContext.current
+    rememberCoroutineScope()
+    var alertMessage by remember { mutableStateOf("") }
+    var showAlert by remember { mutableStateOf(false) }
+
     val bottomNavItems =
         listOf(
             BottomNavItem.Home,
@@ -43,13 +52,52 @@ fun MainScreen(
             BottomNavItem.Profile,
             BottomNavItem.Settings,
         )
-    val isBottomBarEnabled =
-        bottomNavItems.any { item ->
-            currentDestination?.hasRoute(item.screen::class) == true
+
+    LaunchedEffect(navController) {
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            isBottomBarVisible = destination.route != Route.Splash::class.qualifiedName &&
+                bottomNavItems.any { it.route::class.qualifiedName == destination.route }
         }
+    }
+
+    LaunchedUiEffectHandler(
+        splashViewModel.effect,
+        onConsumeEffect = { splashViewModel.processEvent(SplashEvent.ConsumeEffect) },
+        onEffect = { effect ->
+            runCatching {
+                val currentStartDestinationId = navController.graph.startDestinationId
+                val popUpToRoute = navController.graph.findNode(currentStartDestinationId)?.route
+
+                val navigateAndPopUp: (Route) -> Unit = { screen ->
+                    navController.navigate(screen) {
+                        if (popUpToRoute != null) {
+                            popUpTo(popUpToRoute) { inclusive = true }
+                        } else {
+                            popUpTo(navController.graph.id) { inclusive = true }
+                        }
+                    }
+                }
+
+                when (effect) {
+                    is SplashEffect.NavigateToRoute -> navigateAndPopUp(effect.route)
+
+                    is SplashEffect.ShowError -> {
+                        alertMessage = effect.message.asString(context)
+                        showAlert = true
+                        delay(timeMillis = 5000)
+                        showAlert = false
+                        exitProcess(0)
+                    }
+                }
+            }.onFailure {
+                Timber.e(it, "Error during navigation in MainScreen")
+            }
+        },
+    )
+
     Scaffold(
         bottomBar = {
-            if (isBottomBarEnabled) {
+            if (isBottomBarVisible) {
                 BottomBarNavigation(
                     navController = navController,
                     items = bottomNavItems,
@@ -69,12 +117,9 @@ fun MainScreen(
                         bottom = paddingValues.calculateBottomPadding(),
                     ),
         ) {
-            SetupNavGraph(
-                firebaseAuth = firebaseAuth,
-                mediaHelper = mediaHelper,
-                navController = navController,
-                mainViewModel = mainViewModel,
-            )
+            SetupNavGraph(navController = navController)
+
+            if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
         }
     }
 }

@@ -6,12 +6,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -36,30 +30,19 @@ fun DoubleTextField(
     modifier: Modifier = Modifier.fillMaxWidth(fraction = 0.8f),
     imeAction: ImeAction = ImeAction.Next,
 ) {
-    var text by remember { mutableStateOf(value.formatForDisplay()) }
-    var lastValidValue by remember(value) { mutableDoubleStateOf(value) }
-
-    // Sync with external value changes
-    LaunchedEffect(value) {
-        if (value != lastValidValue) {
-            text = value.formatForDisplay()
-            lastValidValue = value
-        }
-    }
+    val text = value.formatForDisplay()
 
     TextField(
         value = text,
         onValueChange = { newText ->
-            text = newText
             when {
                 newText.isEmpty() -> {
                     onValueChanged(0.0)
-                    lastValidValue = 0.0
                 }
+
                 newText.isValidDoubleInput() -> {
                     val doubleValue = newText.toDoubleOrNull() ?: 0.0
                     onValueChanged(doubleValue)
-                    lastValidValue = doubleValue
                 }
             }
         },
