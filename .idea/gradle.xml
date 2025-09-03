@@ -29,15 +29,15 @@
             <option value="$PROJECT_DIR$/core/data" />
             <option value="$PROJECT_DIR$/core/domain" />
             <option value="$PROJECT_DIR$/core/ui" />
-            <option value="$PROJECT_DIR$/features" />
-            <option value="$PROJECT_DIR$/features/admin" />
-            <option value="$PROJECT_DIR$/features/appointments" />
-            <option value="$PROJECT_DIR$/features/auth" />
-            <option value="$PROJECT_DIR$/features/consultations" />
-            <option value="$PROJECT_DIR$/features/home" />
-            <option value="$PROJECT_DIR$/features/notifications" />
-            <option value="$PROJECT_DIR$/features/on_boarding" />
-            <option value="$PROJECT_DIR$/features/settings" />
+            <option value="$PROJECT_DIR$/feature" />
+            <option value="$PROJECT_DIR$/feature/admin" />
+            <option value="$PROJECT_DIR$/feature/appointments" />
+            <option value="$PROJECT_DIR$/feature/auth" />
+            <option value="$PROJECT_DIR$/feature/consultations" />
+            <option value="$PROJECT_DIR$/feature/home" />
+            <option value="$PROJECT_DIR$/feature/notifications" />
+            <option value="$PROJECT_DIR$/feature/on_boarding" />
+            <option value="$PROJECT_DIR$/feature/settings" />
           </set>
         </option>
       </GradleProjectSettings>
