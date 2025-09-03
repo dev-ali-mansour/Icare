@@ -1,51 +1,19 @@
 package eg.edu.cu.csds.icare.core.data.di.module
 
-import android.content.Context
-import androidx.room.Room
-import eg.edu.cu.csds.icare.core.data.BuildConfig
 import eg.edu.cu.csds.icare.core.data.local.db.AppDatabase
-import eg.edu.cu.csds.icare.core.data.local.db.DbPassPhrase
 import eg.edu.cu.csds.icare.core.data.local.db.dao.CenterDao
 import eg.edu.cu.csds.icare.core.data.local.db.dao.ClinicDao
 import eg.edu.cu.csds.icare.core.data.local.db.dao.DoctorDao
 import eg.edu.cu.csds.icare.core.data.local.db.dao.PharmacyDao
 import eg.edu.cu.csds.icare.core.data.local.db.dao.SettingsDao
 import eg.edu.cu.csds.icare.core.data.local.db.dao.UserDao
-import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 
 @Module
 @ComponentScan
-class RoomModule {
-    @Single
-    fun provideSupportFactory(passphrase: DbPassPhrase): SupportOpenHelperFactory = SupportOpenHelperFactory(passphrase.getPassphrase())
-
-    @Single
-    fun provideAppDatabase(
-        context: Context,
-        supportFactory: SupportOpenHelperFactory,
-    ): AppDatabase =
-        when {
-            BuildConfig.DEBUG ->
-                Room
-                    .databaseBuilder(
-                        context,
-                        AppDatabase::class.java,
-                        "ICare",
-                    ).build()
-
-            else ->
-                Room
-                    .databaseBuilder(
-                        context,
-                        AppDatabase::class.java,
-                        "ICare",
-                    ).openHelperFactory(supportFactory)
-                    .build()
-        }
-
+class DaoModule {
     @Single
     fun provideSettingsDao(db: AppDatabase): SettingsDao = db.settingsDao()
 
