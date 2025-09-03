@@ -50,11 +50,11 @@ android {
 }
 
 dependencies {
-    implementation(projects.features.onBoarding)
-    implementation(projects.features.auth)
-    implementation(projects.features.home)
-    implementation(projects.features.notifications)
-    implementation(projects.features.settings)
+    implementation(projects.feature.onBoarding)
+    implementation(projects.feature.auth)
+    implementation(projects.feature.home)
+    implementation(projects.feature.notifications)
+    implementation(projects.feature.settings)
 
     implementation(projects.core.domain)
     implementation(projects.core.data)

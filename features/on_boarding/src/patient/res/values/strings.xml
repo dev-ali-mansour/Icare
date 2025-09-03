@@ -1,8 +1,0 @@
-<resources>
-    <string name="features_on_boarding_first_page_title">Welcome to ICare</string>
-    <string name="features_on_boarding_first_page_description">Welcome! Your healthcare journey starts here.</string>
-    <string name="features_on_boarding_second_page_title">Easy Appointments</string>
-    <string name="features_on_boarding_second_page_description">Schedule appointments anytime, anywhere.</string>
-    <string name="features_on_boarding_third_page_title">Secure Health Records</string>
-    <string name="features_on_boarding_third_page_description">Access your health records securely and stay informed.</string>
-</resources>
