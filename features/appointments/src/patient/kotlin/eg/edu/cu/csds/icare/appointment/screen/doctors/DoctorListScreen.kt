@@ -55,7 +55,6 @@ import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import eg.edu.cu.csds.icare.core.ui.view.SearchTextField
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -203,7 +202,10 @@ private fun DoctorsListContent(
                             end.linkTo(parent.end, M_PADDING)
                             width = Dimension.fillToConstraints
                         },
-                placeholder = stringResource(CoreR.string.core_ui_search_by_doctor_name_or_speciality),
+                placeholder =
+                    stringResource(
+                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_search_by_doctor_name_or_speciality,
+                    ),
                 value = uiState.searchQuery,
                 focus = false,
                 onValueChange = { onEvent(DoctorListEvent.UpdateSearchQuery(it)) },

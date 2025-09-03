@@ -82,8 +82,8 @@ fun ClinicianView(
                         ImageRequest
                             .Builder(context)
                             .data(data = clinician.profilePicture)
-                            .placeholder(R.drawable.user_placeholder)
-                            .error(R.drawable.user_placeholder)
+                            .placeholder(R.drawable.core_ui_user_placeholder)
+                            .error(R.drawable.core_ui_user_placeholder)
                             .build(),
                     ),
                 contentDescription = null,

@@ -12,4 +12,5 @@
     <string name="features_appointments_error_no_doctor">There is no solected doctor for booking!</string>
     <string name="features_appointments_error_selected_slot">Invalid selected error!</string>
     <string name="features_appointments_error_no_appointment_selected">No appointment selected for reschedule!</string>
+    <string name="features_appointments_appointment_reschedule">Appointment Reschedule</string>
 </resources>

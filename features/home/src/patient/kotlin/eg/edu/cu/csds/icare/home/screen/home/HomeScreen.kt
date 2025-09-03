@@ -85,7 +85,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.statusColor
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
-import eg.edu.cu.csds.icare.home.util.statusList
 import eg.edu.cu.csds.icare.core.ui.view.ConfirmDialog
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.home.R
@@ -93,11 +92,11 @@ import eg.edu.cu.csds.icare.home.component.PromotionItem
 import eg.edu.cu.csds.icare.home.component.ServiceItem
 import eg.edu.cu.csds.icare.home.component.TopDoctorCard
 import eg.edu.cu.csds.icare.home.component.UserTitleView
+import eg.edu.cu.csds.icare.home.util.statusList
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import kotlin.system.exitProcess
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun HomeScreen(
@@ -372,7 +371,9 @@ private fun HomeContent(
                                             ?.let {
                                                 stringResource(it.textResId)
                                             }
-                                            ?: stringResource(CoreR.string.core_ui_undefined),
+                                            ?: stringResource(
+                                                eg.edu.cu.csds.icare.core.ui.R.string.core_ui_undefined,
+                                            ),
                                 )
 
                             Box(
@@ -386,11 +387,17 @@ private fun HomeContent(
                                 AsyncImage(
                                     model = nextAppointment.doctorImage,
                                     contentDescription = null,
-                                    placeholder = painterResource(CoreR.drawable.user_placeholder),
+                                    placeholder =
+                                        painterResource(
+                                            eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
+                                        ),
                                     modifier =
                                         Modifier
                                             .clip(RoundedCornerShape(M_PADDING)),
-                                    error = painterResource(CoreR.drawable.user_placeholder),
+                                    error =
+                                        painterResource(
+                                            eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
+                                        ),
                                     contentScale = ContentScale.Crop,
                                 )
                             }
@@ -554,7 +561,7 @@ private fun HomeContent(
         }
 
         Text(
-            text = stringResource(id = CoreR.string.core_ui_made_by),
+            text = stringResource(id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_made_by),
             modifier =
                 Modifier
                     .constrainAs(marquee) {

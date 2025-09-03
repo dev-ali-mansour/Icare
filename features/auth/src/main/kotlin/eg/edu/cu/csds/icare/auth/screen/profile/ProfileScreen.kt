@@ -71,7 +71,6 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import timber.log.Timber
 import kotlin.system.exitProcess
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun ProfileScreen(
@@ -311,7 +310,10 @@ private fun CurrentUserInfo(
                 if (user.linkedWithGoogle) {
                     Icon(
                         modifier = Modifier.size(MEDIUM_ICON_SIZE),
-                        painter = painterResource(CoreR.drawable.ic_social_google),
+                        painter =
+                            painterResource(
+                                eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_ic_social_google,
+                            ),
                         contentDescription = null,
                         tint = Color.Unspecified,
                     )

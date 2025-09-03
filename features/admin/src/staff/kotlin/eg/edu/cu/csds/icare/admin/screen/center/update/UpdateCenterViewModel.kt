@@ -78,7 +78,7 @@ class UpdateCenterViewModel(
                                     isLoading = false,
                                     effect =
                                         CenterEffect.ShowError(
-                                            message = StringResourceId(R.string.error_first_name),
+                                            message = StringResourceId(R.string.features_admin_error_first_name),
                                         ),
                                 )
                             }
@@ -90,7 +90,7 @@ class UpdateCenterViewModel(
                                     isLoading = false,
                                     effect =
                                         CenterEffect.ShowError(
-                                            message = StringResourceId(R.string.error_type),
+                                            message = StringResourceId(R.string.features_admin_error_type),
                                         ),
                                 )
                             }
@@ -102,7 +102,7 @@ class UpdateCenterViewModel(
                                     isLoading = false,
                                     effect =
                                         CenterEffect.ShowError(
-                                            message = StringResourceId(R.string.error_phone),
+                                            message = StringResourceId(R.string.features_admin_error_phone),
                                         ),
                                 )
                             }
@@ -113,7 +113,7 @@ class UpdateCenterViewModel(
                                     isLoading = false,
                                     effect =
                                         CenterEffect.ShowError(
-                                            message = StringResourceId(R.string.error_address),
+                                            message = StringResourceId(R.string.features_admin_error_address),
                                         ),
                                 )
                             }

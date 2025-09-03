@@ -45,7 +45,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,7 +86,7 @@ internal fun StaffDetailsContent(
                     onValueChange = { onEvent(StaffEvent.UpdateFirstName(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.first_name),
+                            text = stringResource(R.string.features_admin_first_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -120,7 +119,7 @@ internal fun StaffDetailsContent(
                     onValueChange = { onEvent(StaffEvent.UpdateLastName(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.last_name),
+                            text = stringResource(R.string.features_admin_last_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -165,7 +164,7 @@ internal fun StaffDetailsContent(
                         onValueChange = { },
                         label = {
                             Text(
-                                text = stringResource(R.string.center),
+                                text = stringResource(R.string.features_admin_center),
                                 color = dropDownTextColor,
                             )
                         },
@@ -215,7 +214,7 @@ internal fun StaffDetailsContent(
                     onValueChange = { onEvent(StaffEvent.UpdateEmail(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.email),
+                            text = stringResource(R.string.features_admin_email),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -247,7 +246,7 @@ internal fun StaffDetailsContent(
                     onValueChange = { if (it.length < 14) onEvent(StaffEvent.UpdatePhone(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.phone_number),
+                            text = stringResource(R.string.features_admin_phone_number),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -280,7 +279,7 @@ internal fun StaffDetailsContent(
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(CoreR.string.core_ui_proceed),
+                    text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
                     color = buttonBackgroundColor,
                     onClick = { onEvent(StaffEvent.Proceed) },
                 )

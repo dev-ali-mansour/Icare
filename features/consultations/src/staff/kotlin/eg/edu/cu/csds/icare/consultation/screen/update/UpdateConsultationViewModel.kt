@@ -66,24 +66,34 @@ class UpdateConsultationViewModel(
 
             is ConsultationEvent.UpdateDiagnosis ->
                 _uiState.update { it.copy(diagnosis = event.diagnosis) }
+
             is ConsultationEvent.UpdatePharmacyId ->
                 _uiState.update { it.copy(pharmacyId = event.pharmacyId) }
+
             is ConsultationEvent.UpdatePharmaciesExpanded ->
                 _uiState.update { it.copy(isPharmaciesExpanded = event.isExpanded) }
+
             is ConsultationEvent.UpdateMedications ->
                 _uiState.update { it.copy(medications = event.medications) }
+
             is ConsultationEvent.UpdateLabCenterId ->
                 _uiState.update { it.copy(labCenterId = event.labCenterId) }
+
             is ConsultationEvent.UpdateLabCentersExpanded ->
                 _uiState.update { it.copy(isLabCentersExpanded = event.isExpanded) }
+
             is ConsultationEvent.UpdateLabTests ->
                 _uiState.update { it.copy(labTests = event.labTests) }
+
             is ConsultationEvent.UpdateImagingCenterId ->
                 _uiState.update { it.copy(imagingCenterId = event.imagingCenterId) }
+
             is ConsultationEvent.UpdateImagingCentersExpanded ->
                 _uiState.update { it.copy(isImagingCentersExpanded = event.isExpanded) }
+
             is ConsultationEvent.UpdateImagingTests ->
                 _uiState.update { it.copy(imagingTests = event.imagingTests) }
+
             is ConsultationEvent.UpdateFollowUpdDate ->
                 _uiState.update { it.copy(followUpdDate = event.followUpdDate) }
 
@@ -116,7 +126,10 @@ class UpdateConsultationViewModel(
                                     isLoading = false,
                                     effect =
                                         ConsultationEffect.ShowError(
-                                            message = StringResourceId(R.string.diagnosis_error),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin__error_diagnosis,
+                                                ),
                                         ),
                                 )
                             }
@@ -132,7 +145,10 @@ class UpdateConsultationViewModel(
                                     isLoading = false,
                                     effect =
                                         ConsultationEffect.ShowError(
-                                            message = StringResourceId(R.string.error_pharmacy),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_pharmacy,
+                                                ),
                                         ),
                                 )
                             }
@@ -148,7 +164,10 @@ class UpdateConsultationViewModel(
                                     isLoading = false,
                                     effect =
                                         ConsultationEffect.ShowError(
-                                            message = StringResourceId(R.string.medications_error),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin__error_medications,
+                                                ),
                                         ),
                                 )
                             }
@@ -164,7 +183,10 @@ class UpdateConsultationViewModel(
                                     isLoading = false,
                                     effect =
                                         ConsultationEffect.ShowError(
-                                            message = StringResourceId(R.string.lab_center_error),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin__error_lab_center,
+                                                ),
                                         ),
                                 )
                             }
@@ -180,7 +202,10 @@ class UpdateConsultationViewModel(
                                     isLoading = false,
                                     effect =
                                         ConsultationEffect.ShowError(
-                                            message = StringResourceId(R.string.lab_tests_error),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin__error_lab_tests,
+                                                ),
                                         ),
                                 )
                             }
@@ -195,7 +220,10 @@ class UpdateConsultationViewModel(
                                     isLoading = false,
                                     effect =
                                         ConsultationEffect.ShowError(
-                                            message = StringResourceId(R.string.imaging_center_error),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin__error_imaging_center,
+                                                ),
                                         ),
                                 )
                             }
@@ -210,7 +238,10 @@ class UpdateConsultationViewModel(
                                     isLoading = false,
                                     effect =
                                         ConsultationEffect.ShowError(
-                                            message = StringResourceId(R.string.imaging_tests_error),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin__error_imaging_tests,
+                                                ),
                                         ),
                                 )
                             }
@@ -222,7 +253,10 @@ class UpdateConsultationViewModel(
                                     isLoading = false,
                                     effect =
                                         ConsultationEffect.ShowError(
-                                            message = StringResourceId(R.string.follow_up_date_error),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin__error_follow_up_date,
+                                                ),
                                         ),
                                 )
                             }

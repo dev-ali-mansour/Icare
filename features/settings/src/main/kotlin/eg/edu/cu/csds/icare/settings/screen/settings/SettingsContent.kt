@@ -45,7 +45,6 @@ import eg.edu.cu.csds.icare.core.ui.util.currentLanguage
 import eg.edu.cu.csds.icare.core.ui.util.getSettingsItems
 import eg.edu.cu.csds.icare.core.ui.view.RadioButtonGroupWithHeader
 import eg.edu.cu.csds.icare.settings.R
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun SettingsContent(
@@ -63,11 +62,17 @@ internal fun SettingsContent(
                 when (settingsItem.id) {
                     Constants.CHANGE_LANGUAGE_CODE ->
                         RadioButtonGroupWithHeader(
-                            stringResource(id = CoreR.string.core_ui_choose_app_lang),
+                            stringResource(
+                                id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_choose_app_lang,
+                            ),
                             radioOptions =
                                 listOf(
-                                    stringResource(id = CoreR.string.core_ui_radio_lang_english),
-                                    stringResource(id = CoreR.string.core_ui_radio_lang_arabic),
+                                    stringResource(
+                                        id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_radio_lang_english,
+                                    ),
+                                    stringResource(
+                                        id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_radio_lang_arabic,
+                                    ),
                                 ),
                             selected = selectedLanguage,
                         ) { languageCode ->
@@ -132,7 +137,7 @@ private fun SettingItemView(
                 ) {
                     Icon(
                         modifier = Modifier.size(45.dp),
-                        painter = painterResource(id = R.drawable.ic_arrow),
+                        painter = painterResource(id = R.drawable.features_settings_ic_arrow),
                         contentDescription = null,
                         tint = contentColor,
                     )

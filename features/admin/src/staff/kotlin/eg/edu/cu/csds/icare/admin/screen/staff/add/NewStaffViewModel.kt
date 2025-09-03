@@ -83,7 +83,10 @@ class NewStaffViewModel(
                                     isLoading = false,
                                     effect =
                                         StaffEffect.ShowError(
-                                            message = StringResourceId(R.string.error_first_name),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_first_name,
+                                                ),
                                         ),
                                 )
                             }
@@ -95,7 +98,10 @@ class NewStaffViewModel(
                                     isLoading = false,
                                     effect =
                                         StaffEffect.ShowError(
-                                            message = StringResourceId(R.string.error_last_name),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_last_name,
+                                                ),
                                         ),
                                 )
                             }
@@ -107,7 +113,7 @@ class NewStaffViewModel(
                                     isLoading = false,
                                     effect =
                                         StaffEffect.ShowError(
-                                            message = StringResourceId(R.string.error_center),
+                                            message = StringResourceId(R.string.features_admin_error_center),
                                         ),
                                 )
                             }
@@ -119,7 +125,10 @@ class NewStaffViewModel(
                                     isLoading = false,
                                     effect =
                                         StaffEffect.ShowError(
-                                            message = StringResourceId(R.string.error_invalid_email),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_invalid_email,
+                                                ),
                                         ),
                                 )
                             }
@@ -132,7 +141,7 @@ class NewStaffViewModel(
                                     isLoading = false,
                                     effect =
                                         StaffEffect.ShowError(
-                                            message = StringResourceId(R.string.error_phone),
+                                            message = StringResourceId(R.string.features_admin_error_phone),
                                         ),
                                 )
                             }

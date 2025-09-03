@@ -29,7 +29,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.PROMOTION_ITEM_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.home.R
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 fun PromotionItem(promotion: Promotion) {
@@ -49,7 +48,7 @@ fun PromotionItem(promotion: Promotion) {
                         .data(promotion.imageUrl)
                         .crossfade(true)
                         .build(),
-                placeholder = painterResource(CoreR.drawable.placeholder),
+                placeholder = painterResource(eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_placeholder),
                 contentDescription = null,
                 modifier =
                     Modifier.constrainAs(image) {

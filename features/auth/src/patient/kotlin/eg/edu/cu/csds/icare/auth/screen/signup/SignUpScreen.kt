@@ -86,7 +86,6 @@ import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun SignUpScreen(
@@ -160,8 +159,8 @@ private fun SignUpContent(
 ) {
     val genders =
         listOf(
-            GenderItem(code = 1, textResId = CoreR.string.core_ui_male),
-            GenderItem(code = 2, textResId = CoreR.string.core_ui_female),
+            GenderItem(code = 1, textResId = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_male),
+            GenderItem(code = 2, textResId = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_female),
         )
     val interactionSource = remember { MutableInteractionSource() }
     val scope = rememberCoroutineScope()
@@ -381,7 +380,7 @@ private fun SignUpContent(
                     readOnly = true,
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.core_ui_birth_date),
+                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_birth_date),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -415,7 +414,10 @@ private fun SignUpContent(
                     trailingIcon = {
                         Icon(
                             modifier = Modifier.clickable { openDatePicker() },
-                            painter = painterResource(id = CoreR.drawable.baseline_calendar_month_24),
+                            painter =
+                                painterResource(
+                                    id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_baseline_calendar_month_24,
+                                ),
                             contentDescription = "",
                         )
                     },
@@ -440,7 +442,7 @@ private fun SignUpContent(
                         onValueChange = { },
                         label = {
                             Text(
-                                text = stringResource(CoreR.string.core_ui_gender),
+                                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_gender),
                                 color = dropDownTextColor,
                             )
                         },
@@ -589,7 +591,7 @@ private fun SignUpContent(
                     },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.core_ui_weight),
+                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_weight),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -622,7 +624,10 @@ private fun SignUpContent(
                     onValueChange = { onEvent(SignUpIntent.UpdateChronicDiseases(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.core_ui_chronic_diseases),
+                            text =
+                                stringResource(
+                                    eg.edu.cu.csds.icare.core.ui.R.string.core_ui_chronic_diseases,
+                                ),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -663,7 +668,10 @@ private fun SignUpContent(
                     onValueChange = { onEvent(SignUpIntent.UpdateCurrentMedications(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.core_ui_current_medications),
+                            text =
+                                stringResource(
+                                    eg.edu.cu.csds.icare.core.ui.R.string.core_ui_current_medications,
+                                ),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -704,7 +712,7 @@ private fun SignUpContent(
                     onValueChange = { onEvent(SignUpIntent.UpdateAllergies(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.core_ui_allergies),
+                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_allergies),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -741,7 +749,10 @@ private fun SignUpContent(
                     onValueChange = { onEvent(SignUpIntent.UpdatePastSurgeries(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.core_ui_past_surgeries),
+                            text =
+                                stringResource(
+                                    eg.edu.cu.csds.icare.core.ui.R.string.core_ui_past_surgeries,
+                                ),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )

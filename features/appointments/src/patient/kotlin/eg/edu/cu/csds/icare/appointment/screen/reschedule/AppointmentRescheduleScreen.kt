@@ -54,7 +54,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import eg.edu.cu.csds.icare.admin.R
+import eg.edu.cu.csds.icare.appointment.R
 import eg.edu.cu.csds.icare.appointment.screen.TimeSlotSelector
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
@@ -80,7 +80,6 @@ import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -119,7 +118,11 @@ internal fun AppointmentRescheduleScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.appointment_reschedule)) },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.features_appointments_appointment_reschedule),
+                    )
+                },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,
@@ -263,18 +266,22 @@ private fun AppointmentRescheduleContent(
                                         ImageRequest
                                             .Builder(context)
                                             .data(data = appointment.doctorImage)
-                                            .placeholder(CoreR.drawable.user_placeholder)
-                                            .error(CoreR.drawable.user_placeholder)
-                                            .build(),
+                                            .placeholder(
+                                                eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
+                                            ).error(
+                                                eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
+                                            ).build(),
                                     ),
                                 contentDescription = null,
                                 contentScale = ContentScale.Fit,
                             )
 
                             Text(
-                                text = "${stringResource(
-                                    CoreR.string.core_ui_name,
-                                )}: ${appointment.doctorName}",
+                                text = "${
+                                    stringResource(
+                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_name,
+                                    )
+                                }: ${appointment.doctorName}",
                                 modifier =
                                     Modifier.constrainAs(name) {
                                         top.linkTo(image.bottom, margin = S_PADDING)
@@ -292,7 +299,7 @@ private fun AppointmentRescheduleContent(
                             Text(
                                 text = "${
                                     stringResource(
-                                        CoreR.string.core_ui_speciality,
+                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_speciality,
                                     )
                                 }: ${appointment.doctorSpecialty}",
                                 modifier =
@@ -311,11 +318,11 @@ private fun AppointmentRescheduleContent(
                             Text(
                                 text = "${
                                     stringResource(
-                                        CoreR.string.core_ui_appointment_price,
+                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_appointment_price,
                                     )
                                 }: ${schedule.price} ${
                                     stringResource(
-                                        CoreR.string.core_ui_egp,
+                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_egp,
                                     )
                                 }",
                                 modifier =
@@ -334,7 +341,7 @@ private fun AppointmentRescheduleContent(
                             Text(
                                 text = "${
                                     stringResource(
-                                        CoreR.string.core_ui_total_appointments,
+                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_total_appointments,
                                     )
                                 }: ${schedule.totalPatients}",
                                 modifier =
@@ -359,7 +366,11 @@ private fun AppointmentRescheduleContent(
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Text(
-                                    text = "${stringResource(CoreR.string.core_ui_rating)}: ",
+                                    text = "${
+                                        stringResource(
+                                            eg.edu.cu.csds.icare.core.ui.R.string.core_ui_rating,
+                                        )
+                                    }: ",
                                     fontWeight = FontWeight.Bold,
                                     fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                     textAlign = TextAlign.Start,
@@ -413,7 +424,7 @@ private fun AppointmentRescheduleContent(
                             modifier =
                                 Modifier
                                     .fillMaxWidth(fraction = 0.6f),
-                            text = stringResource(CoreR.string.core_ui_reschedule),
+                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_reschedule),
                             color = buttonBackgroundColor,
                             onClick = {
                                 onEvent(RescheduleEvent.Proceed)

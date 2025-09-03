@@ -65,7 +65,7 @@ class NewPharmacyViewModel(
                                     isLoading = false,
                                     effect =
                                         PharmacyEffect.ShowError(
-                                            message = StringResourceId(R.string.name_error),
+                                            message = StringResourceId(R.string.features_admin_name_error),
                                         ),
                                 )
                             }
@@ -77,7 +77,7 @@ class NewPharmacyViewModel(
                                     isLoading = false,
                                     effect =
                                         PharmacyEffect.ShowError(
-                                            message = StringResourceId(R.string.error_phone),
+                                            message = StringResourceId(R.string.features_admin_error_phone),
                                         ),
                                 )
                             }
@@ -88,7 +88,7 @@ class NewPharmacyViewModel(
                                     isLoading = false,
                                     effect =
                                         PharmacyEffect.ShowError(
-                                            message = StringResourceId(R.string.error_address),
+                                            message = StringResourceId(R.string.features_admin_error_address),
                                         ),
                                 )
                             }

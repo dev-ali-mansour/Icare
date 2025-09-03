@@ -32,7 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import eg.edu.cu.csds.icare.admin.R
+import eg.edu.cu.csds.icare.consultation.R
 import eg.edu.cu.csds.icare.consultation.screen.ConsultationDetailsContent
 import eg.edu.cu.csds.icare.consultation.screen.ConsultationEffect
 import eg.edu.cu.csds.icare.consultation.screen.ConsultationEvent
@@ -87,7 +87,11 @@ internal fun UpdateConsultationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.edit_consultation)) },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.features_consultations_update_consultation),
+                    )
+                },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,

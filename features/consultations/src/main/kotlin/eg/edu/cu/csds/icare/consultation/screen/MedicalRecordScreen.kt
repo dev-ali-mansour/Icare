@@ -76,7 +76,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.trustBlue
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -113,7 +112,14 @@ internal fun MedicalRecordScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = CoreR.string.core_ui_medical_record)) },
+                title = {
+                    Text(
+                        text =
+                            stringResource(
+                                id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_medical_record,
+                            ),
+                    )
+                },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,
@@ -216,10 +222,10 @@ private fun MedicalRecordContent(
                 record.copy(
                     genderValue =
                         if (record.gender == 'M') {
-                            stringResource(CoreR.string.core_ui_male)
+                            stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_male)
                         } else {
                             stringResource(
-                                CoreR.string.core_ui_female,
+                                eg.edu.cu.csds.icare.core.ui.R.string.core_ui_female,
                             )
                         },
                 )
@@ -263,8 +269,9 @@ private fun MedicalRecordContent(
                                 ImageRequest
                                     .Builder(context)
                                     .data(data = medicalRecord.patientImage)
-                                    .placeholder(CoreR.drawable.user_placeholder)
-                                    .error(CoreR.drawable.user_placeholder)
+                                    .placeholder(
+                                        eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
+                                    ).error(eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder)
                                     .build(),
                             ),
                         contentDescription = null,
@@ -272,7 +279,11 @@ private fun MedicalRecordContent(
                     )
 
                     Text(
-                        text = "${stringResource(CoreR.string.core_ui_name)}: ${medicalRecord.patientName}",
+                        text = "${
+                            stringResource(
+                                eg.edu.cu.csds.icare.core.ui.R.string.core_ui_name,
+                            )
+                        }: ${medicalRecord.patientName}",
                         modifier =
                             Modifier.constrainAs(name) {
                                 top.linkTo(image.bottom, margin = S_PADDING)
@@ -288,7 +299,11 @@ private fun MedicalRecordContent(
                     )
 
                     Text(
-                        text = "${stringResource(CoreR.string.core_ui_gender)}: ${medicalRecord.genderValue}",
+                        text = "${
+                            stringResource(
+                                eg.edu.cu.csds.icare.core.ui.R.string.core_ui_gender,
+                            )
+                        }: ${medicalRecord.genderValue}",
                         modifier =
                             Modifier.constrainAs(gender) {
                                 top.linkTo(name.bottom)
@@ -303,9 +318,11 @@ private fun MedicalRecordContent(
                     )
 
                     Text(
-                        text = "${stringResource(
-                            CoreR.string.core_ui_chronic_diseases,
-                        )}: ${medicalRecord.chronicDiseases}",
+                        text = "${
+                            stringResource(
+                                eg.edu.cu.csds.icare.core.ui.R.string.core_ui_chronic_diseases,
+                            )
+                        }: ${medicalRecord.chronicDiseases}",
                         modifier =
                             Modifier.constrainAs(diseases) {
                                 top.linkTo(gender.bottom)
@@ -320,9 +337,11 @@ private fun MedicalRecordContent(
                     )
 
                     Text(
-                        text = "${stringResource(
-                            CoreR.string.core_ui_current_medications,
-                        )}: ${medicalRecord.currentMedications}",
+                        text = "${
+                            stringResource(
+                                eg.edu.cu.csds.icare.core.ui.R.string.core_ui_current_medications,
+                            )
+                        }: ${medicalRecord.currentMedications}",
                         modifier =
                             Modifier.constrainAs(medications) {
                                 top.linkTo(diseases.bottom)
@@ -337,9 +356,11 @@ private fun MedicalRecordContent(
                     )
 
                     Text(
-                        text = "${stringResource(
-                            CoreR.string.core_ui_allergies,
-                        )}: ${medicalRecord.allergies}",
+                        text = "${
+                            stringResource(
+                                eg.edu.cu.csds.icare.core.ui.R.string.core_ui_allergies,
+                            )
+                        }: ${medicalRecord.allergies}",
                         modifier =
                             Modifier.constrainAs(allergies) {
                                 top.linkTo(medications.bottom)
@@ -354,9 +375,11 @@ private fun MedicalRecordContent(
                     )
 
                     Text(
-                        text = "${stringResource(
-                            CoreR.string.core_ui_past_surgeries,
-                        )}: ${medicalRecord.pastSurgeries}",
+                        text = "${
+                            stringResource(
+                                eg.edu.cu.csds.icare.core.ui.R.string.core_ui_past_surgeries,
+                            )
+                        }: ${medicalRecord.pastSurgeries}",
                         modifier =
                             Modifier.constrainAs(surgeries) {
                                 top.linkTo(allergies.bottom)
@@ -373,9 +396,13 @@ private fun MedicalRecordContent(
                     Text(
                         text = "${
                             stringResource(
-                                CoreR.string.core_ui_weight,
+                                eg.edu.cu.csds.icare.core.ui.R.string.core_ui_weight,
                             )
-                        }: ${medicalRecord.weight} ${stringResource(CoreR.string.core_ui_kgm)}",
+                        }: ${medicalRecord.weight} ${
+                            stringResource(
+                                eg.edu.cu.csds.icare.core.ui.R.string.core_ui_kgm,
+                            )
+                        }",
                         modifier =
                             Modifier.constrainAs(weight) {
                                 top.linkTo(surgeries.bottom)
@@ -448,8 +475,8 @@ private fun ConsultationItem(
                     ImageRequest
                         .Builder(context)
                         .data(data = consultation.appointment.doctorImage)
-                        .placeholder(CoreR.drawable.user_placeholder)
-                        .error(CoreR.drawable.user_placeholder)
+                        .placeholder(eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder)
+                        .error(eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder)
                         .build(),
                 ),
             contentDescription = null,

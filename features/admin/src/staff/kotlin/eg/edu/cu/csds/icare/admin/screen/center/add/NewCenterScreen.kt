@@ -80,7 +80,7 @@ internal fun NewCenterScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.new_center)) },
+                title = { Text(text = stringResource(id = R.string.features_admin_new_center)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,

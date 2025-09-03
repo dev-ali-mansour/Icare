@@ -11,25 +11,25 @@ sealed class BottomNavItem(
     var route: Route,
 ) {
     data object Home : BottomNavItem(
-        R.drawable.ic_home,
+        R.drawable.core_ui_ic_home,
         R.string.core_ui_nav_home,
         Route.Home,
     )
 
     data object Notifications : BottomNavItem(
-        R.drawable.ic_notifications,
+        R.drawable.core_ui_ic_notifications,
         R.string.core_ui_nav_notifications,
         Route.Notifications,
     )
 
     data object Profile : BottomNavItem(
-        R.drawable.ic_profile,
+        R.drawable.core_ui_ic_profile,
         R.string.core_ui_nav_profile,
         Route.Profile,
     )
 
     data object Settings : BottomNavItem(
-        R.drawable.ic_nav_settings,
+        R.drawable.core_ui_ic_nav_settings,
         R.string.core_ui_nav_settings,
         Route.Settings,
     )

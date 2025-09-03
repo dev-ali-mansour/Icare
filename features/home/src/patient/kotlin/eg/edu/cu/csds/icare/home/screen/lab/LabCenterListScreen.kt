@@ -55,7 +55,6 @@ import eg.edu.cu.csds.icare.core.ui.view.SearchTextField
 import eg.edu.cu.csds.icare.home.R
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,7 +88,11 @@ internal fun LabCenterListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(CoreR.string.core_ui_lab_centers)) },
+                title = {
+                    Text(
+                        text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_lab_centers),
+                    )
+                },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,

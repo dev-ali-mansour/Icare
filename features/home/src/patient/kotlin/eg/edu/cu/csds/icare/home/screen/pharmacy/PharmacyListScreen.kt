@@ -55,7 +55,6 @@ import eg.edu.cu.csds.icare.core.ui.view.SearchTextField
 import eg.edu.cu.csds.icare.home.R
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,7 +88,11 @@ fun PharmacyListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(CoreR.string.core_ui_pharmacies)) },
+                title = {
+                    Text(
+                        text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_pharmacies),
+                    )
+                },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,
@@ -198,7 +201,10 @@ private fun PharmacyListContent(
                             end.linkTo(parent.end, M_PADDING)
                             width = Dimension.fillToConstraints
                         },
-                placeholder = stringResource(CoreR.string.core_ui_search_for_pharmacy),
+                placeholder =
+                    stringResource(
+                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_search_for_pharmacy,
+                    ),
                 value = uiState.searchQuery,
                 focus = false,
                 onValueChange = { onEvent(PharmacyListEvent.UpdateSearchQuery(it)) },

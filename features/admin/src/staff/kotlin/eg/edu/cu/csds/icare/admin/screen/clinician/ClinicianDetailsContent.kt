@@ -43,7 +43,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,7 +70,7 @@ internal fun ClinicianDetailsContent(
                 onValueChange = { onEvent(ClinicianEvent.UpdateFirstName(it)) },
                 label = {
                     Text(
-                        text = stringResource(R.string.first_name),
+                        text = stringResource(R.string.features_admin_first_name),
                         fontFamily = helveticaFamily,
                         color = textColor,
                     )
@@ -104,7 +103,7 @@ internal fun ClinicianDetailsContent(
                 onValueChange = { onEvent(ClinicianEvent.UpdateLastName(it)) },
                 label = {
                     Text(
-                        text = stringResource(R.string.last_name),
+                        text = stringResource(R.string.features_admin_last_name),
                         fontFamily = helveticaFamily,
                         color = textColor,
                     )
@@ -149,7 +148,7 @@ internal fun ClinicianDetailsContent(
                     onValueChange = { },
                     label = {
                         Text(
-                            text = stringResource(R.string.clinic),
+                            text = stringResource(R.string.features_admin_clinic),
                             color = dropDownTextColor,
                         )
                     },
@@ -199,7 +198,7 @@ internal fun ClinicianDetailsContent(
                 onValueChange = { onEvent(ClinicianEvent.UpdateEmail(it)) },
                 label = {
                     Text(
-                        text = stringResource(R.string.email),
+                        text = stringResource(R.string.features_admin_email),
                         fontFamily = helveticaFamily,
                         color = textColor,
                     )
@@ -231,7 +230,7 @@ internal fun ClinicianDetailsContent(
                 onValueChange = { if (it.length < 14) onEvent(ClinicianEvent.UpdatePhone(it)) },
                 label = {
                     Text(
-                        text = stringResource(R.string.phone_number),
+                        text = stringResource(R.string.features_admin_phone_number),
                         fontFamily = helveticaFamily,
                         color = textColor,
                     )
@@ -264,7 +263,7 @@ internal fun ClinicianDetailsContent(
                 modifier =
                     Modifier
                         .fillMaxWidth(fraction = 0.6f),
-                text = stringResource(CoreR.string.core_ui_proceed),
+                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
                 color = buttonBackgroundColor,
                 onClick = { onEvent(ClinicianEvent.Proceed) },
             )

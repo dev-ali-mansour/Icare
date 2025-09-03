@@ -80,7 +80,7 @@ internal fun NewPharmacyScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.new_pharmacy)) },
+                title = { Text(text = stringResource(id = R.string.features_admin_new_pharmacy)) },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,

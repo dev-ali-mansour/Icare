@@ -292,15 +292,15 @@ val adminCategories =
             sections =
                 listOf(
                     SectionItem(
-                        iconResId = R.drawable.ic_clinic,
+                        iconResId = R.drawable.core_ui_ic_clinic,
                         titleResId = R.string.core_ui_clinics,
                     ),
                     SectionItem(
-                        iconResId = R.drawable.ic_doctor,
+                        iconResId = R.drawable.core_ui_ic_doctor,
                         titleResId = R.string.core_ui_doctors,
                     ),
                     SectionItem(
-                        iconResId = R.drawable.ic_staff,
+                        iconResId = R.drawable.core_ui_ic_staff,
                         titleResId = R.string.core_ui_clinic_staffs,
                     ),
                 ),
@@ -310,11 +310,11 @@ val adminCategories =
             sections =
                 listOf(
                     SectionItem(
-                        iconResId = R.drawable.ic_pharmacy,
+                        iconResId = R.drawable.core_ui_ic_pharmacy,
                         titleResId = R.string.core_ui_pharmacies,
                     ),
                     SectionItem(
-                        iconResId = R.drawable.ic_pharmacist,
+                        iconResId = R.drawable.core_ui_ic_pharmacist,
                         titleResId = R.string.core_ui_pharmacists,
                     ),
                 ),
@@ -324,11 +324,11 @@ val adminCategories =
             sections =
                 listOf(
                     SectionItem(
-                        iconResId = R.drawable.ic_lab,
+                        iconResId = R.drawable.core_ui_ic_lab,
                         titleResId = R.string.core_ui_centers,
                     ),
                     SectionItem(
-                        iconResId = R.drawable.ic_staff2,
+                        iconResId = R.drawable.core_ui_ic_staff2,
                         titleResId = R.string.core_ui_center_staffs,
                     ),
                 ),
