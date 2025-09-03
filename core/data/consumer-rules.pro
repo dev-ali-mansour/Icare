@@ -5,6 +5,7 @@
 
 # SQLCipher
 -keep class net.sqlcipher.** {*;}
+-keep class net.zetetic.database.sqlcipher.** { *; }
 
 # Room
 -keep class androidx.room.RoomDatabase { *; }
@@ -20,7 +21,8 @@
 -keep class androidx.room.Entity
 -keep class androidx.room.PrimaryKey
 -keep class androidx.room.TypeConverters
--keepattributes *Annotation*
+# Keep essential attributes for reflection, generics, inner classes, and runtime visible annotations
+-keepattributes Signature,InnerClasses,EnclosingMethod,RuntimeVisibleAnnotations
 
 # Coroutines
 # Most of volatile fields are updated with AFU and should not be mangled
@@ -47,22 +49,21 @@
 # An annotation used for build tooling, won't be directly accessed.
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 
-# Firebase
--keepattributes Signature
--keepattributes EnclosingMethod
--keepattributes InnerClasses
+# Firebase (Note: Firebase often provides its own comprehensive consumer rules)
+# -keepattributes Signature # Already covered by the general rule above
+# -keepattributes EnclosingMethod # Already covered
+# -keepattributes InnerClasses # Already covered
 
 -dontwarn org.xmlpull.v1.**
 -dontnote org.xmlpull.v1.**
 -keep class org.xmlpull.** { *; }
 -keepclassmembers class org.xmlpull.** { *; }
 
-# Retrofit does reflection on generic parameters. InnerClasses is required to use Signature and
-# EnclosingMethod is required to use InnerClasses.
--keepattributes Signature, InnerClasses, EnclosingMethod
-
-# Retrofit does reflection on method and parameter annotations.
--keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
+# Retrofit
+# The general -keepattributes Signature,InnerClasses,EnclosingMethod,RuntimeVisibleAnnotations rule above
+# should cover Retrofit's needs for generic parameters and method/parameter annotations.
+# -keepattributes Signature, InnerClasses, EnclosingMethod # Covered
+# -keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations # RuntimeVisibleAnnotations is covered. RuntimeVisibleParameterAnnotations might need to be added if issues arise.
 
 # Keep annotation default values (e.g., retrofit2.http.Field.encoded).
 -keepattributes AnnotationDefault
