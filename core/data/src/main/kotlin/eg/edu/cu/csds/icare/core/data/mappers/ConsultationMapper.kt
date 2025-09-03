@@ -21,7 +21,7 @@ fun Consultation.toConsultationDto(): ConsultationDto =
         followUpdDate = this.followUpdDate,
     )
 
-fun ConsultationDto.toConsultation(): Consultation =
+fun ConsultationDto.toConsultation(uid: String?): Consultation =
     Consultation(
         id = this.id,
         appointment = this.appointment.toAppointment(),
@@ -37,4 +37,5 @@ fun ConsultationDto.toConsultation(): Consultation =
         imagingTests = this.imagingTests,
         imgTestStatusId = this.imgTestStatusId,
         followUpdDate = this.followUpdDate,
+        readOnly = uid != this.appointment.doctorId,
     )

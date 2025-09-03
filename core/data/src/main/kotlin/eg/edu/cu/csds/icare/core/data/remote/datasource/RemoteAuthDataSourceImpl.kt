@@ -9,6 +9,7 @@ import com.google.firebase.auth.auth
 import eg.edu.cu.csds.icare.core.data.dto.UserDto
 import eg.edu.cu.csds.icare.core.data.mappers.toRemoteError
 import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
+import eg.edu.cu.csds.icare.core.data.util.isAuthorized
 import eg.edu.cu.csds.icare.core.domain.model.DataError
 import eg.edu.cu.csds.icare.core.domain.model.Result
 import eg.edu.cu.csds.icare.core.domain.util.Constants
@@ -45,7 +46,7 @@ class RemoteAuthDataSourceImpl(
                             when (res.statusCode) {
                                 Constants.ERROR_CODE_OK ->
                                     when {
-                                        res.user.isActive ->
+                                        res.user.isActive && isAuthorized(res.user.roleId) ->
                                             emit(
                                                 Result.Success(
                                                     data =
@@ -84,7 +85,7 @@ class RemoteAuthDataSourceImpl(
 
                     else -> emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
                 }
-            } ?: run { emit(Result.Error(DataError.Remote.INVALID_CREDENTIALS)) }
+            } ?: run { emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED)) }
         }.catch {
             Timber.e("getUserInfo() Error ${it.javaClass.simpleName}: ${it.message}")
             emit(Result.Error(it.toRemoteError()))
@@ -168,7 +169,6 @@ class RemoteAuthDataSourceImpl(
             }
         }.catch {
             Timber.e("signInWithEmailAndPassword() Error ${it.javaClass.simpleName}: ${it.message}")
-            Timber.e("signInWithEmailAndPassword() Error ${it.toRemoteError()}")
             emit(Result.Error(it.toRemoteError()))
         }
 

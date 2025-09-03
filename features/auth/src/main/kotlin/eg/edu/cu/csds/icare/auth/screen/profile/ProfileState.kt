@@ -6,4 +6,5 @@ data class ProfileState(
     val isLoading: Boolean = false,
     val currentUser: User = User(),
     val googleToken: String = "",
+    val effect: ProfileEffect? = null,
 )

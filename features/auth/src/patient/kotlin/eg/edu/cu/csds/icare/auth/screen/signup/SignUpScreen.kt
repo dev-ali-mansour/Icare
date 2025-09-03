@@ -65,7 +65,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.auth.R
 import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
 import eg.edu.cu.csds.icare.core.ui.common.GenderItem
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.theme.Blue200
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
@@ -83,21 +83,18 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @Composable
 internal fun SignUpScreen(
     viewModel: SignUpViewModel = koinViewModel(),
-    navigateToScreen: (Screen) -> Unit,
+    navigateToScreen: (Route) -> Unit,
     onSignUpSuccess: () -> Unit,
     context: Context = LocalContext.current,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val scope: CoroutineScope = rememberCoroutineScope()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
@@ -107,20 +104,16 @@ internal fun SignUpScreen(
                 is SignUpSingleEvent.LoginSuccess -> onSignUpSuccess()
                 is SignUpSingleEvent.ShowError -> {
                     alertMessage = event.message.asString(context)
-                    scope.launch {
-                        showAlert = true
-                        delay(timeMillis = 3000)
-                        showAlert = false
-                    }
+                    showAlert = true
+                    delay(timeMillis = 3000)
+                    showAlert = false
                 }
 
                 is SignUpSingleEvent.ShowInfo -> {
                     alertMessage = event.message.asString(context)
-                    scope.launch {
-                        showAlert = true
-                        delay(timeMillis = 3000)
-                        showAlert = false
-                    }
+                    showAlert = true
+                    delay(timeMillis = 3000)
+                    showAlert = false
                 }
             }
         }
@@ -140,13 +133,13 @@ internal fun SignUpScreen(
         ) {
             SignUpContent(
                 state = state,
-                onIntent = { intent ->
+                onEvent = { intent ->
                     when (intent) {
                         is SignUpIntent.NavigateToSignInScreen -> {
-                            navigateToScreen(Screen.SignIn)
+                            navigateToScreen(Route.SignIn)
                         }
 
-                        else -> viewModel.processIntent(intent)
+                        else -> viewModel.processEvent(intent)
                     }
                 },
                 context = context,
@@ -161,13 +154,13 @@ internal fun SignUpScreen(
 @Composable
 private fun SignUpContent(
     state: SignUpState,
-    onIntent: (SignUpIntent) -> Unit,
+    onEvent: (SignUpIntent) -> Unit,
     context: Context = LocalContext.current,
 ) {
     val genders =
         listOf(
-            GenderItem(code = 1, textResId = CoreR.string.male),
-            GenderItem(code = 2, textResId = CoreR.string.female),
+            GenderItem(code = 1, textResId = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_male),
+            GenderItem(code = 2, textResId = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_female),
         )
     val interactionSource = remember { MutableInteractionSource() }
     val scope = rememberCoroutineScope()
@@ -182,7 +175,7 @@ private fun SignUpContent(
                 TextButton(
                     onClick = {
                         datePickerState.selectedDateMillis?.let {
-                            onIntent(SignUpIntent.UpdateBirthDate(it))
+                            onEvent(SignUpIntent.UpdateBirthDate(it))
                         }
                         showDatePicker = false
                     },
@@ -245,7 +238,7 @@ private fun SignUpContent(
             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                 val (txtLogin) = createRefs()
                 Text(
-                    text = stringResource(R.string.create_account),
+                    text = stringResource(R.string.features_auth_create_account),
                     fontSize = MaterialTheme.typography.displaySmall.fontSize,
                     fontWeight = FontWeight.Bold,
                     fontFamily = helveticaFamily,
@@ -286,10 +279,10 @@ private fun SignUpContent(
             ) {
                 TextField(
                     value = state.firstName,
-                    onValueChange = { onIntent(SignUpIntent.UpdateFirstName(it)) },
+                    onValueChange = { onEvent(SignUpIntent.UpdateFirstName(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.first_name),
+                            text = stringResource(R.string.features_auth_first_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -319,10 +312,10 @@ private fun SignUpContent(
 
                 TextField(
                     value = state.lastName,
-                    onValueChange = { onIntent(SignUpIntent.UpdateLastName(it)) },
+                    onValueChange = { onEvent(SignUpIntent.UpdateLastName(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.last_name),
+                            text = stringResource(R.string.features_auth_last_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -351,10 +344,10 @@ private fun SignUpContent(
 
                 TextField(
                     value = state.email,
-                    onValueChange = { onIntent(SignUpIntent.UpdateEmail(it)) },
+                    onValueChange = { onEvent(SignUpIntent.UpdateEmail(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.email),
+                            text = stringResource(R.string.features_auth_email),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -387,7 +380,7 @@ private fun SignUpContent(
                     readOnly = true,
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.birth_date),
+                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_birth_date),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -421,7 +414,10 @@ private fun SignUpContent(
                     trailingIcon = {
                         Icon(
                             modifier = Modifier.clickable { openDatePicker() },
-                            painter = painterResource(id = CoreR.drawable.baseline_calendar_month_24),
+                            painter =
+                                painterResource(
+                                    id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_baseline_calendar_month_24,
+                                ),
                             contentDescription = "",
                         )
                     },
@@ -431,7 +427,7 @@ private fun SignUpContent(
                 ExposedDropdownMenuBox(
                     modifier = Modifier.fillMaxWidth(fraction = 0.8f),
                     expanded = state.isGenderExpanded,
-                    onExpandedChange = { onIntent(SignUpIntent.UpdateGenderExpanded(it)) },
+                    onExpandedChange = { onEvent(SignUpIntent.UpdateGenderExpanded(it)) },
                 ) {
                     OutlinedTextField(
                         modifier =
@@ -446,7 +442,7 @@ private fun SignUpContent(
                         onValueChange = { },
                         label = {
                             Text(
-                                text = stringResource(CoreR.string.gender),
+                                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_gender),
                                 color = dropDownTextColor,
                             )
                         },
@@ -471,7 +467,7 @@ private fun SignUpContent(
                     ExposedDropdownMenu(
                         expanded = state.isGenderExpanded,
                         onDismissRequest = {
-                            onIntent(SignUpIntent.UpdateGenderExpanded(false))
+                            onEvent(SignUpIntent.UpdateGenderExpanded(false))
                         },
                     ) {
                         genders.forEach {
@@ -483,8 +479,8 @@ private fun SignUpContent(
                                     )
                                 },
                                 onClick = {
-                                    onIntent(SignUpIntent.UpdateGender(it.code))
-                                    onIntent(SignUpIntent.UpdateGenderExpanded(false))
+                                    onEvent(SignUpIntent.UpdateGender(it.code))
+                                    onEvent(SignUpIntent.UpdateGenderExpanded(false))
                                 },
                             )
                         }
@@ -493,10 +489,10 @@ private fun SignUpContent(
 
                 TextField(
                     value = state.nationalId,
-                    onValueChange = { if (it.length < 15) onIntent(SignUpIntent.UpdateNationalId(it)) },
+                    onValueChange = { if (it.length < 15) onEvent(SignUpIntent.UpdateNationalId(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.national_id),
+                            text = stringResource(R.string.features_auth_national_id),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -524,10 +520,10 @@ private fun SignUpContent(
                 )
                 TextField(
                     value = state.phone,
-                    onValueChange = { if (it.length < 14) onIntent(SignUpIntent.UpdatePhone(it)) },
+                    onValueChange = { if (it.length < 14) onEvent(SignUpIntent.UpdatePhone(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.phone_number),
+                            text = stringResource(R.string.features_auth_phone_number),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -556,10 +552,10 @@ private fun SignUpContent(
 
                 TextField(
                     value = state.address,
-                    onValueChange = { onIntent(SignUpIntent.UpdateAddress(it)) },
+                    onValueChange = { onEvent(SignUpIntent.UpdateAddress(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.address),
+                            text = stringResource(R.string.features_auth_address),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -590,12 +586,12 @@ private fun SignUpContent(
                     value = state.weight.toString(),
                     onValueChange = {
                         runCatching {
-                            onIntent(SignUpIntent.UpdateWeight(if (it.isEmpty()) 0.0 else it.toDouble()))
+                            onEvent(SignUpIntent.UpdateWeight(if (it.isEmpty()) 0.0 else it.toDouble()))
                         }
                     },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.weight),
+                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_weight),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -625,15 +621,22 @@ private fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.chronicDiseases,
-                    onValueChange = { onIntent(SignUpIntent.UpdateChronicDiseases(it)) },
+                    onValueChange = { onEvent(SignUpIntent.UpdateChronicDiseases(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.chronic_diseases),
+                            text =
+                                stringResource(
+                                    eg.edu.cu.csds.icare.core.ui.R.string.core_ui_chronic_diseases,
+                                ),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
                     },
-                    placeholder = { Text(text = stringResource(R.string.chronic_diseases_hint)) },
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.features_auth_chronic_diseases_hint),
+                        )
+                    },
                     singleLine = false,
                     maxLines = 3,
                     modifier =
@@ -662,15 +665,22 @@ private fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.currentMedications,
-                    onValueChange = { onIntent(SignUpIntent.UpdateCurrentMedications(it)) },
+                    onValueChange = { onEvent(SignUpIntent.UpdateCurrentMedications(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.current_medications),
+                            text =
+                                stringResource(
+                                    eg.edu.cu.csds.icare.core.ui.R.string.core_ui_current_medications,
+                                ),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
                     },
-                    placeholder = { Text(text = stringResource(R.string.current_medications_hint)) },
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.features_auth_current_medications_hint),
+                        )
+                    },
                     singleLine = false,
                     maxLines = 3,
                     modifier =
@@ -699,15 +709,15 @@ private fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.allergies,
-                    onValueChange = { onIntent(SignUpIntent.UpdateAllergies(it)) },
+                    onValueChange = { onEvent(SignUpIntent.UpdateAllergies(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.allergies),
+                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_allergies),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
                     },
-                    placeholder = { Text(text = stringResource(R.string.allergies_hint)) },
+                    placeholder = { Text(text = stringResource(R.string.features_auth_allergies_hint)) },
                     singleLine = false,
                     maxLines = 3,
                     modifier =
@@ -736,15 +746,18 @@ private fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.pastSurgeries,
-                    onValueChange = { onIntent(SignUpIntent.UpdatePastSurgeries(it)) },
+                    onValueChange = { onEvent(SignUpIntent.UpdatePastSurgeries(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.past_surgeries),
+                            text =
+                                stringResource(
+                                    eg.edu.cu.csds.icare.core.ui.R.string.core_ui_past_surgeries,
+                                ),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
                     },
-                    placeholder = { Text(text = stringResource(R.string.past_surgeries_hint)) },
+                    placeholder = { Text(text = stringResource(R.string.features_auth_past_surgeries_hint)) },
                     singleLine = false,
                     maxLines = 3,
                     modifier =
@@ -773,10 +786,10 @@ private fun SignUpContent(
 
                 TextField(
                     value = state.password,
-                    onValueChange = { onIntent(SignUpIntent.UpdatePassword(it)) },
+                    onValueChange = { onEvent(SignUpIntent.UpdatePassword(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.password),
+                            text = stringResource(R.string.features_auth_password),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -797,10 +810,13 @@ private fun SignUpContent(
                         ),
                     trailingIcon = {
                         IconButton(
-                            onClick = { onIntent(SignUpIntent.TogglePasswordVisibility) },
+                            onClick = { onEvent(SignUpIntent.TogglePasswordVisibility) },
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.ic_baseline_remove_red_eye_24),
+                                painter =
+                                    painterResource(
+                                        R.drawable.features_auth_ic_baseline_remove_red_eye_24,
+                                    ),
                                 contentDescription = null,
                                 tint = if (state.isPasswordVisible) Blue500 else Color.Gray,
                             )
@@ -826,21 +842,21 @@ private fun SignUpContent(
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(R.string.sign_up),
+                    text = stringResource(R.string.features_auth_sign_up),
                     color = buttonBackgroundColor,
-                    onClick = { onIntent(SignUpIntent.SubmitSignUp) },
+                    onClick = { onEvent(SignUpIntent.SubmitSignUp) },
                 )
 
                 Spacer(modifier = Modifier.height(L_PADDING))
 
                 Text(
-                    text = stringResource(R.string.sign_in_instead),
+                    text = stringResource(R.string.features_auth_sign_in_instead),
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
                     fontFamily = helveticaFamily,
                     color = textColor,
                     modifier =
                         Modifier
-                            .clickable { onIntent(SignUpIntent.NavigateToSignInScreen) },
+                            .clickable { onEvent(SignUpIntent.NavigateToSignInScreen) },
                 )
             }
         }
@@ -868,7 +884,7 @@ private fun SignUpContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         SignUpContent(
             state = SignUpState(),
-            onIntent = {},
+            onEvent = {},
         )
     }
 }

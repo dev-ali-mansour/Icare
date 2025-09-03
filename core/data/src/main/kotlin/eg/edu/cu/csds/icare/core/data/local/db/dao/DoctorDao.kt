@@ -10,7 +10,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface DoctorDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun persistDoctors(doctors: List<DoctorEntity>)
+    suspend fun persistDoctors(doctors: List<DoctorEntity>)
+
+    @Query("SELECT * FROM doctors WHERE id=:doctorId")
+    suspend fun getDoctor(doctorId: String): DoctorEntity?
 
     @Query("SELECT * FROM doctors")
     fun listDoctors(): Flow<List<DoctorEntity>>

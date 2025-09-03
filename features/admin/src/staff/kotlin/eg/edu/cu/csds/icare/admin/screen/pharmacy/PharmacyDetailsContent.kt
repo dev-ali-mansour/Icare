@@ -18,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.admin.R
-import eg.edu.cu.csds.icare.core.domain.model.Resource
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
@@ -39,23 +37,13 @@ import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun PharmacyDetailsContent(
-    name: String,
-    phone: String,
-    address: String,
-    actionResource: Resource<Nothing?>,
-    showLoading: (Boolean) -> Unit,
-    onNameChanged: (String) -> Unit,
-    onPhoneChanged: (String) -> Unit,
-    onAddressChanged: (String) -> Unit,
-    onProceedButtonClicked: () -> Unit,
-    onSuccess: () -> Unit,
-    onError: suspend (Throwable?) -> Unit,
+    uiState: PharmacyState,
     modifier: Modifier = Modifier,
+    onEvent: (PharmacyEvent) -> Unit,
 ) {
     ConstraintLayout(
         modifier =
@@ -85,11 +73,11 @@ internal fun PharmacyDetailsContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 TextField(
-                    value = name,
-                    onValueChange = { onNameChanged(it) },
+                    value = uiState.name,
+                    onValueChange = { onEvent(PharmacyEvent.UpdateName(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.name),
+                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -118,11 +106,11 @@ internal fun PharmacyDetailsContent(
                 )
 
                 TextField(
-                    value = phone,
-                    onValueChange = { if (it.length < 14) onPhoneChanged(it) },
+                    value = uiState.phone,
+                    onValueChange = { if (it.length < 14) onEvent(PharmacyEvent.UpdatePhone(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.phone_number),
+                            text = stringResource(R.string.features_admin_phone_number),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -150,11 +138,11 @@ internal fun PharmacyDetailsContent(
                 )
 
                 TextField(
-                    value = address,
-                    onValueChange = { onAddressChanged(it) },
+                    value = uiState.address,
+                    onValueChange = { onEvent(PharmacyEvent.UpdateAddress(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.address),
+                            text = stringResource(R.string.features_admin_address),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -187,28 +175,11 @@ internal fun PharmacyDetailsContent(
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(CoreR.string.proceed),
+                    text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
                     color = buttonBackgroundColor,
-                    onClick = { onProceedButtonClicked() },
+                    onClick = { onEvent(PharmacyEvent.Proceed) },
                 )
             }
-        }
-
-        when (actionResource) {
-            is Resource.Unspecified -> LaunchedEffect(key1 = actionResource) { showLoading(false) }
-            is Resource.Loading -> LaunchedEffect(key1 = actionResource) { showLoading(true) }
-
-            is Resource.Success ->
-                LaunchedEffect(key1 = Unit) {
-                    showLoading(false)
-                    onSuccess()
-                }
-
-            is Resource.Error ->
-                LaunchedEffect(key1 = actionResource) {
-                    showLoading(false)
-                    onError(actionResource.error)
-                }
         }
     }
 }
@@ -221,17 +192,14 @@ internal fun PharmacyDetailsContent(
 internal fun PharmacyDetailsContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         PharmacyDetailsContent(
-            name = "",
-            phone = "",
-            address = "",
-            actionResource = Resource.Success(null),
-            showLoading = {},
-            onNameChanged = {},
-            onPhoneChanged = {},
-            onAddressChanged = {},
-            onProceedButtonClicked = {},
-            onSuccess = {},
-            onError = {},
+            uiState =
+                PharmacyState(
+                    id = 1L,
+                    name = "صيدلية الدقم",
+                    phone = "01234567890",
+                    address = "43 ش أحمد ماهر",
+                ),
+            onEvent = {},
         )
     }
 }

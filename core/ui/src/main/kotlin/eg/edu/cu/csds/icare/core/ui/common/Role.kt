@@ -8,15 +8,15 @@ sealed class Role(
     @param:StringRes
     val name: Int,
 ) {
-    data object AdminRole : Role(code = 1, name = R.string.admins)
+    data object AdminRole : Role(code = 1, name = R.string.core_ui_admins)
 
-    data object DoctorRole : Role(code = 2, name = R.string.doctors)
+    data object DoctorRole : Role(code = 2, name = R.string.core_ui_doctors)
 
-    data object ClinicStaffRole : Role(code = 3, name = R.string.clinic_staffs)
+    data object ClinicianRole : Role(code = 3, name = R.string.core_ui_clinic_staffs)
 
-    data object PharmacistRole : Role(code = 4, name = R.string.pharmacists)
+    data object PharmacistRole : Role(code = 4, name = R.string.core_ui_pharmacists)
 
-    data object CenterStaffRole : Role(code = 5, name = R.string.center_staffs)
+    data object CenterStaffRole : Role(code = 5, name = R.string.core_ui_center_staffs)
 
-    data object PatientRole : Role(code = 6, name = R.string.patients)
+    data object PatientRole : Role(code = 6, name = R.string.core_ui_patients)
 }

@@ -39,13 +39,13 @@ val Typography =
 
 val helveticaFamily =
     FontFamily(
-        Font(R.font.helvetica_neuelt_w20_45_light, FontWeight.Light),
-        Font(R.font.helveticaneuelt_w20_55_roman, FontWeight.Normal),
-        Font(R.font.helveticaneuelt_w20_75_bold, FontWeight.Bold),
+        Font(R.font.core_ui_helvetica_neuelt_w20_45_light, FontWeight.Light),
+        Font(R.font.core_ui_helveticaneuelt_w20_55_roman, FontWeight.Normal),
+        Font(R.font.core_ui_helveticaneuelt_w20_75_bold, FontWeight.Bold),
     )
 
 val kufamFamily =
     FontFamily(
-        Font(R.font.kufam_regular, FontWeight.Normal),
-        Font(R.font.kufam_bold, FontWeight.Bold),
+        Font(R.font.core_ui_kufam_regular, FontWeight.Normal),
+        Font(R.font.core_ui_kufam_bold, FontWeight.Bold),
     )

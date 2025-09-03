@@ -2,22 +2,22 @@ package eg.edu.cu.csds.icare.settings.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import eg.edu.cu.csds.icare.core.ui.navigation.Screen
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.settings.screen.about.AboutScreen
 import eg.edu.cu.csds.icare.settings.screen.settings.SettingsScreen
 
 fun NavGraphBuilder.settingsRoute(
-    navigateToScreen: (Screen) -> Unit,
-    onNavigationIconClicked: () -> Unit,
+    navigateUp: () -> Unit,
+    navigateToRoute: (Route) -> Unit,
 ) {
-    composable<Screen.Settings> {
+    composable<Route.Settings> {
         SettingsScreen {
-            navigateToScreen(it)
+            navigateToRoute(it)
         }
     }
-    composable<Screen.About> {
+    composable<Route.About> {
         AboutScreen {
-            onNavigationIconClicked()
+            navigateUp()
         }
     }
 }

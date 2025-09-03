@@ -63,7 +63,7 @@ fun PharmacyView(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
-                painter = painterResource(R.drawable.ic_pharmacy),
+                painter = painterResource(R.drawable.core_ui_ic_pharmacy),
                 contentDescription = null,
                 modifier =
                     Modifier

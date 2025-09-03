@@ -140,7 +140,7 @@ fun SearchTextField(
 fun SearchTextFieldPreview() {
     Box(modifier = Modifier.background(color = backgroundColor)) {
         SearchTextField(
-            placeholder = stringResource(R.string.search_here),
+            placeholder = stringResource(R.string.core_ui_search_here),
             value = "",
             focus = true,
             onValueChange = {},
