@@ -35,7 +35,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 
 @Composable
 fun DialogWithIcon(
-    painter: Painter = painterResource(id = R.drawable.ic_alert),
+    painter: Painter = painterResource(id = R.drawable.core_ui_ic_alert),
     text: String,
     onDismissRequest: () -> Unit,
 ) {
@@ -87,7 +87,7 @@ fun DialogWithIconPreview() {
                 .background(color = backgroundColor),
     ) {
         DialogWithIcon(
-            painter = painterResource(id = R.drawable.ic_alert),
+            painter = painterResource(id = R.drawable.core_ui_ic_alert),
             text = "فشل في الاتصال بالسيرفر",
         ) {
         }

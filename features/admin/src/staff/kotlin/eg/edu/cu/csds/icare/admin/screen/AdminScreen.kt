@@ -41,7 +41,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,7 +62,14 @@ internal fun AdminScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = CoreR.string.sections_admin)) },
+                title = {
+                    Text(
+                        text =
+                            stringResource(
+                                id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_sections_admin,
+                            ),
+                    )
+                },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,
@@ -86,7 +92,7 @@ internal fun AdminScreen(
             ExtendedFloatingActionButton(
                 text = {
                     Text(
-                        text = stringResource(CoreR.string.add),
+                        text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_add),
                         color = Color.White,
                     )
                 },

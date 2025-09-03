@@ -63,7 +63,7 @@ class UpdateClinicViewModel(
                 _uiState.update { it.copy(isOpen = event.isOpen) }
             }
 
-            is ClinicEvent.SelectClinic -> {
+            is ClinicEvent.LoadClinic -> {
                 _uiState.update {
                     it.copy(
                         id = event.clinic.id,
@@ -85,7 +85,7 @@ class UpdateClinicViewModel(
                                     isLoading = false,
                                     effect =
                                         ClinicEffect.ShowError(
-                                            message = StringResourceId(R.string.name_error),
+                                            message = StringResourceId(R.string.features_admin_name_error),
                                         ),
                                 )
                             }
@@ -96,7 +96,7 @@ class UpdateClinicViewModel(
                                     isLoading = false,
                                     effect =
                                         ClinicEffect.ShowError(
-                                            message = StringResourceId(R.string.error_type),
+                                            message = StringResourceId(R.string.features_admin_error_type),
                                         ),
                                 )
                             }
@@ -108,7 +108,7 @@ class UpdateClinicViewModel(
                                     isLoading = false,
                                     effect =
                                         ClinicEffect.ShowError(
-                                            message = StringResourceId(R.string.error_phone),
+                                            message = StringResourceId(R.string.features_admin_error_phone),
                                         ),
                                 )
                             }
@@ -120,7 +120,7 @@ class UpdateClinicViewModel(
                                     isLoading = false,
                                     effect =
                                         ClinicEffect.ShowError(
-                                            message = StringResourceId(R.string.error_address),
+                                            message = StringResourceId(R.string.features_admin_error_address),
                                         ),
                                 )
                             }

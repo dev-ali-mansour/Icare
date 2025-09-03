@@ -19,7 +19,7 @@ import eg.edu.cu.csds.icare.core.ui.R
 fun GifImageLoader(
     modifier: Modifier = Modifier,
     @DrawableRes
-    drawableRes: Int = R.drawable.success,
+    drawableRes: Int = R.drawable.core_ui_success,
 ) {
     val context = LocalContext.current
     val imageLoader =

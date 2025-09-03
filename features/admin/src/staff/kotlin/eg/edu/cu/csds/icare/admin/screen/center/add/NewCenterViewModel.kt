@@ -58,7 +58,7 @@ class NewCenterViewModel(
             is CenterEvent.UpdateAddress ->
                 _uiState.update { it.copy(address = event.address) }
 
-            is CenterEvent.SelectCenter -> Unit
+            is CenterEvent.LoadCenter -> Unit
             is CenterEvent.Proceed ->
                 viewModelScope.launch {
                     when {
@@ -68,7 +68,10 @@ class NewCenterViewModel(
                                     isLoading = false,
                                     effect =
                                         CenterEffect.ShowError(
-                                            message = StringResourceId(R.string.error_first_name),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_first_name,
+                                                ),
                                         ),
                                 )
                             }
@@ -80,7 +83,7 @@ class NewCenterViewModel(
                                     isLoading = false,
                                     effect =
                                         CenterEffect.ShowError(
-                                            message = StringResourceId(R.string.error_type),
+                                            message = StringResourceId(R.string.features_admin_error_type),
                                         ),
                                 )
                             }
@@ -92,7 +95,7 @@ class NewCenterViewModel(
                                     isLoading = false,
                                     effect =
                                         CenterEffect.ShowError(
-                                            message = StringResourceId(R.string.error_phone),
+                                            message = StringResourceId(R.string.features_admin_error_phone),
                                         ),
                                 )
                             }
@@ -103,7 +106,7 @@ class NewCenterViewModel(
                                     isLoading = false,
                                     effect =
                                         CenterEffect.ShowError(
-                                            message = StringResourceId(R.string.error_address),
+                                            message = StringResourceId(R.string.features_admin_error_address),
                                         ),
                                 )
                             }

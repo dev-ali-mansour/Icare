@@ -133,11 +133,11 @@ fun RadioButtonGroupWithHeader(
 @Composable
 fun RadioButtonGroupWithHeaderPreview() {
     RadioButtonGroupWithHeader(
-        stringResource(id = R.string.choose_app_lang),
+        stringResource(id = R.string.core_ui_choose_app_lang),
         radioOptions =
             listOf(
-                stringResource(id = R.string.radio_lang_english),
-                stringResource(id = R.string.radio_lang_arabic),
+                stringResource(id = R.string.core_ui_radio_lang_english),
+                stringResource(id = R.string.core_ui_radio_lang_arabic),
             ),
         selected = 0,
     ) {}

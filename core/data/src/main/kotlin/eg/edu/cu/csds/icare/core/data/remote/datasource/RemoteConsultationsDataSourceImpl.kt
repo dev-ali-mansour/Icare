@@ -3,6 +3,7 @@ package eg.edu.cu.csds.icare.core.data.remote.datasource
 import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.data.dto.ConsultationDto
 import eg.edu.cu.csds.icare.core.data.dto.MedicalRecordDto
+import eg.edu.cu.csds.icare.core.data.mappers.toRemoteError
 import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
 import eg.edu.cu.csds.icare.core.domain.model.DataError
 import eg.edu.cu.csds.icare.core.domain.model.Result
@@ -57,7 +58,7 @@ class RemoteConsultationsDataSourceImpl(
                 }
         }.catch {
             Timber.e("addNewConsultation() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun updateConsultation(consultation: ConsultationDto): Flow<Result<Unit, DataError.Remote>> =
@@ -96,7 +97,7 @@ class RemoteConsultationsDataSourceImpl(
                 }
         }.catch {
             Timber.e("updateConsultation() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun getMedicalRecord(patientId: String): Flow<Result<MedicalRecordDto, DataError.Remote>> =
@@ -115,9 +116,7 @@ class RemoteConsultationsDataSourceImpl(
                             response.body()?.let { res ->
                                 when (res.statusCode) {
                                     Constants.ERROR_CODE_OK ->
-                                        emit(
-                                            Result.Success(res.medicalRecord),
-                                        )
+                                        emit(Result.Success(res.medicalRecord))
 
                                     Constants.ERROR_CODE_EXPIRED_TOKEN ->
                                         emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
@@ -138,7 +137,7 @@ class RemoteConsultationsDataSourceImpl(
                 }
         }.catch {
             Timber.e("getMedicalRecord() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun getMedicationsByStatus(
@@ -180,7 +179,7 @@ class RemoteConsultationsDataSourceImpl(
                 }
         }.catch {
             Timber.e("getMedicationsByStatus() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun getLabTestsByStatus(statusId: Short): Flow<Result<List<ConsultationDto>, DataError.Remote>> =
@@ -220,7 +219,7 @@ class RemoteConsultationsDataSourceImpl(
                 }
         }.catch {
             Timber.e("getLabTestsByStatus() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 
     override fun getImagingTestsByStatus(
@@ -262,6 +261,6 @@ class RemoteConsultationsDataSourceImpl(
                 }
         }.catch {
             Timber.e("getImagingTestsByStatus() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(Result.Error(it.toRemoteError()))
         }
 }

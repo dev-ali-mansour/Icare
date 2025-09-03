@@ -23,7 +23,7 @@ sealed interface CenterEvent {
         val address: String,
     ) : CenterEvent
 
-    data class SelectCenter(
+    data class LoadCenter(
         val center: LabImagingCenter,
     ) : CenterEvent
 

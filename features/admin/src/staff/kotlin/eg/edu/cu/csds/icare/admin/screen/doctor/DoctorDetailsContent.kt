@@ -54,7 +54,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import eg.edu.cu.csds.icare.core.ui.view.DoubleTextField
 import java.util.Calendar
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -98,7 +97,7 @@ internal fun DoctorDetailsContent(
                     onValueChange = { onEvent(DoctorEvent.UpdateFirstName(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.first_name),
+                            text = stringResource(R.string.features_admin_first_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -131,7 +130,7 @@ internal fun DoctorDetailsContent(
                     onValueChange = { onEvent(DoctorEvent.UpdateLastName(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.last_name),
+                            text = stringResource(R.string.features_admin_last_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -174,7 +173,7 @@ internal fun DoctorDetailsContent(
                         onValueChange = { },
                         label = {
                             Text(
-                                text = stringResource(R.string.clinic),
+                                text = stringResource(R.string.features_admin_clinic),
                                 color = dropDownTextColor,
                             )
                         },
@@ -224,7 +223,7 @@ internal fun DoctorDetailsContent(
                     onValueChange = { onEvent(DoctorEvent.UpdateEmail(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.email),
+                            text = stringResource(R.string.features_admin_email),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -256,7 +255,7 @@ internal fun DoctorDetailsContent(
                     onValueChange = { if (it.length < 14) onEvent(DoctorEvent.UpdatePhone(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.phone_number),
+                            text = stringResource(R.string.features_admin_phone_number),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -288,7 +287,7 @@ internal fun DoctorDetailsContent(
                     onValueChange = { onEvent(DoctorEvent.UpdateSpeciality(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.speciality),
+                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_speciality),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -318,14 +317,14 @@ internal fun DoctorDetailsContent(
                 DoubleTextField(
                     value = uiState.price,
                     onValueChanged = { onEvent(DoctorEvent.UpdatePrice(it)) },
-                    label = stringResource(CoreR.string.price),
+                    label = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_price),
                     textColor = textColor,
                 )
 
                 DoubleTextField(
                     value = uiState.rating,
                     onValueChanged = { onEvent(DoctorEvent.UpdateRating(it)) },
-                    label = stringResource(CoreR.string.rating),
+                    label = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_rating),
                     textColor = textColor,
                     readOnly = uiState.ratingReadOnly,
                     imeAction = ImeAction.Done,
@@ -337,7 +336,7 @@ internal fun DoctorDetailsContent(
                     readOnly = true,
                     label = {
                         Text(
-                            text = stringResource(R.string.from_time),
+                            text = stringResource(R.string.features_admin_from_time),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -386,7 +385,10 @@ internal fun DoctorDetailsContent(
                                         true,
                                     ).show()
                                 },
-                            painter = painterResource(id = CoreR.drawable.baseline_calendar_month_24),
+                            painter =
+                                painterResource(
+                                    id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_baseline_calendar_month_24,
+                                ),
                             contentDescription = "",
                         )
                     },
@@ -398,7 +400,7 @@ internal fun DoctorDetailsContent(
                     readOnly = true,
                     label = {
                         Text(
-                            text = stringResource(R.string.to_time),
+                            text = stringResource(R.string.features_admin_to_time),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -449,7 +451,7 @@ internal fun DoctorDetailsContent(
                                 },
                             painter =
                                 painterResource(
-                                    id = CoreR.drawable.baseline_calendar_month_24,
+                                    id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_baseline_calendar_month_24,
                                 ),
                             contentDescription = "",
                         )
@@ -462,7 +464,7 @@ internal fun DoctorDetailsContent(
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(CoreR.string.proceed),
+                    text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
                     color = buttonBackgroundColor,
                     onClick = { onEvent(DoctorEvent.Proceed) },
                 )

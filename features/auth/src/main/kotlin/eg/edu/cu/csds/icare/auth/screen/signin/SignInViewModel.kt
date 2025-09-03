@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @KoinViewModel
 class SignInViewModel(
@@ -73,7 +72,8 @@ class SignInViewModel(
                                     isLoading = false,
                                     effect =
                                         SignInEffect.ShowError(
-                                            message = StringResourceId(R.string.features_auth_error_invalid_email),
+                                            message =
+                                                StringResourceId(R.string.features_auth_error_invalid_email),
                                         ),
                                 )
                             }
@@ -84,7 +84,8 @@ class SignInViewModel(
                                     isLoading = false,
                                     effect =
                                         SignInEffect.ShowError(
-                                            message = StringResourceId(R.string.features_auth_empty_password_error),
+                                            message =
+                                                StringResourceId(R.string.features_auth_empty_password_error),
                                         ),
                                 )
                             }
@@ -155,7 +156,10 @@ class SignInViewModel(
                         isLoading = false,
                         effect =
                             SignInEffect.ShowError(
-                                message = StringResourceId(CoreR.string.error_invalid_credentials),
+                                message =
+                                    StringResourceId(
+                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_error_invalid_credentials,
+                                    ),
                             ),
                     )
                 }

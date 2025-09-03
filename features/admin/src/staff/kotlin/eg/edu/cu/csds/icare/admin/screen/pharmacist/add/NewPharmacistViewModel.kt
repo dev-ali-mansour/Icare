@@ -73,7 +73,7 @@ class NewPharmacistViewModel(
             is PharmacistEvent.UpdateProfilePicture ->
                 _uiState.update { it.copy(profilePicture = event.profilePicture) }
 
-            is PharmacistEvent.SelectPharmacist -> Unit
+            is PharmacistEvent.LoadPharmacist -> Unit
 
             is PharmacistEvent.Proceed ->
                 viewModelScope.launch {
@@ -84,7 +84,10 @@ class NewPharmacistViewModel(
                                     isLoading = false,
                                     effect =
                                         ShowError(
-                                            message = StringResourceId(R.string.error_first_name),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_first_name,
+                                                ),
                                         ),
                                 )
                             }
@@ -96,7 +99,10 @@ class NewPharmacistViewModel(
                                     isLoading = false,
                                     effect =
                                         ShowError(
-                                            message = StringResourceId(R.string.error_last_name),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_last_name,
+                                                ),
                                         ),
                                 )
                             }
@@ -108,7 +114,10 @@ class NewPharmacistViewModel(
                                     isLoading = false,
                                     effect =
                                         ShowError(
-                                            message = StringResourceId(R.string.error_pharmacy),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_pharmacy,
+                                                ),
                                         ),
                                 )
                             }
@@ -120,7 +129,10 @@ class NewPharmacistViewModel(
                                     isLoading = false,
                                     effect =
                                         ShowError(
-                                            message = StringResourceId(R.string.error_invalid_email),
+                                            message =
+                                                StringResourceId(
+                                                    R.string.features_admin_error_invalid_email,
+                                                ),
                                         ),
                                 )
                             }
@@ -133,7 +145,7 @@ class NewPharmacistViewModel(
                                     isLoading = false,
                                     effect =
                                         ShowError(
-                                            message = StringResourceId(R.string.error_phone),
+                                            message = StringResourceId(R.string.features_admin_error_phone),
                                         ),
                                 )
                             }

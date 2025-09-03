@@ -71,7 +71,7 @@ class UpdatePharmacistViewModel(
             is PharmacistEvent.UpdateProfilePicture ->
                 _uiState.update { it.copy(profilePicture = intent.profilePicture) }
 
-            is PharmacistEvent.SelectPharmacist -> {
+            is PharmacistEvent.LoadPharmacist -> {
                 _uiState.update {
                     it.copy(
                         id = intent.pharmacist.id,
@@ -94,7 +94,7 @@ class UpdatePharmacistViewModel(
                                     isLoading = false,
                                     effect =
                                         PharmacistEffect.ShowError(
-                                            message = StringResourceId(R.string.error_first_name),
+                                            message = StringResourceId(R.string.features_admin_error_first_name),
                                         ),
                                 )
                             }
@@ -106,7 +106,7 @@ class UpdatePharmacistViewModel(
                                     isLoading = false,
                                     effect =
                                         PharmacistEffect.ShowError(
-                                            message = StringResourceId(R.string.error_last_name),
+                                            message = StringResourceId(R.string.features_admin_error_last_name),
                                         ),
                                 )
                             }
@@ -118,7 +118,7 @@ class UpdatePharmacistViewModel(
                                     isLoading = false,
                                     effect =
                                         PharmacistEffect.ShowError(
-                                            message = StringResourceId(R.string.error_pharmacy),
+                                            message = StringResourceId(R.string.features_admin_error_pharmacy),
                                         ),
                                 )
                             }
@@ -130,7 +130,7 @@ class UpdatePharmacistViewModel(
                                     isLoading = false,
                                     effect =
                                         PharmacistEffect.ShowError(
-                                            message = StringResourceId(R.string.error_invalid_email),
+                                            message = StringResourceId(R.string.features_admin_error_invalid_email),
                                         ),
                                 )
                             }
@@ -143,7 +143,7 @@ class UpdatePharmacistViewModel(
                                     isLoading = false,
                                     effect =
                                         PharmacistEffect.ShowError(
-                                            message = StringResourceId(R.string.error_phone),
+                                            message = StringResourceId(R.string.features_admin_error_phone),
                                         ),
                                 )
                             }

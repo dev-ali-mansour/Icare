@@ -36,7 +36,6 @@ import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import eg.edu.cu.csds.icare.core.ui.view.StaffView
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -142,7 +141,7 @@ private fun StaffListContent(
         if (uiState.staffList.isEmpty()) {
             EmptyContentView(
                 modifier = Modifier.fillMaxSize(),
-                text = stringResource(CoreR.string.no_center_staff_data),
+                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_no_center_staff_data),
             )
         } else {
             LazyColumn(

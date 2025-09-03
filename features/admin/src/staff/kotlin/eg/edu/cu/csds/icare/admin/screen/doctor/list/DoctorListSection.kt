@@ -36,7 +36,6 @@ import eg.edu.cu.csds.icare.core.ui.view.DoctorView
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +53,7 @@ fun DoctorListSection(
 
     LaunchedUiEffectHandler(
         viewModel.effect,
-        onConsumeEffect = { viewModel.processEvent(DoctorLisEvent.ConsumeEffect) },
+        onConsumeEffect = { viewModel.processEvent(DoctorListEvent.ConsumeEffect) },
         onEffect = { effect ->
             when (effect) {
                 is DoctorListEffect.NavigateToDoctorDetails -> {
@@ -83,7 +82,7 @@ fun DoctorListSection(
                     state = refreshState,
                     isRefreshing = uiState.isLoading,
                     onRefresh = {
-                        viewModel.processEvent(DoctorLisEvent.Refresh)
+                        viewModel.processEvent(DoctorListEvent.Refresh)
                     },
                 ),
     ) {
@@ -123,7 +122,7 @@ fun DoctorListSection(
 private fun DoctorListContent(
     modifier: Modifier,
     state: DoctorListState,
-    onEvent: (DoctorLisEvent) -> Unit,
+    onEvent: (DoctorListEvent) -> Unit,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
@@ -131,13 +130,13 @@ private fun DoctorListContent(
         val listState = rememberLazyListState()
         val expandedFabState = remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
         LaunchedEffect(key1 = expandedFabState.value) {
-            onEvent(DoctorLisEvent.UpdateFabExpanded(expandedFabState.value))
+            onEvent(DoctorListEvent.UpdateFabExpanded(expandedFabState.value))
         }
 
         if (state.doctors.isEmpty()) {
             EmptyContentView(
                 modifier = Modifier.fillMaxSize(),
-                text = stringResource(CoreR.string.no_doctors_data),
+                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_no_doctors_data),
             )
         } else {
             LazyColumn(
@@ -153,7 +152,7 @@ private fun DoctorListContent(
                     },
                 ) { doctor ->
                     DoctorView(doctor = doctor) {
-                        onEvent(DoctorLisEvent.SelectDoctor(doctor))
+                        onEvent(DoctorListEvent.SelectDoctor(doctor))
                     }
                 }
             }

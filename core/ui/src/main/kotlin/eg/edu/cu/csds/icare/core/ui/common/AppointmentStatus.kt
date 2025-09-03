@@ -8,11 +8,11 @@ sealed class AppointmentStatus(
     @param:StringRes
     val textResId: Int,
 ) {
-    data object PendingStatus : AppointmentStatus(code = 1, textResId = R.string.pending)
+    data object PendingStatus : AppointmentStatus(code = 1, textResId = R.string.core_ui_pending)
 
-    data object ConfirmedStatus : AppointmentStatus(code = 2, textResId = R.string.confirmed)
+    data object ConfirmedStatus : AppointmentStatus(code = 2, textResId = R.string.core_ui_confirmed)
 
-    data object CompletedStatus : AppointmentStatus(code = 3, textResId = R.string.completed)
+    data object CompletedStatus : AppointmentStatus(code = 3, textResId = R.string.core_ui_completed)
 
-    data object CancelledStatus : AppointmentStatus(code = 4, textResId = R.string.cancelled)
+    data object CancelledStatus : AppointmentStatus(code = 4, textResId = R.string.core_ui_cancelled)
 }

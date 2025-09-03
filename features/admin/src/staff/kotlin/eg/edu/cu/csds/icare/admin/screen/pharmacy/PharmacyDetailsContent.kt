@@ -37,13 +37,12 @@ import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun PharmacyDetailsContent(
-    modifier: Modifier = Modifier,
     uiState: PharmacyState,
+    modifier: Modifier = Modifier,
     onEvent: (PharmacyEvent) -> Unit,
 ) {
     ConstraintLayout(
@@ -78,7 +77,7 @@ internal fun PharmacyDetailsContent(
                     onValueChange = { onEvent(PharmacyEvent.UpdateName(it)) },
                     label = {
                         Text(
-                            text = stringResource(CoreR.string.name),
+                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_name),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -111,7 +110,7 @@ internal fun PharmacyDetailsContent(
                     onValueChange = { if (it.length < 14) onEvent(PharmacyEvent.UpdatePhone(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.phone_number),
+                            text = stringResource(R.string.features_admin_phone_number),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -143,7 +142,7 @@ internal fun PharmacyDetailsContent(
                     onValueChange = { onEvent(PharmacyEvent.UpdateAddress(it)) },
                     label = {
                         Text(
-                            text = stringResource(R.string.address),
+                            text = stringResource(R.string.features_admin_address),
                             fontFamily = helveticaFamily,
                             color = textColor,
                         )
@@ -176,7 +175,7 @@ internal fun PharmacyDetailsContent(
                     modifier =
                         Modifier
                             .fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(CoreR.string.proceed),
+                    text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
                     color = buttonBackgroundColor,
                     onClick = { onEvent(PharmacyEvent.Proceed) },
                 )

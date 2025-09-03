@@ -53,26 +53,26 @@ fun Context.isInternetAvailable(): Boolean {
 
 fun Context.getSettingsItems(): ArrayList<SettingsItem> =
     arrayListOf(
-        SettingsItem(Constants.CHANGE_LANGUAGE_CODE, getString(R.string.choose_app_lang)),
-        SettingsItem(Constants.SHARE_CODE, getString(R.string.app_share)),
-        SettingsItem(Constants.RATE_CODE, getString(R.string.app_rate)),
-        SettingsItem(Constants.CONTACT_CODE, getString(R.string.contact_us)),
-        SettingsItem(Constants.ERROR_REPORTING_CODE, getString(R.string.report_us)),
-        SettingsItem(Constants.APPS_CODE, getString(R.string.our_apps)),
-        SettingsItem(Constants.POLICY_CODE, getString(R.string.privacy_policy)),
-        SettingsItem(Constants.ABOUT_CODE, getString(R.string.about_us)),
+        SettingsItem(Constants.CHANGE_LANGUAGE_CODE, getString(R.string.core_ui_choose_app_lang)),
+        SettingsItem(Constants.SHARE_CODE, getString(R.string.core_ui_app_share)),
+        SettingsItem(Constants.RATE_CODE, getString(R.string.core_ui_app_rate)),
+        SettingsItem(Constants.CONTACT_CODE, getString(R.string.core_ui_contact_us)),
+        SettingsItem(Constants.ERROR_REPORTING_CODE, getString(R.string.core_ui_report_us)),
+        SettingsItem(Constants.APPS_CODE, getString(R.string.core_ui_our_apps)),
+        SettingsItem(Constants.POLICY_CODE, getString(R.string.core_ui_privacy_policy)),
+        SettingsItem(Constants.ABOUT_CODE, getString(R.string.core_ui_about_us)),
     )
 
 fun Context.getErrorMessage(error: Throwable?): String =
     when (error) {
-        is SocketTimeoutException, is ConnectException, is UnknownHostException, is FirebaseNetworkException ->
-            getString(R.string.error_server)
+        is SocketTimeoutException, is ConnectException, is UnknownHostException, is FirebaseNetworkException,
+        -> getString(R.string.core_ui_error_server)
 
         is UserNotAuthorizedException, is AccessTokenExpiredException ->
-            getString(R.string.error_user_not_authorized)
+            getString(R.string.core_ui_error_user_not_authorized)
 
-        is FirebaseAuthUserCollisionException -> getString(R.string.error_user_collision)
-        is FirebaseAuthInvalidUserException -> getString(R.string.error_invalid_credentials)
+        is FirebaseAuthUserCollisionException -> getString(R.string.core_ui_error_user_collision)
+        is FirebaseAuthInvalidUserException -> getString(R.string.core_ui_error_invalid_credentials)
 //        is CustomerNotFoundException -> getString(R.string.customer_error)
 
         else -> error?.message.toString()
@@ -83,9 +83,9 @@ fun Context.appShare() {
         val sendIntent = Intent()
         sendIntent.action = Intent.ACTION_SEND
         sendIntent.type = "text/plain"
-        sendIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name))
-        val builder = StringBuilder("${getString(R.string.share_app_text)}\n")
-        builder.append(getString(R.string.app_url))
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.core_ui_app_name))
+        val builder = StringBuilder("${getString(R.string.core_ui_share_app_text)}\n")
+        builder.append(getString(R.string.core_ui_app_url))
         builder.append(packageName)
         sendIntent.putExtra(
             Intent.EXTRA_TEXT,
@@ -94,7 +94,7 @@ fun Context.appShare() {
         startActivity(
             Intent.createChooser(
                 sendIntent,
-                getString(R.string.app_share),
+                getString(R.string.core_ui_app_share),
             ),
         )
     }.onFailure { t -> t.printStackTrace() }
@@ -105,7 +105,7 @@ fun Context.appRate() {
         startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                "${getString(R.string.app_market_url)}$packageName".toUri(),
+                "${getString(R.string.core_ui_app_market_url)}$packageName".toUri(),
             ),
         )
     }.onFailure { t ->
@@ -114,7 +114,7 @@ fun Context.appRate() {
                 startActivity(
                     Intent(
                         Intent.ACTION_VIEW,
-                        "${getString(R.string.app_url)}$packageName".toUri(),
+                        "${getString(R.string.core_ui_app_url)}$packageName".toUri(),
                     ),
                 )
 
@@ -125,14 +125,14 @@ fun Context.appRate() {
 
 fun Context.contactUs() {
     runCatching {
-        val supportMail = arrayOf(getString(R.string.support_email))
+        val supportMail = arrayOf(getString(R.string.core_ui_support_email))
         val intent =
             Intent(Intent.ACTION_SENDTO).apply {
                 data = "mailto:".toUri()
                 putExtra(Intent.EXTRA_EMAIL, supportMail)
                 putExtra(
                     Intent.EXTRA_SUBJECT,
-                    "${getString(R.string.app_name)} - ${getString(R.string.contact_us)}",
+                    "${getString(R.string.core_ui_app_name)} - ${getString(R.string.core_ui_contact_us)}",
                 )
             }
         startActivity(intent)
@@ -142,7 +142,7 @@ fun Context.contactUs() {
                 Toast
                     .makeText(
                         applicationContext,
-                        getString(R.string.no_email_client),
+                        getString(R.string.core_ui_no_email_client),
                         Toast.LENGTH_SHORT,
                     ).show()
 
@@ -160,11 +160,11 @@ fun Context.reportError() {
                 packageManager.getPackageInfo(packageName, 0)
             }
         val builder =
-            StringBuilder("${getString(R.string.app_version)}${pInfo.versionName}\n")
-        builder.append("${getString(R.string.android_version)}${Build.VERSION.SDK_INT}\n")
-        builder.append("${getString(R.string.enter_your_phone)}\n\n")
-        builder.append("${getString(R.string.input_error_details)}\n")
-        val supportMail = arrayOf(getString(R.string.support_email))
+            StringBuilder("${getString(R.string.core_ui_app_version)}${pInfo.versionName}\n")
+        builder.append("${getString(R.string.core_ui_android_version)}${Build.VERSION.SDK_INT}\n")
+        builder.append("${getString(R.string.core_ui_enter_your_phone)}\n\n")
+        builder.append("${getString(R.string.core_ui_input_error_details)}\n")
+        val supportMail = arrayOf(getString(R.string.core_ui_support_email))
 
         val intent =
             Intent(Intent.ACTION_SENDTO).apply {
@@ -172,7 +172,7 @@ fun Context.reportError() {
                 putExtra(Intent.EXTRA_EMAIL, supportMail)
                 putExtra(
                     Intent.EXTRA_SUBJECT,
-                    "${getString(R.string.app_name)} - ${getString(R.string.report_us)}",
+                    "${getString(R.string.core_ui_app_name)} - ${getString(R.string.core_ui_report_us)}",
                 )
                 putExtra(Intent.EXTRA_TEXT, builder.toString())
             }
@@ -183,7 +183,7 @@ fun Context.reportError() {
                 Toast
                     .makeText(
                         applicationContext,
-                        getString(R.string.no_email_client),
+                        getString(R.string.core_ui_no_email_client),
                         Toast.LENGTH_SHORT,
                     ).show()
 
@@ -197,7 +197,7 @@ fun Context.showOurApps() {
         startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                getString(R.string.our_apps_market_url).toUri(),
+                getString(R.string.core_ui_our_apps_market_url).toUri(),
             ),
         )
     }.onFailure { t ->
@@ -206,7 +206,7 @@ fun Context.showOurApps() {
                 startActivity(
                     Intent(
                         Intent.ACTION_VIEW,
-                        getString(R.string.our_apps_url).toUri(),
+                        getString(R.string.core_ui_our_apps_url).toUri(),
                     ),
                 )
 
@@ -216,7 +216,7 @@ fun Context.showOurApps() {
 }
 
 fun Context.showPrivacyPolicy() {
-    openLink(getString(R.string.privacy_policy_url))
+    openLink(getString(R.string.core_ui_privacy_policy_url))
 }
 
 fun Context.openLink(url: String) {
@@ -226,9 +226,9 @@ fun Context.openLink(url: String) {
         val params =
             CustomTabColorSchemeParams
                 .Builder()
-                .setNavigationBarColor(ContextCompat.getColor(this, R.color.blue_500))
-                .setToolbarColor(ContextCompat.getColor(this, R.color.blue_500))
-                .setSecondaryToolbarColor(ContextCompat.getColor(this, R.color.blue_500))
+                .setNavigationBarColor(ContextCompat.getColor(this, R.color.core_ui_blue_500))
+                .setToolbarColor(ContextCompat.getColor(this, R.color.core_ui_blue_500))
+                .setSecondaryToolbarColor(ContextCompat.getColor(this, R.color.core_ui_blue_500))
                 .build()
         intentBuilder.apply {
             setColorSchemeParams(CustomTabsIntent.COLOR_SCHEME_DARK, params)

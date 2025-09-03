@@ -95,7 +95,7 @@ sealed class Route {
     data object DoctorList : Route()
 
     @Serializable
-    data object DoctorProfile : Route()
+    data object Booking : Route()
 
     @Serializable
     data object AppointmentReschedule : Route()

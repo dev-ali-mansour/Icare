@@ -36,7 +36,6 @@ import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -141,7 +140,7 @@ fun CenterListContent(
             EmptyContentView(
                 modifier =
                     Modifier.fillMaxSize(),
-                text = stringResource(CoreR.string.no_centers_data),
+                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_no_centers_data),
             )
         } else {
             LazyColumn(

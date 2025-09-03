@@ -80,8 +80,8 @@ fun DoctorView(
                         ImageRequest
                             .Builder(context)
                             .data(data = doctor.profilePicture)
-                            .placeholder(R.drawable.user_placeholder)
-                            .error(R.drawable.user_placeholder)
+                            .placeholder(R.drawable.core_ui_user_placeholder)
+                            .error(R.drawable.core_ui_user_placeholder)
                             .build(),
                     ),
                 contentDescription = null,

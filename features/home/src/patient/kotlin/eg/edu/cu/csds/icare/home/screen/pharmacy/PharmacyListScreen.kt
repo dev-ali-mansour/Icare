@@ -39,7 +39,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import eg.edu.cu.csds.icare.appointment.R
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
@@ -53,9 +52,9 @@ import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import eg.edu.cu.csds.icare.core.ui.view.PharmacyView
 import eg.edu.cu.csds.icare.core.ui.view.SearchTextField
+import eg.edu.cu.csds.icare.home.R
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
-import eg.edu.cu.csds.icare.core.ui.R as CoreR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,7 +88,11 @@ fun PharmacyListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(CoreR.string.pharmacies)) },
+                title = {
+                    Text(
+                        text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_pharmacies),
+                    )
+                },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = barBackgroundColor,
@@ -198,7 +201,10 @@ private fun PharmacyListContent(
                             end.linkTo(parent.end, M_PADDING)
                             width = Dimension.fillToConstraints
                         },
-                placeholder = stringResource(CoreR.string.search_for_pharmacy),
+                placeholder =
+                    stringResource(
+                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_search_for_pharmacy,
+                    ),
                 value = uiState.searchQuery,
                 focus = false,
                 onValueChange = { onEvent(PharmacyListEvent.UpdateSearchQuery(it)) },
@@ -218,7 +224,7 @@ private fun PharmacyListContent(
                                 width = Dimension.fillToConstraints
                                 height = Dimension.fillToConstraints
                             },
-                    text = stringResource(R.string.no_doctors_available),
+                    text = stringResource(R.string.features_home_no_data_matched),
                 )
             } else {
                 LazyColumn(
