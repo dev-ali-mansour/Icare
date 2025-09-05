@@ -2,6 +2,7 @@ import dev.alimansour.shared.plugins.getSecret
 
 plugins {
     alias(libs.plugins.convention.android.library)
+    alias(libs.plugins.convention.android.library.flavors)
     alias(libs.plugins.convention.android.library.jacoco)
     alias(libs.plugins.convention.android.room)
     alias(libs.plugins.convention.koin)

@@ -142,12 +142,19 @@ gradlePlugin {
                     .pluginId
             implementationClass = "AndroidApplicationFirebaseConventionPlugin"
         }
-        register("androidFlavors") {
+        register("androidApplicationFlavors") {
             id =
                 libs.plugins.convention.android.application.flavors
                     .get()
                     .pluginId
             implementationClass = "AndroidApplicationFlavorsConventionPlugin"
+        }
+        register("androidLibraryFlavors") {
+            id =
+                libs.plugins.convention.android.library.flavors
+                    .get()
+                    .pluginId
+            implementationClass = "AndroidLibraryFlavorsConventionPlugin"
         }
         register("androidLint") {
             id =
