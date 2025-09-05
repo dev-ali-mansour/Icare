@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.convention.android.library)
+    alias(libs.plugins.convention.android.library.flavors)
     alias(libs.plugins.convention.android.library.compose)
     alias(libs.plugins.convention.android.library.jacoco)
     alias(libs.plugins.convention.koin)
