@@ -20,7 +20,6 @@
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
 import dev.alimansour.shared.plugins.TARGET_SDK_VERSION
-import dev.alimansour.shared.plugins.configureFlavors
 import dev.alimansour.shared.plugins.configureKotlinAndroid
 import dev.alimansour.shared.plugins.disableUnnecessaryAndroidTests
 import dev.alimansour.shared.plugins.findPlugin
@@ -42,7 +41,6 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 defaultConfig.targetSdk = TARGET_SDK_VERSION
                 defaultConfig.consumerProguardFiles("consumer-rules.pro")
                 testOptions.animationsDisabled = true
-                configureFlavors(this)
                 // The resource prefix is derived from the module name,
                 // so resources inside ":core:module1" must be prefixed with "core_module1_"
                 resourcePrefix =
