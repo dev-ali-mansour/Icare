@@ -195,6 +195,7 @@ convention-android-application-flavors = { id = "convention.android.application.
 convention-android-application-jacoco = { id = "convention.android.application.jacoco" }
 convention-android-feature = { id = "convention.android.feature" }
 convention-android-library = { id = "convention.android.library" }
+convention-android-library-flavors = { id = "convention.android.library.flavors" }
 convention-android-library-compose = { id = "convention.android.library.compose" }
 convention-android-library-jacoco = { id = "convention.android.library.jacoco" }
 convention-android-lint = { id = "convention.android.lint" }
