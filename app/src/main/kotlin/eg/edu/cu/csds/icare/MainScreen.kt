@@ -15,7 +15,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,7 +40,6 @@ fun MainScreen(splashViewModel: SplashViewModel) {
     var isBottomBarVisible by remember { mutableStateOf(false) }
     val layoutDirection = LocalLayoutDirection.current
     val context = LocalContext.current
-    rememberCoroutineScope()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
