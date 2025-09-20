@@ -39,7 +39,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
 
             dependencies {
                 "implementation"(project(":core:ui"))
-                // "implementation"(project(":core:designsystem"))
+                "implementation"(project(":core:data"))
 
                 val bom = libs.findLibrary("androidx-compose-bom").get()
                 "implementation"(platform(bom))
