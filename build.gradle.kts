@@ -1,3 +1,5 @@
+import nl.littlerobots.vcu.plugin.resolver.VersionSelectors
+
 subprojects {
     tasks {
         withType<Test>().configureEach {
@@ -39,4 +41,17 @@ plugins {
     alias(libs.plugins.secrets) apply false
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.detekt) apply false
+    alias(libs.plugins.version.catalog.update)
+}
+
+versionCatalogUpdate {
+    sortByKey.set(false)
+    versionSelector(VersionSelectors.STABLE)
+    pin {
+        versions.add("kotlin")
+        versions.add("androidGradlePlugin")
+    }
+    keep {
+        versions.add("jacoco")
+    }
 }
