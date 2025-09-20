@@ -19,7 +19,9 @@
 
 import com.android.build.gradle.TestExtension
 import dev.alimansour.shared.plugins.TARGET_SDK_VERSION
+import dev.alimansour.shared.plugins.configureDetekt
 import dev.alimansour.shared.plugins.configureKotlinAndroid
+import dev.alimansour.shared.plugins.configureKtlint
 import dev.alimansour.shared.plugins.findPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -33,6 +35,8 @@ class AndroidTestConventionPlugin : Plugin<Project> {
 
             extensions.configure<TestExtension> {
                 configureKotlinAndroid(this)
+                configureKtlint()
+                configureDetekt()
                 defaultConfig.targetSdk = TARGET_SDK_VERSION
             }
         }

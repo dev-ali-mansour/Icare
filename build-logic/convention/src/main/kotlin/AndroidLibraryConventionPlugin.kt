@@ -21,7 +21,9 @@ import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
 import com.google.devtools.ksp.gradle.KspExtension
 import dev.alimansour.shared.plugins.TARGET_SDK_VERSION
+import dev.alimansour.shared.plugins.configureDetekt
 import dev.alimansour.shared.plugins.configureKotlinAndroid
+import dev.alimansour.shared.plugins.configureKtlint
 import dev.alimansour.shared.plugins.disableUnnecessaryAndroidTests
 import dev.alimansour.shared.plugins.findPlugin
 import dev.alimansour.shared.plugins.libs
@@ -43,6 +45,8 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
+                configureKtlint()
+                configureDetekt()
                 defaultConfig.targetSdk = TARGET_SDK_VERSION
                 defaultConfig.consumerProguardFiles("consumer-rules.pro")
                 testOptions.animationsDisabled = true

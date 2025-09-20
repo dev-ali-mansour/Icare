@@ -20,7 +20,9 @@
 import com.android.build.api.dsl.ApplicationExtension
 import com.google.devtools.ksp.gradle.KspExtension
 import dev.alimansour.shared.plugins.TARGET_SDK_VERSION
+import dev.alimansour.shared.plugins.configureDetekt
 import dev.alimansour.shared.plugins.configureKotlinAndroid
+import dev.alimansour.shared.plugins.configureKtlint
 import dev.alimansour.shared.plugins.findPlugin
 import dev.alimansour.shared.plugins.getSecret
 import dev.alimansour.shared.plugins.libs
@@ -47,6 +49,8 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
+                configureKtlint()
+                configureDetekt()
                 defaultConfig.targetSdk = TARGET_SDK_VERSION
                 testOptions.animationsDisabled = true
                 signingConfigs {
@@ -96,7 +100,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     )
                 }
             }
-
             dependencies {
                 val bom = libs.findLibrary("firebase-bom").get()
                 "implementation"(libs.findLibrary("multidex").get())
