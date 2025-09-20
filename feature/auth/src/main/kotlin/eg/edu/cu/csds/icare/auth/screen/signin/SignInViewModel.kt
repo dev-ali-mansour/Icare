@@ -8,6 +8,7 @@ import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInWithGoogleUseCase
 import eg.edu.cu.csds.icare.core.domain.util.isValidEmail
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
 import kotlinx.coroutines.CoroutineDispatcher
@@ -158,7 +159,7 @@ class SignInViewModel(
                             SignInEffect.ShowError(
                                 message =
                                     StringResourceId(
-                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_error_invalid_credentials,
+                                        string.core_ui_error_invalid_credentials,
                                     ),
                             ),
                     )
