@@ -47,10 +47,11 @@ dependencies {
     compileOnly(libs.firebase.crashlytics.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
+    compileOnly(libs.ktlint.gradle)
+    compileOnly(libs.detekt.gradle)
     implementation(libs.room.gradlePlugin)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.truth)
-    implementation(libs.detekt.gradle)
     lintChecks(libs.androidx.lint.gradle)
 }
 
@@ -58,6 +59,12 @@ tasks {
     validatePlugins {
         enableStricterValidation = true
         failOnWarning = true
+    }
+    withType<JavaCompile> {
+        inputs.files(rootProject.file("gradle/libs.versions.toml"))
+    }
+    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        inputs.files(rootProject.file("gradle/libs.versions.toml"))
     }
 }
 
