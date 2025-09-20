@@ -48,7 +48,6 @@ versionCatalogUpdate {
     sortByKey.set(false)
     versionSelector(VersionSelectors.STABLE)
     pin {
-        versions.add("kotlin")
         versions.add("androidGradlePlugin")
     }
     keep {
