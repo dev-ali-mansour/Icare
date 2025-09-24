@@ -33,8 +33,8 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Delete
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.named
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -75,9 +75,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             }
 
             tasks {
-                getByPath("preBuild").dependsOn("ktlintFormat").dependsOn("detekt")
-
-                getByName<Delete>("clean") {
+                named<Delete>("clean") {
                     delete.addAll(
                         listOf(
                             "${rootProject.projectDir}/build/reports/detekt",

@@ -51,7 +51,9 @@ firebasePerfPlugin = "2.0.1"
 dependencyGuard = "0.5.0"
 secrets = "2.0.1"
 jacoco = "0.8.12"
+moduleGraph = "2.9.0"
 versionCatlogUpdate = "1.0.0"
+playReview = "2.0.2"
 
 [libraries]
 # AndroidX Compose
@@ -76,6 +78,7 @@ androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx"
 androidx-lifecycle-runtimeCompose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
 androidx-lifecycle-viewModelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
 androidx-lint-gradle = { module = "androidx.lint:lint-gradle", version.ref = "androidxLintGradle" }
+play-review = { module = "com.google.android.play:review-ktx", version.ref = "playReview" }
 app-update = { module = "com.google.android.play:app-update-ktx", version.ref = "appUpdates" }
 androidx-browser = { module = "androidx.browser:browser", version.ref = "androidxBrowser" }
 multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
@@ -240,6 +243,7 @@ firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "
 firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerfPlugin" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+module-graph = { id = "com.jraska.module.graph.assertion", version.ref = "moduleGraph" }
 room = { id = "androidx.room", version.ref = "room" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }

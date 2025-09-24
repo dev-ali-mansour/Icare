@@ -32,8 +32,8 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Delete
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.named
 import java.io.File
 
 class AndroidApplicationConventionPlugin : Plugin<Project> {
@@ -55,8 +55,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 testOptions.animationsDisabled = true
                 signingConfigs {
                     create("release") {
-                        val keystoreFile = rootProject.file("release-key.jks")
-                        storeFile = keystoreFile
+                        storeFile = project.rootProject.file("release-key.jks")
                         storePassword = project.getSecret("KEYSTORE_PASSWORD")
                         keyAlias = project.getSecret("KEY_ALIAS")
                         keyPassword = project.getSecret("KEY_PASSWORD")
@@ -89,9 +88,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             }
 
             tasks {
-                getByPath("preBuild").dependsOn("ktlintFormat").dependsOn("detekt")
-
-                getByName<Delete>("clean") {
+                named<Delete>("clean") {
                     delete.addAll(
                         listOf(
                             "${rootProject.projectDir}/build/reports/detekt",
@@ -105,6 +102,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 "implementation"(libs.findLibrary("multidex").get())
                 "implementation"(libs.findLibrary("splashScreen").get())
                 "implementation"(libs.findLibrary("app.update").get())
+                "implementation"(libs.findLibrary("play.review").get())
                 "implementation"(libs.findBundle("lifecycle").get())
                 "implementation"(platform(bom))
                 "implementation"(libs.findBundle("firebase").get())

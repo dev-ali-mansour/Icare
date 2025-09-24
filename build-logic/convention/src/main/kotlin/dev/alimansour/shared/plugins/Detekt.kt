@@ -7,8 +7,8 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.tasks.Delete
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
@@ -96,12 +96,13 @@ internal fun Project.configureDetekt() {
             finalizedBy(reportMerge)
         }
 
-        getByPath("preBuild")
-            .dependsOn(":versionCatalogUpdate")
-            .dependsOn("ktlintFormat")
-            .dependsOn("detekt")
+        named("preBuild") {
+            dependsOn(":versionCatalogUpdate")
+            dependsOn("ktlintFormat")
+            dependsOn("detekt")
+        }
 
-        getByName<Delete>("clean") {
+        named<Delete>("clean") {
             delete.addAll(
                 listOf(
                     "${rootProject.projectDir}/build/reports/detekt",

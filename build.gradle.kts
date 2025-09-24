@@ -41,7 +41,8 @@ plugins {
     alias(libs.plugins.secrets) apply false
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.detekt) apply false
-    alias(libs.plugins.version.catalog.update)
+    alias(libs.plugins.version.catalog.update) apply true
+    alias(libs.plugins.module.graph) apply true
 }
 
 versionCatalogUpdate {
