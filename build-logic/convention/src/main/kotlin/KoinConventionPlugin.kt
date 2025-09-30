@@ -17,9 +17,11 @@
  * Original source: https://github.com/android/nowinandroid
  */
 
+import com.google.devtools.ksp.gradle.KspExtension
 import dev.alimansour.shared.plugins.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
 class KoinConventionPlugin : Plugin<Project> {
@@ -27,19 +29,19 @@ class KoinConventionPlugin : Plugin<Project> {
         with(target) {
             pluginManager.apply("com.google.devtools.ksp")
 
+            extensions.configure<KspExtension> {
+                arg("KOIN_DEFAULT_MODULE", "false")
+            }
+
             dependencies {
                 "implementation"(platform(libs.findLibrary("koin.bom").get()))
-                "implementation"(libs.findLibrary("koin.core").get())
-                "implementation"(libs.findLibrary("koin.annotations").get())
+                "implementation"(libs.findBundle("koin.core").get())
                 "ksp"(libs.findLibrary("koin.ksp.compiler").get())
             }
 
             pluginManager.withPlugin("org.jetbrains.kotlin.android") {
                 dependencies {
-                    // Compose-specific Koin support
-                    "implementation"(libs.findLibrary("koin.androidx.compose").get())
-                    "implementation"(libs.findLibrary("koin-androidx-compose-navigation").get())
-                    "implementation"(libs.findLibrary("koin-androidx-workmanager").get())
+                    "implementation"(libs.findBundle("koin.android").get())
                 }
             }
 

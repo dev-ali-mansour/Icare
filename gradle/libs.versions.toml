@@ -50,6 +50,8 @@ crashlyticsPlugin = "3.0.5"
 firebasePerfPlugin = "2.0.0"
 dependencyGuard = "0.5.0"
 secrets = "2.0.1"
+moduleGraph = "2.9.0"
+versionCatlogUpdate = "1.0.1"
 jacoco = "0.8.12"
 
 [libraries]
@@ -88,6 +90,7 @@ coroutine-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", ver
 # Koin
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koinBom" }
 koin-core = { module = "io.insert-koin:koin-core" }
+koin-android = { module = "io.insert-koin:koin-android" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose" }
 koin-androidx-compose-navigation = { module = "io.insert-koin:koin-androidx-compose-navigation" }
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koinAnnotations" }
@@ -120,6 +123,7 @@ sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
 
 # Other Libraries
 splashScreen = { module = "androidx.core:core-splashscreen", version.ref = "splashScreen" }
+ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
 lint-api = { group = "com.android.tools.lint", name = "lint-api", version.ref = "androidTools" }
 lint-checks = { group = "com.android.tools.lint", name = "lint-checks", version.ref = "androidTools" }
 lint-tests = { group = "com.android.tools.lint", name = "lint-tests", version.ref = "androidTools" }
@@ -157,8 +161,29 @@ room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", vers
 
 [bundles]
 appcompat = ["appcompat", "appcompat-resources"]
-compose = ["androidx-activity-compose", "androidx-compose-foundation", "androidx-ui", "androidx-compose-ui-tooling", "androidx-compose-ui-tooling-preview", "androidx-ui-graphics", "compose-runtime", "compose-animation", "androidx-material3", "androidx-constraintlayout", "androidx-navigation"]
-koin-android = ["koin-androidx-compose", "koin-androidx-compose-navigation", "koin-androidx-workmanager"]
+compose = [
+    "androidx-activity-compose",
+    "androidx-compose-foundation",
+    "androidx-ui",
+    "androidx-compose-ui-tooling",
+    "androidx-compose-ui-tooling-preview",
+    "androidx-ui-graphics",
+    "compose-runtime",
+    "compose-animation",
+    "androidx-material3",
+    "androidx-constraintlayout",
+    "androidx-navigation"
+]
+koin-core = [
+    "koin-core",
+    "koin-annotations",
+]
+koin-android = [
+    "koin-android",
+    "koin-androidx-compose",
+    "koin-androidx-compose-navigation",
+    "koin-androidx-workmanager",
+]
 coil = ["coil-compose", "coil-gif"]
 firebase = ["firebase-crashlytics", "firebase-messaging", "firebase-auth", "androidx-credentials", "credentials-play-services-auth", "identity-googleid"]
 lifecycle = ["androidx-lifecycle-runtimeCompose", "androidx-lifecycle-viewModelCompose"]
@@ -182,11 +207,12 @@ firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "
 firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerfPlugin" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+module-graph = { id = "com.jraska.module.graph.assertion", version.ref = "moduleGraph" }
 room = { id = "androidx.room", version.ref = "room" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-
+version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "versionCatlogUpdate" }
 # Plugins defined by this project
 convention-android-application = { id = "convention.android.application" }
 convention-android-application-compose = { id = "convention.android.application.compose" }
