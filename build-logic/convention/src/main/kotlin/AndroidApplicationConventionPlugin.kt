@@ -53,9 +53,13 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 configureDetekt()
                 defaultConfig.targetSdk = TARGET_SDK_VERSION
                 testOptions.animationsDisabled = true
+                bundle.language.enableSplit = false
                 signingConfigs {
                     create("release") {
-                        storeFile = project.rootProject.file("release-key.jks")
+                        storeFile =
+                            project.rootProject.layout.projectDirectory
+                                .file("release-key.jks")
+                                .asFile
                         storePassword = project.getSecret("KEYSTORE_PASSWORD")
                         keyAlias = project.getSecret("KEY_ALIAS")
                         keyPassword = project.getSecret("KEY_PASSWORD")
@@ -64,7 +68,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     }
 
                     getByName("debug") {
-                        storeFile = File(project.rootProject.rootDir, "debug.keystore")
+                        storeFile = File(System.getProperty("user.home"), ".android/debug.keystore")
                         storePassword = "android"
                         keyAlias = "androiddebugkey"
                         keyPassword = "android"
@@ -102,7 +106,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 "implementation"(libs.findLibrary("multidex").get())
                 "implementation"(libs.findLibrary("splashScreen").get())
                 "implementation"(libs.findLibrary("app.update").get())
-                "implementation"(libs.findLibrary("play.review").get())
                 "implementation"(libs.findBundle("lifecycle").get())
                 "implementation"(platform(bom))
                 "implementation"(libs.findBundle("firebase").get())

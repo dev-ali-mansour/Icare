@@ -60,12 +60,6 @@ tasks {
         enableStricterValidation = true
         failOnWarning = true
     }
-    withType<JavaCompile> {
-        inputs.files(rootProject.file("gradle/libs.versions.toml"))
-    }
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        inputs.files(rootProject.file("gradle/libs.versions.toml"))
-    }
 }
 
 gradlePlugin {

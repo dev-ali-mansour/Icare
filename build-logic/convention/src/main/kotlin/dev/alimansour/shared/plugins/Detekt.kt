@@ -97,7 +97,9 @@ internal fun Project.configureDetekt() {
         }
 
         named("preBuild") {
-            dependsOn(":versionCatalogUpdate")
+            if (project.path == ":app") {
+                dependsOn(":versionCatalogUpdate")
+            }
             dependsOn("ktlintFormat")
             dependsOn("detekt")
         }
