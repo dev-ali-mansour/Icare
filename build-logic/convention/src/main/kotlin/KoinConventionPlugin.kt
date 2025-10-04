@@ -35,18 +35,13 @@ class KoinConventionPlugin : Plugin<Project> {
 
             dependencies {
                 "implementation"(platform(libs.findLibrary("koin.bom").get()))
-                "implementation"(libs.findLibrary("koin.core").get())
-                "implementation"(libs.findLibrary("koin.annotations").get())
+                "implementation"(libs.findBundle("koin.core").get())
                 "ksp"(libs.findLibrary("koin.ksp.compiler").get())
             }
 
             pluginManager.withPlugin("org.jetbrains.kotlin.android") {
                 dependencies {
-                    // Android core Koin and Compose-specific Koin support
-                    "implementation"(libs.findLibrary("koin.android").get())
-                    "implementation"(libs.findLibrary("koin.androidx.compose").get())
-                    "implementation"(libs.findLibrary("koin.androidx.compose.navigation").get())
-                    "implementation"(libs.findLibrary("koin.androidx.workmanager").get())
+                    "implementation"(libs.findBundle("koin.android").get())
                 }
             }
 
