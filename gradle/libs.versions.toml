@@ -170,7 +170,12 @@ compose = [
     "compose-animation",
     "compose-runtime",
 ]
+koin-core = [
+    "koin-annotations",
+    "koin-core",
+]
 koin-android = [
+    "koin-android",
     "koin-androidx-compose",
     "koin-androidx-compose-navigation",
     "koin-androidx-workmanager",
