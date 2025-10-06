@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
+import eg.edu.cu.csds.icare.core.ui.R.string
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +41,7 @@ internal fun AboutScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_about_us),
+                        text = stringResource(id = string.core_ui_about_us),
                     )
                 },
                 colors =

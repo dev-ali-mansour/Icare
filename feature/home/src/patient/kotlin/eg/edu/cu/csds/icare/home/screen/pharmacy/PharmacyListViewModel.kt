@@ -101,7 +101,7 @@ class PharmacyListViewModel(
             }.launchIn(viewModelScope)
     }
 
-    fun launchSearchPharmacies(query: String) =
+    private fun launchSearchPharmacies(query: String) =
         viewModelScope.launch(dispatcher) {
             _uiState.update { it.copy(isLoading = true) }
             listPharmaciesUseCase().collect { result ->
