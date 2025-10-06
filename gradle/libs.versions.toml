@@ -53,8 +53,6 @@ secrets = "2.0.1"
 moduleGraph = "2.9.0"
 versionCatlogUpdate = "1.0.1"
 jacoco = "0.8.12"
-moduleGraph = "2.9.0"
-versionCatlogUpdate = "1.0.1"
 playReview = "2.0.2"
 
 [libraries]
@@ -122,7 +120,6 @@ sqlcipher = { module = "net.zetetic:sqlcipher-android", version.ref = "sqlcipher
 sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
 # Other Libraries
 splashScreen = { module = "androidx.core:core-splashscreen", version.ref = "splashScreen" }
-ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
 lint-api = { group = "com.android.tools.lint", name = "lint-api", version.ref = "androidTools" }
 lint-checks = { group = "com.android.tools.lint", name = "lint-checks", version.ref = "androidTools" }
 lint-tests = { group = "com.android.tools.lint", name = "lint-tests", version.ref = "androidTools" }
