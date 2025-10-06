@@ -6,7 +6,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import eg.edu.cu.csds.icare.feature.admin.di.AdminModule
 import eg.edu.cu.csds.icare.appointment.di.AppointmentsModule
 import eg.edu.cu.csds.icare.auth.di.AuthModule
-import eg.edu.cu.csds.icare.consultation.di.ConsultationsModule
+import eg.edu.cu.csds.icare.feature.consultation.di.ConsultationsModule
 import eg.edu.cu.csds.icare.core.ui.di.CoreUiModule
 import eg.edu.cu.csds.icare.home.di.HomeModule
 import eg.edu.cu.csds.icare.notification.di.NotificationsModule
