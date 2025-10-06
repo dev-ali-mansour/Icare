@@ -61,6 +61,7 @@ import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.Promotion
 import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.domain.util.Constants
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.AppService
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
@@ -561,7 +562,7 @@ private fun HomeContent(
         }
 
         Text(
-            text = stringResource(id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_made_by),
+            text = stringResource(id = string.core_ui_made_by),
             modifier =
                 Modifier
                     .constrainAs(marquee) {

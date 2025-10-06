@@ -54,6 +54,7 @@ import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
 import eg.edu.cu.csds.icare.core.ui.view.ConfirmDialog
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.home.R
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.home.component.UserTitleView
 import eg.edu.cu.csds.icare.home.screen.admin.AdminContent
 import eg.edu.cu.csds.icare.home.screen.clinic.ClinicianContent
@@ -134,11 +135,11 @@ internal fun HomeScreen(
                     backgroundColor = backgroundColor,
                     title =
                         stringResource(
-                            id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_exit_dialog_title,
+                            id = string.core_ui_exit_dialog_title,
                         ),
                     message =
                         stringResource(
-                            id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_exit_dialog,
+                            id = string.core_ui_exit_dialog,
                         ),
                     onDismissRequest = {
                         viewModel.processEvent(HomeEvent.UpdateOpenDialog(isOpen = false))
@@ -282,7 +283,7 @@ private fun HomeContent(
         }
 
         Text(
-            text = stringResource(id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_made_by),
+            text = stringResource(id = string.core_ui_made_by),
             modifier =
                 Modifier
                     .constrainAs(marquee) {

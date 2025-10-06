@@ -23,12 +23,12 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -64,6 +64,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.auth.R
 import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
+import eg.edu.cu.csds.icare.core.ui.R.drawable
 import eg.edu.cu.csds.icare.core.ui.common.GenderItem
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.theme.Blue200
@@ -416,7 +417,7 @@ private fun SignUpContent(
                             modifier = Modifier.clickable { openDatePicker() },
                             painter =
                                 painterResource(
-                                    id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_baseline_calendar_month_24,
+                                    id = drawable.core_ui_baseline_calendar_month_24,
                                 ),
                             contentDescription = "",
                         )
@@ -433,7 +434,7 @@ private fun SignUpContent(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .menuAnchor(MenuAnchorType.PrimaryNotEditable),
+                                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
                         readOnly = true,
                         value =
                             genders.firstOrNull { it.code == state.gender }?.textResId?.let {

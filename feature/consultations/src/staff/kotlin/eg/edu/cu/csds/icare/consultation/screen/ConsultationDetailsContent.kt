@@ -27,11 +27,11 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -69,6 +69,8 @@ import eg.edu.cu.csds.icare.core.data.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
+import eg.edu.cu.csds.icare.core.ui.R.drawable
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.CONSULTATION_PATIENT_CARD_HEIGHT
@@ -208,11 +210,9 @@ internal fun ConsultationDetailsContent(
                                     ImageRequest
                                         .Builder(context)
                                         .data(data = uiState.appointment.patientImage)
-                                        .placeholder(
-                                            eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
-                                        ).error(
-                                            eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
-                                        ).build(),
+                                        .placeholder(drawable.core_ui_user_placeholder)
+                                        .error(drawable.core_ui_user_placeholder)
+                                        .build(),
                                 ),
                             contentDescription = null,
                             contentScale = ContentScale.Fit,
@@ -235,11 +235,9 @@ internal fun ConsultationDetailsContent(
                                     ImageRequest
                                         .Builder(context)
                                         .data(data = uiState.appointment.patientImage)
-                                        .placeholder(
-                                            eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
-                                        ).error(
-                                            eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
-                                        ).build(),
+                                        .placeholder(drawable.core_ui_user_placeholder)
+                                        .error(drawable.core_ui_user_placeholder)
+                                        .build(),
                                 ),
                             contentDescription = null,
                             contentScale = ContentScale.Fit,
@@ -262,10 +260,7 @@ internal fun ConsultationDetailsContent(
                         )
 
                         Text(
-                            text =
-                                stringResource(
-                                    eg.edu.cu.csds.icare.core.ui.R.string.core_ui_view_medical_record,
-                                ),
+                            text = stringResource(string.core_ui_view_medical_record),
                             modifier =
                                 Modifier.constrainAs(message) {
                                     top.linkTo(name.bottom, margin = S_PADDING)
@@ -345,7 +340,7 @@ internal fun ConsultationDetailsContent(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .menuAnchor(MenuAnchorType.PrimaryNotEditable),
+                                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
                         readOnly = true,
                         value =
                             uiState.pharmacies
@@ -471,17 +466,14 @@ internal fun ConsultationDetailsContent(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .menuAnchor(MenuAnchorType.PrimaryNotEditable),
+                                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
                         readOnly = true,
                         value =
                             labCenters.firstOrNull { it.id == uiState.labCenterId }?.name ?: "",
                         onValueChange = { },
                         label = {
                             Text(
-                                text =
-                                    stringResource(
-                                        eg.edu.cu.csds.icare.admin.R.string.feature_admin_lab_center,
-                                    ),
+                                text = stringResource(string.core_ui_lab_center),
                                 color = dropDownTextColor,
                             )
                         },
@@ -564,7 +556,7 @@ internal fun ConsultationDetailsContent(
                 val labTestsStatus =
                     stringResource(
                         statusList.firstOrNull { it.code == uiState.labTestStatusId }?.textResId
-                            ?: eg.edu.cu.csds.icare.core.ui.R.string.core_ui_pending,
+                            ?: string.core_ui_pending,
                     )
                 Text(
                     text = "${
@@ -594,7 +586,7 @@ internal fun ConsultationDetailsContent(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .menuAnchor(MenuAnchorType.PrimaryNotEditable),
+                                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
                         readOnly = true,
                         value =
                             imagingCenters.firstOrNull { it.id == uiState.imagingCenterId }?.name
@@ -745,10 +737,7 @@ internal fun ConsultationDetailsContent(
                     trailingIcon = {
                         Icon(
                             modifier = Modifier.clickable { openDatePicker() },
-                            painter =
-                                painterResource(
-                                    id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_baseline_calendar_month_24,
-                                ),
+                            painter = painterResource(id = drawable.core_ui_baseline_calendar_month_24),
                             contentDescription = "",
                         )
                     },
@@ -762,7 +751,7 @@ internal fun ConsultationDetailsContent(
                         modifier =
                             Modifier
                                 .fillMaxWidth(fraction = 0.6f),
-                        text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
+                        text = stringResource(string.core_ui_proceed),
                         color = buttonBackgroundColor,
                         onClick = { onEvent(ConsultationEvent.Proceed) },
                     )

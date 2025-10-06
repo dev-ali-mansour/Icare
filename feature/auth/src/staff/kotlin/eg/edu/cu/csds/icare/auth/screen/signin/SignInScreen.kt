@@ -56,6 +56,8 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.auth.R
+import eg.edu.cu.csds.icare.core.ui.R.string
+import eg.edu.cu.csds.icare.core.ui.R.drawable
 import eg.edu.cu.csds.icare.auth.util.handleSignIn
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
@@ -374,7 +376,7 @@ private fun SignInContent(
                 Spacer(modifier = Modifier.height(S_PADDING))
 
                 Text(
-                    text = stringResource(id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_or),
+                    text = stringResource(id = string.core_ui_or),
                     fontSize = MaterialTheme.typography.titleSmall.fontSize,
                     fontFamily = helveticaFamily,
                     textAlign = TextAlign.Center,
@@ -394,7 +396,7 @@ private fun SignInContent(
                 ) {
                     SocialSignInButton(
                         modifier = Modifier.fillMaxWidth(fraction = 0.8f),
-                        iconId = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_ic_social_google,
+                        iconId = drawable.core_ui_ic_social_google,
                     ) {
                         onEvent(SignInEvent.SignInWithGoogle)
                     }
