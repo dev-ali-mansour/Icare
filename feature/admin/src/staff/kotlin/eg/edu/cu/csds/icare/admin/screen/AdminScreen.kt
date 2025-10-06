@@ -36,6 +36,7 @@ import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacist
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 import eg.edu.cu.csds.icare.core.domain.model.Staff
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
@@ -66,7 +67,7 @@ internal fun AdminScreen(
                     Text(
                         text =
                             stringResource(
-                                id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_sections_admin,
+                                id = string.core_ui_sections_admin,
                             ),
                     )
                 },

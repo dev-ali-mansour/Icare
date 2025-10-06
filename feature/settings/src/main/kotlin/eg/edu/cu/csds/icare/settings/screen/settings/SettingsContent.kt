@@ -45,6 +45,7 @@ import eg.edu.cu.csds.icare.core.ui.util.currentLanguage
 import eg.edu.cu.csds.icare.core.ui.util.getSettingsItems
 import eg.edu.cu.csds.icare.core.ui.view.RadioButtonGroupWithHeader
 import eg.edu.cu.csds.icare.settings.R
+import eg.edu.cu.csds.icare.core.ui.R.string
 
 @Composable
 internal fun SettingsContent(
@@ -63,15 +64,15 @@ internal fun SettingsContent(
                     Constants.CHANGE_LANGUAGE_CODE ->
                         RadioButtonGroupWithHeader(
                             stringResource(
-                                id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_choose_app_lang,
+                                id = string.core_ui_choose_app_lang,
                             ),
                             radioOptions =
                                 listOf(
                                     stringResource(
-                                        id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_radio_lang_english,
+                                        id = string.core_ui_radio_lang_english,
                                     ),
                                     stringResource(
-                                        id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_radio_lang_arabic,
+                                        id = string.core_ui_radio_lang_arabic,
                                     ),
                                 ),
                             selected = selectedLanguage,

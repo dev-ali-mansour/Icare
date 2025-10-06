@@ -57,6 +57,7 @@ import eg.edu.cu.csds.icare.core.data.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.Consultation
 import eg.edu.cu.csds.icare.core.domain.model.MedicalRecord
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
@@ -116,7 +117,7 @@ internal fun MedicalRecordScreen(
                     Text(
                         text =
                             stringResource(
-                                id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_medical_record,
+                                id = string.core_ui_medical_record,
                             ),
                     )
                 },

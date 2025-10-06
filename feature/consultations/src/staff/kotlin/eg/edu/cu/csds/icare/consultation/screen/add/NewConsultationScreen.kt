@@ -44,6 +44,7 @@ import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
+import eg.edu.cu.csds.icare.consultation.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,7 +91,7 @@ internal fun NewConsultationScreen(
                     Text(
                         text =
                             stringResource(
-                                id = eg.edu.cu.csds.icare.consultation.R.string.feature_consultations_new_consultation,
+                                id = R.string.feature_consultations_new_consultation,
                             ),
                     )
                 },

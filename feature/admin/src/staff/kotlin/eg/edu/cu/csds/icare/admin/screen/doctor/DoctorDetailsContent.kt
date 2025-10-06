@@ -18,10 +18,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,6 +41,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.admin.R
 import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
+import eg.edu.cu.csds.icare.core.ui.R.drawable
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
@@ -166,7 +167,7 @@ internal fun DoctorDetailsContent(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .menuAnchor(MenuAnchorType.PrimaryNotEditable),
+                                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
                         readOnly = true,
                         value =
                             uiState.clinics.firstOrNull { it.id == uiState.clinicId }?.name ?: "",
@@ -385,10 +386,7 @@ internal fun DoctorDetailsContent(
                                         true,
                                     ).show()
                                 },
-                            painter =
-                                painterResource(
-                                    id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_baseline_calendar_month_24,
-                                ),
+                            painter = painterResource(id = drawable.core_ui_baseline_calendar_month_24),
                             contentDescription = "",
                         )
                     },
@@ -451,7 +449,7 @@ internal fun DoctorDetailsContent(
                                 },
                             painter =
                                 painterResource(
-                                    id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_baseline_calendar_month_24,
+                                    id = drawable.core_ui_baseline_calendar_month_24,
                                 ),
                             contentDescription = "",
                         )
