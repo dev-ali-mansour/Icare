@@ -4,7 +4,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import eg.edu.cu.csds.icare.feature.admin.screen.doctor.SelectedDoctorViewModel
-import eg.edu.cu.csds.icare.appointment.screen.SelectedAppointmentViewModel
+import eg.edu.cu.csds.icare.feature.appointment.screen.SelectedAppointmentViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.feature.home.screen.home.HomeScreen
 
