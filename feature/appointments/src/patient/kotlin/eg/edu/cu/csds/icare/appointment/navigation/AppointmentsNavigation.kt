@@ -5,7 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import eg.edu.cu.csds.icare.admin.screen.doctor.SelectedDoctorViewModel
+import eg.edu.cu.csds.icare.feature.admin.screen.doctor.SelectedDoctorViewModel
 import eg.edu.cu.csds.icare.appointment.screen.SelectedAppointmentViewModel
 import eg.edu.cu.csds.icare.appointment.screen.appointments.MyAppointmentsScreen
 import eg.edu.cu.csds.icare.appointment.screen.booking.BookingEvent

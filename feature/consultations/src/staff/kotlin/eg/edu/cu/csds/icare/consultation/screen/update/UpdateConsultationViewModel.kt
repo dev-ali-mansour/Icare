@@ -2,7 +2,7 @@ package eg.edu.cu.csds.icare.consultation.screen.update
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.admin.R
+import eg.edu.cu.csds.icare.feature.admin.R
 import eg.edu.cu.csds.icare.consultation.screen.ConsultationEffect
 import eg.edu.cu.csds.icare.consultation.screen.ConsultationEvent
 import eg.edu.cu.csds.icare.consultation.screen.ConsultationState
