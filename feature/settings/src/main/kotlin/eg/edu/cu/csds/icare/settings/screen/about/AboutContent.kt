@@ -36,6 +36,8 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.util.currentLanguage
 import eg.edu.cu.csds.icare.core.ui.util.openLink
+import eg.edu.cu.csds.icare.core.ui.R.string
+import eg.edu.cu.csds.icare.core.ui.R.drawable
 
 @Composable
 internal fun AboutContent(
@@ -58,7 +60,7 @@ internal fun AboutContent(
                 },
             text = "${
                 stringResource(
-                    id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_version,
+                    id = string.core_ui_version,
                 )
             } $appVersion",
             color = textColor,
@@ -74,7 +76,7 @@ internal fun AboutContent(
                     top.linkTo(version.bottom)
                     start.linkTo(version.start)
                 },
-            text = stringResource(id = eg.edu.cu.csds.icare.core.ui.R.string.core_ui_about),
+            text = stringResource(id = string.core_ui_about),
             color = textColor.copy(alpha = 0.6f),
             fontSize = MaterialTheme.typography.titleMedium.fontSize,
             fontFamily = helveticaFamily,
@@ -111,7 +113,7 @@ internal fun AboutContent(
                             context.getString(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_website_url),
                         )
                     },
-            painter = painterResource(id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_logo),
+            painter = painterResource(id = drawable.core_ui_logo),
             contentScale = ContentScale.Fit,
             contentDescription = null,
         )
@@ -139,7 +141,7 @@ internal fun AboutContent(
                         },
                 painter =
                     painterResource(
-                        id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_ic_social_facebook,
+                        id = drawable.core_ui_ic_social_facebook,
                     ),
                 contentScale = ContentScale.Fit,
                 contentDescription = null,
@@ -157,7 +159,7 @@ internal fun AboutContent(
                         },
                 painter =
                     painterResource(
-                        id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_ic_social_twitter,
+                        id = drawable.core_ui_ic_social_twitter,
                     ),
                 contentScale = ContentScale.Fit,
                 contentDescription = null,
@@ -175,7 +177,7 @@ internal fun AboutContent(
                         },
                 painter =
                     painterResource(
-                        id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_ic_social_linkedin,
+                        id = drawable.core_ui_ic_social_linkedin,
                     ),
                 contentScale = ContentScale.Fit,
                 contentDescription = null,
@@ -193,7 +195,7 @@ internal fun AboutContent(
                         },
                 painter =
                     painterResource(
-                        id = eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_ic_social_youtube,
+                        id = drawable.core_ui_ic_social_youtube,
                     ),
                 contentScale = ContentScale.Fit,
                 contentDescription = null,

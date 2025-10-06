@@ -59,6 +59,7 @@ import eg.edu.cu.csds.icare.appointment.screen.TimeSlotSelector
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.util.getAvailableTimeSlots
+import eg.edu.cu.csds.icare.core.ui.R.drawable
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
@@ -264,9 +265,9 @@ private fun BookingContent(
                                             .Builder(context)
                                             .data(data = doctor.profilePicture)
                                             .placeholder(
-                                                eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
+                                                drawable.core_ui_user_placeholder,
                                             ).error(
-                                                eg.edu.cu.csds.icare.core.ui.R.drawable.core_ui_user_placeholder,
+                                                drawable.core_ui_user_placeholder,
                                             ).build(),
                                     ),
                                 contentDescription = null,
