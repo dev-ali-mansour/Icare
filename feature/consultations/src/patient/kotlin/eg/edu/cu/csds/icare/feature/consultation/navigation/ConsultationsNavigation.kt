@@ -5,12 +5,12 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import eg.edu.cu.csds.icare.consultation.screen.MedicalRecordEvent
-import eg.edu.cu.csds.icare.consultation.screen.MedicalRecordScreen
-import eg.edu.cu.csds.icare.consultation.screen.MedicalRecordViewModel
-import eg.edu.cu.csds.icare.consultation.screen.SelectedConsultationViewModel
-import eg.edu.cu.csds.icare.consultation.screen.SelectedPatientViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
+import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordEvent
+import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordScreen
+import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordViewModel
+import eg.edu.cu.csds.icare.feature.consultation.screen.SelectedConsultationViewModel
+import eg.edu.cu.csds.icare.feature.consultation.screen.SelectedPatientViewModel
 import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.consultationsRoute(

@@ -14,13 +14,13 @@ import eg.edu.cu.csds.icare.feature.admin.screen.doctor.SelectedDoctorViewModel
 import eg.edu.cu.csds.icare.appointment.navigation.appointmentsRoute
 import eg.edu.cu.csds.icare.appointment.screen.SelectedAppointmentViewModel
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute
-import eg.edu.cu.csds.icare.consultation.navigation.consultationsRoute
-import eg.edu.cu.csds.icare.consultation.screen.SelectedConsultationViewModel
-import eg.edu.cu.csds.icare.consultation.screen.SelectedPatientViewModel
+import eg.edu.cu.csds.icare.feature.consultation.navigation.consultationsRoute
+import eg.edu.cu.csds.icare.feature.consultation.screen.SelectedConsultationViewModel
+import eg.edu.cu.csds.icare.feature.consultation.screen.SelectedPatientViewModel
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.util.activity
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
-import eg.edu.cu.csds.icare.home.navigation.homeRoute
+import eg.edu.cu.csds.icare.feature.home.navigation.homeRoute
 import eg.edu.cu.csds.icare.notification.navigation.notificationsRoute
 import eg.edu.cu.csds.icare.onboarding.navigation.onBoardingRoute
 import eg.edu.cu.csds.icare.settings.navigation.settingsRoute
