@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import eg.edu.cu.csds.icare.MainActivity
-import eg.edu.cu.csds.icare.admin.screen.doctor.SelectedDoctorViewModel
+import eg.edu.cu.csds.icare.feature.admin.screen.doctor.SelectedDoctorViewModel
 import eg.edu.cu.csds.icare.appointment.navigation.appointmentsRoute
 import eg.edu.cu.csds.icare.appointment.screen.SelectedAppointmentViewModel
 import eg.edu.cu.csds.icare.auth.navigation.authenticationRoute

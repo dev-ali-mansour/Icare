@@ -3,7 +3,7 @@ package eg.edu.cu.csds.icare.di
 import android.content.Context
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import eg.edu.cu.csds.icare.admin.di.AdminModule
+import eg.edu.cu.csds.icare.feature.admin.di.AdminModule
 import eg.edu.cu.csds.icare.appointment.di.AppointmentsModule
 import eg.edu.cu.csds.icare.auth.di.AuthModule
 import eg.edu.cu.csds.icare.consultation.di.ConsultationsModule

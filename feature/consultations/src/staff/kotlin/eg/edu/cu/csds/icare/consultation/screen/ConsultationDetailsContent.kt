@@ -90,6 +90,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
+import eg.edu.cu.csds.icare.feature.admin.R.string.feature_admin_pharmacy
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -350,10 +351,7 @@ internal fun ConsultationDetailsContent(
                         onValueChange = { },
                         label = {
                             Text(
-                                text =
-                                    stringResource(
-                                        eg.edu.cu.csds.icare.admin.R.string.feature_admin_pharmacy,
-                                    ),
+                                text = stringResource(feature_admin_pharmacy),
                                 color = dropDownTextColor,
                             )
                         },
