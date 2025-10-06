@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Icare" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/black</item>
+    <style name="Theme.Icare" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Icare.MySplash" parent="Theme.SplashScreen">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowSplashScreenBackground">@color/core_ui_black</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/core_ui_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.Icare</item>
     </style>
 </resources>

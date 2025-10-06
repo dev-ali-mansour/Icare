@@ -1,6 +1,7 @@
 package eg.edu.cu.csds.icare.di
 
 import android.content.Context
+import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import eg.edu.cu.csds.icare.admin.di.AdminModule
 import eg.edu.cu.csds.icare.appointment.di.AppointmentsModule
@@ -31,5 +32,5 @@ import org.koin.core.annotation.Single
 @ComponentScan("eg.edu.cu.csds.icare")
 class AppModule {
     @Single
-    fun provideAppUpdateManager(context: Context) = AppUpdateManagerFactory.create(context)
+    fun provideAppUpdateManager(context: Context): AppUpdateManager = AppUpdateManagerFactory.create(context)
 }
