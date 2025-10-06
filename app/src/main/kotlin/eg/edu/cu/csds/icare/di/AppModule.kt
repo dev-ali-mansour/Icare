@@ -4,8 +4,8 @@ import android.content.Context
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import eg.edu.cu.csds.icare.feature.admin.di.AdminModule
-import eg.edu.cu.csds.icare.appointment.di.AppointmentsModule
-import eg.edu.cu.csds.icare.auth.di.AuthModule
+import eg.edu.cu.csds.icare.feature.appointment.di.AppointmentsModule
+import eg.edu.cu.csds.icare.feature.auth.di.AuthModule
 import eg.edu.cu.csds.icare.feature.consultation.di.ConsultationsModule
 import eg.edu.cu.csds.icare.core.ui.di.CoreUiModule
 import eg.edu.cu.csds.icare.feature.home.di.HomeModule
