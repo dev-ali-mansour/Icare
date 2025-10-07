@@ -10,7 +10,7 @@ import eg.edu.cu.csds.icare.feature.consultation.di.ConsultationsModule
 import eg.edu.cu.csds.icare.core.ui.di.CoreUiModule
 import eg.edu.cu.csds.icare.feature.home.di.HomeModule
 import eg.edu.cu.csds.icare.feature.notification.di.NotificationsModule
-import eg.edu.cu.csds.icare.onboarding.di.OnBoardingModule
+import eg.edu.cu.csds.icare.feature.onboarding.di.OnBoardingModule
 import eg.edu.cu.csds.icare.settings.di.SettingsModule
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module

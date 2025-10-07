@@ -22,7 +22,7 @@ import eg.edu.cu.csds.icare.core.ui.util.activity
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.feature.home.navigation.homeRoute
 import eg.edu.cu.csds.icare.feature.notification.navigation.notificationsRoute
-import eg.edu.cu.csds.icare.onboarding.navigation.onBoardingRoute
+import eg.edu.cu.csds.icare.feature.onboarding.navigation.onBoardingRoute
 import eg.edu.cu.csds.icare.settings.navigation.settingsRoute
 import eg.edu.cu.csds.icare.splash.SplashScreen
 import org.koin.androidx.compose.koinViewModel

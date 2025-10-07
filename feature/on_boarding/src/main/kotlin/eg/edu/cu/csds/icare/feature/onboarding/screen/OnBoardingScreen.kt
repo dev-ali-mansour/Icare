@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.onboarding.screen
+package eg.edu.cu.csds.icare.feature.onboarding.screen
 
 import android.content.Context
 import android.content.res.Configuration
@@ -62,7 +62,7 @@ import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.HorizontalPagerIndicator
 import eg.edu.cu.csds.icare.core.ui.view.VerticalPagerIndicator
-import eg.edu.cu.csds.icare.onboarding.R
+import eg.edu.cu.csds.icare.feature.onboarding.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
