@@ -13,11 +13,12 @@ jobs:
         id: source_check
         run: |
           echo "Source branch is: ${{ github.head_ref }}"
-          if [[ "${{ github.head_ref }}" != "develop" ]]; then
-            echo "::error::❌ PRs to main are only allowed from develop branch."
-            exit 1
+          # Allow only branches matching release/<major>.<minor>.<patch>
+          if [[ "${{ github.head_ref }}" =~ ^release/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "✅ Pull request source is a valid release branch."
           else
-            echo "✅ Pull request source is valid."
+            echo "::error::❌ PRs to main are only allowed from release/x.y.z branches (e.g., release/1.2.3). Got: ${{ github.head_ref }}"
+            exit 1
           fi
   run-tests:
     needs: restrict_pr_sources
