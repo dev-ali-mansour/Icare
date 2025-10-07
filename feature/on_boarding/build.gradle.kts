@@ -7,5 +7,5 @@ plugins {
 }
 
 android {
-    namespace = "eg.edu.cu.csds.icare.onboarding"
+    namespace = "eg.edu.cu.csds.icare.feature.onboarding"
 }

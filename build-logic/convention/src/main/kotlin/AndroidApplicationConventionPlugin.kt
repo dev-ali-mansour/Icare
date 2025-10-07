@@ -20,7 +20,9 @@
 import com.android.build.api.dsl.ApplicationExtension
 import com.google.devtools.ksp.gradle.KspExtension
 import dev.alimansour.shared.plugins.TARGET_SDK_VERSION
+import dev.alimansour.shared.plugins.configureDetekt
 import dev.alimansour.shared.plugins.configureKotlinAndroid
+import dev.alimansour.shared.plugins.configureKtlint
 import dev.alimansour.shared.plugins.findPlugin
 import dev.alimansour.shared.plugins.getSecret
 import dev.alimansour.shared.plugins.libs
@@ -30,8 +32,8 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Delete
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.named
 import java.io.File
 
 class AndroidApplicationConventionPlugin : Plugin<Project> {
@@ -47,12 +49,17 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
+                configureKtlint()
+                configureDetekt()
                 defaultConfig.targetSdk = TARGET_SDK_VERSION
                 testOptions.animationsDisabled = true
+                bundle.language.enableSplit = false
                 signingConfigs {
                     create("release") {
-                        val keystoreFile = rootProject.file("release-key.jks")
-                        storeFile = keystoreFile
+                        storeFile =
+                            project.rootProject.layout.projectDirectory
+                                .file("release-key.jks")
+                                .asFile
                         storePassword = project.getSecret("KEYSTORE_PASSWORD")
                         keyAlias = project.getSecret("KEY_ALIAS")
                         keyPassword = project.getSecret("KEY_PASSWORD")
@@ -61,7 +68,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     }
 
                     getByName("debug") {
-                        storeFile = File(project.rootProject.rootDir, "debug.keystore")
+                        storeFile = File(System.getProperty("user.home"), ".android/debug.keystore")
                         storePassword = "android"
                         keyAlias = "androiddebugkey"
                         keyPassword = "android"
@@ -85,9 +92,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             }
 
             tasks {
-                getByPath("preBuild").dependsOn("ktlintFormat").dependsOn("detekt")
-
-                getByName<Delete>("clean") {
+                named<Delete>("clean") {
                     delete.addAll(
                         listOf(
                             "${rootProject.projectDir}/build/reports/detekt",
@@ -96,7 +101,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     )
                 }
             }
-
             dependencies {
                 val bom = libs.findLibrary("firebase-bom").get()
                 "implementation"(libs.findLibrary("multidex").get())

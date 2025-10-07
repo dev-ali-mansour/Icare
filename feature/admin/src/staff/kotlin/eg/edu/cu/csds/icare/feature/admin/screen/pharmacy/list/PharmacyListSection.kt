@@ -1,0 +1,196 @@
+package eg.edu.cu.csds.icare.feature.admin.screen.pharmacy.list
+
+import android.content.Context
+import android.content.res.Configuration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
+import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
+import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
+import eg.edu.cu.csds.icare.core.ui.view.PharmacyView
+import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PharmacyListSection(
+    modifier: Modifier = Modifier,
+    viewModel: PharmacyListViewModel = koinViewModel(),
+    navigateToPharmacyDetails: (Pharmacy) -> Unit,
+    onExpandStateChanged: (Boolean) -> Unit,
+) {
+    val context: Context = LocalContext.current
+    val refreshState = rememberPullToRefreshState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var alertMessage by remember { mutableStateOf("") }
+    var showAlert by remember { mutableStateOf(false) }
+
+    LaunchedUiEffectHandler(
+        viewModel.effect,
+        onConsumeEffect = { viewModel.processEvent(PharmacyListEvent.ConsumeEffect) },
+        onEffect = { effect ->
+            when (effect) {
+                is PharmacyListEffect.NavigateToPharmacyDetails -> {
+                    navigateToPharmacyDetails(effect.pharmacy)
+                }
+
+                is PharmacyListEffect.UpdateFabExpanded -> {
+                    onExpandStateChanged(effect.isExpanded)
+                }
+
+                is PharmacyListEffect.ShowError -> {
+                    alertMessage = effect.message.asString(context)
+                    showAlert = true
+                    delay(timeMillis = 3000)
+                    showAlert = false
+                }
+            }
+        },
+    )
+
+    ConstraintLayout(
+        modifier =
+            modifier
+                .fillMaxSize()
+                .pullToRefresh(
+                    state = refreshState,
+                    isRefreshing = uiState.isLoading,
+                    onRefresh = {
+                        viewModel.processEvent(PharmacyListEvent.Refresh)
+                    },
+                ),
+    ) {
+        val (refresh, content) = createRefs()
+
+        PharmacyListContent(
+            modifier =
+                Modifier.constrainAs(content) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.fillToConstraints
+                },
+            uiState = uiState,
+            onEvent = viewModel::processEvent,
+        )
+
+        Indicator(
+            modifier =
+                Modifier
+                    .constrainAs(refresh) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+            isRefreshing = uiState.isLoading,
+            state = refreshState,
+        )
+
+        if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
+    }
+}
+
+@Composable
+private fun PharmacyListContent(
+    modifier: Modifier = Modifier,
+    uiState: PharmacyListState,
+    onEvent: (PharmacyListEvent) -> Unit,
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        val listState = rememberLazyListState()
+        val expandedFabState =
+            remember {
+                derivedStateOf {
+                    listState.firstVisibleItemIndex == 0
+                }
+            }
+        LaunchedEffect(key1 = expandedFabState.value) {
+            onEvent(PharmacyListEvent.UpdateFabExpanded(expandedFabState.value))
+        }
+
+        if (uiState.pharmacies.isEmpty()) {
+            EmptyContentView(
+                modifier =
+                    Modifier.fillMaxSize(),
+                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_no_pharmacies_data),
+            )
+        } else {
+            LazyColumn(
+                modifier =
+                    Modifier.fillMaxSize(),
+                state = listState,
+                verticalArrangement = Arrangement.spacedBy(S_PADDING),
+            ) {
+                items(
+                    items = uiState.pharmacies,
+                    key = { pharmacy ->
+                        pharmacy.id
+                    },
+                ) { pharmacy ->
+                    PharmacyView(pharmacy = pharmacy) {
+                        onEvent(PharmacyListEvent.SelectPharmacy(pharmacy))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "ar")
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@Composable
+internal fun PharmacyContentPreview() {
+    Box(modifier = Modifier.background(backgroundColor)) {
+        PharmacyListContent(
+            uiState =
+                PharmacyListState(
+                    pharmacies =
+                        listOf(
+                            Pharmacy(
+                                id = 1,
+                                name = "صيدلية الحياة",
+                                address = "38 ش فيصل - حسن  محمد",
+                                phone = "123-456-7890",
+                            ),
+                            Pharmacy(
+                                id = 2,
+                                name = "صيدلية يحيى",
+                                address = "45 ش أسامة أبو عميرة - متفرع من ش فيصل",
+                                phone = "987-654-3210",
+                            ),
+                        ),
+                ),
+            onEvent = {},
+        )
+    }
+}

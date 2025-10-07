@@ -12,7 +12,8 @@ import java.net.UnknownHostException
 
 fun Throwable.toRemoteError(): DataError.Remote =
     when (this) {
-        is SocketTimeoutException, is ConnectException, is UnknownHostException, is FirebaseNetworkException ->
+        is SocketTimeoutException, is ConnectException, is UnknownHostException, is FirebaseNetworkException,
+        ->
             DataError.Remote.NO_INTERNET
 
         is FirebaseTooManyRequestsException ->

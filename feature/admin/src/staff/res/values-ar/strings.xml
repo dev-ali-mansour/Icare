@@ -51,5 +51,4 @@
     <string name="feature_admin_update_staff">تعديل بيانات مسئول مركز</string>
     <string name="feature_admin_from_time">من الساعة</string>
     <string name="feature_admin_to_time">حتى الساعة</string>
-    <string name="feature_admin_lab_center">مركز تحاليل</string>
 </resources>

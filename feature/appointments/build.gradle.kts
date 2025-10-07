@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "eg.edu.cu.csds.icare.appointment"
+    namespace = "eg.edu.cu.csds.icare.feature.appointment"
 
     dependencies {
         api(projects.feature.admin)
