@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.notification
+package eg.edu.cu.csds.icare.feature.notification
 
 import org.junit.Test
 

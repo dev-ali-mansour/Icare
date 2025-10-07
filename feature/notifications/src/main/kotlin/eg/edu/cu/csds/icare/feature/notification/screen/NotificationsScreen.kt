@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.notification.screen
+package eg.edu.cu.csds.icare.feature.notification.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
