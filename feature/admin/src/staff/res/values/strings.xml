@@ -52,6 +52,4 @@
     <string name="feature_admin_update_staff">Update Staff</string>
     <string name="feature_admin_from_time">From Time</string>
     <string name="feature_admin_to_time">To Time</string>
-    <string name="feature_admin_lab_center">Lab Center</string>
-
 </resources>

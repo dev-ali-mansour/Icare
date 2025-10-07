@@ -19,15 +19,22 @@
 
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
+import com.google.devtools.ksp.gradle.KspExtension
 import dev.alimansour.shared.plugins.TARGET_SDK_VERSION
+import dev.alimansour.shared.plugins.configureDetekt
 import dev.alimansour.shared.plugins.configureKotlinAndroid
+import dev.alimansour.shared.plugins.configureKtlint
 import dev.alimansour.shared.plugins.disableUnnecessaryAndroidTests
 import dev.alimansour.shared.plugins.findPlugin
 import dev.alimansour.shared.plugins.libs
+import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.Delete
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.named
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -38,6 +45,8 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
+                configureKtlint()
+                configureDetekt()
                 defaultConfig.targetSdk = TARGET_SDK_VERSION
                 defaultConfig.consumerProguardFiles("consumer-rules.pro")
                 testOptions.animationsDisabled = true
@@ -51,9 +60,35 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                         .joinToString(separator = "_")
                         .lowercase() + "_"
             }
+
+            project.plugins.withId("io.gitlab.arturbosch.detekt") {
+                project.extensions.configure<DetektExtension> {
+                    source.setFrom("src/main/java", "src/main/kotlin")
+                    ignoredBuildTypes = listOf("release")
+                }
+            }
+
+            project.plugins.withId("com.google.devtools.ksp") {
+                project.extensions.configure<KspExtension> {
+                    arg("KOIN_CONFIG_CHECK", "true")
+                }
+            }
+
+            tasks {
+                named<Delete>("clean") {
+                    delete.addAll(
+                        listOf(
+                            "${rootProject.projectDir}/build/reports/detekt",
+                            "${rootProject.projectDir}/detekt/reports",
+                        ),
+                    )
+                }
+            }
+
             extensions.configure<LibraryAndroidComponentsExtension> {
                 disableUnnecessaryAndroidTests(target)
             }
+
             dependencies {
                 "implementation"(libs.findLibrary("androidx.tracing.ktx").get())
 
