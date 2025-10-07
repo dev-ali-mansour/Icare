@@ -25,7 +25,7 @@ appUpdates = "2.1.0"
 androidxBrowser = "1.9.0"
 multidex = "2.0.1"
 koinBom = "4.1.1"
-koinAnnotations = "2.1.0"
+koinAnnotations = "2.2.0"
 splashScreen = "1.0.1"
 coroutine = "1.10.2"
 ktxSerialization = "1.9.0"
@@ -120,9 +120,9 @@ sqlcipher = { module = "net.zetetic:sqlcipher-android", version.ref = "sqlcipher
 sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
 # Other Libraries
 splashScreen = { module = "androidx.core:core-splashscreen", version.ref = "splashScreen" }
-lint-api = { group = "com.android.tools.lint", name = "lint-api", version.ref = "androidTools" }
-lint-checks = { group = "com.android.tools.lint", name = "lint-checks", version.ref = "androidTools" }
-lint-tests = { group = "com.android.tools.lint", name = "lint-tests", version.ref = "androidTools" }
+lint-api = { module = "com.android.tools.lint:lint-api", version.ref = "androidTools" }
+lint-checks = { module = "com.android.tools.lint:lint-checks", version.ref = "androidTools" }
+lint-tests = { module = "com.android.tools.lint:lint-tests", version.ref = "androidTools" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 android-desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
 androidx-tracing-ktx = { module = "androidx.tracing:tracing-ktx", version.ref = "androidxTracing" }
@@ -155,23 +155,28 @@ ksp-gradlePlugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.g
 room-gradlePlugin = { module = "androidx.room:room-gradle-plugin", version.ref = "room" }
 
 [bundles]
-appcompat = ["appcompat", "appcompat-resources"]
+appcompat = [
+    "appcompat",
+    "appcompat-resources",
+]
 compose = [
     "androidx-activity-compose",
     "androidx-compose-foundation",
-    "androidx-ui",
     "androidx-compose-ui-tooling",
     "androidx-compose-ui-tooling-preview",
-    "androidx-ui-graphics",
-    "compose-runtime",
-    "compose-animation",
-    "androidx-material3",
     "androidx-constraintlayout",
-    "androidx-navigation"
+    "androidx-material-icons-core",
+    "androidx-material-icons-extended",
+    "androidx-material3",
+    "androidx-navigation",
+    "androidx-ui",
+    "androidx-ui-graphics",
+    "compose-animation",
+    "compose-runtime",
 ]
 koin-core = [
-    "koin-core",
     "koin-annotations",
+    "koin-core",
 ]
 koin-android = [
     "koin-android",
@@ -179,14 +184,59 @@ koin-android = [
     "koin-androidx-compose-navigation",
     "koin-androidx-workmanager",
 ]
-coil = ["coil-compose", "coil-gif"]
-firebase = ["firebase-crashlytics", "firebase-messaging", "firebase-auth", "androidx-credentials", "credentials-play-services-auth", "identity-googleid"]
-lifecycle = ["androidx-lifecycle-runtimeCompose", "androidx-lifecycle-viewModelCompose"]
-retrofit = ["retrofit", "retrofit-converter", "retrofit-interceptor"]
-room = ["room", "room-ktx", "sqlcipher", "sqlite", "security-crypto-ktx"]
-domain-test = ["kotlin-test", "junit", "coroutines-test", "truth", "mockk", "turbine"]
-data-test = ["room-testing", "mockk", "truth", "mockwebserver", "turbine"]
-app-test = ["androidx-test-ext", "androidx-navigation-testing", "androidx-lifecycle-runtimeTesting", "androidx-ui-test-manifest", "robolectric", "mockk", "truth", "turbine"]
+coil = [
+    "coil-compose",
+    "coil-gif",
+]
+firebase = [
+    "androidx-credentials",
+    "credentials-play-services-auth",
+    "firebase-auth",
+    "firebase-crashlytics",
+    "firebase-messaging",
+    "identity-googleid",
+]
+lifecycle = [
+    "androidx-lifecycle-runtimeCompose",
+    "androidx-lifecycle-viewModelCompose",
+]
+retrofit = [
+    "retrofit",
+    "retrofit-converter",
+    "retrofit-interceptor",
+]
+room = [
+    "room",
+    "room-ktx",
+    "security-crypto-ktx",
+    "sqlcipher",
+    "sqlite",
+]
+domain-test = [
+    "coroutines-test",
+    "junit",
+    "kotlin-test",
+    "mockk",
+    "truth",
+    "turbine",
+]
+data-test = [
+    "mockk",
+    "mockwebserver",
+    "room-testing",
+    "truth",
+    "turbine",
+]
+app-test = [
+    "androidx-lifecycle-runtimeTesting",
+    "androidx-navigation-testing",
+    "androidx-test-ext",
+    "androidx-ui-test-manifest",
+    "mockk",
+    "robolectric",
+    "truth",
+    "turbine",
+]
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
