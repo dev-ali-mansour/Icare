@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.settings.screen.about
+package eg.edu.cu.csds.icare.feature.settings.screen.about
 
 import android.content.Context
 import android.content.res.Configuration
@@ -91,7 +91,7 @@ internal fun AboutContent(
                         top.linkTo(about.bottom)
                         start.linkTo(version.start)
                     },
-            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_made_by),
+            text = stringResource(string.core_ui_made_by),
             color = textColor,
             textAlign = TextAlign.Center,
             fontSize = MaterialTheme.typography.titleLarge.fontSize,
@@ -110,7 +110,7 @@ internal fun AboutContent(
                         end.linkTo(parent.end)
                     }.clickable {
                         context.openLink(
-                            context.getString(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_website_url),
+                            context.getString(string.core_ui_website_url),
                         )
                     },
             painter = painterResource(id = drawable.core_ui_logo),
@@ -136,7 +136,7 @@ internal fun AboutContent(
                             start.linkTo(parent.start)
                         }.clickable {
                             context.openLink(
-                                context.getString(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_facebook_url),
+                                context.getString(string.core_ui_facebook_url),
                             )
                         },
                 painter =

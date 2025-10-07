@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.settings.screen.about
+package eg.edu.cu.csds.icare.feature.settings.screen.about
 
 import android.content.Context
 import androidx.compose.foundation.background

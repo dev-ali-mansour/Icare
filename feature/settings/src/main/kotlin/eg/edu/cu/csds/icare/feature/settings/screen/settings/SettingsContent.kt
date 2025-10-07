@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.settings.screen.settings
+package eg.edu.cu.csds.icare.feature.settings.screen.settings
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import eg.edu.cu.csds.icare.core.domain.model.Language
 import eg.edu.cu.csds.icare.core.domain.model.SettingsItem
 import eg.edu.cu.csds.icare.core.domain.util.Constants
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.theme.SETTINGS_ITEM_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
@@ -44,8 +45,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.util.currentLanguage
 import eg.edu.cu.csds.icare.core.ui.util.getSettingsItems
 import eg.edu.cu.csds.icare.core.ui.view.RadioButtonGroupWithHeader
-import eg.edu.cu.csds.icare.settings.R
-import eg.edu.cu.csds.icare.core.ui.R.string
+import eg.edu.cu.csds.icare.feature.settings.R
 
 @Composable
 internal fun SettingsContent(
