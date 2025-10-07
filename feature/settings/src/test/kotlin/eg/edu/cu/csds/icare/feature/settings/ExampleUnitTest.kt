@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.settings
+package eg.edu.cu.csds.icare.feature.settings
 
 import org.junit.Test
 

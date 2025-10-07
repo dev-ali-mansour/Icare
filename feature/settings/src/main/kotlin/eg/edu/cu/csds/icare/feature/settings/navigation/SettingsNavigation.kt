@@ -1,10 +1,10 @@
-package eg.edu.cu.csds.icare.settings.navigation
+package eg.edu.cu.csds.icare.feature.settings.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
-import eg.edu.cu.csds.icare.settings.screen.about.AboutScreen
-import eg.edu.cu.csds.icare.settings.screen.settings.SettingsScreen
+import eg.edu.cu.csds.icare.feature.settings.screen.about.AboutScreen
+import eg.edu.cu.csds.icare.feature.settings.screen.settings.SettingsScreen
 
 fun NavGraphBuilder.settingsRoute(
     navigateUp: () -> Unit,

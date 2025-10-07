@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.settings.screen.settings
+package eg.edu.cu.csds.icare.feature.settings.screen.settings
 
 import android.content.Context
 import androidx.compose.foundation.background
@@ -25,7 +25,7 @@ import eg.edu.cu.csds.icare.core.ui.util.currentLanguage
 import eg.edu.cu.csds.icare.core.ui.util.reportError
 import eg.edu.cu.csds.icare.core.ui.util.showOurApps
 import eg.edu.cu.csds.icare.core.ui.util.showPrivacyPolicy
-import eg.edu.cu.csds.icare.settings.SettingsViewModel
+import eg.edu.cu.csds.icare.feature.settings.SettingsViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
