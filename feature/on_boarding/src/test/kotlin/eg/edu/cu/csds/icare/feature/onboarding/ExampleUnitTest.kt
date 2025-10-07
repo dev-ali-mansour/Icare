@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.onboarding
+package eg.edu.cu.csds.icare.feature.onboarding
 
 import org.junit.Test
 

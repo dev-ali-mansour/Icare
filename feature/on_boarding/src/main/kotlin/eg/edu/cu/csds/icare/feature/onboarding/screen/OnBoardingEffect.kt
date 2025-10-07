@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.onboarding.screen
+package eg.edu.cu.csds.icare.feature.onboarding.screen
 
 import eg.edu.cu.csds.icare.core.ui.util.UiText
 

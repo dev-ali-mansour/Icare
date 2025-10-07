@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.onboarding.screen
+package eg.edu.cu.csds.icare.feature.onboarding.screen
 
 data class OnBoardingState(
     val isLoading: Boolean = false,
