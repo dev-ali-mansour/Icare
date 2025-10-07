@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.notification.screen
+package eg.edu.cu.csds.icare.feature.notification.screen
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
@@ -24,8 +24,8 @@ import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
-import eg.edu.cu.csds.icare.notification.NotificationView
-import eg.edu.cu.csds.icare.notification.R
+import eg.edu.cu.csds.icare.feature.notification.NotificationView
+import eg.edu.cu.csds.icare.feature.notification.R
 import java.util.Calendar
 
 @Composable

@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.notification
+package eg.edu.cu.csds.icare.feature.notification
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background

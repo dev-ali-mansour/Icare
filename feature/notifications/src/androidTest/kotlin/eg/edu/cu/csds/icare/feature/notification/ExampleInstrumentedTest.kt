@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.notification
+package eg.edu.cu.csds.icare.feature.notification
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
