@@ -14,8 +14,8 @@ android {
     defaultConfig {
         applicationId = "eg.edu.cu.csds.icare"
         vectorDrawables.useSupportLibrary = true
-        versionCode = project.findProperty("VERSION_CODE")?.toString()?.toInt() ?: 1
-        versionName = project.findProperty("VERSION_NAME")?.toString() ?: "1.0.0"
+        versionCode = project.findProperty("VERSION_CODE")?.toString()?.toInt() ?: 2
+        versionName = project.findProperty("VERSION_NAME")?.toString() ?: "1.0.1"
     }
 
     buildTypes {
