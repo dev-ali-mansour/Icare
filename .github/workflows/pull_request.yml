@@ -13,13 +13,14 @@ jobs:
         id: source_check
         run: |
           echo "Source branch is: ${{ github.head_ref }}"
-          # Allow only branches matching release/<major>.<minor>.<patch>
-          if [[ "${{ github.head_ref }}" =~ ^release/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "✅ Pull request source is a valid release branch."
+          # Allow only branches matching release/<major>.<minor>.<patch> or hotfix/<major>.<minor>.<patch>
+          if [[ "${{ github.head_ref }}" =~ ^(release|hotfix)/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "✅ Pull request source is a valid release/hotfix branch."
           else
-            echo "::error::❌ PRs to main are only allowed from release/x.y.z branches (e.g., release/1.2.3). Got: ${{ github.head_ref }}"
+            echo "::error::❌ PRs to main are only allowed from release/x.y.z or hotfix/x.y.z branches (e.g., release/1.2.3 or hotfix/1.2.3). Got: ${{ github.head_ref }}"
             exit 1
           fi
+  
 
   run-tests:
     needs: restrict_pr_sources
