@@ -9,13 +9,16 @@ plugins {
     alias(libs.plugins.convention.koin)
 }
 
+val dynamicVersionCode: Int? = System.getenv("VERSION_CODE")?.toIntOrNull()
+val dynamicVersionName: String? = System.getenv("VERSION_NAME")
+
 android {
 
     defaultConfig {
         applicationId = "eg.edu.cu.csds.icare"
         vectorDrawables.useSupportLibrary = true
-        versionCode = project.findProperty("VERSION_CODE")?.toString()?.toInt() ?: 1
-        versionName = project.findProperty("VERSION_NAME")?.toString() ?: "1.0.0"
+        versionCode = dynamicVersionCode ?: 2
+        versionName = dynamicVersionName ?: "1.0.1"
     }
 
     buildTypes {
