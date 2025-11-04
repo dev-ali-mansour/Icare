@@ -17,8 +17,8 @@ android {
     defaultConfig {
         applicationId = "eg.edu.cu.csds.icare"
         vectorDrawables.useSupportLibrary = true
-        versionCode = dynamicVersionCode ?: 2
-        versionName = dynamicVersionName ?: "1.0.1"
+        versionCode = dynamicVersionCode ?: 3
+        versionName = dynamicVersionName ?: "1.0.2"
     }
 
     buildTypes {
