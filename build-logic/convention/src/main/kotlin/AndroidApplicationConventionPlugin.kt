@@ -36,6 +36,7 @@ import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.named
 import java.io.File
 
+@Suppress("unused")
 class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
@@ -55,16 +56,18 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 testOptions.animationsDisabled = true
                 bundle.language.enableSplit = false
                 signingConfigs {
-                    create("release") {
-                        storeFile =
-                            project.rootProject.layout.projectDirectory
-                                .file("release-key.jks")
-                                .asFile
-                        storePassword = project.getSecret("KEYSTORE_PASSWORD")
-                        keyAlias = project.getSecret("KEY_ALIAS")
-                        keyPassword = project.getSecret("KEY_PASSWORD")
-                        enableV1Signing = true
-                        enableV2Signing = true
+                    if (!project.getSecret("KEYSTORE_PASSWORD").isNullOrEmpty()) {
+                        create("release") {
+                            storeFile =
+                                project.rootProject.layout.projectDirectory
+                                    .file("release-key.jks")
+                                    .asFile
+                            storePassword = project.getSecret("KEYSTORE_PASSWORD")
+                            keyAlias = project.getSecret("KEY_ALIAS")
+                            keyPassword = project.getSecret("KEY_PASSWORD")
+                            enableV1Signing = true
+                            enableV2Signing = true
+                        }
                     }
 
                     getByName("debug") {

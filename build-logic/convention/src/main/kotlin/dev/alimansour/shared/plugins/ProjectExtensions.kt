@@ -35,7 +35,7 @@ fun Project.findPlugin(alias: String): String =
         .get()
         .pluginId
 
-fun Project.getSecret(key: String): String {
+fun Project.getSecret(key: String): String? {
     val localProperties =
         Properties().apply {
             val propertiesFile = rootProject.file("local.properties")
