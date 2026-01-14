@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.di
+package eg.edu.cu.csds.icare.di.module
 
 import android.content.Context
 import com.google.android.play.core.appupdate.AppUpdateManager
