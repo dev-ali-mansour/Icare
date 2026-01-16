@@ -3,8 +3,8 @@ package eg.edu.cu.csds.icare.feature.admin.navigation
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.feature.admin.screen.AdminScreen
 import eg.edu.cu.csds.icare.feature.admin.screen.center.CenterEvent
 import eg.edu.cu.csds.icare.feature.admin.screen.center.SelectedCenterViewModel
@@ -41,10 +41,9 @@ import eg.edu.cu.csds.icare.feature.admin.screen.staff.StaffEvent
 import eg.edu.cu.csds.icare.feature.admin.screen.staff.add.NewStaffScreen
 import eg.edu.cu.csds.icare.feature.admin.screen.staff.update.UpdateStaffScreen
 import eg.edu.cu.csds.icare.feature.admin.screen.staff.update.UpdateStaffViewModel
-import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import org.koin.androidx.compose.koinViewModel
 
-fun NavGraphBuilder.adminRoute(
+fun EntryProviderScope<Any>.adminEntryBuilder(
     selectedClinicViewModel: SelectedClinicViewModel,
     selectedDoctorViewModel: SelectedDoctorViewModel,
     selectedClinicianViewModel: SelectedClinicianViewModel,
@@ -52,10 +51,10 @@ fun NavGraphBuilder.adminRoute(
     selectedPharmacistViewModel: SelectedPharmacistViewModel,
     selectedCenterViewModel: SelectedCenterViewModel,
     selectedStaffViewModel: SelectedStaffViewModel,
-    navigateUp: () -> Unit,
+    onNavigationIconClicked: () -> Unit,
     navigateToRoute: (Route) -> Unit,
 ) {
-    composable<Route.Admin> {
+    entry<Route.Admin> {
         LaunchedEffect(true) {
             selectedClinicViewModel.onSelectClinic(null)
             selectedDoctorViewModel.onSelectDoctor(null)
@@ -67,7 +66,7 @@ fun NavGraphBuilder.adminRoute(
         }
 
         AdminScreen(
-            onNavigationIconClicked = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             navigateToRoute = {
                 navigateToRoute(it)
             },
@@ -102,14 +101,14 @@ fun NavGraphBuilder.adminRoute(
         )
     }
 
-    composable<Route.NewClinic> {
+    entry<Route.NewClinic> {
         NewClinicScreen(
-            onNavigationIconClicked = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.UpdateClinic> {
+    entry<Route.UpdateClinic> {
         val viewModel: UpdateClinicViewModel = koinViewModel()
         val selectedClinic by selectedClinicViewModel.selectedClinic.collectAsStateWithLifecycle()
         LaunchedEffect(selectedClinic) {
@@ -118,19 +117,19 @@ fun NavGraphBuilder.adminRoute(
             }
         }
         UpdateClinicScreen(
-            onNavigationIconClicked = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.NewDoctor> {
+    entry<Route.NewDoctor> {
         NewDoctorScreen(
-            onNavigationIconClicked = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.UpdateDoctor> {
+    entry<Route.UpdateDoctor> {
         val viewModel: UpdateDoctorViewModel = koinViewModel()
         val selectedDoctor by selectedDoctorViewModel.selectedDoctor.collectAsStateWithLifecycle()
         LaunchedEffect(selectedDoctor) {
@@ -139,19 +138,19 @@ fun NavGraphBuilder.adminRoute(
             }
         }
         UpdateDoctorScreen(
-            onNavigationIconClicked = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.NewClinician> {
+    entry<Route.NewClinician> {
         NewClinicStaffScreen(
-            onNavigationIconClicked = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.UpdateClinician> {
+    entry<Route.UpdateClinician> {
         val viewModel: UpdateClinicianViewModel = koinViewModel()
         val selectedClinician by selectedClinicianViewModel.selectedClinician.collectAsStateWithLifecycle()
         LaunchedEffect(selectedClinician) {
@@ -160,19 +159,19 @@ fun NavGraphBuilder.adminRoute(
             }
         }
         UpdateClinicianScreen(
-            onNavigationIconClicked = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.NewPharmacy> {
+    entry<Route.NewPharmacy> {
         NewPharmacyScreen(
-            onNavigationIconClicked = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.UpdatePharmacy> {
+    entry<Route.UpdatePharmacy> {
         val viewModel: UpdatePharmacyViewModel = koinViewModel()
         val selectedPharmacy by selectedPharmacyViewModel.selectedPharmacy.collectAsStateWithLifecycle()
         LaunchedEffect(selectedPharmacy) {
@@ -181,19 +180,19 @@ fun NavGraphBuilder.adminRoute(
             }
         }
         UpdatePharmacyScreen(
-            onNavigationIconClicked = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.NewPharmacist> {
+    entry<Route.NewPharmacist> {
         NewPharmacistScreen(
-            onNavigationIconClicked = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.UpdatePharmacist> {
+    entry<Route.UpdatePharmacist> {
         val viewModel: UpdatePharmacistViewModel = koinViewModel()
         val selectedPharmacist by selectedPharmacistViewModel.selectedPharmacist.collectAsStateWithLifecycle()
         LaunchedEffect(selectedPharmacist) {
@@ -203,19 +202,19 @@ fun NavGraphBuilder.adminRoute(
         }
 
         UpdatePharmacistScreen(
-            onNavigationIconClicked = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.NewCenter> {
+    entry<Route.NewCenter> {
         NewCenterScreen(
-            onNavigationIconClicked = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.UpdateCenter> {
+    entry<Route.UpdateCenter> {
         val viewModel: UpdateCenterViewModel = koinViewModel()
         val selectedCenter by selectedCenterViewModel.selectedCenter.collectAsStateWithLifecycle()
         LaunchedEffect(selectedCenter) {
@@ -224,19 +223,19 @@ fun NavGraphBuilder.adminRoute(
             }
         }
         UpdateCenterScreen(
-            onNavigationIconClicked = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.NewStaff> {
+    entry<Route.NewStaff> {
         NewStaffScreen(
-            onNavigationIconClicked = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
 
-    composable<Route.UpdateStaff> {
+    entry<Route.UpdateStaff> {
         val viewModel: UpdateStaffViewModel = koinViewModel()
         val selectedStaff by selectedStaffViewModel.selectedStaff.collectAsStateWithLifecycle()
         LaunchedEffect(selectedStaff) {
@@ -245,7 +244,7 @@ fun NavGraphBuilder.adminRoute(
             }
         }
         UpdateStaffScreen(
-            onNavigationIconClicked = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             onSuccess = { navigateToRoute(Route.Admin) },
         )
     }
