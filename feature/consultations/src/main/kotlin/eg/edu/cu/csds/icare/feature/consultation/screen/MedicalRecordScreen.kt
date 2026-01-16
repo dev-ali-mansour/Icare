@@ -83,7 +83,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 internal fun MedicalRecordScreen(
     viewModel: MedicalRecordViewModel = koinViewModel(),
-    navigateUp: () -> Unit,
+    onNavigationIconClicked: () -> Unit,
     navigateToConsultationRoute: (Consultation) -> Unit,
 ) {
     val context: Context = LocalContext.current
@@ -130,7 +130,7 @@ internal fun MedicalRecordScreen(
                         actionIconContentColor = Color.White,
                     ),
                 navigationIcon = {
-                    IconButton(onClick = { navigateUp() }) {
+                    IconButton(onClick = { onNavigationIconClicked() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
