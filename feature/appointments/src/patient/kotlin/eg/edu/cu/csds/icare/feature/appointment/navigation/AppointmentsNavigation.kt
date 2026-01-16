@@ -3,8 +3,7 @@ package eg.edu.cu.csds.icare.feature.appointment.navigation
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.feature.admin.screen.doctor.SelectedDoctorViewModel
 import eg.edu.cu.csds.icare.feature.appointment.screen.SelectedAppointmentViewModel
@@ -18,13 +17,13 @@ import eg.edu.cu.csds.icare.feature.appointment.screen.reschedule.RescheduleEven
 import eg.edu.cu.csds.icare.feature.appointment.screen.reschedule.RescheduleViewModel
 import org.koin.androidx.compose.koinViewModel
 
-fun NavGraphBuilder.appointmentsRoute(
+fun EntryProviderScope<Any>.appointmentsEntryBuilder(
     selectedDoctorViewModel: SelectedDoctorViewModel,
     selectedAppointmentViewModel: SelectedAppointmentViewModel,
     onNavigationIconClicked: () -> Unit,
     navigateToRoute: (Route) -> Unit,
 ) {
-    composable<Route.MyAppointments> {
+    entry<Route.MyAppointments> {
         LaunchedEffect(true) {
             selectedAppointmentViewModel.onSelectAppointment(null)
         }
@@ -38,7 +37,7 @@ fun NavGraphBuilder.appointmentsRoute(
         )
     }
 
-    composable<Route.DoctorList> {
+    entry<Route.DoctorList> {
         LaunchedEffect(true) {
             selectedDoctorViewModel.onSelectDoctor(null)
         }
@@ -52,7 +51,7 @@ fun NavGraphBuilder.appointmentsRoute(
         )
     }
 
-    composable<Route.Booking> {
+    entry<Route.Booking> {
         val viewModel: BookingViewModel = koinViewModel()
         val selectedDoctor by selectedDoctorViewModel.selectedDoctor.collectAsStateWithLifecycle()
         LaunchedEffect(selectedDoctor) {
@@ -67,7 +66,7 @@ fun NavGraphBuilder.appointmentsRoute(
         )
     }
 
-    composable<Route.AppointmentReschedule> {
+    entry<Route.AppointmentReschedule> {
         val viewModel: RescheduleViewModel = koinViewModel()
         val selectAppointment by selectedAppointmentViewModel.selectedAppointment
             .collectAsStateWithLifecycle()
