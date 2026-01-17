@@ -21,7 +21,7 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.util.isInternetAvailable
-import eg.edu.cu.csds.icare.splash.SplashViewModel
+import eg.edu.cu.csds.icare.feature.onboarding.screen.OnBoardingViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -33,7 +33,7 @@ import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.milliseconds
 
 class MainActivity : AppCompatActivity() {
-    private val splashViewModel: SplashViewModel by viewModel()
+    private val onBoardingViewModel: OnBoardingViewModel by viewModel()
     private val appUpdateManager: AppUpdateManager by inject()
     private val updateType = AppUpdateType.IMMEDIATE
     private val updateFlowResultLauncher =
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         var isLoadingSplash by mutableStateOf(true)
         lifecycleScope.launch {
-            splashViewModel.uiState
+            onBoardingViewModel.uiState
                 .onEach {
                     isLoadingSplash = it.isLoading
                 }.launchIn(this)
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             IcareTheme {
-                MainScreen(splashViewModel = splashViewModel)
+                MainScreen(onBoardingViewModel = onBoardingViewModel)
             }
         }
     }
