@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.feature.onboarding.di
+package eg.edu.cu.csds.icare.feature.onboarding.di.module
 
 import eg.edu.cu.csds.icare.core.data.di.module.UseCaseModule
 import eg.edu.cu.csds.icare.core.ui.di.module.CoreUiModule
