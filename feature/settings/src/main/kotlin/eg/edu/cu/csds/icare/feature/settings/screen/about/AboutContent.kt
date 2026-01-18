@@ -26,6 +26,8 @@ import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import eg.edu.cu.csds.icare.core.domain.model.Language
+import eg.edu.cu.csds.icare.core.ui.R.drawable
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.theme.LOGO_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.LOGO_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
@@ -36,14 +38,13 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.util.currentLanguage
 import eg.edu.cu.csds.icare.core.ui.util.openLink
-import eg.edu.cu.csds.icare.core.ui.R.string
-import eg.edu.cu.csds.icare.core.ui.R.drawable
 
 @Composable
-internal fun AboutContent(
-    appVersion: String,
-    context: Context = LocalContext.current,
-) {
+internal fun AboutContent(appVersion: String) {
+    val context: Context = LocalContext.current
+    val websiteUrl = stringResource(string.core_ui_website_url)
+    val facebookUrl = stringResource(string.core_ui_facebook_url)
+
     ConstraintLayout(
         modifier =
             Modifier
@@ -109,9 +110,7 @@ internal fun AboutContent(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     }.clickable {
-                        context.openLink(
-                            context.getString(string.core_ui_website_url),
-                        )
+                        context.openLink(websiteUrl)
                     },
             painter = painterResource(id = drawable.core_ui_logo),
             contentScale = ContentScale.Fit,
@@ -135,9 +134,7 @@ internal fun AboutContent(
                             top.linkTo(logo.bottom, margin = S_PADDING)
                             start.linkTo(parent.start)
                         }.clickable {
-                            context.openLink(
-                                context.getString(string.core_ui_facebook_url),
-                            )
+                            context.openLink(facebookUrl)
                         },
                 painter =
                     painterResource(
@@ -201,7 +198,7 @@ internal fun AboutContent(
                 contentDescription = null,
             )
             when (currentLanguage) {
-                Language.ARABIC ->
+                Language.ARABIC -> {
                     createHorizontalChain(
                         youtube,
                         linkedIn,
@@ -209,8 +206,9 @@ internal fun AboutContent(
                         facebook,
                         chainStyle = ChainStyle.Spread,
                     )
+                }
 
-                else ->
+                else -> {
                     createHorizontalChain(
                         facebook,
                         twitter,
@@ -218,6 +216,7 @@ internal fun AboutContent(
                         youtube,
                         chainStyle = ChainStyle.Spread,
                     )
+                }
             }
         }
     }
