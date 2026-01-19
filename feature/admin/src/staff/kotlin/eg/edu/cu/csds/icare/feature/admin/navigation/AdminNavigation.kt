@@ -6,7 +6,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.feature.admin.screen.AdminScreen
-import eg.edu.cu.csds.icare.feature.admin.screen.center.CenterEvent
+import eg.edu.cu.csds.icare.feature.admin.screen.center.CenterIntent
 import eg.edu.cu.csds.icare.feature.admin.screen.center.SelectedCenterViewModel
 import eg.edu.cu.csds.icare.feature.admin.screen.center.add.NewCenterScreen
 import eg.edu.cu.csds.icare.feature.admin.screen.center.update.UpdateCenterScreen
@@ -219,7 +219,7 @@ fun EntryProviderScope<Any>.adminEntryBuilder(
         val selectedCenter by selectedCenterViewModel.selectedCenter.collectAsStateWithLifecycle()
         LaunchedEffect(selectedCenter) {
             selectedCenter?.let { center ->
-                viewModel.processEvent(CenterEvent.LoadCenter(center))
+                viewModel.handleIntent(CenterIntent.LoadCenter(center))
             }
         }
         UpdateCenterScreen(

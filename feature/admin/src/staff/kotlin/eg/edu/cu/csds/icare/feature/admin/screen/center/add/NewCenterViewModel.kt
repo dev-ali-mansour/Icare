@@ -2,10 +2,6 @@ package eg.edu.cu.csds.icare.feature.admin.screen.center.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.feature.admin.R
-import eg.edu.cu.csds.icare.feature.admin.screen.center.CenterEffect
-import eg.edu.cu.csds.icare.feature.admin.screen.center.CenterEvent
-import eg.edu.cu.csds.icare.feature.admin.screen.center.CenterState
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
@@ -13,6 +9,10 @@ import eg.edu.cu.csds.icare.core.domain.usecase.center.AddNewCenterUseCase
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.feature.admin.R
+import eg.edu.cu.csds.icare.feature.admin.screen.center.CenterEffect
+import eg.edu.cu.csds.icare.feature.admin.screen.center.CenterIntent
+import eg.edu.cu.csds.icare.feature.admin.screen.center.CenterState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,25 +41,31 @@ class NewCenterViewModel(
             )
     val effect = _uiState.map { it.effect }
 
-    fun processEvent(event: CenterEvent) {
-        when (event) {
-            is CenterEvent.UpdateName ->
-                _uiState.update { it.copy(name = event.name) }
+    fun handleIntent(intent: CenterIntent) {
+        when (intent) {
+            is CenterIntent.UpdateName -> {
+                _uiState.update { it.copy(name = intent.name) }
+            }
 
-            is CenterEvent.UpdateType ->
-                _uiState.update { it.copy(type = event.type) }
+            is CenterIntent.UpdateType -> {
+                _uiState.update { it.copy(type = intent.type) }
+            }
 
-            is CenterEvent.UpdateTypesExpanded ->
-                _uiState.update { it.copy(isTypesExpanded = event.expanded) }
+            is CenterIntent.UpdateTypesExpanded -> {
+                _uiState.update { it.copy(isTypesExpanded = intent.expanded) }
+            }
 
-            is CenterEvent.UpdatePhone ->
-                _uiState.update { it.copy(phone = event.phone) }
+            is CenterIntent.UpdatePhone -> {
+                _uiState.update { it.copy(phone = intent.phone) }
+            }
 
-            is CenterEvent.UpdateAddress ->
-                _uiState.update { it.copy(address = event.address) }
+            is CenterIntent.UpdateAddress -> {
+                _uiState.update { it.copy(address = intent.address) }
+            }
 
-            is CenterEvent.LoadCenter -> Unit
-            is CenterEvent.Proceed ->
+            is CenterIntent.LoadCenter -> {}
+
+            is CenterIntent.Proceed -> {
                 viewModelScope.launch {
                     when {
                         _uiState.value.name.isBlank() -> {
@@ -77,7 +83,7 @@ class NewCenterViewModel(
                             }
                         }
 
-                        uiState.value.type < 1 ->
+                        uiState.value.type < 1 -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -87,9 +93,10 @@ class NewCenterViewModel(
                                         ),
                                 )
                             }
+                        }
 
                         uiState.value.phone.isBlank() ||
-                            uiState.value.phone.length < Constants.PHONE_LENGTH ->
+                            uiState.value.phone.length < Constants.PHONE_LENGTH -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -99,8 +106,9 @@ class NewCenterViewModel(
                                         ),
                                 )
                             }
+                        }
 
-                        uiState.value.address.isBlank() ->
+                        uiState.value.address.isBlank() -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -110,6 +118,7 @@ class NewCenterViewModel(
                                         ),
                                 )
                             }
+                        }
 
                         else -> {
                             addCenterJob?.cancel()
@@ -117,8 +126,11 @@ class NewCenterViewModel(
                         }
                     }
                 }
+            }
 
-            CenterEvent.ConsumeEffect -> consumeEffect()
+            CenterIntent.ConsumeEffect -> {
+                consumeEffect()
+            }
         }
     }
 

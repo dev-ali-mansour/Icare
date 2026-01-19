@@ -32,7 +32,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import eg.edu.cu.csds.icare.feature.admin.R
 import eg.edu.cu.csds.icare.core.ui.common.CenterTypeItem
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
@@ -45,13 +44,14 @@ import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
+import eg.edu.cu.csds.icare.feature.admin.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CenterDetailsContent(
     uiState: CenterState,
     modifier: Modifier = Modifier,
-    onEvent: (CenterEvent) -> Unit,
+    onIntent: (CenterIntent) -> Unit,
 ) {
     val types = listOf(CenterTypeItem.ImagingCenter, CenterTypeItem.LabCenter)
 
@@ -84,7 +84,7 @@ internal fun CenterDetailsContent(
             ) {
                 TextField(
                     value = uiState.name,
-                    onValueChange = { onEvent(CenterEvent.UpdateName(it)) },
+                    onValueChange = { onIntent(CenterIntent.UpdateName(it)) },
                     label = {
                         Text(
                             text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_name),
@@ -119,7 +119,7 @@ internal fun CenterDetailsContent(
                     modifier = Modifier.fillMaxWidth(fraction = 0.8f),
                     expanded = uiState.isTypesExpanded,
                     onExpandedChange = {
-                        onEvent(CenterEvent.UpdateTypesExpanded(it))
+                        onIntent(CenterIntent.UpdateTypesExpanded(it))
                     },
                 ) {
                     OutlinedTextField(
@@ -160,7 +160,7 @@ internal fun CenterDetailsContent(
                     ExposedDropdownMenu(
                         expanded = uiState.isTypesExpanded,
                         onDismissRequest = {
-                            onEvent(CenterEvent.UpdateTypesExpanded(false))
+                            onIntent(CenterIntent.UpdateTypesExpanded(false))
                         },
                     ) {
                         types.forEach {
@@ -172,8 +172,8 @@ internal fun CenterDetailsContent(
                                     )
                                 },
                                 onClick = {
-                                    onEvent(CenterEvent.UpdateType(it.code))
-                                    onEvent(CenterEvent.UpdateTypesExpanded(false))
+                                    onIntent(CenterIntent.UpdateType(it.code))
+                                    onIntent(CenterIntent.UpdateTypesExpanded(false))
                                 },
                             )
                         }
@@ -182,7 +182,7 @@ internal fun CenterDetailsContent(
 
                 TextField(
                     value = uiState.phone,
-                    onValueChange = { if (it.length < 14) onEvent(CenterEvent.UpdatePhone(it)) },
+                    onValueChange = { if (it.length < 14) onIntent(CenterIntent.UpdatePhone(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_admin_phone_number),
@@ -214,7 +214,7 @@ internal fun CenterDetailsContent(
 
                 TextField(
                     value = uiState.address,
-                    onValueChange = { onEvent(CenterEvent.UpdateAddress(it)) },
+                    onValueChange = { onIntent(CenterIntent.UpdateAddress(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_admin_address),
@@ -252,7 +252,7 @@ internal fun CenterDetailsContent(
                             .fillMaxWidth(fraction = 0.6f),
                     text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
                     color = buttonBackgroundColor,
-                    onClick = { onEvent(CenterEvent.Proceed) },
+                    onClick = { onIntent(CenterIntent.Proceed) },
                 )
             }
         }
@@ -268,7 +268,7 @@ internal fun CenterDetailsContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
         CenterDetailsContent(
             uiState = CenterState(),
-            onEvent = {},
+            onIntent = {},
         )
     }
 }
