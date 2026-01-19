@@ -5,11 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -17,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
+import eg.edu.cu.csds.icare.core.ui.theme.MAX_SURFACE_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
@@ -25,21 +29,21 @@ import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.util.currentLanguage
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 
 @Composable
 fun NotificationView(
     text: String,
-    date: Date,
+    date: String,
     modifier: Modifier = Modifier,
 ) {
     Surface(
         modifier =
             modifier
                 .padding(XS_PADDING)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .wrapContentWidth(Alignment.CenterHorizontally)
+                .widthIn(max = MAX_SURFACE_WIDTH),
         color = contentBackgroundColor,
         shape =
             RoundedCornerShape(
@@ -49,7 +53,7 @@ fun NotificationView(
                 bottomEnd = XS_PADDING,
             ),
     ) {
-        ConstraintLayout(modifier = modifier.padding(S_PADDING)) {
+        ConstraintLayout(modifier = Modifier.padding(S_PADDING)) {
             val (message, dateTime) = createRefs()
 
             Text(
@@ -103,7 +107,7 @@ fun NotificationViewPreview() {
     Column(modifier = Modifier.background(color = backgroundColor)) {
         NotificationView(
             text = stringResource(R.string.feature_notifications_welcome_message),
-            date = Calendar.getInstance().time,
+            date = "12-12-2022 12:00 PM",
         )
     }
 }
