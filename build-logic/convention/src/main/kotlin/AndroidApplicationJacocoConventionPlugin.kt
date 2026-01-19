@@ -33,6 +33,7 @@ class AndroidApplicationJacocoConventionPlugin : Plugin<Project> {
             val androidExtension = extensions.getByType<ApplicationExtension>()
 
             androidExtension.buildTypes.configureEach {
+                if (this.name == "release") return@configureEach
                 enableAndroidTestCoverage = true
                 enableUnitTestCoverage = true
             }

@@ -17,7 +17,7 @@
  * Original source: https://github.com/android/nowinandroid
  */
 
-import com.android.build.gradle.TestExtension
+import com.android.build.api.dsl.TestExtension
 import dev.alimansour.shared.plugins.TARGET_SDK_VERSION
 import dev.alimansour.shared.plugins.configureDetekt
 import dev.alimansour.shared.plugins.configureKotlinAndroid
@@ -32,7 +32,6 @@ class AndroidTestConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply(findPlugin("android-test"))
-            pluginManager.apply(findPlugin("kotlin-android"))
 
             extensions.configure<TestExtension> {
                 configureKotlinAndroid(this)

@@ -28,7 +28,7 @@ import java.util.Properties
 val Project.libs
     get(): VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-fun Project.findPlugin(alias: String): String =
+internal fun Project.findPlugin(alias: String): String =
     libs
         .findPlugin(alias)
         .get()

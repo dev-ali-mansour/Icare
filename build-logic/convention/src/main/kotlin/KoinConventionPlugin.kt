@@ -40,7 +40,7 @@ class KoinConventionPlugin : Plugin<Project> {
                 "ksp"(libs.findLibrary("koin.ksp.compiler").get())
             }
 
-            pluginManager.withPlugin("org.jetbrains.kotlin.android") {
+            pluginManager.withPlugin("com.android.base") {
                 dependencies {
                     "implementation"(libs.findBundle("koin.android").get())
                 }

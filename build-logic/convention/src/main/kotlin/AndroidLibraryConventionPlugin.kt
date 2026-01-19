@@ -17,10 +17,9 @@
  * Original source: https://github.com/android/nowinandroid
  */
 
+import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
-import com.android.build.gradle.LibraryExtension
 import com.google.devtools.ksp.gradle.KspExtension
-import dev.alimansour.shared.plugins.TARGET_SDK_VERSION
 import dev.alimansour.shared.plugins.configureDetekt
 import dev.alimansour.shared.plugins.configureKotlinAndroid
 import dev.alimansour.shared.plugins.configureKtlint
@@ -41,19 +40,17 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply(findPlugin("android-library"))
-            pluginManager.apply(findPlugin("kotlin-android"))
             pluginManager.apply("convention.android.lint")
 
-            extensions.configure<LibraryExtension> {
-                configureKotlinAndroid(this)
+            extensions.configure<Any>("android") {
+                val android = this as LibraryExtension
+
+                configureKotlinAndroid(android)
                 configureKtlint()
                 configureDetekt()
-                defaultConfig.targetSdk = TARGET_SDK_VERSION
-                defaultConfig.consumerProguardFiles("consumer-rules.pro")
-                testOptions.animationsDisabled = true
-                // The resource prefix is derived from the module name,
-                // so resources inside ":core:module1" must be prefixed with "core_module1_"
-                resourcePrefix =
+                android.defaultConfig.consumerProguardFiles("consumer-rules.pro")
+                android.testOptions.animationsDisabled = true
+                android.resourcePrefix =
                     path
                         .split("""\W""".toRegex())
                         .drop(1)

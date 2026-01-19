@@ -41,7 +41,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply(findPlugin("android-application"))
-            pluginManager.apply(findPlugin("kotlin-android"))
             pluginManager.apply(findPlugin("gms"))
             pluginManager.apply(findPlugin("ksp"))
             pluginManager.apply(findPlugin("dependency-guard"))
@@ -106,7 +105,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             }
             dependencies {
                 val bom = libs.findLibrary("firebase-bom").get()
-                "implementation"(libs.findLibrary("multidex").get())
                 "implementation"(libs.findLibrary("splashScreen").get())
                 "implementation"(libs.findLibrary("app.update").get())
                 "implementation"(libs.findBundle("lifecycle").get())
