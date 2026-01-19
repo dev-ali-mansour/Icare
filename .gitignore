@@ -5,11 +5,9 @@ local.properties
 debug.keystore
 release-key.jks
 .DS_Store
-/build
+build
 /captures
 .externalNativeBuild
 .cxx
-/.kotlin/sessions
+**/.kotlin/sessions/
 /detekt
-/core/build
-/feature/build

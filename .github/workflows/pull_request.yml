@@ -6,55 +6,41 @@ on:
       - main
 
 jobs:
-  restrict_pr_sources:
+  validate_pr_sources:
     runs-on: ubuntu-latest
     steps:
-      - name: Check source branch
+      - name: Validate source branch
         id: source_check
         run: |
           echo "Source branch is: ${{ github.head_ref }}"
-          # Allow only branches matching release/<major>.<minor>.<patch> or hotfix/<major>.<minor>.<patch>
-          if [[ "${{ github.head_ref }}" =~ ^(release|hotfix)/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "✅ Pull request source is a valid release/hotfix branch."
+          # Only enforce naming rules when PR targets the main branch
+          if [[ "${{ github.base_ref }}" == "main" ]]; then
+            echo "Validating source branch for PR to main..."
+            # Allow only branches matching release/<major>.<minor>.<patch> or hotfix/<major>.<minor>.<patch>
+            if [[ "${{ github.head_ref }}" =~ ^(release|hotfix)/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "✅ Pull request source is a valid release/hotfix branch."
+            else
+              echo "::error::❌ PRs to main are only allowed from release/x.y.z or hotfix/x.y.z branches (e.g., release/1.2.3 or hotfix/1.2.3). Got: ${{ github.head_ref }}"
+              exit 1
+            fi
           else
-            echo "::error::❌ PRs to main are only allowed from release/x.y.z or hotfix/x.y.z branches (e.g., release/1.2.3 or hotfix/1.2.3). Got: ${{ github.head_ref }}"
-            exit 1
+            echo "Skipping source branch validation because target branch is not main."
           fi
-  
 
   run-tests:
-    needs: restrict_pr_sources
+    needs: validate_pr_sources
     runs-on: ubuntu-latest
-
-    env:
-      DEBUG_BASE_URL: ${{ secrets.DEBUG_BASE_URL }}
-      RELEASE_BASE_URL: ${{ secrets.RELEASE_BASE_URL }}
-      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-      WEB_CLIENT_ID: ${{ secrets.WEB_CLIENT_ID }}
 
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Restore google-services.json from secret
-        run: |
-          echo "Restoring google-services.json for Android build (from secret)."
-          mkdir -p app
-          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
-
-      - name: Decode Keystore
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > release-key.jks
-
       - name: Setup JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 21
-          cache: 'gradle'
 
       - name: Cache Gradle files
         uses: actions/cache@v4
@@ -69,5 +55,5 @@ jobs:
       - name: Grant execution permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run unit tests
-        run: ./gradlew clean testPatientDebugUnitTest testStaffDebugUnitTest
+      - name: Run Unit Tests
+        run: ./gradlew test

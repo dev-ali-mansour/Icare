@@ -70,11 +70,11 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun OnBoardingScreen(
-    onFinished: () -> Unit,
-    configuration: Configuration = LocalConfiguration.current,
     viewModel: OnBoardingViewModel = koinViewModel(),
-    context: Context = LocalContext.current,
+    onFinished: () -> Unit,
 ) {
+    val configuration: Configuration = LocalConfiguration.current
+    val context: Context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scope: CoroutineScope = rememberCoroutineScope()
     var alertMessage by remember { mutableStateOf("") }
@@ -83,12 +83,14 @@ internal fun OnBoardingScreen(
 
     LaunchedUiEffectHandler(
         viewModel.effect,
-        onConsumeEffect = { viewModel.processEvent(OnBoardingEvent.ConsumeEffect) },
+        onConsumeEffect = { viewModel.handleIntent(OnBoardingIntent.ConsumeEffect) },
         onEffect = { effect ->
             when (effect) {
                 is OnBoardingEffect.OnBoardingFinished -> {
                     onFinished()
                 }
+
+                is OnBoardingEffect.NavigateToRoute -> {}
 
                 is OnBoardingEffect.ShowError -> {
                     alertMessage = effect.message.asString(context)
@@ -103,15 +105,17 @@ internal fun OnBoardingScreen(
     )
 
     when (configuration.orientation) {
-        Configuration.ORIENTATION_LANDSCAPE ->
+        Configuration.ORIENTATION_LANDSCAPE -> {
             WelcomeScreenInLandscape(backgroundColor, pagerState, pages) {
-                viewModel.processEvent(OnBoardingEvent.FinishOnBoarding)
+                viewModel.handleIntent(OnBoardingIntent.FinishOnBoarding)
             }
+        }
 
-        else ->
+        else -> {
             WelcomeScreenInPortrait(backgroundColor, pagerState, pages) {
-                viewModel.processEvent(OnBoardingEvent.FinishOnBoarding)
+                viewModel.handleIntent(OnBoardingIntent.FinishOnBoarding)
             }
+        }
     }
 
     if (uiState.isLoading) CircularProgressIndicator()
@@ -296,11 +300,13 @@ internal fun OnBoardingScreenPreview() {
         pagerState.animateScrollToPage(page = 3)
     }
     when (configuration.orientation) {
-        Configuration.ORIENTATION_LANDSCAPE ->
+        Configuration.ORIENTATION_LANDSCAPE -> {
             WelcomeScreenInLandscape(backgroundColor, pagerState, pages) { }
+        }
 
-        else ->
+        else -> {
             WelcomeScreenInPortrait(backgroundColor, pagerState, pages) { }
+        }
     }
 }
 

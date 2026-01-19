@@ -50,7 +50,7 @@ import eg.edu.cu.csds.icare.feature.consultation.R
 @Composable
 internal fun NewConsultationScreen(
     viewModel: NewConsultationViewModel = koinViewModel(),
-    navigateUp: () -> Unit,
+    onNavigationIconClicked: () -> Unit,
     navigateToMedicalRecord: (String) -> Unit,
 ) {
     val context: Context = LocalContext.current
@@ -65,13 +65,14 @@ internal fun NewConsultationScreen(
         onConsumeEffect = { viewModel.processEvent(ConsultationEvent.ConsumeEffect) },
         onEffect = { effect ->
             when (effect) {
-                is ConsultationEffect.NavigateToMedicalRecord ->
+                is ConsultationEffect.NavigateToMedicalRecord -> {
                     navigateToMedicalRecord(effect.patientId)
+                }
 
                 is ConsultationEffect.ShowSuccess -> {
                     showSuccessDialog = true
                     delay(timeMillis = 3000)
-                    navigateUp()
+                    onNavigationIconClicked()
                 }
 
                 is ConsultationEffect.ShowError -> {
@@ -103,7 +104,7 @@ internal fun NewConsultationScreen(
                         actionIconContentColor = Color.White,
                     ),
                 navigationIcon = {
-                    IconButton(onClick = { navigateUp() }) {
+                    IconButton(onClick = { onNavigationIconClicked() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,

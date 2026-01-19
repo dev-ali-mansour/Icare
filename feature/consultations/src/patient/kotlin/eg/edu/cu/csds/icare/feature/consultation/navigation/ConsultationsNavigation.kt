@@ -3,8 +3,7 @@ package eg.edu.cu.csds.icare.feature.consultation.navigation
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordEvent
 import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordScreen
@@ -13,14 +12,14 @@ import eg.edu.cu.csds.icare.feature.consultation.screen.SelectedConsultationView
 import eg.edu.cu.csds.icare.feature.consultation.screen.SelectedPatientViewModel
 import org.koin.androidx.compose.koinViewModel
 
-fun NavGraphBuilder.consultationsRoute(
+fun EntryProviderScope<Any>.consultationsEntryBuilder(
     selectedConsultationViewModel: SelectedConsultationViewModel,
     selectedPatientViewModel: SelectedPatientViewModel,
-    navigateUp: () -> Unit,
+    onNavigationIconClicked: () -> Unit,
     navigateToRoute: (Route) -> Unit,
 ) {
-    composable<Route.PatientMedicalRecord> {
-        composable<Route.PatientMedicalRecord> {
+    entry<Route.PatientMedicalRecord> {
+        entry<Route.PatientMedicalRecord> {
             val viewModel: MedicalRecordViewModel = koinViewModel()
             val selectedPatientId by selectedPatientViewModel.selectedPatientId
                 .collectAsStateWithLifecycle()
@@ -30,7 +29,7 @@ fun NavGraphBuilder.consultationsRoute(
                 }
             }
             MedicalRecordScreen(
-                navigateUp = { navigateUp() },
+                onNavigationIconClicked = { onNavigationIconClicked() },
                 navigateToConsultationRoute = {
                     selectedConsultationViewModel.onSelectConsultation(it)
                     navigateToRoute(Route.UpdateConsultation)

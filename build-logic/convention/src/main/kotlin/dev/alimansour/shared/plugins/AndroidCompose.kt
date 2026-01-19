@@ -26,14 +26,11 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 
-/**
- * Configure Compose-specific options
- */
-internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*, *, *, *, *, *>) {
+internal fun Project.configureAndroidCompose(commonExtension: CommonExtension) {
     commonExtension.apply {
         pluginManager.apply(findPlugin("kotlin-compose"))
 
-        buildFeatures {
+        buildFeatures.apply {
             compose = true
         }
 
@@ -52,8 +49,8 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
             "debugImplementation"(libs.findLibrary("androidx.ui.test.junit4").get())
         }
 
-        testOptions {
-            unitTests {
+        testOptions.apply {
+            unitTests.apply {
                 // For Robolectric
                 isIncludeAndroidResources = true
             }

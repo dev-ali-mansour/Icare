@@ -1,47 +1,37 @@
 package eg.edu.cu.csds.icare
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.navigation.compose.rememberNavController
 import eg.edu.cu.csds.icare.core.ui.common.BottomNavItem
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
+import eg.edu.cu.csds.icare.core.ui.navigation.Navigator
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.view.BottomBarNavigation
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
-import eg.edu.cu.csds.icare.navigation.SetupNavGraph
-import eg.edu.cu.csds.icare.splash.SplashEffect
-import eg.edu.cu.csds.icare.splash.SplashEvent
-import eg.edu.cu.csds.icare.splash.SplashViewModel
+import eg.edu.cu.csds.icare.feature.onboarding.screen.OnBoardingEffect
+import eg.edu.cu.csds.icare.feature.onboarding.screen.OnBoardingIntent
+import eg.edu.cu.csds.icare.feature.onboarding.screen.OnBoardingViewModel
+import eg.edu.cu.csds.icare.navigation.NavGraph
 import kotlinx.coroutines.delay
+import org.koin.compose.koinInject
 import timber.log.Timber
 import kotlin.system.exitProcess
 
 @Composable
-fun MainScreen(splashViewModel: SplashViewModel) {
-    val navController = rememberNavController()
-    var isBottomBarVisible by remember { mutableStateOf(false) }
-    val layoutDirection = LocalLayoutDirection.current
+fun MainScreen(onBoardingViewModel: OnBoardingViewModel) {
+    val navigator: Navigator = koinInject()
     val context = LocalContext.current
-    rememberCoroutineScope()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
 
@@ -53,35 +43,29 @@ fun MainScreen(splashViewModel: SplashViewModel) {
             BottomNavItem.Settings,
         )
 
-    LaunchedEffect(navController) {
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            isBottomBarVisible = destination.route != Route.Splash::class.qualifiedName &&
-                bottomNavItems.any { it.route::class.qualifiedName == destination.route }
+    val isBottomBarVisible by remember {
+        derivedStateOf {
+            val currentDestination = navigator.backStack.lastOrNull()
+            navigator.backStack.isNotEmpty() && bottomNavItems.any { it.route == currentDestination }
         }
     }
 
     LaunchedUiEffectHandler(
-        splashViewModel.effect,
-        onConsumeEffect = { splashViewModel.processEvent(SplashEvent.ConsumeEffect) },
+        onBoardingViewModel.effect,
+        onConsumeEffect = { onBoardingViewModel.handleIntent(OnBoardingIntent.ConsumeEffect) },
         onEffect = { effect ->
             runCatching {
-                val currentStartDestinationId = navController.graph.startDestinationId
-                val popUpToRoute = navController.graph.findNode(currentStartDestinationId)?.route
-
-                val navigateAndPopUp: (Route) -> Unit = { screen ->
-                    navController.navigate(screen) {
-                        if (popUpToRoute != null) {
-                            popUpTo(popUpToRoute) { inclusive = true }
-                        } else {
-                            popUpTo(navController.graph.id) { inclusive = true }
+                when (effect) {
+                    is OnBoardingEffect.NavigateToRoute -> {
+                        navigator.goTo(effect.route)
+                        if (navigator.backStack.contains(Route.Splash)) {
+                            navigator.backStack.remove(Route.Splash)
                         }
                     }
-                }
 
-                when (effect) {
-                    is SplashEffect.NavigateToRoute -> navigateAndPopUp(effect.route)
+                    is OnBoardingEffect.OnBoardingFinished -> {}
 
-                    is SplashEffect.ShowError -> {
+                    is OnBoardingEffect.ShowError -> {
                         alertMessage = effect.message.asString(context)
                         showAlert = true
                         delay(timeMillis = 5000)
@@ -99,27 +83,26 @@ fun MainScreen(splashViewModel: SplashViewModel) {
         bottomBar = {
             if (isBottomBarVisible) {
                 BottomBarNavigation(
-                    navController = navController,
+                    backStack = navigator.backStack,
+                    onNavigate = { route ->
+                        if (navigator.backStack.lastOrNull() != route) {
+                            navigator.goTo(route)
+                        }
+                    },
                     items = bottomNavItems,
                 )
             }
         },
-    ) { paddingValues ->
-        Column(
+        contentWindowInsets = WindowInsets.safeDrawing,
+    ) { innerPadding ->
+        NavGraph(
+            navigator = navigator,
             modifier =
                 Modifier
-                    .windowInsetsPadding(WindowInsets.safeDrawing)
-                    .background(color = backgroundColor)
-                    .fillMaxSize()
-                    .padding(
-                        start = paddingValues.calculateStartPadding(layoutDirection),
-                        end = paddingValues.calculateEndPadding(layoutDirection),
-                        bottom = paddingValues.calculateBottomPadding(),
-                    ),
-        ) {
-            SetupNavGraph(navController = navController)
+                    .padding(innerPadding)
+                    .consumeWindowInsets(innerPadding),
+        )
 
-            if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
-        }
+        if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
     }
 }

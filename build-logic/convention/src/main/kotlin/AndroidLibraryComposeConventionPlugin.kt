@@ -17,19 +17,19 @@
  * Original source: https://github.com/android/nowinandroid
  */
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import dev.alimansour.shared.plugins.configureAndroidCompose
 import dev.alimansour.shared.plugins.findPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.getByType
 
+@Suppress("unused")
 class AndroidLibraryComposeConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply(findPlugin("android-library"))
 
-            val extension = extensions.getByType<LibraryExtension>()
+            val extension = extensions.getByName("android") as LibraryExtension
             configureAndroidCompose(extension)
         }
     }

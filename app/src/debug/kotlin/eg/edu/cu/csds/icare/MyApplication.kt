@@ -1,14 +1,14 @@
 package eg.edu.cu.csds.icare
 
-import androidx.multidex.MultiDexApplication
-import eg.edu.cu.csds.icare.di.AppModule
+import android.app.Application
+import eg.edu.cu.csds.icare.di.module.AppModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.ksp.generated.module
 import timber.log.Timber
 
-class MyApplication : MultiDexApplication() {
+class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         System.loadLibrary("sqlcipher")
@@ -19,6 +19,6 @@ class MyApplication : MultiDexApplication() {
             modules(AppModule().module)
         }
 
-        if (BuildConfig.DEBUG) Timber.Forest.plant(Timber.DebugTree())
+        if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
     }
 }
