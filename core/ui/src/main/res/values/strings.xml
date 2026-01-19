@@ -177,4 +177,5 @@ Objectives:\n
     <string name="core_ui_lab_centers">Lab Centers</string>
     <string name="core_ui_search_for_pharmacy">Search by pharmacy name</string>
     <string name="core_ui_reschedule">Reschedule</string>
+    <string name="core_ui_back">Back</string>
 </resources>
