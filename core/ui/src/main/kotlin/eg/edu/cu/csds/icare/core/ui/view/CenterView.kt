@@ -58,8 +58,8 @@ fun CenterView(
         onClick = onClick,
         modifier =
             modifier
-                .padding(horizontal = M_PADDING, vertical = XS_PADDING)
                 .fillMaxWidth()
+                .padding(horizontal = M_PADDING, vertical = XS_PADDING)
                 .wrapContentWidth(Alignment.CenterHorizontally)
                 .widthIn(max = MAX_SURFACE_WIDTH),
         elevation = CardDefaults.cardElevation(defaultElevation = XS_PADDING),
