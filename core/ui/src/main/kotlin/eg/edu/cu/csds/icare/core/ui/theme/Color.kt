@@ -4,6 +4,30 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
+// / --- Light Theme Colors ---
+val Teal = Color(color = 0xFF00687A)
+val TealDark = Color(color = 0xFF004E5A)
+val TealLight = Color(color = 0xFFB2EBF2)
+
+val AccentYellow = Color(color = 0xFFFFC107)
+val AccentYellowContainer = Color(color = 0xFFFFE082)
+
+val LightBackground = Color(color = 0xFFF8F9FA)
+val LightSurface = Color(color = 0xFFFFFFFF)
+
+// --- Dark Theme Colors (New) ---
+val DarkBackground = Color.DarkGray
+val DarkSurface = Color(color = 0xFF333333) // Card background
+val DarkPrimary = Color(color = 0xFF000000) // Top Bar & Bottom Nav are Black in dark mode
+val DarkOnPrimary = Color(color = 0xFFFFFFFF)
+
+// In Dark mode, the table header is black, and sub-text is Yellow
+val TableHeaderDark = Color(color = 0xFF000000)
+val TableTextYellow = Color(color = 0xFFFFC107)
+val TableRowAlternatingDark = Color(color = 0xFF424242) // Slightly lighter than background
+
+// Standard
+val ErrorRed = Color(color = 0xFFCF6679)
 val Blue10 = Color(color = 0xFFE8F5F7)
 val Blue200 = Color(color = 0xFF30AEC5)
 val Blue500 = Color(color = 0xFF056B8D)
@@ -82,10 +106,8 @@ val statusColor: Color
 
 val tintColor: Color
     @Composable
-    get() = if (isSystemInDarkTheme()) Color.Black else Blue200
-val dialogTint: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) Color.White else Blue200
+    get() = if (isSystemInDarkTheme()) Color.LightGray else Color.Black
+
 val barBackgroundColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.Black else Blue500
@@ -104,7 +126,7 @@ val trailIconColor: Color
 
 val cardBackgroundColor: Color
     @Composable
-    get() = if (isSystemInDarkTheme()) AiryGreen else SkyAccent.copy(alpha = 0.7f)
+    get() = if (isSystemInDarkTheme()) Color.Black else SkyAccent.copy(alpha = 0.7f)
 
 val cardTextColor: Color
     @Composable
