@@ -1,6 +1,5 @@
 package eg.edu.cu.csds.icare.core.ui.view
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Phone
@@ -29,21 +30,25 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.ui.common.CenterTypeItem
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
+import eg.edu.cu.csds.icare.core.ui.theme.MAX_SURFACE_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 
 @Composable
 fun CenterView(
-    center: LabImagingCenter,
+    name: String,
+    type: Short,
+    phone: String,
+    address: String,
     modifier: Modifier = Modifier,
     showType: Boolean = false,
     onClick: () -> Unit,
@@ -53,12 +58,10 @@ fun CenterView(
         onClick = onClick,
         modifier =
             modifier
+                .padding(horizontal = M_PADDING, vertical = XS_PADDING)
                 .fillMaxWidth()
-                .padding(horizontal = M_PADDING, vertical = XS_PADDING),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = cardBackgroundColor,
-            ),
+                .wrapContentWidth(Alignment.CenterHorizontally)
+                .widthIn(max = MAX_SURFACE_WIDTH),
         elevation = CardDefaults.cardElevation(defaultElevation = XS_PADDING),
         shape = MaterialTheme.shapes.medium,
     ) {
@@ -71,7 +74,7 @@ fun CenterView(
             Image(
                 painter =
                     painterResource(
-                        types.firstOrNull { it.code == center.type }?.iconResId
+                        types.firstOrNull { it.code == type }?.iconResId
                             ?: types.first().iconResId,
                     ),
                 contentDescription = null,
@@ -91,23 +94,21 @@ fun CenterView(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
-                    text = center.name,
+                    text = name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     fontFamily = helveticaFamily,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 if (showType) {
                     Spacer(modifier = Modifier.height(S_PADDING))
                     Text(
                         text =
                             stringResource(
-                                types.firstOrNull { it.code == center.type }?.textResId
+                                types.firstOrNull { it.code == type }?.textResId
                                     ?: types.first().textResId,
                             ),
                         style = MaterialTheme.typography.bodyMedium,
                         fontFamily = helveticaFamily,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
                     )
                 }
 
@@ -116,52 +117,45 @@ fun CenterView(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Phone, contentDescription = null)
                     Spacer(modifier = Modifier.width(XS_PADDING))
-                    Text(text = center.phone)
+                    Text(text = phone)
                 }
                 Spacer(modifier = Modifier.height(M_PADDING))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Place, contentDescription = null)
                     Spacer(modifier = Modifier.width(XS_PADDING))
-                    Text(text = center.address)
+                    Text(text = address)
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Preview(locale = "ar", showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(locale = "ar", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 fun CenterCardPreview() {
-    MaterialTheme {
+    IcareTheme {
         Column(
             modifier =
                 Modifier
                     .padding(XS_PADDING)
-                    .background(color = backgroundColor),
+                    .background(color = MaterialTheme.colorScheme.background),
         ) {
             CenterView(
                 showType = true,
-                center =
-                    LabImagingCenter(
-                        type = 1,
-                        name = "Alfa",
-                        phone = "0123456789",
-                        address = "53 james street,Giza,Egypt",
-                    ),
+                type = 1,
+                name = "Alfa",
+                phone = "0123456789",
+                address = "53 james street,Giza,Egypt",
                 onClick = {},
             )
             CenterView(
-                center =
-                    LabImagingCenter(
-                        type = 2,
-                        name = "Beta",
-                        phone = "0123456789",
-                        address = "53 james street,Giza,Egypt",
-                    ),
+                type = 2,
+                name = "Beta",
+                phone = "0123456789",
+                address = "53 james street,Giza,Egypt",
                 onClick = {},
             )
         }
