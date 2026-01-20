@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.retain.retain
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,18 +32,19 @@ import kotlin.system.exitProcess
 fun MainScreen(onBoardingViewModel: OnBoardingViewModel) {
     val navigator: Navigator = koinInject()
     val context = LocalContext.current
-    var alertMessage by remember { mutableStateOf("") }
-    var showAlert by remember { mutableStateOf(false) }
-
+    var alertMessage by retain { mutableStateOf("") }
+    var showAlert by retain { mutableStateOf(false) }
     val bottomNavItems =
-        listOf(
-            BottomNavItem.Home,
-            BottomNavItem.Notifications,
-            BottomNavItem.Profile,
-            BottomNavItem.Settings,
-        )
+        retain {
+            listOf(
+                BottomNavItem.Home,
+                BottomNavItem.Notifications,
+                BottomNavItem.Profile,
+                BottomNavItem.Settings,
+            )
+        }
 
-    val isBottomBarVisible by remember {
+    val isBottomBarVisible by retain {
         derivedStateOf {
             val currentDestination = navigator.backStack.lastOrNull()
             navigator.backStack.isNotEmpty() && bottomNavItems.any { it.route == currentDestination }
