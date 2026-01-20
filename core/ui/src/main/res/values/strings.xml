@@ -15,6 +15,7 @@
     <string name="core_ui_app_market_url" translatable="false">market://details?id=</string>
     <string name="core_ui_our_apps_market_url" translatable="false">market://dev?id=6772948665272481116</string>
     <string name="core_ui_our_apps_url" translatable="false">https://play.google.com/store/apps/dev?id=6772948665272481116</string>
+    <string name="core_ui_icon" translatable="false">Icon</string>
     <string name="core_ui_contact_us_url" translatable="false">https://scedc.gov.eg/ContactUs.aspx</string>
 
     <!--Multilingual General resources-->
