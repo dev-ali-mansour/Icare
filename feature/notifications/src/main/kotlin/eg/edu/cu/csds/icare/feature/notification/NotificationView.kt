@@ -27,9 +27,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
-import eg.edu.cu.csds.icare.core.ui.util.currentLanguage
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @Composable
 fun NotificationView(
@@ -82,13 +79,7 @@ fun NotificationView(
                             end.linkTo(message.end)
                         },
                 textAlign = TextAlign.End,
-                text =
-                    SimpleDateFormat(
-                        "dd-MM-yyyy HH:mm aa",
-                        Locale.forLanguageTag(currentLanguage.code),
-                    ).format(
-                        date,
-                    ),
+                text = date,
                 color = contentColor,
                 fontSize = MaterialTheme.typography.bodySmall.fontSize,
                 fontFamily = helveticaFamily,
