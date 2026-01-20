@@ -2,7 +2,9 @@ package eg.edu.cu.csds.icare.core.ui.util
 
 import android.content.Context
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Stable
 
+@Stable
 sealed interface UiText {
     data class DynamicString(
         val value: String,
