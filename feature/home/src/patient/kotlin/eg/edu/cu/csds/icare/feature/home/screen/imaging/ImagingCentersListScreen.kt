@@ -1,85 +1,89 @@
 package eg.edu.cu.csds.icare.feature.home.screen.imaging
 
 import android.content.Context
-import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
-import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
+import eg.edu.cu.csds.icare.core.ui.util.AdaptiveGrid
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.CenterView
-import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
-import eg.edu.cu.csds.icare.core.ui.view.SearchTextField
 import eg.edu.cu.csds.icare.feature.home.R
+import eg.edu.cu.csds.icare.feature.home.common.TopBar
+import eg.edu.cu.csds.icare.feature.home.component.ServiceTopBar
+import eg.edu.cu.csds.icare.feature.home.component.ServiceTopSearchBar
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ImagingCentersListScreen(
-    viewModel: ImagingCenterListViewModel = koinViewModel(),
-    onNavigationIconClicked: () -> Unit,
-) {
+internal fun ImagingCentersListScreen(onNavigationIconClicked: () -> Unit) {
+    val viewModel: ImagingCenterListViewModel = koinViewModel()
     val context: Context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val gridState = rememberLazyGridState()
+    val keyboardController = LocalSoftwareKeyboardController.current
     val refreshState = rememberPullToRefreshState()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var alertMessage by remember { mutableStateOf("") }
-    var showAlert by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedUiEffectHandler(
         viewModel.effect,
-        onConsumeEffect = { viewModel.processEvent(ImagingCenterListEvent.ConsumeEffect) },
+        onConsumeEffect = { viewModel.handleIntent(ImagingCenterListIntent.ConsumeEffect) },
         onEffect = { effect ->
             when (effect) {
-                is ImagingCenterListEffect.OnBackClick -> onNavigationIconClicked()
+                is ImagingCenterListEffect.OnBackClick -> {
+                    onNavigationIconClicked()
+                }
 
                 is ImagingCenterListEffect.ShowError -> {
-                    alertMessage = effect.message.asString(context)
-                    showAlert = true
-                    delay(timeMillis = 3000)
-                    showAlert = false
+                    snackbarHostState.showSnackbar(
+                        message = effect.message.asString(context),
+                        duration = SnackbarDuration.Short,
+                    )
                 }
             }
         },
@@ -87,29 +91,48 @@ internal fun ImagingCentersListScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_scan_centers),
+            when (uiState.topBar) {
+                is TopBar.ServiceTopBar -> {
+                    ServiceTopBar(
+                        title = stringResource(string.core_ui_scan_centers),
+                        onNavigationIconClicked = {
+                            viewModel.handleIntent(ImagingCenterListIntent.OnBackClick)
+                        },
+                        onSearchClicked = {
+                            viewModel.handleIntent(
+                                ImagingCenterListIntent.ChangeTopBar(TopBar.ServiceSearchTopBar),
+                            )
+                            scope.launch {
+                                gridState.scrollToItem(0)
+                                delay(timeMillis = 100L)
+                                keyboardController?.show()
+                            }
+                        },
                     )
-                },
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = barBackgroundColor,
-                        navigationIconContentColor = Color.White,
-                        titleContentColor = Color.White,
-                        actionIconContentColor = Color.White,
-                    ),
-                navigationIcon = {
-                    IconButton(onClick = { onNavigationIconClicked() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            tint = Color.White,
-                        )
-                    }
-                },
-            )
+                }
+
+                is TopBar.ServiceSearchTopBar -> {
+                    ServiceTopSearchBar(
+                        placeholderText =
+                            stringResource(R.string.feature_home_search_by_center_name_or_address),
+                        searchQuery = uiState.searchQuery,
+                        onTextChanged = {
+                            viewModel.handleIntent(ImagingCenterListIntent.UpdateSearchQuery(it))
+                        },
+                        onSearch = {
+                            keyboardController?.hide()
+                        },
+                        onCloseClicked = {
+                            viewModel.handleIntent(
+                                ImagingCenterListIntent.ChangeTopBar(TopBar.ServiceTopBar),
+                            )
+                            scope.launch {
+                                gridState.scrollToItem(0)
+                            }
+                        },
+                    )
+                }
+            }
         },
     ) { paddingValues ->
         Surface(
@@ -120,16 +143,11 @@ internal fun ImagingCentersListScreen(
                         state = refreshState,
                         isRefreshing = uiState.isLoading,
                         onRefresh = {
-                            viewModel.processEvent(ImagingCenterListEvent.Refresh)
+                            viewModel.handleIntent(ImagingCenterListIntent.Refresh)
                         },
                     ).padding(paddingValues),
         ) {
-            ConstraintLayout(
-                modifier =
-                    Modifier
-                        .background(backgroundColor)
-                        .fillMaxSize(),
-            ) {
+            ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                 val (line, content, refresh) = createRefs()
 
                 Box(
@@ -154,8 +172,8 @@ internal fun ImagingCentersListScreen(
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         },
+                    gridState = gridState,
                     uiState = uiState,
-                    onEvent = viewModel::processEvent,
                 )
 
                 Indicator(
@@ -168,8 +186,6 @@ internal fun ImagingCentersListScreen(
                     isRefreshing = uiState.isLoading,
                     state = refreshState,
                 )
-
-                if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
             }
         }
     }
@@ -179,120 +195,94 @@ internal fun ImagingCentersListScreen(
 private fun ImagingCentersListContent(
     uiState: ImagingCenterListState,
     modifier: Modifier = Modifier,
-    onEvent: (ImagingCenterListEvent) -> Unit,
+    gridState: LazyGridState = rememberLazyGridState(),
 ) {
+    val adaptiveGrid: AdaptiveGrid = koinInject()
     Surface(
         modifier = modifier.fillMaxSize(),
     ) {
-        ConstraintLayout(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-        ) {
-            val (search, details) = createRefs()
-
-            SearchTextField(
-                modifier =
-                    Modifier
-                        .constrainAs(search) {
-                            top.linkTo(parent.top, margin = M_PADDING)
-                            start.linkTo(parent.start, M_PADDING)
-                            end.linkTo(parent.end, M_PADDING)
-                            width = Dimension.fillToConstraints
-                        },
-                placeholder = stringResource(R.string.feature_home_search_by_center_name_or_address),
-                value = uiState.searchQuery,
-                focus = false,
-                onValueChange = { onEvent(ImagingCenterListEvent.UpdateSearchQuery(it)) },
-                onClear = { onEvent(ImagingCenterListEvent.UpdateSearchQuery("")) },
-                onSearch = { },
+        if (uiState.centers.isEmpty()) {
+            EmptyContentView(
+                modifier = Modifier.fillMaxSize(),
+                text = stringResource(R.string.feature_home_no_data_matched),
             )
-
-            if (uiState.centers.isEmpty()) {
-                EmptyContentView(
-                    modifier =
-                        Modifier
-                            .constrainAs(details) {
-                                top.linkTo(search.bottom, margin = M_PADDING)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                                bottom.linkTo(parent.bottom)
-                                width = Dimension.fillToConstraints
-                                height = Dimension.fillToConstraints
+        } else {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(adaptiveGrid.calculateGridColumns()),
+                modifier = modifier.fillMaxSize(),
+                state = gridState,
+                contentPadding = PaddingValues(all = S_PADDING),
+                horizontalArrangement = Arrangement.spacedBy(S_PADDING),
+                verticalArrangement = Arrangement.spacedBy(S_PADDING),
+            ) {
+                items(
+                    uiState.centers,
+                    key = { center ->
+                        center.id
+                    },
+                    span = { GridItemSpan(1) },
+                ) { center ->
+                    CenterView(
+                        type = center.type,
+                        name = center.name,
+                        phone = center.phone,
+                        address = center.address,
+                        modifier =
+                            Modifier.clickable {
                             },
-                    text = stringResource(R.string.feature_home_no_data_matched),
-                )
-            } else {
-                LazyColumn(
-                    modifier =
-                        modifier.constrainAs(details) {
-                            top.linkTo(search.bottom, margin = M_PADDING)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                            width = Dimension.fillToConstraints
-                            height = Dimension.fillToConstraints
-                        },
-                    verticalArrangement = Arrangement.spacedBy(S_PADDING),
-                ) {
-                    items(uiState.centers) { center ->
-                        CenterView(
-                            center = center,
-                            modifier = modifier,
-                            showType = true,
-                            onClick = {},
-                        )
-                    }
+                        showType = true,
+                        onClick = {},
+                    )
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@PreviewLightDark
+@PreviewArabicLightDark
 @Composable
 private fun ImagingCentersListContentPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        ImagingCentersListContent(
-            uiState =
-                ImagingCenterListState(
-                    centers =
-                        listOf(
-                            LabImagingCenter(
-                                id = 1,
-                                name = "Alfa",
-                                type = 2,
-                                phone = "123456789",
-                                address = "Address 1",
+    IcareTheme {
+        Box(
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+        ) {
+            ImagingCentersListContent(
+                uiState =
+                    ImagingCenterListState(
+                        centers =
+                            listOf(
+                                LabImagingCenter(
+                                    id = 1,
+                                    name = "Alfa",
+                                    type = 2,
+                                    phone = "123456789",
+                                    address = "Address 1",
+                                ),
+                                LabImagingCenter(
+                                    id = 1,
+                                    name = "Alfa",
+                                    type = 2,
+                                    phone = "123498789",
+                                    address = "Address 1",
+                                ),
+                                LabImagingCenter(
+                                    id = 2,
+                                    name = "El-Borg",
+                                    type = 2,
+                                    phone = "123456789",
+                                    address = "Address 1",
+                                ),
+                                LabImagingCenter(
+                                    id = 3,
+                                    name = "El-Shams",
+                                    type = 2,
+                                    phone = "123456789",
+                                    address = "Address 1",
+                                ),
                             ),
-                            LabImagingCenter(
-                                id = 1,
-                                name = "Alfa",
-                                type = 2,
-                                phone = "123498789",
-                                address = "Address 1",
-                            ),
-                            LabImagingCenter(
-                                id = 2,
-                                name = "El-Borg",
-                                type = 2,
-                                phone = "123456789",
-                                address = "Address 1",
-                            ),
-                            LabImagingCenter(
-                                id = 3,
-                                name = "El-Shams",
-                                type = 2,
-                                phone = "123456789",
-                                address = "Address 1",
-                            ),
-                        ),
-                ),
-            onEvent = {},
-        )
+                    ),
+            )
+        }
     }
 }

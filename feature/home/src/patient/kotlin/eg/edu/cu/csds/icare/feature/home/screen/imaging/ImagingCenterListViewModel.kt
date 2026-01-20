@@ -7,6 +7,7 @@ import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCentersUseCase
 import eg.edu.cu.csds.icare.core.ui.common.CenterTypeItem
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.feature.home.common.TopBar
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -41,27 +42,37 @@ class ImagingCenterListViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: ImagingCenterListEvent) {
-        when (event) {
-            is ImagingCenterListEvent.OnBackClick -> {
+    fun handleIntent(intent: ImagingCenterListIntent) {
+        when (intent) {
+            is ImagingCenterListIntent.OnBackClick -> {
                 _uiState.update { it.copy(effect = ImagingCenterListEffect.OnBackClick) }
             }
 
-            is ImagingCenterListEvent.Refresh -> {
+            is ImagingCenterListIntent.Refresh -> {
                 fetchCentersJob?.cancel()
                 fetchCentersJob = refreshImagingCenters()
             }
 
-            is ImagingCenterListEvent.UpdateSearchQuery -> {
-                _uiState.update { it.copy(searchQuery = event.query) }
+            is ImagingCenterListIntent.ChangeTopBar -> {
+                _uiState.update { it.copy(topBar = intent.topBar) }
+                if (intent.topBar == TopBar.ServiceTopBar) {
+                    fetchCentersJob?.cancel()
+                    fetchCentersJob = launchSearchImagingCenters(_uiState.value.searchQuery)
+                }
             }
 
-            is ImagingCenterListEvent.Search -> {
+            is ImagingCenterListIntent.UpdateSearchQuery -> {
+                _uiState.update { it.copy(searchQuery = intent.query) }
+            }
+
+            is ImagingCenterListIntent.Search -> {
                 fetchCentersJob?.cancel()
                 fetchCentersJob = launchSearchImagingCenters(query = _uiState.value.searchQuery)
             }
 
-            ImagingCenterListEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            ImagingCenterListIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 
