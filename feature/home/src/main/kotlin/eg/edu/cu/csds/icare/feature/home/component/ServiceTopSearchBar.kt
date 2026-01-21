@@ -2,7 +2,9 @@ package eg.edu.cu.csds.icare.feature.home.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,10 +32,8 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.R.drawable
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
-import eg.edu.cu.csds.icare.core.ui.theme.tintColor
-import eg.edu.cu.csds.icare.core.ui.util.UiText
-import eg.edu.cu.csds.icare.core.ui.util.UiText.DynamicString
-import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
+import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -64,69 +64,79 @@ internal fun ServiceTopSearchBar(
     }
 
     Surface(color = MaterialTheme.colorScheme.primary) {
-        TopSearchBar(
-            state = searchBarState,
-            inputField = {
-                SearchBarDefaults.InputField(
-                    modifier = modifier,
-                    searchBarState = searchBarState,
-                    textFieldState = textFieldState,
-                    onSearch = { onSearch(it) },
-                    colors =
-                        SearchBarDefaults.inputFieldColors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent.copy(alpha = 0.6f),
-                            cursorColor = MaterialTheme.colorScheme.onSurface,
-                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                        ),
-                    placeholder = {
-                        Text(
-                            modifier = Modifier.alpha(alpha = 0.6f),
-                            text = placeholderText,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                    },
-                    leadingIcon = {
-                        IconButton(
-                            modifier = Modifier.alpha(alpha = 0.6f),
-                            onClick = {},
-                        ) {
-                            Icon(
-                                painter = painterResource(drawable.core_ui_ic_search),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurface,
+        Column {
+            TopSearchBar(
+                state = searchBarState,
+                inputField = {
+                    SearchBarDefaults.InputField(
+                        modifier = modifier,
+                        searchBarState = searchBarState,
+                        textFieldState = textFieldState,
+                        onSearch = { onSearch(it) },
+                        colors =
+                            SearchBarDefaults.inputFieldColors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent.copy(alpha = 0.6f),
+                                cursorColor = MaterialTheme.colorScheme.onSurface,
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            ),
+                        placeholder = {
+                            Text(
+                                modifier = Modifier.alpha(alpha = 0.6f),
+                                text = placeholderText,
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
-                        }
-                    },
-                    trailingIcon = {
-                        IconButton(
-                            modifier =
-                                Modifier.semantics {
-                                    contentDescription = context.getString(android.R.string.cancel)
+                        },
+                        leadingIcon = {
+                            IconButton(
+                                modifier = Modifier.alpha(alpha = 0.6f),
+                                onClick = {},
+                            ) {
+                                Icon(
+                                    painter = painterResource(drawable.core_ui_ic_search),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurface,
+                                )
+                            }
+                        },
+                        trailingIcon = {
+                            IconButton(
+                                modifier =
+                                    Modifier.semantics {
+                                        contentDescription = context.getString(android.R.string.cancel)
+                                    },
+                                onClick = {
+                                    focusManager.clearFocus()
+                                    val currentText = textFieldState.text.toString()
+                                    if (currentText.isNotEmpty()) {
+                                        textFieldState.edit { replace(0, currentText.length, "") }
+                                        onTextChanged("")
+                                    } else {
+                                        onCloseClicked()
+                                    }
                                 },
-                            onClick = {
-                                focusManager.clearFocus()
-                                val currentText = textFieldState.text.toString()
-                                if (currentText.isNotEmpty()) {
-                                    textFieldState.edit { replace(0, currentText.length, "") }
-                                    onTextChanged("")
-                                } else {
-                                    onCloseClicked()
-                                }
-                            },
-                        ) {
-                            Icon(
-                                painter = painterResource(drawable.core_ui_ic_close),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
-                    },
-                )
-            },
-        )
+                            ) {
+                                Icon(
+                                    painter = painterResource(drawable.core_ui_ic_close),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurface,
+                                )
+                            }
+                        },
+                    )
+                },
+            )
+
+            Box(
+                modifier =
+                    Modifier
+                        .background(Yellow500)
+                        .fillMaxWidth()
+                        .height(XS_PADDING),
+            )
+        }
     }
 }
 

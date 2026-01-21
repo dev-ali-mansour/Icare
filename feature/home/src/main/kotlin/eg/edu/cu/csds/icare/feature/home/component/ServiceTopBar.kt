@@ -2,7 +2,9 @@ package eg.edu.cu.csds.icare.feature.home.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -20,6 +22,8 @@ import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.R.drawable
 import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
+import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 
@@ -30,40 +34,50 @@ internal fun ServiceTopBar(
     onNavigationIconClicked: () -> Unit,
     onSearchClicked: () -> Unit,
 ) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = title,
-                fontFamily = helveticaFamily,
-            )
-        },
-        colors =
-            TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
-            ),
-        navigationIcon = {
-            IconButton(onClick = {
-                onNavigationIconClicked()
-            }) {
-                Icon(
-                    painter = painterResource(R.drawable.core_ui_ic_arrow_back),
-                    contentDescription = stringResource(R.string.core_ui_back),
-                    tint = MaterialTheme.colorScheme.onPrimary,
+    Column {
+        CenterAlignedTopAppBar(
+            title = {
+                Text(
+                    text = title,
+                    fontFamily = helveticaFamily,
                 )
-            }
-        },
-        actions = {
-            IconButton(onClick = onSearchClicked) {
-                Icon(
-                    painter = painterResource(drawable.core_ui_ic_search),
-                    contentDescription = stringResource(string.core_ui_icon),
-                )
-            }
-        },
-    )
+            },
+            colors =
+                TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+            navigationIcon = {
+                IconButton(onClick = {
+                    onNavigationIconClicked()
+                }) {
+                    Icon(
+                        painter = painterResource(R.drawable.core_ui_ic_arrow_back),
+                        contentDescription = stringResource(R.string.core_ui_back),
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                    )
+                }
+            },
+            actions = {
+                IconButton(onClick = onSearchClicked) {
+                    Icon(
+                        painter = painterResource(drawable.core_ui_ic_search),
+                        contentDescription = stringResource(string.core_ui_icon),
+                    )
+                }
+            },
+        )
+
+        Box(
+            modifier =
+                Modifier
+                    .background(Yellow500)
+                    .fillMaxWidth()
+                    .height(XS_PADDING),
+        )
+    }
 }
 
 @PreviewLightDark
