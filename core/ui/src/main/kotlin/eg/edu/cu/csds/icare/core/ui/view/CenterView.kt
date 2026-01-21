@@ -2,7 +2,9 @@ package eg.edu.cu.csds.icare.core.ui.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,11 +16,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,6 +42,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
+import eg.edu.cu.csds.icare.core.ui.util.neumorphicUp
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 
 @Composable
@@ -54,16 +56,21 @@ fun CenterView(
     onClick: () -> Unit,
 ) {
     val types = listOf(CenterTypeItem.ImagingCenter, CenterTypeItem.LabCenter)
-    Card(
-        onClick = onClick,
+    Box(
         modifier =
             modifier
-                .fillMaxWidth()
-                .padding(horizontal = M_PADDING, vertical = XS_PADDING)
+                .background(
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(percent = 20),
+                ).fillMaxWidth()
                 .wrapContentWidth(Alignment.CenterHorizontally)
-                .widthIn(max = MAX_SURFACE_WIDTH),
-        elevation = CardDefaults.cardElevation(defaultElevation = XS_PADDING),
-        shape = MaterialTheme.shapes.medium,
+                .widthIn(max = MAX_SURFACE_WIDTH)
+                .neumorphicUp(
+                    shape = RoundedCornerShape(percent = 20),
+                    shadowPadding = XS_PADDING,
+                ).clickable {
+                    onClick()
+                },
     ) {
         Row(
             modifier =
@@ -140,8 +147,8 @@ fun CenterCardPreview() {
         Column(
             modifier =
                 Modifier
-                    .padding(XS_PADDING)
-                    .background(color = MaterialTheme.colorScheme.background),
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .padding(S_PADDING),
         ) {
             CenterView(
                 showType = true,
@@ -151,6 +158,9 @@ fun CenterCardPreview() {
                 address = "53 james street,Giza,Egypt",
                 onClick = {},
             )
+
+            Spacer(modifier = Modifier.height(S_PADDING))
+
             CenterView(
                 type = 2,
                 name = "Beta",
