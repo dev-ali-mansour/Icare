@@ -14,6 +14,7 @@ fun EntryProviderScope<Any>.authenticationEntryBuilder(
     onSignInSuccess: () -> Unit,
     onRecoveryCompleted: () -> Unit,
     onRegisterCompleted: () -> Unit,
+    onSignOut: () -> Unit,
 ) {
     entry<Route.SignIn> {
         SignInScreen(
@@ -31,7 +32,9 @@ fun EntryProviderScope<Any>.authenticationEntryBuilder(
     }
 
     entry<Route.Profile> {
-        ProfileScreen()
+        ProfileScreen {
+            onSignOut()
+        }
     }
 
     entry<Route.SignUp> {

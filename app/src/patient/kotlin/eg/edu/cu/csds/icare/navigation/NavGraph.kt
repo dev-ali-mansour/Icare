@@ -71,6 +71,10 @@ fun NavGraph(
                         navigator.clearBackStack()
                         navigator.goTo(Route.SignIn)
                     },
+                    onSignOut = {
+                        navigator.clearBackStack()
+                        navigator.goTo(Route.SignIn)
+                    },
                 )
 
                 homeEntryBuilder(
