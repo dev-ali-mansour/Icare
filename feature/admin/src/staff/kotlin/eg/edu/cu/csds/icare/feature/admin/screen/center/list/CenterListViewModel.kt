@@ -35,25 +35,27 @@ class CenterListViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: CenterListEvent) {
-        when (event) {
-            is CenterListEvent.Refresh -> {
+    fun handleIntent(intent: CenterListIntent) {
+        when (intent) {
+            is CenterListIntent.Refresh -> {
                 fetchCenters(forceUpdate = true)
             }
 
-            is CenterListEvent.SelectCenter -> {
+            is CenterListIntent.SelectCenter -> {
                 _uiState.update {
-                    it.copy(effect = CenterListEffect.NavigateToCenterDetails(center = event.center))
+                    it.copy(effect = CenterListEffect.NavigateToCenterDetails(center = intent.center))
                 }
             }
 
-            is CenterListEvent.UpdateFabExpanded -> {
+            is CenterListIntent.UpdateFabExpanded -> {
                 _uiState.update {
-                    it.copy(effect = CenterListEffect.UpdateFabExpanded(isExpanded = event.isExpanded))
+                    it.copy(effect = CenterListEffect.UpdateFabExpanded(isExpanded = intent.isExpanded))
                 }
             }
 
-            CenterListEvent.ConsumeEffect -> consumeEffect()
+            CenterListIntent.ConsumeEffect -> {
+                consumeEffect()
+            }
         }
     }
 

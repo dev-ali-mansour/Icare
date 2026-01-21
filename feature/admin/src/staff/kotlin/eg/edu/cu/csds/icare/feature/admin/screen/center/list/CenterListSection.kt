@@ -1,6 +1,5 @@
 package eg.edu.cu.csds.icare.feature.admin.screen.center.list
 
-import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,43 +16,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.util.UiText
 import eg.edu.cu.csds.icare.core.ui.view.CenterView
-import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
-import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CenterListSection(
     modifier: Modifier = Modifier,
-    viewModel: CenterListViewModel = koinViewModel(),
     navigateToCenterDetails: (LabImagingCenter) -> Unit,
     onExpandStateChanged: (Boolean) -> Unit,
+    onError: suspend (UiText) -> Unit,
 ) {
-    val context: Context = LocalContext.current
+    val viewModel: CenterListViewModel = koinViewModel()
     val refreshState = rememberPullToRefreshState()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var alertMessage by remember { mutableStateOf("") }
-    var showAlert by remember { mutableStateOf(false) }
 
     LaunchedUiEffectHandler(
         viewModel.effect,
-        onConsumeEffect = { viewModel.processEvent(CenterListEvent.ConsumeEffect) },
+        onConsumeEffect = { viewModel.handleIntent(CenterListIntent.ConsumeEffect) },
         onEffect = { effect ->
             when (effect) {
                 is CenterListEffect.NavigateToCenterDetails -> {
@@ -65,10 +59,7 @@ fun CenterListSection(
                 }
 
                 is CenterListEffect.ShowError -> {
-                    alertMessage = effect.message.asString(context)
-                    showAlert = true
-                    delay(timeMillis = 3000)
-                    showAlert = false
+                    onError(effect.message)
                 }
             }
         },
@@ -82,7 +73,7 @@ fun CenterListSection(
                     state = refreshState,
                     isRefreshing = uiState.isLoading,
                     onRefresh = {
-                        viewModel.processEvent(CenterListEvent.Refresh)
+                        viewModel.handleIntent(CenterListIntent.Refresh)
                     },
                 ),
     ) {
@@ -99,7 +90,7 @@ fun CenterListSection(
                     height = Dimension.fillToConstraints
                 },
             uiState = uiState,
-            onEvent = viewModel::processEvent,
+            onIntent = viewModel::handleIntent,
         )
 
         Indicator(
@@ -113,8 +104,6 @@ fun CenterListSection(
             isRefreshing = uiState.isLoading,
             state = refreshState,
         )
-
-        if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
     }
 }
 
@@ -122,7 +111,7 @@ fun CenterListSection(
 fun CenterListContent(
     modifier: Modifier = Modifier,
     uiState: CenterListState,
-    onEvent: (CenterListEvent) -> Unit,
+    onIntent: (CenterListIntent) -> Unit,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         val listState = rememberLazyListState()
@@ -133,14 +122,14 @@ fun CenterListContent(
                 }
             }
         LaunchedEffect(key1 = expandedFabState.value) {
-            onEvent(CenterListEvent.UpdateFabExpanded(expandedFabState.value))
+            onIntent(CenterListIntent.UpdateFabExpanded(expandedFabState.value))
         }
 
         if (uiState.centers.isEmpty()) {
             EmptyContentView(
                 modifier =
                     Modifier.fillMaxSize(),
-                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_no_centers_data),
+                text = stringResource(string.core_ui_no_centers_data),
             )
         } else {
             LazyColumn(
@@ -155,8 +144,14 @@ fun CenterListContent(
                         center.id
                     },
                 ) { center ->
-                    CenterView(center = center, showType = true) {
-                        onEvent(CenterListEvent.SelectCenter(center))
+                    CenterView(
+                        name = center.name,
+                        type = center.type,
+                        phone = center.phone,
+                        address = center.address,
+                        showType = true,
+                    ) {
+                        onIntent(CenterListIntent.SelectCenter(center))
                     }
                 }
             }
@@ -190,7 +185,7 @@ internal fun ClinicsContentPreview() {
                             ),
                         ),
                 ),
-            onEvent = {},
+            onIntent = {},
         )
     }
 }
