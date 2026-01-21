@@ -18,11 +18,6 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -32,13 +27,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import eg.edu.cu.csds.icare.feature.admin.screen.center.list.CenterListSection
-import eg.edu.cu.csds.icare.feature.admin.screen.clinic.list.ClinicListSection
-import eg.edu.cu.csds.icare.feature.admin.screen.clinician.list.ClinicianListSection
-import eg.edu.cu.csds.icare.feature.admin.screen.doctor.list.DoctorListSection
-import eg.edu.cu.csds.icare.feature.admin.screen.pharmacist.list.PharmacistListSection
-import eg.edu.cu.csds.icare.feature.admin.screen.pharmacy.list.PharmacyListSection
-import eg.edu.cu.csds.icare.feature.admin.screen.staff.list.StaffListSection
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.Clinician
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
@@ -59,7 +47,14 @@ import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
-import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
+import eg.edu.cu.csds.icare.core.ui.util.UiText
+import eg.edu.cu.csds.icare.feature.admin.screen.center.list.CenterListSection
+import eg.edu.cu.csds.icare.feature.admin.screen.clinic.list.ClinicListSection
+import eg.edu.cu.csds.icare.feature.admin.screen.clinician.list.ClinicianListSection
+import eg.edu.cu.csds.icare.feature.admin.screen.doctor.list.DoctorListSection
+import eg.edu.cu.csds.icare.feature.admin.screen.pharmacist.list.PharmacistListSection
+import eg.edu.cu.csds.icare.feature.admin.screen.pharmacy.list.PharmacyListSection
+import eg.edu.cu.csds.icare.feature.admin.screen.staff.list.StaffListSection
 
 @Composable
 internal fun AdminContent(
@@ -76,11 +71,8 @@ internal fun AdminContent(
     navigateToPharmacistDetails: (Pharmacist) -> Unit,
     navigateToCenterDetails: (LabImagingCenter) -> Unit,
     navigateToStaffDetails: (Staff) -> Unit,
+    onError: suspend (UiText) -> Unit,
 ) {
-    rememberCoroutineScope()
-    var alertMessage by remember { mutableStateOf("") }
-    var showAlert by remember { mutableStateOf(false) }
-
     ConstraintLayout(
         modifier =
             modifier
@@ -204,61 +196,70 @@ internal fun AdminContent(
                     },
         ) {
             when (selectedCategoryTabIndex) {
-                0 ->
+                0 -> {
                     when (selectedSectionTabIndex) {
-                        0 ->
+                        0 -> {
                             ClinicListSection(
                                 navigateToClinicDetails = { navigateToClinicDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
                             )
+                        }
 
-                        1 ->
+                        1 -> {
                             DoctorListSection(
                                 navigateToDoctorDetails = { navigateToDoctorDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
                             )
+                        }
 
-                        2 ->
+                        2 -> {
                             ClinicianListSection(
                                 navigateToClinicianDetails = { navigateToClinicianDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
                             )
+                        }
                     }
+                }
 
-                1 ->
+                1 -> {
                     when (selectedSectionTabIndex) {
-                        0 ->
+                        0 -> {
                             PharmacyListSection(
                                 navigateToPharmacyDetails = { navigateToPharmacyDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
                             )
+                        }
 
-                        1 ->
+                        1 -> {
                             PharmacistListSection(
                                 navigateToPharmacistDetails = { navigateToPharmacistDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
                             )
+                        }
                     }
+                }
 
-                2 ->
+                2 -> {
                     when (selectedSectionTabIndex) {
-                        0 ->
+                        0 -> {
                             CenterListSection(
                                 navigateToCenterDetails = { navigateToCenterDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
+                                onError = onError,
                             )
+                        }
 
-                        1 ->
+                        1 -> {
                             StaffListSection(
                                 navigateToStaffDetails = { navigateToStaffDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
                             )
+                        }
                     }
+                }
             }
         }
     }
-
-    if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
 }
 
 @Preview(showBackground = true)
@@ -281,6 +282,7 @@ internal fun AdminContentPreview() {
             navigateToPharmacistDetails = {},
             navigateToCenterDetails = {},
             navigateToStaffDetails = {},
+            onError = {},
         )
     }
 }
