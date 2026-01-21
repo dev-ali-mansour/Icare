@@ -98,7 +98,7 @@ class OnBoardingViewModel(
     private fun getCurrentUser() =
         viewModelScope.launch(dispatcher) {
             _uiState.update { it.copy(isLoading = true) }
-            getUserInfoUseCase(forceUpdate = true).collect { result ->
+            getUserInfoUseCase(forceUpdate = false).collect { result ->
                 result
                     .onSuccess {
                         fetchClinics()
@@ -116,8 +116,8 @@ class OnBoardingViewModel(
                             else -> {
                                 _uiState.update {
                                     it.copy(
-                                        effect =
-                                            OnBoardingEffect.ShowError(error.toUiText()),
+                                        isLoading = false,
+                                        effect = OnBoardingEffect.ShowError(error.toUiText()),
                                     )
                                 }
                             }
@@ -147,8 +147,8 @@ class OnBoardingViewModel(
                             else -> {
                                 _uiState.update {
                                     it.copy(
-                                        effect =
-                                            OnBoardingEffect.ShowError(error.toUiText()),
+                                        isLoading = false,
+                                        effect = OnBoardingEffect.NavigateToRoute(Route.Home),
                                     )
                                 }
                             }
@@ -177,8 +177,8 @@ class OnBoardingViewModel(
                         else -> {
                             _uiState.update {
                                 it.copy(
-                                    effect =
-                                        OnBoardingEffect.ShowError(error.toUiText()),
+                                    isLoading = false,
+                                    effect = OnBoardingEffect.NavigateToRoute(Route.Home),
                                 )
                             }
                         }
@@ -207,8 +207,8 @@ class OnBoardingViewModel(
                         else -> {
                             _uiState.update {
                                 it.copy(
-                                    effect =
-                                        OnBoardingEffect.ShowError(error.toUiText()),
+                                    isLoading = false,
+                                    effect = OnBoardingEffect.NavigateToRoute(Route.Home),
                                 )
                             }
                         }
@@ -242,8 +242,8 @@ class OnBoardingViewModel(
                         else -> {
                             _uiState.update {
                                 it.copy(
-                                    effect =
-                                        OnBoardingEffect.ShowError(error.toUiText()),
+                                    isLoading = false,
+                                    effect = OnBoardingEffect.NavigateToRoute(Route.Home),
                                 )
                             }
                         }
