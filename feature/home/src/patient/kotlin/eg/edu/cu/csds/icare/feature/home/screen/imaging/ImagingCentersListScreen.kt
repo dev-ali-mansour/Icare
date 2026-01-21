@@ -2,13 +2,10 @@ package eg.edu.cu.csds.icare.feature.home.screen.imaging
 
 import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -20,6 +17,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
@@ -34,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -43,8 +42,6 @@ import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.util.AdaptiveGrid
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.CenterView
@@ -62,6 +59,7 @@ import org.koin.compose.koinInject
 @Composable
 internal fun ImagingCentersListScreen(onNavigationIconClicked: () -> Unit) {
     val viewModel: ImagingCenterListViewModel = koinViewModel()
+    val adaptiveGrid: AdaptiveGrid = koinInject()
     val context: Context = LocalContext.current
     val scope = rememberCoroutineScope()
     val gridState = rememberLazyGridState()
@@ -134,6 +132,7 @@ internal fun ImagingCentersListScreen(onNavigationIconClicked: () -> Unit) {
                 }
             }
         },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { paddingValues ->
         Surface(
             modifier =
@@ -148,32 +147,21 @@ internal fun ImagingCentersListScreen(onNavigationIconClicked: () -> Unit) {
                     ).padding(paddingValues),
         ) {
             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-                val (line, content, refresh) = createRefs()
-
-                Box(
-                    modifier =
-                        Modifier
-                            .constrainAs(line) {
-                                top.linkTo(parent.top)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                            }.background(Yellow500)
-                            .fillMaxWidth()
-                            .height(XS_PADDING),
-                )
+                val (content, refresh) = createRefs()
 
                 ImagingCentersListContent(
+                    uiState = uiState,
                     modifier =
                         Modifier.constrainAs(content) {
-                            top.linkTo(line.bottom)
+                            top.linkTo(parent.top)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                             bottom.linkTo(parent.bottom)
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         },
+                    columnsCont = adaptiveGrid.calculateGridColumns(),
                     gridState = gridState,
-                    uiState = uiState,
                 )
 
                 Indicator(
@@ -195,9 +183,9 @@ internal fun ImagingCentersListScreen(onNavigationIconClicked: () -> Unit) {
 private fun ImagingCentersListContent(
     uiState: ImagingCenterListState,
     modifier: Modifier = Modifier,
+    columnsCont: Int = 1,
     gridState: LazyGridState = rememberLazyGridState(),
 ) {
-    val adaptiveGrid: AdaptiveGrid = koinInject()
     Surface(
         modifier = modifier.fillMaxSize(),
     ) {
@@ -208,7 +196,7 @@ private fun ImagingCentersListContent(
             )
         } else {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(adaptiveGrid.calculateGridColumns()),
+                columns = GridCells.Fixed(columnsCont),
                 modifier = modifier.fillMaxSize(),
                 state = gridState,
                 contentPadding = PaddingValues(all = S_PADDING),
@@ -227,10 +215,6 @@ private fun ImagingCentersListContent(
                         name = center.name,
                         phone = center.phone,
                         address = center.address,
-                        modifier =
-                            Modifier.clickable {
-                            },
-                        showType = true,
                         onClick = {},
                     )
                 }
@@ -241,6 +225,7 @@ private fun ImagingCentersListContent(
 
 @PreviewLightDark
 @PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 private fun ImagingCentersListContentPreview() {
     IcareTheme {
@@ -254,34 +239,49 @@ private fun ImagingCentersListContentPreview() {
                             listOf(
                                 LabImagingCenter(
                                     id = 1,
-                                    name = "Alfa",
+                                    name = "Center 1",
                                     type = 2,
                                     phone = "123456789",
-                                    address = "Address 1",
-                                ),
-                                LabImagingCenter(
-                                    id = 1,
-                                    name = "Alfa",
-                                    type = 2,
-                                    phone = "123498789",
                                     address = "Address 1",
                                 ),
                                 LabImagingCenter(
                                     id = 2,
-                                    name = "El-Borg",
+                                    name = "Center 2",
                                     type = 2,
-                                    phone = "123456789",
-                                    address = "Address 1",
+                                    phone = "123498789",
+                                    address = "Address 2",
                                 ),
                                 LabImagingCenter(
                                     id = 3,
-                                    name = "El-Shams",
+                                    name = "Center 3",
                                     type = 2,
                                     phone = "123456789",
-                                    address = "Address 1",
+                                    address = "Address 3",
+                                ),
+                                LabImagingCenter(
+                                    id = 4,
+                                    name = "Center 4",
+                                    type = 2,
+                                    phone = "123456789",
+                                    address = "Address 4",
+                                ),
+                                LabImagingCenter(
+                                    id = 5,
+                                    name = "Center 5",
+                                    type = 2,
+                                    phone = "123456789",
+                                    address = "Address 5",
+                                ),
+                                LabImagingCenter(
+                                    id = 6,
+                                    name = "Center 6",
+                                    type = 2,
+                                    phone = "123456789",
+                                    address = "Address 6",
                                 ),
                             ),
                     ),
+                columnsCont = AdaptiveGrid().calculateGridColumns(),
             )
         }
     }
