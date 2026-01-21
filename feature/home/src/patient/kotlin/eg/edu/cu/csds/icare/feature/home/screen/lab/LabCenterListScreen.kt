@@ -1,15 +1,11 @@
 package eg.edu.cu.csds.icare.feature.home.screen.lab
 
 import android.content.Context
-import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -34,7 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -43,10 +40,9 @@ import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.util.AdaptiveGrid
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.CenterView
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import eg.edu.cu.csds.icare.feature.home.R
@@ -62,6 +58,7 @@ import org.koin.compose.koinInject
 @Composable
 internal fun LabCenterListScreen(onNavigationIconClicked: () -> Unit) {
     val viewModel: LabListViewModel = koinViewModel()
+    val adaptiveGrid: AdaptiveGrid = koinInject()
     val context: Context = LocalContext.current
     val scope = rememberCoroutineScope()
     val gridState = rememberLazyGridState()
@@ -154,31 +151,21 @@ internal fun LabCenterListScreen(onNavigationIconClicked: () -> Unit) {
                         .background(backgroundColor)
                         .fillMaxSize(),
             ) {
-                val (line, content, refresh) = createRefs()
-
-                Box(
-                    modifier =
-                        Modifier
-                            .constrainAs(line) {
-                                top.linkTo(parent.top)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                            }.background(Yellow500)
-                            .fillMaxWidth()
-                            .height(XS_PADDING),
-                )
+                val (content, refresh) = createRefs()
 
                 LabCenterListContent(
+                    uiState = uiState,
                     modifier =
                         Modifier.constrainAs(content) {
-                            top.linkTo(line.bottom)
+                            top.linkTo(parent.top)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                             bottom.linkTo(parent.bottom)
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         },
-                    uiState = uiState,
+                    columnsCont = adaptiveGrid.calculateGridColumns(),
+                    gridState = gridState,
                 )
 
                 Indicator(
@@ -200,9 +187,9 @@ internal fun LabCenterListScreen(onNavigationIconClicked: () -> Unit) {
 private fun LabCenterListContent(
     uiState: LabListState,
     modifier: Modifier = Modifier,
+    columnsCont: Int = 1,
     gridState: LazyGridState = rememberLazyGridState(),
 ) {
-    val adaptiveGrid: AdaptiveGrid = koinInject()
     Surface(
         modifier = modifier.fillMaxSize(),
     ) {
@@ -213,7 +200,7 @@ private fun LabCenterListContent(
             )
         } else {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(adaptiveGrid.calculateGridColumns()),
+                columns = GridCells.Fixed(columnsCont),
                 modifier = modifier.fillMaxSize(),
                 state = gridState,
                 contentPadding = PaddingValues(all = S_PADDING),
@@ -232,10 +219,6 @@ private fun LabCenterListContent(
                         name = lab.name,
                         phone = lab.phone,
                         address = lab.address,
-                        modifier =
-                            Modifier.clickable {
-                            },
-                        showType = true,
                         onClick = {},
                     )
                 }
@@ -244,10 +227,9 @@ private fun LabCenterListContent(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 private fun LabListContentPreview() {
     Box(modifier = Modifier.background(backgroundColor)) {
@@ -264,21 +246,21 @@ private fun LabListContentPreview() {
                                 address = "Address 1",
                             ),
                             LabImagingCenter(
-                                id = 1,
-                                name = "Alfa",
+                                id = 2,
+                                name = "Beta",
                                 type = 1,
                                 phone = "123498789",
                                 address = "Address 1",
                             ),
                             LabImagingCenter(
-                                id = 2,
+                                id = 3,
                                 name = "El-Borg",
                                 type = 1,
                                 phone = "123456789",
                                 address = "Address 1",
                             ),
                             LabImagingCenter(
-                                id = 3,
+                                id = 4,
                                 name = "El-Shams",
                                 type = 1,
                                 phone = "123456789",
@@ -286,6 +268,7 @@ private fun LabListContentPreview() {
                             ),
                         ),
                 ),
+            columnsCont = AdaptiveGrid().calculateGridColumns(),
         )
     }
 }
