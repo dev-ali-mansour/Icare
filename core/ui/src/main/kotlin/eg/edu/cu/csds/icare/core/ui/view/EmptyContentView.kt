@@ -13,23 +13,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import eg.edu.cu.csds.icare.core.ui.R
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.MediumGray
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 
 @Composable
 fun EmptyContentView(
     modifier: Modifier = Modifier,
-    text: String,
+    text: String = stringResource(R.string.core_ui_no_available_data),
 ) {
     Column(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -48,10 +47,13 @@ fun EmptyContentView(
     }
 }
 
-@Preview
+@PreviewLightDark
+@PreviewArabicLightDark
 @Composable
 fun EmptyContentViewPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        EmptyContentView(text = "Empty Content")
+    IcareTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            EmptyContentView()
+        }
     }
 }

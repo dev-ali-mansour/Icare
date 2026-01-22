@@ -179,4 +179,5 @@ Objectives:\n
     <string name="core_ui_search_for_pharmacy">Search by pharmacy name</string>
     <string name="core_ui_reschedule">Reschedule</string>
     <string name="core_ui_back">Back</string>
+    <string name="core_ui_no_available_data">No available data!</string>
 </resources>
