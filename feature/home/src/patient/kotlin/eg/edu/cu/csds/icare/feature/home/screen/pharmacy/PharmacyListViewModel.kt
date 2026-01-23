@@ -40,27 +40,33 @@ class PharmacyListViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: PharmacyListEvent) {
-        when (event) {
-            is PharmacyListEvent.OnBackClick -> {
+    fun handleIntent(intent: PharmacyListIntent) {
+        when (intent) {
+            is PharmacyListIntent.OnBackClick -> {
                 _uiState.update { it.copy(effect = PharmacyListEffect.OnBackClick) }
             }
 
-            is PharmacyListEvent.Refresh -> {
+            is PharmacyListIntent.Refresh -> {
                 fetchPharmaciesJob?.cancel()
                 fetchPharmaciesJob = refreshPharmacies()
             }
 
-            is PharmacyListEvent.UpdateSearchQuery -> {
-                _uiState.update { it.copy(searchQuery = event.query) }
+            is PharmacyListIntent.ChangeTopBar -> {
+                _uiState.update { it.copy(topBar = intent.topBar) }
             }
 
-            is PharmacyListEvent.Search -> {
+            is PharmacyListIntent.UpdateSearchQuery -> {
+                _uiState.update { it.copy(searchQuery = intent.query) }
+            }
+
+            is PharmacyListIntent.Search -> {
                 fetchPharmaciesJob?.cancel()
                 fetchPharmaciesJob = launchSearchPharmacies(query = _uiState.value.searchQuery)
             }
 
-            PharmacyListEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            PharmacyListIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 
