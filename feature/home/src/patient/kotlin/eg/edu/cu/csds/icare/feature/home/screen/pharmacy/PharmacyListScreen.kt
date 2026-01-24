@@ -113,7 +113,7 @@ fun PharmacyListScreen(onNavigationIconClicked: () -> Unit) {
                 is TopBar.ServiceSearchTopBar -> {
                     ServiceTopSearchBar(
                         placeholderText =
-                            stringResource(R.string.feature_home_search_by_lab_name_or_address),
+                            stringResource(R.string.feature_home_search_by_pharmacy_name_or_address),
                         searchQuery = uiState.searchQuery,
                         onTextChanged = {
                             viewModel.handleIntent(PharmacyListIntent.UpdateSearchQuery(it))
