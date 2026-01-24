@@ -7,8 +7,7 @@ import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCentersUseCase
 import eg.edu.cu.csds.icare.core.ui.common.CenterTypeItem
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
-import eg.edu.cu.csds.icare.feature.home.common.TopBar
-import eg.edu.cu.csds.icare.feature.home.screen.imaging.ImagingCenterListIntent
+import eg.edu.cu.csds.icare.core.ui.view.TopSearchBarState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -54,9 +53,9 @@ class LabListViewModel(
                 fetchLabsJob = refreshLabCenters()
             }
 
-            is LabListIntent.ChangeTopBar -> {
-                _uiState.update { it.copy(topBar = intent.topBar) }
-                if (intent.topBar == TopBar.ServiceTopBar) {
+            is LabListIntent.UpdateSearchTopBarState -> {
+                _uiState.update { it.copy(searchBarState = intent.state) }
+                if (intent.state == TopSearchBarState.Collapsed) {
                     fetchLabsJob?.cancel()
                     fetchLabsJob = launchSearchLabCenters(_uiState.value.searchQuery)
                 }

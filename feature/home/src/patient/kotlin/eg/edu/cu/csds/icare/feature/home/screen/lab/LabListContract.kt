@@ -3,11 +3,11 @@ package eg.edu.cu.csds.icare.feature.home.screen.lab
 import androidx.compose.runtime.Stable
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.ui.util.UiText
-import eg.edu.cu.csds.icare.feature.home.common.TopBar
+import eg.edu.cu.csds.icare.core.ui.view.TopSearchBarState
 
 @Stable
 data class LabListState(
-    val topBar: TopBar = TopBar.ServiceTopBar,
+    val searchBarState: TopSearchBarState = TopSearchBarState.Collapsed,
     val searchQuery: String = "",
     val isLoading: Boolean = false,
     val labs: List<LabImagingCenter> = emptyList(),
@@ -27,8 +27,8 @@ sealed interface LabListIntent {
 
     object Refresh : LabListIntent
 
-    data class ChangeTopBar(
-        val topBar: TopBar,
+    data class UpdateSearchTopBarState(
+        val state: TopSearchBarState,
     ) : LabListIntent
 
     data class UpdateSearchQuery(

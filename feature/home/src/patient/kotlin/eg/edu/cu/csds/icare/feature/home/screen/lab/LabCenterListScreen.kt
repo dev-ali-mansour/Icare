@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -38,17 +39,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.util.AdaptiveGrid
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.CenterView
+import eg.edu.cu.csds.icare.core.ui.view.CustomTopSearchBar
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
+import eg.edu.cu.csds.icare.core.ui.view.TopSearchBarState
 import eg.edu.cu.csds.icare.feature.home.R
-import eg.edu.cu.csds.icare.feature.home.common.TopBar
-import eg.edu.cu.csds.icare.feature.home.component.ServiceTopBar
-import eg.edu.cu.csds.icare.feature.home.component.ServiceTopSearchBar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -88,51 +89,42 @@ internal fun LabCenterListScreen(onNavigationIconClicked: () -> Unit) {
 
     Scaffold(
         topBar = {
-            when (uiState.topBar) {
-                is TopBar.ServiceTopBar -> {
-                    ServiceTopBar(
-                        title = stringResource(string.core_ui_lab_centers),
-                        onNavigationIconClicked = {
-                            viewModel.handleIntent(LabListIntent.OnBackClick)
-                        },
-                        onSearchClicked = {
-                            viewModel.handleIntent(
-                                LabListIntent.ChangeTopBar(TopBar.ServiceSearchTopBar),
-                            )
-                            scope.launch {
-                                gridState.animateScrollToItem(0)
-                                delay(timeMillis = 100L)
-                                keyboardController?.show()
-                            }
-                        },
+            CustomTopSearchBar(
+                status = uiState.searchBarState,
+                title = stringResource(string.core_ui_lab_centers),
+                placeholderText = stringResource(R.string.feature_home_search_by_lab_name_or_address),
+                searchQuery = uiState.searchQuery,
+                onNavigationIconClicked = {
+                    viewModel.handleIntent(LabListIntent.OnBackClick)
+                },
+                onSearchClicked = {
+                    viewModel.handleIntent(
+                        LabListIntent.UpdateSearchTopBarState(TopSearchBarState.Expanded),
                     )
-                }
-
-                is TopBar.ServiceSearchTopBar -> {
-                    ServiceTopSearchBar(
-                        placeholderText =
-                            stringResource(R.string.feature_home_search_by_lab_name_or_address),
-                        searchQuery = uiState.searchQuery,
-                        onTextChanged = {
-                            viewModel.handleIntent(LabListIntent.UpdateSearchQuery(it))
-                        },
-                        onSearch = {
-                            keyboardController?.hide()
-                        },
-                        onCloseClicked = {
-                            viewModel.handleIntent(
-                                LabListIntent.ChangeTopBar(TopBar.ServiceTopBar),
-                            )
-                            scope.launch {
-                                gridState.animateScrollToItem(0)
-                            }
-                        },
+                    scope.launch {
+                        gridState.animateScrollToItem(0)
+                        delay(timeMillis = 100L)
+                        keyboardController?.show()
+                    }
+                },
+                onTextChanged = {
+                    viewModel.handleIntent(LabListIntent.UpdateSearchQuery(it))
+                },
+                onSearch = {
+                    keyboardController?.hide()
+                },
+                onCloseClicked = {
+                    viewModel.handleIntent(
+                        LabListIntent.UpdateSearchTopBarState(TopSearchBarState.Collapsed),
                     )
-                }
-            }
+                    scope.launch {
+                        gridState.animateScrollToItem(0)
+                    }
+                },
+            )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-    ) { paddingValues ->
+    ) { innerPadding ->
         Surface(
             modifier =
                 Modifier
@@ -143,7 +135,7 @@ internal fun LabCenterListScreen(onNavigationIconClicked: () -> Unit) {
                         onRefresh = {
                             viewModel.handleIntent(LabListIntent.Refresh)
                         },
-                    ).padding(paddingValues),
+                    ).padding(innerPadding),
         ) {
             ConstraintLayout(
                 modifier =
@@ -232,43 +224,45 @@ private fun LabCenterListContent(
 @PreviewScreenSizes
 @Composable
 private fun LabListContentPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        LabCenterListContent(
-            uiState =
-                LabListState(
-                    labs =
-                        listOf(
-                            LabImagingCenter(
-                                id = 1,
-                                name = "Alfa",
-                                type = 1,
-                                phone = "123456789",
-                                address = "Address 1",
+    IcareTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            LabCenterListContent(
+                uiState =
+                    LabListState(
+                        labs =
+                            listOf(
+                                LabImagingCenter(
+                                    id = 1,
+                                    name = "Alfa",
+                                    type = 1,
+                                    phone = "123456789",
+                                    address = "Address 1",
+                                ),
+                                LabImagingCenter(
+                                    id = 2,
+                                    name = "Beta",
+                                    type = 1,
+                                    phone = "123498789",
+                                    address = "Address 1",
+                                ),
+                                LabImagingCenter(
+                                    id = 3,
+                                    name = "El-Borg",
+                                    type = 1,
+                                    phone = "123456789",
+                                    address = "Address 1",
+                                ),
+                                LabImagingCenter(
+                                    id = 4,
+                                    name = "El-Shams",
+                                    type = 1,
+                                    phone = "123456789",
+                                    address = "Address 1",
+                                ),
                             ),
-                            LabImagingCenter(
-                                id = 2,
-                                name = "Beta",
-                                type = 1,
-                                phone = "123498789",
-                                address = "Address 1",
-                            ),
-                            LabImagingCenter(
-                                id = 3,
-                                name = "El-Borg",
-                                type = 1,
-                                phone = "123456789",
-                                address = "Address 1",
-                            ),
-                            LabImagingCenter(
-                                id = 4,
-                                name = "El-Shams",
-                                type = 1,
-                                phone = "123456789",
-                                address = "Address 1",
-                            ),
-                        ),
-                ),
-            columnsCont = AdaptiveGrid().calculateGridColumns(),
-        )
+                    ),
+                columnsCont = AdaptiveGrid().calculateGridColumns(),
+            )
+        }
     }
 }
