@@ -43,7 +43,7 @@ import eg.edu.cu.csds.icare.feature.admin.screen.staff.update.UpdateStaffScreen
 import eg.edu.cu.csds.icare.feature.admin.screen.staff.update.UpdateStaffViewModel
 import org.koin.androidx.compose.koinViewModel
 
-fun EntryProviderScope<Any>.adminEntryBuilder(
+fun EntryProviderScope<NavKey>.adminEntryBuilder(
     selectedClinicViewModel: SelectedClinicViewModel,
     selectedDoctorViewModel: SelectedDoctorViewModel,
     selectedClinicianViewModel: SelectedClinicianViewModel,

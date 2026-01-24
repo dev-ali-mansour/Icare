@@ -4,6 +4,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.feature.appointment.screen.SelectedAppointmentViewModel
 import eg.edu.cu.csds.icare.feature.consultation.screen.ConsultationEvent
@@ -18,7 +19,7 @@ import eg.edu.cu.csds.icare.feature.consultation.screen.update.UpdateConsultatio
 import eg.edu.cu.csds.icare.feature.consultation.screen.update.UpdateConsultationViewModel
 import org.koin.androidx.compose.koinViewModel
 
-fun EntryProviderScope<Any>.consultationsEntryBuilder(
+fun EntryProviderScope<NavKey>.consultationsEntryBuilder(
     selectedAppointmentViewModel: SelectedAppointmentViewModel,
     selectedConsultationViewModel: SelectedConsultationViewModel,
     selectedPatientViewModel: SelectedPatientViewModel,

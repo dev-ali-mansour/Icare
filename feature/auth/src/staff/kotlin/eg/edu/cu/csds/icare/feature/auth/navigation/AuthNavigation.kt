@@ -6,7 +6,7 @@ import eg.edu.cu.csds.icare.feature.auth.screen.profile.ProfileScreen
 import eg.edu.cu.csds.icare.feature.auth.screen.recovery.PasswordRecoveryScreen
 import eg.edu.cu.csds.icare.feature.auth.screen.signin.SignInScreen
 
-fun EntryProviderScope<Any>.authenticationEntryBuilder(
+fun EntryProviderScope<NavKey>.authenticationEntryBuilder(
     onRecoveryClicked: () -> Unit,
     onCreateAccountClicked: () -> Unit,
     onSignInClicked: () -> Unit,
