@@ -9,12 +9,15 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.retain.retain
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import eg.edu.cu.csds.icare.core.ui.common.BottomNavItem
+import androidx.navigation3.runtime.rememberNavBackStack
+import eg.edu.cu.csds.icare.core.ui.common.BOTTOM_NAV_ENTRIES
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.navigation.Navigator
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
@@ -23,30 +26,23 @@ import eg.edu.cu.csds.icare.feature.onboarding.screen.OnBoardingEffect
 import eg.edu.cu.csds.icare.feature.onboarding.screen.OnBoardingIntent
 import eg.edu.cu.csds.icare.feature.onboarding.screen.OnBoardingViewModel
 import eg.edu.cu.csds.icare.navigation.NavGraph
-import org.koin.compose.koinInject
+import kotlinx.coroutines.delay
 import timber.log.Timber
 
 @Composable
 fun MainScreen(onBoardingViewModel: OnBoardingViewModel) {
-    val navigator: Navigator = koinInject()
+    val backStack = rememberNavBackStack(Route.Splash)
+    val navigator = remember { Navigator(backStack) }
     val context = LocalContext.current
-    val snackbarHostState = retain { SnackbarHostState() }
+    val snackbarHostState = remember { SnackbarHostState() }
+    var isBottomBarVisible by remember { mutableStateOf(false) }
 
-    val bottomNavItems =
-        retain {
-            listOf(
-                BottomNavItem.Home,
-                BottomNavItem.Notifications,
-                BottomNavItem.Profile,
-                BottomNavItem.Settings,
-            )
-        }
-
-    val isBottomBarVisible by retain {
-        derivedStateOf {
-            val currentDestination = navigator.backStack.lastOrNull()
-            navigator.backStack.isNotEmpty() && bottomNavItems.any { it.route == currentDestination }
-        }
+    LaunchedEffect(navigator.currentScreen) {
+        delay(timeMillis = 50L)
+        isBottomBarVisible =
+            BOTTOM_NAV_ENTRIES.any {
+                it.key == navigator.currentScreen
+            }
     }
 
     LaunchedUiEffectHandler(
@@ -56,10 +52,7 @@ fun MainScreen(onBoardingViewModel: OnBoardingViewModel) {
             runCatching {
                 when (effect) {
                     is OnBoardingEffect.NavigateToRoute -> {
-                        navigator.goTo(effect.route)
-                        if (navigator.backStack.contains(Route.Splash)) {
-                            navigator.backStack.remove(Route.Splash)
-                        }
+                        navigator.navigate(effect.route, inclusive = true)
                     }
 
                     is OnBoardingEffect.OnBoardingFinished -> {}
@@ -81,13 +74,11 @@ fun MainScreen(onBoardingViewModel: OnBoardingViewModel) {
         bottomBar = {
             if (isBottomBarVisible) {
                 BottomBarNavigation(
-                    backStack = navigator.backStack,
-                    onNavigate = { route ->
-                        if (navigator.backStack.lastOrNull() != route) {
-                            navigator.goTo(route)
-                        }
+                    items = BOTTOM_NAV_ENTRIES,
+                    selectedKey = navigator.currentScreen,
+                    onSelect = {
+                        navigator.navigate(it)
                     },
-                    items = bottomNavItems,
                 )
             }
         },
