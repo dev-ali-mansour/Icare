@@ -100,7 +100,7 @@ internal fun LabCenterListScreen(onNavigationIconClicked: () -> Unit) {
                                 LabListIntent.ChangeTopBar(TopBar.ServiceSearchTopBar),
                             )
                             scope.launch {
-                                gridState.scrollToItem(0)
+                                gridState.animateScrollToItem(0)
                                 delay(timeMillis = 100L)
                                 keyboardController?.show()
                             }
@@ -124,7 +124,7 @@ internal fun LabCenterListScreen(onNavigationIconClicked: () -> Unit) {
                                 LabListIntent.ChangeTopBar(TopBar.ServiceTopBar),
                             )
                             scope.launch {
-                                gridState.scrollToItem(0)
+                                gridState.animateScrollToItem(0)
                             }
                         },
                     )
@@ -186,8 +186,8 @@ internal fun LabCenterListScreen(onNavigationIconClicked: () -> Unit) {
 @Composable
 private fun LabCenterListContent(
     uiState: LabListState,
+    columnsCont: Int,
     modifier: Modifier = Modifier,
-    columnsCont: Int = 1,
     gridState: LazyGridState = rememberLazyGridState(),
 ) {
     Surface(
