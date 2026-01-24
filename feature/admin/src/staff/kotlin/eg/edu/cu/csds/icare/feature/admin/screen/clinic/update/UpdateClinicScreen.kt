@@ -7,58 +7,50 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import eg.edu.cu.csds.icare.feature.admin.R
-import eg.edu.cu.csds.icare.feature.admin.screen.clinic.ClinicDetailsContent
-import eg.edu.cu.csds.icare.feature.admin.screen.clinic.ClinicEffect
-import eg.edu.cu.csds.icare.feature.admin.screen.clinic.ClinicEvent
+import eg.edu.cu.csds.icare.core.ui.common.CommonTopAppBar
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
+import eg.edu.cu.csds.icare.feature.admin.R
+import eg.edu.cu.csds.icare.feature.admin.screen.clinic.ClinicDetailsContent
+import eg.edu.cu.csds.icare.feature.admin.screen.clinic.ClinicEffect
+import eg.edu.cu.csds.icare.feature.admin.screen.clinic.ClinicIntent
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun UpdateClinicScreen(
-    viewModel: UpdateClinicViewModel = koinViewModel(),
     onNavigationIconClicked: () -> Unit,
     onSuccess: () -> Unit,
 ) {
+    val viewModel: UpdateClinicViewModel = koinViewModel()
     val context: Context = LocalContext.current
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
     var showSuccessDialog by remember { mutableStateOf(false) }
-    var alertMessage by remember { mutableStateOf("") }
-    var showAlert by remember { mutableStateOf(false) }
 
     LaunchedUiEffectHandler(
         viewModel.effect,
-        onConsumeEffect = { viewModel.processEvent(ClinicEvent.ConsumeEffect) },
+        onConsumeEffect = { viewModel.handleIntent(ClinicIntent.ConsumeEffect) },
         onEffect = { effect ->
             when (effect) {
                 is ClinicEffect.ShowSuccess -> {
@@ -68,10 +60,10 @@ internal fun UpdateClinicScreen(
                 }
 
                 is ClinicEffect.ShowError -> {
-                    alertMessage = effect.message.asString(context)
-                    showAlert = true
-                    delay(timeMillis = 3000)
-                    showAlert = false
+                    snackbarHostState.showSnackbar(
+                        message = effect.message.asString(context),
+                        duration = SnackbarDuration.Short,
+                    )
                 }
             }
         },
@@ -79,32 +71,16 @@ internal fun UpdateClinicScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(id = R.string.feature_admin_update_clinic)) },
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = barBackgroundColor,
-                        navigationIconContentColor = Color.White,
-                        titleContentColor = Color.White,
-                        actionIconContentColor = Color.White,
-                    ),
-                navigationIcon = {
-                    IconButton(onClick = { onNavigationIconClicked() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            tint = Color.White,
-                        )
-                    }
-                },
-            )
+            CommonTopAppBar(title = stringResource(id = R.string.feature_admin_update_clinic)) {
+                onNavigationIconClicked()
+            }
         },
-    ) { paddingValues ->
+    ) { innerPadding ->
         Surface(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(innerPadding),
         ) {
             ConstraintLayout(
                 modifier =
@@ -137,11 +113,10 @@ internal fun UpdateClinicScreen(
                             height = Dimension.fillToConstraints
                         },
                     state = state,
-                    onEvent = viewModel::processEvent,
+                    onIntent = viewModel::handleIntent,
                 )
 
                 if (showSuccessDialog) SuccessesDialog {}
-                if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
             }
         }
     }

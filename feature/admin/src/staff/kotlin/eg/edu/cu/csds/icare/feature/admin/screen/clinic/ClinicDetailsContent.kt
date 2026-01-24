@@ -1,6 +1,5 @@
 package eg.edu.cu.csds.icare.feature.admin.screen.clinic
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,7 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -28,11 +27,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import eg.edu.cu.csds.icare.feature.admin.R
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow300
@@ -44,14 +44,15 @@ import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
+import eg.edu.cu.csds.icare.feature.admin.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ClinicDetailsContent(
     modifier: Modifier = Modifier,
     state: ClinicState,
-    onEvent: (ClinicEvent) -> Unit,
+    onIntent: (ClinicIntent) -> Unit,
 ) {
     ConstraintLayout(
         modifier =
@@ -82,7 +83,7 @@ internal fun ClinicDetailsContent(
             ) {
                 TextField(
                     value = state.name,
-                    onValueChange = { onEvent(ClinicEvent.UpdateName(it)) },
+                    onValueChange = { onIntent(ClinicIntent.UpdateName(it)) },
                     label = {
                         Text(
                             text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_name),
@@ -115,7 +116,7 @@ internal fun ClinicDetailsContent(
 
                 TextField(
                     value = state.type,
-                    onValueChange = { onEvent(ClinicEvent.UpdateType(it)) },
+                    onValueChange = { onIntent(ClinicIntent.UpdateType(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_admin_type),
@@ -147,7 +148,7 @@ internal fun ClinicDetailsContent(
 
                 TextField(
                     value = state.phone,
-                    onValueChange = { if (it.length < 14) onEvent(ClinicEvent.UpdatePhone(it)) },
+                    onValueChange = { if (it.length < 14) onIntent(ClinicIntent.UpdatePhone(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_admin_phone_number),
@@ -179,7 +180,7 @@ internal fun ClinicDetailsContent(
 
                 TextField(
                     value = state.address,
-                    onValueChange = { onEvent(ClinicEvent.UpdateAddress(it)) },
+                    onValueChange = { onIntent(ClinicIntent.UpdateAddress(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_admin_address),
@@ -223,7 +224,7 @@ internal fun ClinicDetailsContent(
                 ) {
                     Switch(
                         checked = state.isOpen,
-                        onCheckedChange = { onEvent(ClinicEvent.UpdateIsOpen(it)) },
+                        onCheckedChange = { onIntent(ClinicIntent.UpdateIsOpen(it)) },
                         colors =
                             SwitchDefaults.colors(
                                 checkedThumbColor = barBackgroundColor,
@@ -257,23 +258,24 @@ internal fun ClinicDetailsContent(
                             .fillMaxWidth(fraction = 0.6f),
                     text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
                     color = buttonBackgroundColor,
-                    onClick = { onEvent(ClinicEvent.Proceed) },
+                    onClick = { onIntent(ClinicIntent.Proceed) },
                 )
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 internal fun ClinicDetailsContentPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        ClinicDetailsContent(
-            state = ClinicState(),
-            onEvent = {},
-        )
+    IcareTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            ClinicDetailsContent(
+                state = ClinicState(),
+                onIntent = {},
+            )
+        }
     }
 }
