@@ -1,6 +1,5 @@
 package eg.edu.cu.csds.icare.feature.admin.screen.center.list
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -19,16 +19,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.util.UiText
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.CenterView
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import org.koin.androidx.compose.koinViewModel
@@ -159,33 +161,34 @@ fun CenterListContent(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 internal fun ClinicsContentPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        CenterListContent(
-            uiState =
-                CenterListState(
-                    centers =
-                        listOf(
-                            LabImagingCenter(
-                                type = 1,
-                                name = "Alfa",
-                                phone = "0123456789",
-                                address = "53 Faysal street,Giza,Egypt",
+    IcareTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            CenterListContent(
+                uiState =
+                    CenterListState(
+                        centers =
+                            listOf(
+                                LabImagingCenter(
+                                    type = 1,
+                                    name = "Alfa",
+                                    phone = "0123456789",
+                                    address = "53 Faysal street,Giza,Egypt",
+                                ),
+                                LabImagingCenter(
+                                    type = 2,
+                                    name = "Beta",
+                                    phone = "0123456789",
+                                    address = "13 Faysal street,Giza,Egypt",
+                                ),
                             ),
-                            LabImagingCenter(
-                                type = 2,
-                                name = "Beta",
-                                phone = "0123456789",
-                                address = "13 Faysal street,Giza,Egypt",
-                            ),
-                        ),
-                ),
-            onIntent = {},
-        )
+                    ),
+                onIntent = {},
+            )
+        }
     }
 }

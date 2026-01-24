@@ -78,12 +78,12 @@ internal fun NewCenterScreen(
             }
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-    ) { paddingValues ->
+    ) { innerPadding ->
         Surface(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(innerPadding),
         ) {
             ConstraintLayout(
                 modifier =
