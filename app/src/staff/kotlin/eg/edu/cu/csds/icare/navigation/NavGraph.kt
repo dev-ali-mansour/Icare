@@ -62,9 +62,6 @@ fun NavGraph(
                     },
                     onSignInSuccess = {
                         navigator.navigate(key = Route.Home, inclusive = true)
-//                        val intent = Intent(context, MainActivity::class.java)
-//                        context.activity.finish()
-//                        context.startActivity(intent)
                     },
                     onRecoveryCompleted = {
                         navigator.navigate(key = Route.SignIn, inclusive = true)

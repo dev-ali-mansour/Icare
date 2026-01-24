@@ -1,16 +1,11 @@
 package eg.edu.cu.csds.icare.navigation
 
-import android.content.Context
-import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import eg.edu.cu.csds.icare.MainActivity
 import eg.edu.cu.csds.icare.core.ui.navigation.Navigator
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
-import eg.edu.cu.csds.icare.core.ui.util.activity
 import eg.edu.cu.csds.icare.feature.admin.screen.doctor.SelectedDoctorViewModel
 import eg.edu.cu.csds.icare.feature.appointment.navigation.appointmentsEntryBuilder
 import eg.edu.cu.csds.icare.feature.appointment.screen.SelectedAppointmentViewModel
@@ -34,7 +29,6 @@ fun NavGraph(
     val selectedAppointmentViewModel: SelectedAppointmentViewModel = koinViewModel()
     val selectedConsultationViewModel: SelectedConsultationViewModel = koinViewModel()
     val selectedPatientViewModel: SelectedPatientViewModel = koinViewModel()
-    val context: Context = LocalContext.current
 
     NavDisplay(
         modifier = modifier,
@@ -57,9 +51,7 @@ fun NavGraph(
                         navigator.navigate(key = Route.SignIn, inclusive = true)
                     },
                     onSignInSuccess = {
-                        val intent = Intent(context, MainActivity::class.java)
-                        context.activity.finish()
-                        context.startActivity(intent)
+                        navigator.navigate(key = Route.Home, inclusive = true)
                     },
                     onRecoveryCompleted = {
                         navigator.navigate(key = Route.SignIn, inclusive = true)
