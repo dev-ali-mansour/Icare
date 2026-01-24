@@ -1,6 +1,7 @@
 package eg.edu.cu.csds.icare.feature.auth.navigation
 
 import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.feature.auth.screen.profile.ProfileScreen
 import eg.edu.cu.csds.icare.feature.auth.screen.recovery.PasswordRecoveryScreen
