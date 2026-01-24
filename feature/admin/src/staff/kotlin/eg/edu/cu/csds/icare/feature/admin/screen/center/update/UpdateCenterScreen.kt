@@ -37,7 +37,6 @@ import eg.edu.cu.csds.icare.feature.admin.screen.center.CenterIntent
 import kotlinx.coroutines.delay
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun UpdateCenterScreen(
     onNavigationIconClicked: () -> Unit,
