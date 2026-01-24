@@ -101,7 +101,7 @@ internal fun ImagingCentersListScreen(onNavigationIconClicked: () -> Unit) {
                                 ImagingCenterListIntent.ChangeTopBar(TopBar.ServiceSearchTopBar),
                             )
                             scope.launch {
-                                gridState.scrollToItem(0)
+                                gridState.animateScrollToItem(0)
                                 delay(timeMillis = 100L)
                                 keyboardController?.show()
                             }
@@ -125,7 +125,7 @@ internal fun ImagingCentersListScreen(onNavigationIconClicked: () -> Unit) {
                                 ImagingCenterListIntent.ChangeTopBar(TopBar.ServiceTopBar),
                             )
                             scope.launch {
-                                gridState.scrollToItem(0)
+                                gridState.animateScrollToItem(0)
                             }
                         },
                     )
@@ -182,8 +182,8 @@ internal fun ImagingCentersListScreen(onNavigationIconClicked: () -> Unit) {
 @Composable
 private fun ImagingCentersListContent(
     uiState: ImagingCenterListState,
+    columnsCont: Int,
     modifier: Modifier = Modifier,
-    columnsCont: Int = 1,
     gridState: LazyGridState = rememberLazyGridState(),
 ) {
     Surface(
