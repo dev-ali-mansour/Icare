@@ -6,6 +6,7 @@ import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctorsUseCase
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.core.ui.view.TopSearchBarState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -40,33 +41,43 @@ class DoctorListViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: DoctorListEvent) {
-        when (event) {
-            is DoctorListEvent.OnBackClick -> {
+    fun handleIntent(intent: DoctorListIntent) {
+        when (intent) {
+            is DoctorListIntent.OnBackClick -> {
                 _uiState.update { it.copy(effect = DoctorListEffect.OnBackClick) }
             }
 
-            is DoctorListEvent.Refresh -> {
+            is DoctorListIntent.Refresh -> {
                 fetchDoctorsJob?.cancel()
                 fetchDoctorsJob = refreshDoctors()
             }
 
-            is DoctorListEvent.UpdateSearchQuery -> {
-                _uiState.update { it.copy(searchQuery = event.query) }
+            is DoctorListIntent.UpdateSearchTopBarState -> {
+                _uiState.update { it.copy(searchBarState = intent.state) }
+                if (intent.state == TopSearchBarState.Collapsed) {
+                    fetchDoctorsJob?.cancel()
+                    fetchDoctorsJob = launchSearchDoctors(_uiState.value.searchQuery)
+                }
             }
 
-            is DoctorListEvent.Search -> {
+            is DoctorListIntent.UpdateSearchQuery -> {
+                _uiState.update { it.copy(searchQuery = intent.query) }
+            }
+
+            is DoctorListIntent.Search -> {
                 fetchDoctorsJob?.cancel()
                 fetchDoctorsJob = launchSearchDoctors(query = _uiState.value.searchQuery)
             }
 
-            is DoctorListEvent.SelectDoctor -> {
+            is DoctorListIntent.SelectDoctor -> {
                 _uiState.update {
-                    it.copy(effect = DoctorListEffect.NavigateToBookingRoute(doctor = event.doctor))
+                    it.copy(effect = DoctorListEffect.NavigateToBookingRoute(doctor = intent.doctor))
                 }
             }
 
-            DoctorListEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            DoctorListIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 
