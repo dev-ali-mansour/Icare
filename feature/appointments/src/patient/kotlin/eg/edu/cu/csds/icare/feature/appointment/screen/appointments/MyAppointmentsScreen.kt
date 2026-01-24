@@ -1,7 +1,6 @@
 package eg.edu.cu.csds.icare.feature.appointment.screen.appointments
 
 import android.content.Context
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,20 +14,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SecondaryScrollableTabRow
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -40,73 +34,77 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import eg.edu.cu.csds.icare.feature.appointment.R
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.domain.util.isTomorrow
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
+import eg.edu.cu.csds.icare.core.ui.common.CommonTopAppBar
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.TAB_INDICATOR_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.TAB_INDICATOR_ROUND_CORNER_SIZE
-import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow700
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
-import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
+import eg.edu.cu.csds.icare.feature.appointment.R
 import eg.edu.cu.csds.icare.feature.appointment.component.AppointmentCard
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyAppointmentsScreen(
-    viewModel: AppointmentListViewModel = koinViewModel(),
     onNavigationIconClicked: () -> Unit,
     navigateToRescheduleRoute: (Appointment) -> Unit,
 ) {
+    val viewModel: AppointmentListViewModel = koinViewModel()
     val context: Context = LocalContext.current
     val refreshState = rememberPullToRefreshState()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
     var showSuccessDialog by remember { mutableStateOf(false) }
-    var alertMessage by remember { mutableStateOf("") }
-    var showAlert by remember { mutableStateOf(false) }
 
     LaunchedUiEffectHandler(
         viewModel.effect,
-        onConsumeEffect = { viewModel.processEvent(AppointmentListEvent.ConsumeEffect) },
+        onConsumeEffect = { viewModel.handleIntent(AppointmentListIntent.ConsumeEffect) },
         onEffect = { effect ->
             when (effect) {
-                is AppointmentListEffect.OnBackClick -> onNavigationIconClicked()
-                is AppointmentListEffect.NavigateToRescheduleAppointment ->
+                is AppointmentListEffect.OnBackClick -> {
+                    onNavigationIconClicked()
+                }
+
+                is AppointmentListEffect.NavigateToRescheduleAppointment -> {
                     navigateToRescheduleRoute(
                         effect.appointment,
                     )
+                }
+
                 is AppointmentListEffect.ShowSuccess -> {
                     showSuccessDialog = true
                     delay(timeMillis = 3000)
                     showSuccessDialog = false
                 }
+
                 is AppointmentListEffect.ShowError -> {
-                    alertMessage = effect.message.asString(context)
-                    showAlert = true
-                    delay(timeMillis = 3000)
-                    showAlert = false
+                    snackbarHostState.showSnackbar(
+                        message = effect.message.asString(context),
+                        duration = SnackbarDuration.Short,
+                    )
                 }
             }
         },
@@ -114,26 +112,13 @@ fun MyAppointmentsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(id = R.string.feature_appointments_my_appointments)) },
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = barBackgroundColor,
-                        navigationIconContentColor = Color.White,
-                        titleContentColor = Color.White,
-                        actionIconContentColor = Color.White,
-                    ),
-                navigationIcon = {
-                    IconButton(onClick = { onNavigationIconClicked() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            tint = Color.White,
-                        )
-                    }
-                },
-            )
+            CommonTopAppBar(
+                title = stringResource(id = R.string.feature_appointments_my_appointments),
+            ) {
+                onNavigationIconClicked()
+            }
         },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { paddingValues ->
         Surface(
             modifier =
@@ -143,7 +128,7 @@ fun MyAppointmentsScreen(
                         state = refreshState,
                         isRefreshing = uiState.isLoading,
                         onRefresh = {
-                            viewModel.processEvent(AppointmentListEvent.Refresh)
+                            viewModel.handleIntent(AppointmentListIntent.Refresh)
                         },
                     ).padding(paddingValues),
         ) {
@@ -153,23 +138,12 @@ fun MyAppointmentsScreen(
                         .background(backgroundColor)
                         .fillMaxWidth(),
             ) {
-                val (line, content, refresh) = createRefs()
-                Box(
-                    modifier =
-                        Modifier
-                            .constrainAs(line) {
-                                top.linkTo(parent.top)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                            }.background(Yellow500)
-                            .fillMaxWidth()
-                            .height(XS_PADDING),
-                )
+                val (content, refresh) = createRefs()
 
                 MyAppointmentsContent(
                     modifier =
                         Modifier.constrainAs(content) {
-                            top.linkTo(line.bottom)
+                            top.linkTo(parent.top)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                             bottom.linkTo(parent.bottom)
@@ -177,7 +151,7 @@ fun MyAppointmentsScreen(
                             height = Dimension.fillToConstraints
                         },
                     uiState = uiState,
-                    onEvent = viewModel::processEvent,
+                    onIntent = viewModel::handleIntent,
                 )
 
                 Indicator(
@@ -192,7 +166,6 @@ fun MyAppointmentsScreen(
                 )
 
                 if (showSuccessDialog) SuccessesDialog {}
-                if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
             }
         }
     }
@@ -202,7 +175,7 @@ fun MyAppointmentsScreen(
 fun MyAppointmentsContent(
     uiState: AppointmentListState,
     modifier: Modifier = Modifier,
-    onEvent: (AppointmentListEvent) -> Unit,
+    onIntent: (AppointmentListIntent) -> Unit,
 ) {
     ConstraintLayout(
         modifier = modifier.fillMaxSize(),
@@ -236,17 +209,16 @@ fun MyAppointmentsContent(
                     } ?: appointment
                 }
             Column(modifier = Modifier.fillMaxSize()) {
-                ScrollableTabRow(
+                SecondaryScrollableTabRow(
                     selectedTabIndex = selectedTabIndex,
                     modifier = Modifier.fillMaxWidth(),
                     containerColor = contentBackgroundColor,
                     contentColor = Yellow700,
                     edgePadding = M_PADDING,
-                    indicator = { tabPositions ->
+                    indicator = {
                         Box(
                             modifier =
                                 Modifier
-                                    .tabIndicatorOffset(tabPositions[selectedTabIndex])
                                     .height(TAB_INDICATOR_HEIGHT)
                                     .clip(
                                         RoundedCornerShape(
@@ -286,19 +258,20 @@ fun MyAppointmentsContent(
                 }
 
                 when (selectedTabIndex) {
-                    statusList.indexOf(AppointmentStatus.PendingStatus) ->
+                    statusList.indexOf(AppointmentStatus.PendingStatus) -> {
                         UpcomingAppointmentsContent(
                             appointments = appointments,
-                            onReschedule = { onEvent(AppointmentListEvent.RescheduleAppointment(it)) },
+                            onReschedule = { onIntent(AppointmentListIntent.RescheduleAppointment(it)) },
                             onCancel = {
-                                onEvent(AppointmentListEvent.CancelAppointment(it))
+                                onIntent(AppointmentListIntent.CancelAppointment(it))
                             },
                         )
+                    }
 
                     statusList.indexOf(AppointmentStatus.ConfirmedStatus),
                     statusList.indexOf(AppointmentStatus.CompletedStatus),
                     statusList.indexOf(AppointmentStatus.CancelledStatus),
-                    ->
+                    -> {
                         OtherAppointmentsContent(
                             status = statusList[selectedTabIndex],
                             appointments =
@@ -306,6 +279,7 @@ fun MyAppointmentsContent(
                                     it.statusId == statusList[selectedTabIndex].code
                                 },
                         )
+                    }
                 }
             }
         }
@@ -320,9 +294,11 @@ private fun UpcomingAppointmentsContent(
 ) {
     if (appointments.none { it.statusId == AppointmentStatus.PendingStatus.code }) {
         val message =
-            "${stringResource(
-                R.string.feature_appointments_no_appointments_data,
-            )}: ${stringResource(AppointmentStatus.PendingStatus.textResId)}"
+            "${
+                stringResource(
+                    R.string.feature_appointments_no_appointments_data,
+                )
+            }: ${stringResource(AppointmentStatus.PendingStatus.textResId)}"
         EmptyContentView(
             modifier =
                 Modifier
@@ -399,9 +375,11 @@ private fun OtherAppointmentsContent(
 ) {
     if (appointments.isEmpty()) {
         val message =
-            "${stringResource(
-                R.string.feature_appointments_no_appointments_data,
-            )}: ${stringResource(status.textResId)}"
+            "${
+                stringResource(
+                    R.string.feature_appointments_no_appointments_data,
+                )
+            }: ${stringResource(status.textResId)}"
         EmptyContentView(
             modifier =
                 Modifier
@@ -428,57 +406,58 @@ private fun OtherAppointmentsContent(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 private fun MyAppointmentContentPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        MyAppointmentsContent(
-            uiState =
-                AppointmentListState(
-                    appointments =
-                        listOf(
-                            Appointment(
-                                appointmentId = 1,
-                                doctorName = "Dr. John Smith",
-                                doctorSpecialty = "Cardiologist",
-                                doctorId = "101",
-                                doctorImage = "",
-                                dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
-                                patientName = "Patient",
-                                patientImage = "",
-                                statusId = AppointmentStatus.PendingStatus.code,
-                                status = stringResource(AppointmentStatus.PendingStatus.textResId),
+    IcareTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            MyAppointmentsContent(
+                uiState =
+                    AppointmentListState(
+                        appointments =
+                            listOf(
+                                Appointment(
+                                    appointmentId = 1,
+                                    doctorName = "Dr. John Smith",
+                                    doctorSpecialty = "Cardiologist",
+                                    doctorId = "101",
+                                    doctorImage = "",
+                                    dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
+                                    patientName = "Patient",
+                                    patientImage = "",
+                                    statusId = AppointmentStatus.PendingStatus.code,
+                                    status = stringResource(AppointmentStatus.PendingStatus.textResId),
+                                ),
+                                Appointment(
+                                    appointmentId = 2,
+                                    doctorName = "Dr. Sarah Johnson",
+                                    doctorSpecialty = "Dermatologist",
+                                    doctorId = "102",
+                                    doctorImage = "",
+                                    dateTime = System.currentTimeMillis() + Constants.THREE_DAYS,
+                                    patientName = "Patient",
+                                    patientImage = "",
+                                    statusId = AppointmentStatus.PendingStatus.code,
+                                    status = stringResource(AppointmentStatus.PendingStatus.textResId),
+                                ),
+                                Appointment(
+                                    appointmentId = 3,
+                                    doctorName = "Dr. Anna Jones",
+                                    doctorSpecialty = "General Practitioner",
+                                    doctorId = "101",
+                                    doctorImage = "",
+                                    dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
+                                    patientName = "Patient",
+                                    patientImage = "",
+                                    statusId = AppointmentStatus.PendingStatus.code,
+                                    status = stringResource(AppointmentStatus.PendingStatus.textResId),
+                                ),
                             ),
-                            Appointment(
-                                appointmentId = 2,
-                                doctorName = "Dr. Sarah Johnson",
-                                doctorSpecialty = "Dermatologist",
-                                doctorId = "102",
-                                doctorImage = "",
-                                dateTime = System.currentTimeMillis() + Constants.THREE_DAYS,
-                                patientName = "Patient",
-                                patientImage = "",
-                                statusId = AppointmentStatus.PendingStatus.code,
-                                status = stringResource(AppointmentStatus.PendingStatus.textResId),
-                            ),
-                            Appointment(
-                                appointmentId = 3,
-                                doctorName = "Dr. Anna Jones",
-                                doctorSpecialty = "General Practitioner",
-                                doctorId = "101",
-                                doctorImage = "",
-                                dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
-                                patientName = "Patient",
-                                patientImage = "",
-                                statusId = AppointmentStatus.PendingStatus.code,
-                                status = stringResource(AppointmentStatus.PendingStatus.textResId),
-                            ),
-                        ),
-                ),
-            onEvent = {},
-        )
+                    ),
+                onIntent = {},
+            )
+        }
     }
 }
