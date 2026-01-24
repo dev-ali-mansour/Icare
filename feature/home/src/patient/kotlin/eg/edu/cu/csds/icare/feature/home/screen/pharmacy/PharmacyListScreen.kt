@@ -45,12 +45,11 @@ import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.util.AdaptiveGrid
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
+import eg.edu.cu.csds.icare.core.ui.view.CustomTopSearchBar
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import eg.edu.cu.csds.icare.core.ui.view.PharmacyView
+import eg.edu.cu.csds.icare.core.ui.view.TopSearchBarState
 import eg.edu.cu.csds.icare.feature.home.R
-import eg.edu.cu.csds.icare.feature.home.common.TopBar
-import eg.edu.cu.csds.icare.feature.home.component.ServiceTopBar
-import eg.edu.cu.csds.icare.feature.home.component.ServiceTopSearchBar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -90,48 +89,39 @@ fun PharmacyListScreen(onNavigationIconClicked: () -> Unit) {
 
     Scaffold(
         topBar = {
-            when (uiState.topBar) {
-                is TopBar.ServiceTopBar -> {
-                    ServiceTopBar(
-                        title = stringResource(string.core_ui_pharmacies),
-                        onNavigationIconClicked = {
-                            viewModel.handleIntent(PharmacyListIntent.OnBackClick)
-                        },
-                        onSearchClicked = {
-                            viewModel.handleIntent(
-                                PharmacyListIntent.ChangeTopBar(TopBar.ServiceSearchTopBar),
-                            )
-                            scope.launch {
-                                gridState.animateScrollToItem(0)
-                                delay(timeMillis = 100L)
-                                keyboardController?.show()
-                            }
-                        },
+            CustomTopSearchBar(
+                status = uiState.searchBarState,
+                title = stringResource(string.core_ui_pharmacies),
+                placeholderText = stringResource(R.string.feature_home_search_by_pharmacy_name_or_address),
+                searchQuery = uiState.searchQuery,
+                onNavigationIconClicked = {
+                    viewModel.handleIntent(PharmacyListIntent.OnBackClick)
+                },
+                onSearchClicked = {
+                    viewModel.handleIntent(
+                        PharmacyListIntent.UpdateSearchTopBarState(TopSearchBarState.Expanded),
                     )
-                }
-
-                is TopBar.ServiceSearchTopBar -> {
-                    ServiceTopSearchBar(
-                        placeholderText =
-                            stringResource(R.string.feature_home_search_by_pharmacy_name_or_address),
-                        searchQuery = uiState.searchQuery,
-                        onTextChanged = {
-                            viewModel.handleIntent(PharmacyListIntent.UpdateSearchQuery(it))
-                        },
-                        onSearch = {
-                            keyboardController?.hide()
-                        },
-                        onCloseClicked = {
-                            viewModel.handleIntent(
-                                PharmacyListIntent.ChangeTopBar(TopBar.ServiceTopBar),
-                            )
-                            scope.launch {
-                                gridState.animateScrollToItem(0)
-                            }
-                        },
+                    scope.launch {
+                        gridState.animateScrollToItem(0)
+                        delay(timeMillis = 100L)
+                        keyboardController?.show()
+                    }
+                },
+                onTextChanged = {
+                    viewModel.handleIntent(PharmacyListIntent.UpdateSearchQuery(it))
+                },
+                onSearch = {
+                    keyboardController?.hide()
+                },
+                onCloseClicked = {
+                    viewModel.handleIntent(
+                        PharmacyListIntent.UpdateSearchTopBarState(TopSearchBarState.Collapsed),
                     )
-                }
-            }
+                    scope.launch {
+                        gridState.animateScrollToItem(0)
+                    }
+                },
+            )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { innerPadding ->

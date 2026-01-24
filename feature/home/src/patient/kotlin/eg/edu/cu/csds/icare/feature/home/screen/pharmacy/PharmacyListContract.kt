@@ -3,11 +3,11 @@ package eg.edu.cu.csds.icare.feature.home.screen.pharmacy
 import androidx.compose.runtime.Stable
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 import eg.edu.cu.csds.icare.core.ui.util.UiText
-import eg.edu.cu.csds.icare.feature.home.common.TopBar
+import eg.edu.cu.csds.icare.core.ui.view.TopSearchBarState
 
 @Stable
 data class PharmacyListState(
-    val topBar: TopBar = TopBar.ServiceTopBar,
+    val searchBarState: TopSearchBarState = TopSearchBarState.Collapsed,
     val searchQuery: String = "",
     val isLoading: Boolean = false,
     val pharmacies: List<Pharmacy> = emptyList(),
@@ -27,8 +27,8 @@ sealed interface PharmacyListIntent {
 
     object Refresh : PharmacyListIntent
 
-    data class ChangeTopBar(
-        val topBar: TopBar,
+    data class UpdateSearchTopBarState(
+        val state: TopSearchBarState,
     ) : PharmacyListIntent
 
     data class UpdateSearchQuery(

@@ -51,8 +51,8 @@ class PharmacyListViewModel(
                 fetchPharmaciesJob = refreshPharmacies()
             }
 
-            is PharmacyListIntent.ChangeTopBar -> {
-                _uiState.update { it.copy(topBar = intent.topBar) }
+            is PharmacyListIntent.UpdateSearchTopBarState -> {
+                _uiState.update { it.copy(searchBarState = intent.state) }
             }
 
             is PharmacyListIntent.UpdateSearchQuery -> {
