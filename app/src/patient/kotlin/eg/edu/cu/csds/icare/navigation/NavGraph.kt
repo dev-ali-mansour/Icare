@@ -47,16 +47,14 @@ fun NavGraph(
                 }
 
                 onBoardingEntryBuilder(onFinished = {
-                    navigator.clearBackStack()
-                    navigator.goTo(Route.SignIn)
+                    navigator.navigate(key = Route.SignIn, inclusive = true)
                 })
 
                 authenticationEntryBuilder(
-                    onRecoveryClicked = { navigator.goTo(Route.PasswordRecovery) },
-                    onCreateAccountClicked = { navigator.goTo(Route.SignUp) },
+                    onRecoveryClicked = { navigator.navigate(Route.PasswordRecovery) },
+                    onCreateAccountClicked = { navigator.navigate(Route.SignUp) },
                     onSignInClicked = {
-                        navigator.clearBackStack()
-                        navigator.goTo(Route.SignIn)
+                        navigator.navigate(key = Route.SignIn, inclusive = true)
                     },
                     onSignInSuccess = {
                         val intent = Intent(context, MainActivity::class.java)
@@ -64,44 +62,41 @@ fun NavGraph(
                         context.startActivity(intent)
                     },
                     onRecoveryCompleted = {
-                        navigator.clearBackStack()
-                        navigator.goTo(Route.SignIn)
+                        navigator.navigate(key = Route.SignIn, inclusive = true)
                     },
                     onRegisterCompleted = {
-                        navigator.clearBackStack()
-                        navigator.goTo(Route.SignIn)
+                        navigator.navigate(key = Route.SignIn, inclusive = true)
                     },
                     onSignOut = {
-                        navigator.clearBackStack()
-                        navigator.goTo(Route.SignIn)
+                        navigator.navigate(Route.SignIn, inclusive = true)
                     },
                 )
 
                 homeEntryBuilder(
                     selectedDoctorViewModel = selectedDoctorViewModel,
                     onNavigationIconClicked = { navigator.goBack() },
-                    navigateToRoute = { screen -> navigator.goTo(screen) },
+                    navigateToRoute = { screen -> navigator.navigate(screen) },
                 )
 
                 notificationsEntryBuilder()
 
                 settingsEntryBuilder(
                     onNavigationIconClicked = { navigator.goBack() },
-                    navigateToRoute = { navigator.goTo(it) },
+                    navigateToRoute = { navigator.navigate(it) },
                 )
 
                 appointmentsEntryBuilder(
                     selectedDoctorViewModel = selectedDoctorViewModel,
                     selectedAppointmentViewModel = selectedAppointmentViewModel,
                     onNavigationIconClicked = { navigator.goBack() },
-                    navigateToRoute = { navigator.goTo(it) },
+                    navigateToRoute = { navigator.navigate(it) },
                 )
 
                 consultationsEntryBuilder(
                     selectedConsultationViewModel = selectedConsultationViewModel,
                     selectedPatientViewModel = selectedPatientViewModel,
                     onNavigationIconClicked = { navigator.goBack() },
-                    navigateToRoute = { navigator.goTo(it) },
+                    navigateToRoute = { navigator.navigate(it) },
                 )
             },
     )
