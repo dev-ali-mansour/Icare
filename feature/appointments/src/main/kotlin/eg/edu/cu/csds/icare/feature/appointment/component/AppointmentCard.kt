@@ -1,9 +1,8 @@
 package eg.edu.cu.csds.icare.feature.appointment.component
 
-import android.content.Context
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,8 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -20,16 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import eg.edu.cu.csds.icare.feature.appointment.R
-import eg.edu.cu.csds.icare.core.data.util.getFormattedDateTime
-import eg.edu.cu.csds.icare.core.domain.model.Appointment
-import eg.edu.cu.csds.icare.core.domain.util.Constants
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
+import eg.edu.cu.csds.icare.core.ui.theme.MAX_SURFACE_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Orange200
 import eg.edu.cu.csds.icare.core.ui.theme.PaidColor
@@ -37,46 +33,64 @@ import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
+import eg.edu.cu.csds.icare.core.ui.util.neumorphicUp
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
+import eg.edu.cu.csds.icare.feature.appointment.R
 
 @Composable
 fun AppointmentCard(
-    appointment: Appointment,
+    doctorName: String,
+    doctorSpecialty: String,
+    dateTime: String,
+    patientName: String,
+    statusId: Short,
+    status: String,
+    modifier: Modifier = Modifier,
     onReschedule: () -> Unit,
     onCancel: () -> Unit,
     onConfirm: () -> Unit,
     showActions: Boolean,
     showConfirm: Boolean = false,
-    context: Context = LocalContext.current,
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+    Box(
+        modifier =
+            modifier
+                .background(
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(percent = 20),
+                ).fillMaxWidth()
+                .wrapContentWidth(Alignment.CenterHorizontally)
+                .widthIn(max = MAX_SURFACE_WIDTH)
+                .neumorphicUp(
+                    shape = RoundedCornerShape(percent = 20),
+                    shadowPadding = XS_PADDING,
+                ),
     ) {
         Column(modifier = Modifier.padding(M_PADDING)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(weight = 1f)) {
                     Text(
-                        text = appointment.doctorName,
+                        text = doctorName,
                         style = MaterialTheme.typography.bodyLarge,
                         fontFamily = helveticaFamily,
                     )
                     Text(
-                        text = appointment.doctorSpecialty,
+                        text = doctorSpecialty,
                         style = MaterialTheme.typography.bodyMedium,
                         fontFamily = helveticaFamily,
                     )
                     Text(
-                        text = appointment.patientName,
+                        text = patientName,
                         style = MaterialTheme.typography.bodyMedium,
                         fontFamily = helveticaFamily,
                     )
                     Text(
-                        text = appointment.status,
+                        text = status,
                         fontFamily = helveticaFamily,
                         color =
-                            when (appointment.status) {
-                                "Confirmed" -> PaidColor
-                                "Pending" -> Orange200
+                            when (statusId) {
+                                AppointmentStatus.PendingStatus.code -> Orange200
+                                AppointmentStatus.ConfirmedStatus.code -> PaidColor
                                 else -> Color.Gray
                             },
                     )
@@ -90,7 +104,7 @@ fun AppointmentCard(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
-                    text = appointment.dateTime.getFormattedDateTime(context),
+                    text = dateTime,
                     fontFamily = helveticaFamily,
                     modifier = Modifier.weight(weight = 1f),
                 )
@@ -129,10 +143,9 @@ fun AppointmentCard(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(locale = "ar", showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(locale = "ar", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 fun AppointmentCardPreview() {
     Column(
@@ -142,19 +155,28 @@ fun AppointmentCardPreview() {
                 .background(color = backgroundColor),
     ) {
         AppointmentCard(
-            appointment =
-                Appointment(
-                    appointmentId = 1,
-                    doctorName = "Dr. John Smith",
-                    doctorSpecialty = "Cardiologist",
-                    doctorId = "101",
-                    doctorImage = "",
-                    dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
-                    patientName = "Patient",
-                    patientImage = "",
-                    statusId = AppointmentStatus.ConfirmedStatus.code,
-                    status = stringResource(AppointmentStatus.ConfirmedStatus.textResId),
-                ),
+            doctorName = "Dr. John Smith",
+            doctorSpecialty = "Cardiologist",
+            dateTime = "18/01/2026 01:30 PM",
+            patientName = "Sara Watson",
+            statusId = AppointmentStatus.ConfirmedStatus.code,
+            status = stringResource(AppointmentStatus.ConfirmedStatus.textResId),
+            showActions = true,
+            showConfirm = true,
+            onReschedule = {},
+            onCancel = {},
+            onConfirm = {},
+        )
+
+        Spacer(modifier = Modifier.height(S_PADDING))
+
+        AppointmentCard(
+            doctorName = "Dr. Alfred Hopkins",
+            doctorSpecialty = "Therapist",
+            dateTime = "23/01/2026 04:00 PM",
+            patientName = "Emmy Jackson",
+            statusId = AppointmentStatus.ConfirmedStatus.code,
+            status = stringResource(AppointmentStatus.PendingStatus.textResId),
             showActions = true,
             showConfirm = true,
             onReschedule = {},

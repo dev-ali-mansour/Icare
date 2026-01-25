@@ -5,12 +5,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -43,9 +47,9 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import eg.edu.cu.csds.icare.core.data.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.util.Constants
-import eg.edu.cu.csds.icare.core.domain.util.isTomorrow
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.common.CommonTopAppBar
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
@@ -56,9 +60,8 @@ import eg.edu.cu.csds.icare.core.ui.theme.TAB_INDICATOR_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.TAB_INDICATOR_ROUND_CORNER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow700
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
+import eg.edu.cu.csds.icare.core.ui.util.AdaptiveGrid
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
@@ -66,6 +69,7 @@ import eg.edu.cu.csds.icare.feature.appointment.R
 import eg.edu.cu.csds.icare.feature.appointment.component.AppointmentCard
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun MyAppointmentsScreen(
@@ -73,7 +77,9 @@ fun MyAppointmentsScreen(
     navigateToRescheduleRoute: (Appointment) -> Unit,
 ) {
     val viewModel: AppointmentListViewModel = koinViewModel()
+    val adaptiveGrid: AdaptiveGrid = koinInject()
     val context: Context = LocalContext.current
+    val gridState = rememberLazyGridState()
     val refreshState = rememberPullToRefreshState()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -119,7 +125,7 @@ fun MyAppointmentsScreen(
             }
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-    ) { paddingValues ->
+    ) { innerPadding ->
         Surface(
             modifier =
                 Modifier
@@ -130,7 +136,7 @@ fun MyAppointmentsScreen(
                         onRefresh = {
                             viewModel.handleIntent(AppointmentListIntent.Refresh)
                         },
-                    ).padding(paddingValues),
+                    ).padding(innerPadding),
         ) {
             ConstraintLayout(
                 modifier =
@@ -151,6 +157,8 @@ fun MyAppointmentsScreen(
                             height = Dimension.fillToConstraints
                         },
                     uiState = uiState,
+                    columnsCount = adaptiveGrid.calculateGridColumns(),
+                    gridState = gridState,
                     onIntent = viewModel::handleIntent,
                 )
 
@@ -174,234 +182,126 @@ fun MyAppointmentsScreen(
 @Composable
 fun MyAppointmentsContent(
     uiState: AppointmentListState,
+    columnsCount: Int,
     modifier: Modifier = Modifier,
+    gridState: LazyGridState = rememberLazyGridState(),
     onIntent: (AppointmentListIntent) -> Unit,
 ) {
-    ConstraintLayout(
-        modifier = modifier.fillMaxSize(),
-    ) {
-        var selectedTabIndex by remember { mutableIntStateOf(0) }
-        val statusList =
-            listOf(
-                AppointmentStatus.PendingStatus,
-                AppointmentStatus.ConfirmedStatus,
-                AppointmentStatus.CompletedStatus,
-                AppointmentStatus.CancelledStatus,
-            )
-        val (card) = createRefs()
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val statusList =
+        listOf(
+            AppointmentStatus.PendingStatus,
+            AppointmentStatus.ConfirmedStatus,
+            AppointmentStatus.CompletedStatus,
+            AppointmentStatus.CancelledStatus,
+        )
 
-        Surface(
-            modifier =
-                Modifier
-                    .constrainAs(card) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
-                        width = Dimension.fillToConstraints
-                        height = Dimension.fillToConstraints
-                    },
-        ) {
-            val appointments =
-                uiState.appointments.map { appointment ->
-                    statusList.find { it.code == appointment.statusId }?.let {
-                        appointment.copy(status = stringResource(it.textResId))
-                    } ?: appointment
-                }
-            Column(modifier = Modifier.fillMaxSize()) {
-                SecondaryScrollableTabRow(
-                    selectedTabIndex = selectedTabIndex,
-                    modifier = Modifier.fillMaxWidth(),
-                    containerColor = contentBackgroundColor,
-                    contentColor = Yellow700,
-                    edgePadding = M_PADDING,
-                    indicator = {
-                        Box(
-                            modifier =
-                                Modifier
-                                    .height(TAB_INDICATOR_HEIGHT)
-                                    .clip(
+    Surface(modifier = modifier.fillMaxSize()) {
+        val status = statusList[selectedTabIndex]
+        val appointments =
+            uiState.appointments.filter { it.statusId == status.code }.map { appointment ->
+                statusList.find { it.code == appointment.statusId }?.let {
+                    appointment.copy(status = stringResource(it.textResId))
+                } ?: appointment
+            }
+        val showActions = status.code == AppointmentStatus.PendingStatus.code
+        Column(modifier = Modifier.fillMaxSize()) {
+            SecondaryScrollableTabRow(
+                selectedTabIndex = selectedTabIndex,
+                modifier = Modifier.fillMaxWidth(),
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Yellow700,
+                edgePadding = M_PADDING,
+                indicator = {
+                    Box(
+                        modifier =
+                            Modifier
+                                .height(TAB_INDICATOR_HEIGHT)
+                                .clip(
+                                    RoundedCornerShape(
+                                        TAB_INDICATOR_ROUND_CORNER_SIZE,
+                                    ),
+                                ).background(
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    shape =
                                         RoundedCornerShape(
                                             TAB_INDICATOR_ROUND_CORNER_SIZE,
                                         ),
-                                    ).background(
-                                        color = barBackgroundColor,
-                                        shape =
-                                            RoundedCornerShape(
-                                                TAB_INDICATOR_ROUND_CORNER_SIZE,
-                                            ),
-                                    ),
-                        )
-                    },
-                ) {
-                    statusList.forEachIndexed { index, status ->
-                        Tab(
-                            selected = selectedTabIndex == index,
-                            onClick = {
-                                selectedTabIndex = index
-                            },
-                            text = {
-                                Text(
-                                    text = stringResource(status.textResId),
-                                    color = barBackgroundColor,
-                                    fontSize = MaterialTheme.typography.titleSmall.fontSize,
-                                    fontFamily = helveticaFamily,
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Center,
-                                    maxLines = 1,
-                                )
-                            },
-                            selectedContentColor = barBackgroundColor,
-                            unselectedContentColor = barBackgroundColor,
-                        )
-                    }
-                }
-
-                when (selectedTabIndex) {
-                    statusList.indexOf(AppointmentStatus.PendingStatus) -> {
-                        UpcomingAppointmentsContent(
-                            appointments = appointments,
-                            onReschedule = { onIntent(AppointmentListIntent.RescheduleAppointment(it)) },
-                            onCancel = {
-                                onIntent(AppointmentListIntent.CancelAppointment(it))
-                            },
-                        )
-                    }
-
-                    statusList.indexOf(AppointmentStatus.ConfirmedStatus),
-                    statusList.indexOf(AppointmentStatus.CompletedStatus),
-                    statusList.indexOf(AppointmentStatus.CancelledStatus),
-                    -> {
-                        OtherAppointmentsContent(
-                            status = statusList[selectedTabIndex],
-                            appointments =
-                                appointments.filter {
-                                    it.statusId == statusList[selectedTabIndex].code
-                                },
-                        )
-                    }
+                                ),
+                    )
+                },
+            ) {
+                statusList.forEachIndexed { index, status ->
+                    Tab(
+                        selected = selectedTabIndex == index,
+                        onClick = {
+                            selectedTabIndex = index
+                        },
+                        text = {
+                            Text(
+                                text = stringResource(status.textResId),
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                                fontFamily = helveticaFamily,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                maxLines = 1,
+                            )
+                        },
+                        selectedContentColor = MaterialTheme.colorScheme.primaryContainer,
+                        unselectedContentColor = MaterialTheme.colorScheme.secondary,
+                    )
                 }
             }
-        }
-    }
-}
 
-@Composable
-private fun UpcomingAppointmentsContent(
-    appointments: List<Appointment>,
-    onReschedule: (Appointment) -> Unit,
-    onCancel: (Appointment) -> Unit,
-) {
-    if (appointments.none { it.statusId == AppointmentStatus.PendingStatus.code }) {
-        val message =
-            "${
-                stringResource(
-                    R.string.feature_appointments_no_appointments_data,
+            if (appointments.isEmpty()) {
+                val message =
+                    "${
+                        stringResource(
+                            R.string.feature_appointments_no_appointments_data,
+                        )
+                    }: ${stringResource(status.textResId)}"
+                EmptyContentView(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(M_PADDING)
+                            .verticalScroll(rememberScrollState()),
+                    text = message,
                 )
-            }: ${stringResource(AppointmentStatus.PendingStatus.textResId)}"
-        EmptyContentView(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(M_PADDING)
-                    .verticalScroll(rememberScrollState()),
-            text = message,
-        )
-        return
-    }
-    val tomorrowAppointments =
-        appointments.filter {
-            it.statusId == AppointmentStatus.PendingStatus.code &&
-                it.dateTime.isTomorrow()
-        }
-
-    val pendingAppointments =
-        appointments.filter {
-            it.statusId == AppointmentStatus.PendingStatus.code && !it.dateTime.isTomorrow()
-        }
-
-    LazyColumn(
-        modifier = Modifier.padding(M_PADDING),
-        verticalArrangement = Arrangement.spacedBy(S_PADDING),
-    ) {
-        if (tomorrowAppointments.isNotEmpty()) {
-            item {
-                Text(
-                    text = stringResource(R.string.feature_appointments_tomorrow),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontFamily = helveticaFamily,
-                    modifier = Modifier.padding(vertical = S_PADDING),
-                )
+                return@Column
             }
-
-            items(tomorrowAppointments) { appointment ->
-                AppointmentCard(
-                    appointment = appointment,
-                    showActions = true,
-                    onReschedule = { onReschedule(appointment) },
-                    onCancel = { onCancel(appointment) },
-                    onConfirm = {},
-                )
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(columnsCount),
+                modifier = Modifier.fillMaxSize(),
+                state = gridState,
+                contentPadding = PaddingValues(all = S_PADDING),
+                horizontalArrangement = Arrangement.spacedBy(S_PADDING),
+                verticalArrangement = Arrangement.spacedBy(S_PADDING),
+            ) {
+                items(appointments) { appointment ->
+                    AppointmentCard(
+                        doctorName = appointment.doctorName,
+                        doctorSpecialty = appointment.doctorSpecialty,
+                        dateTime = appointment.dateTime.getFormattedDateTime(LocalContext.current),
+                        patientName = appointment.patientName,
+                        statusId = appointment.statusId,
+                        status = appointment.status,
+                        showActions = showActions,
+                        onReschedule = {
+                            if (showActions) {
+                                onIntent(AppointmentListIntent.RescheduleAppointment(appointment))
+                            }
+                        },
+                        onCancel = {
+                            if (showActions) {
+                                onIntent(AppointmentListIntent.CancelAppointment(appointment))
+                            }
+                        },
+                        onConfirm = {},
+                    )
+                }
             }
-        }
-
-        if (pendingAppointments.isNotEmpty()) {
-            item {
-                Text(
-                    text = stringResource(R.string.feature_appointments_pending_for_confirmation),
-                    fontFamily = helveticaFamily,
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(vertical = S_PADDING),
-                )
-            }
-
-            items(pendingAppointments) { appointment ->
-                AppointmentCard(
-                    appointment = appointment,
-                    showActions = true,
-                    onReschedule = { onReschedule(appointment) },
-                    onCancel = { onCancel(appointment) },
-                    onConfirm = {},
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun OtherAppointmentsContent(
-    status: AppointmentStatus,
-    appointments: List<Appointment>,
-) {
-    if (appointments.isEmpty()) {
-        val message =
-            "${
-                stringResource(
-                    R.string.feature_appointments_no_appointments_data,
-                )
-            }: ${stringResource(status.textResId)}"
-        EmptyContentView(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(M_PADDING)
-                    .verticalScroll(rememberScrollState()),
-            text = message,
-        )
-        return
-    }
-    LazyColumn(
-        modifier = Modifier.padding(M_PADDING),
-        verticalArrangement = Arrangement.spacedBy(S_PADDING),
-    ) {
-        items(appointments) { appointment ->
-            AppointmentCard(
-                appointment = appointment,
-                showActions = false,
-                onReschedule = {},
-                onCancel = {},
-                onConfirm = {},
-            )
         }
     }
 }
@@ -422,11 +322,8 @@ private fun MyAppointmentContentPreview() {
                                     appointmentId = 1,
                                     doctorName = "Dr. John Smith",
                                     doctorSpecialty = "Cardiologist",
-                                    doctorId = "101",
-                                    doctorImage = "",
                                     dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
                                     patientName = "Patient",
-                                    patientImage = "",
                                     statusId = AppointmentStatus.PendingStatus.code,
                                     status = stringResource(AppointmentStatus.PendingStatus.textResId),
                                 ),
@@ -434,11 +331,8 @@ private fun MyAppointmentContentPreview() {
                                     appointmentId = 2,
                                     doctorName = "Dr. Sarah Johnson",
                                     doctorSpecialty = "Dermatologist",
-                                    doctorId = "102",
-                                    doctorImage = "",
-                                    dateTime = System.currentTimeMillis() + Constants.THREE_DAYS,
+                                    dateTime = System.currentTimeMillis() + Constants.TWO_DAYS,
                                     patientName = "Patient",
-                                    patientImage = "",
                                     statusId = AppointmentStatus.PendingStatus.code,
                                     status = stringResource(AppointmentStatus.PendingStatus.textResId),
                                 ),
@@ -446,16 +340,32 @@ private fun MyAppointmentContentPreview() {
                                     appointmentId = 3,
                                     doctorName = "Dr. Anna Jones",
                                     doctorSpecialty = "General Practitioner",
-                                    doctorId = "101",
-                                    doctorImage = "",
-                                    dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
+                                    dateTime = System.currentTimeMillis() + Constants.THREE_DAYS,
                                     patientName = "Patient",
-                                    patientImage = "",
+                                    statusId = AppointmentStatus.PendingStatus.code,
+                                    status = stringResource(AppointmentStatus.PendingStatus.textResId),
+                                ),
+                                Appointment(
+                                    appointmentId = 4,
+                                    doctorName = "Dr. Emanuel Johnson",
+                                    doctorSpecialty = "Dermatologist",
+                                    dateTime = System.currentTimeMillis() + Constants.FOUR_DAYS,
+                                    patientName = "Patient",
+                                    statusId = AppointmentStatus.PendingStatus.code,
+                                    status = stringResource(AppointmentStatus.PendingStatus.textResId),
+                                ),
+                                Appointment(
+                                    appointmentId = 5,
+                                    doctorName = "Dr. Anna Jones",
+                                    doctorSpecialty = "General Practitioner",
+                                    dateTime = System.currentTimeMillis() + Constants.FIVE_DAYS,
+                                    patientName = "Patient",
                                     statusId = AppointmentStatus.PendingStatus.code,
                                     status = stringResource(AppointmentStatus.PendingStatus.textResId),
                                 ),
                             ),
                     ),
+                columnsCount = AdaptiveGrid().calculateGridColumns(),
                 onIntent = {},
             )
         }
