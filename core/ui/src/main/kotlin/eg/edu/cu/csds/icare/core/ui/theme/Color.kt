@@ -46,22 +46,9 @@ val SkyAccent = Color(color = 0xFF3EBCDF)
 val mintAccent = Color(color = 0xFF82EEA6)
 val trustBlue = Color(color = 0xFF6488D9)
 
-val backgroundColor: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) Color.DarkGray else Color.White
-
 val titleColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.LightGray else Color.DarkGray
-val selectedCategoryCardColor: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) Color.Black else Blue200
-val unselectedCategoryCardColor: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) Color.LightGray else Color.White
-val unSelectedTintColor: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) Color.White else Color.Black
 
 val descriptionColor: Color
     @Composable
@@ -80,16 +67,9 @@ val inactiveIndicatorColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
 
-val contentBackgroundColor: Color
+val TabRowContainerColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.Gray else Blue200.copy(alpha = 0.1f)
-val itemBackgroundColor: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) Color.Gray else Blue10
-
-val categoryBackgroundColor: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) Color.Gray else Color.White
 
 val buttonBackgroundColor: Color
     @Composable
@@ -99,17 +79,9 @@ val contentColor: Color
     @Composable
     get() = Color.DarkGray
 
-val statusColor: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) Color.White.copy(alpha = 0.5f) else Color.DarkGray
-
 val tintColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.LightGray else Color.Black
-
-val barBackgroundColor: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) Color.Black else Blue500
 
 val textColor: Color
     @Composable
@@ -119,14 +91,6 @@ val dropDownTextColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.White else Blue200
 
-val trailIconColor: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) Color.White else Blue500
-
 val cardBackgroundColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.Black else SkyAccent.copy(alpha = 0.7f)
-
-val cardTextColor: Color
-    @Composable
-    get() = if (isSystemInDarkTheme()) Color.Black else Color.White

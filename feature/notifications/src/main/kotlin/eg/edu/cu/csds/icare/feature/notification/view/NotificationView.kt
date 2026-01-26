@@ -23,9 +23,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import eg.edu.cu.csds.icare.core.data.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.ui.theme.MAX_SURFACE_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.TabRowContainerColor
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.feature.notification.R
@@ -42,7 +41,7 @@ fun NotificationView(
                 .fillMaxWidth()
                 .wrapContentWidth(Alignment.CenterHorizontally)
                 .widthIn(max = MAX_SURFACE_WIDTH),
-        color = contentBackgroundColor,
+        color = TabRowContainerColor,
         shape =
             RoundedCornerShape(
                 topStart = XS_PADDING,
@@ -94,7 +93,7 @@ fun NotificationView(
 @PreviewArabicLightDark
 @Composable
 fun NotificationViewPreview() {
-    Column(modifier = Modifier.background(color = backgroundColor)) {
+    Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
         NotificationView(
             text = stringResource(R.string.feature_notifications_welcome_message),
             date = System.currentTimeMillis(),

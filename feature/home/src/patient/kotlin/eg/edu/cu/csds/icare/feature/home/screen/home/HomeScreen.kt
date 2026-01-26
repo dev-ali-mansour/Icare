@@ -75,19 +75,19 @@ import eg.edu.cu.csds.icare.core.ui.theme.ACTION_BUTTON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.ANNOUNCEMENT_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.CARD_ROUND_CORNER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.DeepTeal
+import eg.edu.cu.csds.icare.core.ui.theme.EmeraldGreen
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.LightGreen
 import eg.edu.cu.csds.icare.core.ui.theme.MAX_SURFACE_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.MediumGray
 import eg.edu.cu.csds.icare.core.ui.theme.Orange200
 import eg.edu.cu.csds.icare.core.ui.theme.PROMOTION_BANNER_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.PROMOTION_ITEM_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.U_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
-import eg.edu.cu.csds.icare.core.ui.theme.statusColor
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
 import eg.edu.cu.csds.icare.core.ui.util.neumorphicUp
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
@@ -169,7 +169,7 @@ internal fun HomeScreen(
         ) {
             if (uiState.openDialog) {
                 ConfirmDialog(
-                    backgroundColor = backgroundColor,
+                    backgroundColor = MaterialTheme.colorScheme.background,
                     title = stringResource(id = R.string.feature_home_exit_dialog_title),
                     message = stringResource(id = R.string.feature_home_exit_dialog),
                     onDismissRequest = {
@@ -422,12 +422,22 @@ private fun HomeContent(
                                         end.linkTo(parent.end)
                                     },
                                 color =
-                                    if (appointment.statusId ==
-                                        AppointmentStatus.ConfirmedStatus.code
-                                    ) {
-                                        Color.Green
-                                    } else {
-                                        statusColor
+                                    when (appointment.statusId) {
+                                        AppointmentStatus.PendingStatus.code -> {
+                                            Orange200
+                                        }
+
+                                        AppointmentStatus.ConfirmedStatus.code -> {
+                                            EmeraldGreen
+                                        }
+
+                                        AppointmentStatus.CancelledStatus.code -> {
+                                            MaterialTheme.colorScheme.onError
+                                        }
+
+                                        else -> {
+                                            MediumGray
+                                        }
                                     },
                             )
                             Icon(

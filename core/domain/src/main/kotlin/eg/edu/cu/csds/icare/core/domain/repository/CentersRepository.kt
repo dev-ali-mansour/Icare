@@ -1,9 +1,9 @@
 package eg.edu.cu.csds.icare.core.domain.repository
 
-import eg.edu.cu.csds.icare.core.domain.model.Staff
 import eg.edu.cu.csds.icare.core.domain.model.DataError
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
 import eg.edu.cu.csds.icare.core.domain.model.Result
+import eg.edu.cu.csds.icare.core.domain.model.Staff
 import kotlinx.coroutines.flow.Flow
 
 interface CentersRepository {

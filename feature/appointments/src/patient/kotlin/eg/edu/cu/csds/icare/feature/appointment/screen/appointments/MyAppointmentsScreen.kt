@@ -59,8 +59,8 @@ import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.TAB_INDICATOR_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.TAB_INDICATOR_ROUND_CORNER_SIZE
+import eg.edu.cu.csds.icare.core.ui.theme.TabRowContainerColor
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow700
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.util.calculateGridColumns
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
@@ -205,24 +205,19 @@ fun MyAppointmentsContent(
             SecondaryScrollableTabRow(
                 selectedTabIndex = selectedTabIndex,
                 modifier = Modifier.fillMaxWidth(),
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = TabRowContainerColor,
                 contentColor = Yellow700,
                 edgePadding = M_PADDING,
                 indicator = {
                     Box(
                         modifier =
                             Modifier
+                                .tabIndicatorOffset(selectedTabIndex)
                                 .height(TAB_INDICATOR_HEIGHT)
-                                .clip(
-                                    RoundedCornerShape(
-                                        TAB_INDICATOR_ROUND_CORNER_SIZE,
-                                    ),
-                                ).background(
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape =
-                                        RoundedCornerShape(
-                                            TAB_INDICATOR_ROUND_CORNER_SIZE,
-                                        ),
+                                .clip(RoundedCornerShape(TAB_INDICATOR_ROUND_CORNER_SIZE))
+                                .background(
+                                    color = MaterialTheme.colorScheme.primary,
+                                    shape = RoundedCornerShape(TAB_INDICATOR_ROUND_CORNER_SIZE),
                                 ),
                     )
                 },
@@ -236,7 +231,7 @@ fun MyAppointmentsContent(
                         text = {
                             Text(
                                 text = stringResource(status.textResId),
-                                color = MaterialTheme.colorScheme.onPrimary,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                 fontFamily = helveticaFamily,
                                 fontWeight = FontWeight.Bold,
@@ -244,8 +239,8 @@ fun MyAppointmentsContent(
                                 maxLines = 1,
                             )
                         },
-                        selectedContentColor = MaterialTheme.colorScheme.primaryContainer,
-                        unselectedContentColor = MaterialTheme.colorScheme.secondary,
+                        selectedContentColor = MaterialTheme.colorScheme.primary,
+                        unselectedContentColor = MaterialTheme.colorScheme.primary,
                     )
                 }
             }

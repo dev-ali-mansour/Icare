@@ -36,10 +36,10 @@ import eg.edu.cu.csds.icare.core.ui.theme.CATEGORY_ICON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.HEADER_ICON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.HEADER_PROFILE_CARD_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.TabRowContainerColor
 import eg.edu.cu.csds.icare.core.ui.theme.U_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
-import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.kufamFamily
 
@@ -100,7 +100,7 @@ fun HomeTopAppBar(
                                 top.linkTo(logo.top, S_PADDING)
                                 end.linkTo(parent.end, S_PADDING)
                             }.clickable { onUserClicked() },
-                    color = contentBackgroundColor,
+                    color = TabRowContainerColor,
                     shape = RoundedCornerShape(S_PADDING),
                 ) {
                     ConstraintLayout(

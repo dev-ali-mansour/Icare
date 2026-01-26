@@ -52,7 +52,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.PAGING_INDICATOR_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.activeIndicatorColor
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.buttonBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.descriptionColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
@@ -106,13 +105,13 @@ internal fun OnBoardingScreen(
 
     when (configuration.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
-            WelcomeScreenInLandscape(backgroundColor, pagerState, pages) {
+            WelcomeScreenInLandscape(MaterialTheme.colorScheme.background, pagerState, pages) {
                 viewModel.handleIntent(OnBoardingIntent.FinishOnBoarding)
             }
         }
 
         else -> {
-            WelcomeScreenInPortrait(backgroundColor, pagerState, pages) {
+            WelcomeScreenInPortrait(MaterialTheme.colorScheme.background, pagerState, pages) {
                 viewModel.handleIntent(OnBoardingIntent.FinishOnBoarding)
             }
         }
@@ -301,11 +300,11 @@ internal fun OnBoardingScreenPreview() {
     }
     when (configuration.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
-            WelcomeScreenInLandscape(backgroundColor, pagerState, pages) { }
+            WelcomeScreenInLandscape(MaterialTheme.colorScheme.background, pagerState, pages) { }
         }
 
         else -> {
-            WelcomeScreenInPortrait(backgroundColor, pagerState, pages) { }
+            WelcomeScreenInPortrait(MaterialTheme.colorScheme.background, pagerState, pages) { }
         }
     }
 }
