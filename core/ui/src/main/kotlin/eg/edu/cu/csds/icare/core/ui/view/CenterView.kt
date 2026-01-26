@@ -73,9 +73,7 @@ fun CenterView(
                 },
     ) {
         Row(
-            modifier =
-                Modifier
-                    .padding(M_PADDING),
+            modifier = Modifier.padding(M_PADDING),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
