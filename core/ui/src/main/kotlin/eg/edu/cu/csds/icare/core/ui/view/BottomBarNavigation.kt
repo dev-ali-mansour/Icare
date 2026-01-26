@@ -1,6 +1,7 @@
 package eg.edu.cu.csds.icare.core.ui.view
 
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -18,7 +19,6 @@ import eg.edu.cu.csds.icare.core.ui.common.BOTTOM_NAV_ENTRIES
 import eg.edu.cu.csds.icare.core.ui.common.BottomNavItem
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
-import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
@@ -32,7 +32,7 @@ fun BottomBarNavigation(
 ) {
     NavigationBar(
         modifier = modifier,
-        containerColor = barBackgroundColor,
+        containerColor = MaterialTheme.colorScheme.primary,
         contentColor = contentColor,
     ) {
         items.forEach { item ->
