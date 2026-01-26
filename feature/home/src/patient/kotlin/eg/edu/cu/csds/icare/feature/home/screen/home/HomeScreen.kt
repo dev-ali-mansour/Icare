@@ -213,8 +213,7 @@ private fun HomeContent(
                         bottom.linkTo(marquee.top)
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
-                    }.background(backgroundColor)
-                    .verticalScroll(rememberScrollState())
+                    }.verticalScroll(rememberScrollState())
                     .padding(M_PADDING),
         ) {
             Card(
@@ -590,7 +589,7 @@ private fun HomeContentPreview() {
                         myAppointments =
                             listOf(
                                 Appointment(
-                                    appointmentId = 1,
+                                    id = 1,
                                     doctorName = "Dr. Ahmed Gad",
                                     doctorSpecialty = "Cardiologist",
                                     doctorImage = "https://i.ibb.co/JRkcZzhR/doctor.webp",

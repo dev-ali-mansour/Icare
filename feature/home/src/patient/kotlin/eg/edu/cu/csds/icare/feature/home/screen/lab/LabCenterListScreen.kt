@@ -135,12 +135,7 @@ internal fun LabCenterListScreen(onNavigationIconClicked: () -> Unit) {
                         },
                     ).padding(innerPadding),
         ) {
-            ConstraintLayout(
-                modifier =
-                    Modifier
-                        .background(backgroundColor)
-                        .fillMaxSize(),
-            ) {
+            ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                 val (content, refresh) = createRefs()
 
                 LabCenterListContent(
