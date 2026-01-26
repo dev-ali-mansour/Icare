@@ -154,7 +154,6 @@ internal fun LabCenterListScreen(onNavigationIconClicked: () -> Unit) {
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         },
-                    columnsCount = calculateGridColumns(),
                     gridState = gridState,
                 )
 
@@ -176,7 +175,6 @@ internal fun LabCenterListScreen(onNavigationIconClicked: () -> Unit) {
 @Composable
 private fun LabCenterListContent(
     uiState: LabListState,
-    columnsCount: Int,
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState(),
 ) {
@@ -190,7 +188,7 @@ private fun LabCenterListContent(
             )
         } else {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(columnsCount),
+                columns = GridCells.Fixed(calculateGridColumns()),
                 modifier = modifier.fillMaxSize(),
                 state = gridState,
                 contentPadding = PaddingValues(all = S_PADDING),
@@ -266,7 +264,6 @@ private fun LabListContentPreview() {
                                 ),
                             ),
                     ),
-                columnsCount = calculateGridColumns(),
             )
         }
     }

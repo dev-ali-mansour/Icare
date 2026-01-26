@@ -155,7 +155,6 @@ fun DoctorListScreen(
                             height = Dimension.fillToConstraints
                         },
                     uiState = uiState,
-                    columnsCont = calculateGridColumns(),
                     onIntent = viewModel::handleIntent,
                 )
 
@@ -177,7 +176,6 @@ fun DoctorListScreen(
 @Composable
 private fun DoctorsListContent(
     uiState: DoctorListState,
-    columnsCont: Int,
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState(),
     onIntent: (DoctorListIntent) -> Unit,
@@ -193,7 +191,7 @@ private fun DoctorsListContent(
             )
         } else {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(columnsCont),
+                columns = GridCells.Fixed(calculateGridColumns()),
                 modifier = modifier.fillMaxSize(),
                 state = gridState,
                 contentPadding = PaddingValues(all = S_PADDING),
@@ -264,7 +262,6 @@ private fun DoctorsListContentPreview() {
                                 ),
                             ),
                     ),
-                columnsCont = calculateGridColumns(),
                 onIntent = {},
             )
         }

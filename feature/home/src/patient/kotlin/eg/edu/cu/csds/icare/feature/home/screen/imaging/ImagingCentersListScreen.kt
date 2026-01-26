@@ -148,7 +148,6 @@ internal fun ImagingCentersListScreen(onNavigationIconClicked: () -> Unit) {
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         },
-                    columnsCont = calculateGridColumns(),
                     gridState = gridState,
                 )
 
@@ -170,7 +169,6 @@ internal fun ImagingCentersListScreen(onNavigationIconClicked: () -> Unit) {
 @Composable
 private fun ImagingCentersListContent(
     uiState: ImagingCenterListState,
-    columnsCont: Int,
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState(),
 ) {
@@ -184,7 +182,7 @@ private fun ImagingCentersListContent(
             )
         } else {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(columnsCont),
+                columns = GridCells.Fixed(calculateGridColumns()),
                 modifier = modifier.fillMaxSize(),
                 state = gridState,
                 contentPadding = PaddingValues(all = S_PADDING),
@@ -269,7 +267,6 @@ private fun ImagingCentersListContentPreview() {
                                 ),
                             ),
                     ),
-                columnsCont = calculateGridColumns(),
             )
         }
     }

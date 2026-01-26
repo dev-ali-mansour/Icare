@@ -154,7 +154,6 @@ fun PharmacyListScreen(onNavigationIconClicked: () -> Unit) {
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         },
-                    columnsCont = calculateGridColumns(),
                     gridState = gridState,
                 )
 
@@ -176,7 +175,6 @@ fun PharmacyListScreen(onNavigationIconClicked: () -> Unit) {
 @Composable
 private fun PharmacyListContent(
     uiState: PharmacyListState,
-    columnsCont: Int,
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState(),
 ) {
@@ -188,7 +186,7 @@ private fun PharmacyListContent(
             )
         } else {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(columnsCont),
+                columns = GridCells.Fixed(calculateGridColumns()),
                 modifier = modifier.fillMaxSize(),
                 state = gridState,
                 contentPadding = PaddingValues(all = S_PADDING),
@@ -259,7 +257,6 @@ private fun PharmacyListContentPreview() {
                                 ),
                             ),
                     ),
-                columnsCont = calculateGridColumns(),
             )
         }
     }

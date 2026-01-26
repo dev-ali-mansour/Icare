@@ -155,7 +155,6 @@ fun MyAppointmentsScreen(
                             height = Dimension.fillToConstraints
                         },
                     uiState = uiState,
-                    columnsCount = calculateGridColumns(),
                     gridState = gridState,
                     onIntent = viewModel::handleIntent,
                 )
@@ -180,7 +179,6 @@ fun MyAppointmentsScreen(
 @Composable
 fun MyAppointmentsContent(
     uiState: AppointmentListState,
-    columnsCount: Int,
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState(),
     onIntent: (AppointmentListIntent) -> Unit,
@@ -270,7 +268,7 @@ fun MyAppointmentsContent(
                 return@Column
             }
             LazyVerticalGrid(
-                columns = GridCells.Fixed(columnsCount),
+                columns = GridCells.Fixed(calculateGridColumns()),
                 modifier = Modifier.fillMaxSize(),
                 state = gridState,
                 contentPadding = PaddingValues(all = S_PADDING),
@@ -363,7 +361,6 @@ private fun MyAppointmentContentPreview() {
                                 ),
                             ),
                     ),
-                columnsCount = calculateGridColumns(),
                 onIntent = {},
             )
         }
