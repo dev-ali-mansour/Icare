@@ -31,7 +31,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.MediumGray
 import eg.edu.cu.csds.icare.core.ui.theme.Orange200
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.util.neumorphicUp
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
@@ -92,7 +91,7 @@ fun AppointmentCard(
                                 AppointmentStatus.PendingStatus.code -> Orange200
                                 AppointmentStatus.ConfirmedStatus.code -> EmeraldGreen
                                 AppointmentStatus.CancelledStatus.code -> MaterialTheme.colorScheme.onError
-                                else-> MediumGray
+                                else -> MediumGray
                             },
                     )
                 }
@@ -153,7 +152,7 @@ fun AppointmentCardPreview() {
         modifier =
             Modifier
                 .padding(XS_PADDING)
-                .background(color = backgroundColor),
+                .background(color = MaterialTheme.colorScheme.background),
     ) {
         AppointmentCard(
             doctorName = "Dr. John Smith",
