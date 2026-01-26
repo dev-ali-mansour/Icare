@@ -27,7 +27,7 @@ val TableTextYellow = Color(color = 0xFFFFC107)
 val TableRowAlternatingDark = Color(color = 0xFF424242) // Slightly lighter than background
 
 // Standard
-val ErrorRed = Color(color = 0xFFCF6679)
+val ErrorRed = Color(color = 0xFFAA0202)
 val Blue10 = Color(color = 0xFFE8F5F7)
 val Blue200 = Color(color = 0xFF30AEC5)
 val Blue500 = Color(color = 0xFF056B8D)
@@ -36,8 +36,7 @@ val Orange200 = Color(color = 0xFFF27024)
 val Yellow300 = Color(color = 0XFFFFD200)
 val Yellow500 = Color(color = 0xFFF9B40E)
 val Yellow700 = Color(color = 0xFFE3880C)
-val PaidColor = Color(color = 0xFF028A02)
-val UnPaidColor = Color(color = 0xFFAA0202)
+val EmeraldGreen = Color(color = 0xFF028A02)
 val MediumGray = Color(color = 0xFF9C9C9C)
 val LightGreen = Color(color = 0xFFE2EBCD)
 val AiryGreen = Color(color = 0xFFF1F8F5)
