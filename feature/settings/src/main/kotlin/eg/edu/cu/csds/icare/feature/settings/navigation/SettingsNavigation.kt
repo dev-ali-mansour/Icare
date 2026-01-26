@@ -9,6 +9,7 @@ import eg.edu.cu.csds.icare.feature.settings.screen.settings.SettingsScreen
 fun EntryProviderScope<NavKey>.settingsEntryBuilder(
     onNavigationIconClicked: () -> Unit,
     navigateToRoute: (Route) -> Unit,
+    onSocialIconClicked: (String) -> Unit,
 ) {
     entry<Route.Settings> {
         SettingsScreen {
@@ -16,8 +17,9 @@ fun EntryProviderScope<NavKey>.settingsEntryBuilder(
         }
     }
     entry<Route.About> {
-        AboutScreen {
-            onNavigationIconClicked()
-        }
+        AboutScreen(
+            onNavigationIconClicked = onNavigationIconClicked,
+            onSocialIconClicked = onSocialIconClicked,
+        )
     }
 }
