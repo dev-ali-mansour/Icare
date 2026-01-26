@@ -61,7 +61,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.TAB_INDICATOR_ROUND_CORNER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow700
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
-import eg.edu.cu.csds.icare.core.ui.util.AdaptiveGrid
+import eg.edu.cu.csds.icare.core.ui.util.calculateGridColumns
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
 import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
@@ -69,7 +69,6 @@ import eg.edu.cu.csds.icare.feature.appointment.R
 import eg.edu.cu.csds.icare.feature.appointment.component.AppointmentCard
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
 
 @Composable
 fun MyAppointmentsScreen(
@@ -77,7 +76,6 @@ fun MyAppointmentsScreen(
     navigateToRescheduleRoute: (Appointment) -> Unit,
 ) {
     val viewModel: AppointmentListViewModel = koinViewModel()
-    val adaptiveGrid: AdaptiveGrid = koinInject()
     val context: Context = LocalContext.current
     val gridState = rememberLazyGridState()
     val refreshState = rememberPullToRefreshState()
@@ -157,7 +155,7 @@ fun MyAppointmentsScreen(
                             height = Dimension.fillToConstraints
                         },
                     uiState = uiState,
-                    columnsCount = adaptiveGrid.calculateGridColumns(),
+                    columnsCount = calculateGridColumns(),
                     gridState = gridState,
                     onIntent = viewModel::handleIntent,
                 )
@@ -365,7 +363,7 @@ private fun MyAppointmentContentPreview() {
                                 ),
                             ),
                     ),
-                columnsCount = AdaptiveGrid().calculateGridColumns(),
+                columnsCount = calculateGridColumns(),
                 onIntent = {},
             )
         }

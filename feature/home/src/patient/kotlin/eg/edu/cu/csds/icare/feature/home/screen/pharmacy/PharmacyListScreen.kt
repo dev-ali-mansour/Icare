@@ -43,7 +43,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.util.AdaptiveGrid
+import eg.edu.cu.csds.icare.core.ui.util.calculateGridColumns
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.CustomTopSearchBar
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
@@ -53,13 +53,11 @@ import eg.edu.cu.csds.icare.feature.home.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PharmacyListScreen(onNavigationIconClicked: () -> Unit) {
     val viewModel: PharmacyListViewModel = koinViewModel()
-    val adaptiveGrid: AdaptiveGrid = koinInject()
     val context: Context = LocalContext.current
     val scope = rememberCoroutineScope()
     val gridState = rememberLazyGridState()
@@ -156,7 +154,7 @@ fun PharmacyListScreen(onNavigationIconClicked: () -> Unit) {
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         },
-                    columnsCont = adaptiveGrid.calculateGridColumns(),
+                    columnsCont = calculateGridColumns(),
                     gridState = gridState,
                 )
 
@@ -261,7 +259,7 @@ private fun PharmacyListContentPreview() {
                                 ),
                             ),
                     ),
-                columnsCont = AdaptiveGrid().calculateGridColumns(),
+                columnsCont = calculateGridColumns(),
             )
         }
     }

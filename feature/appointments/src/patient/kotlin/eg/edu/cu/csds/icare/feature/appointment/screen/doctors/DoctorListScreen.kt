@@ -43,7 +43,7 @@ import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
-import eg.edu.cu.csds.icare.core.ui.util.AdaptiveGrid
+import eg.edu.cu.csds.icare.core.ui.util.calculateGridColumns
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.CustomTopSearchBar
 import eg.edu.cu.csds.icare.core.ui.view.DoctorView
@@ -53,7 +53,6 @@ import eg.edu.cu.csds.icare.feature.appointment.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
 
 @Composable
 fun DoctorListScreen(
@@ -61,7 +60,6 @@ fun DoctorListScreen(
     navigateToBookingRoute: (Doctor) -> Unit,
 ) {
     val viewModel: DoctorListViewModel = koinViewModel()
-    val adaptiveGrid: AdaptiveGrid = koinInject()
     val context: Context = LocalContext.current
     val scope = rememberCoroutineScope()
     val gridState = rememberLazyGridState()
@@ -157,7 +155,7 @@ fun DoctorListScreen(
                             height = Dimension.fillToConstraints
                         },
                     uiState = uiState,
-                    columnsCont = adaptiveGrid.calculateGridColumns(),
+                    columnsCont = calculateGridColumns(),
                     onIntent = viewModel::handleIntent,
                 )
 
@@ -266,7 +264,7 @@ private fun DoctorsListContentPreview() {
                                 ),
                             ),
                     ),
-                columnsCont = AdaptiveGrid().calculateGridColumns(),
+                columnsCont = calculateGridColumns(),
                 onIntent = {},
             )
         }

@@ -2,9 +2,11 @@ package eg.edu.cu.csds.icare.core.ui.common
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Stable
 import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 
+@Stable
 sealed class AppService(
     @param:DrawableRes
     val iconResId: Int,

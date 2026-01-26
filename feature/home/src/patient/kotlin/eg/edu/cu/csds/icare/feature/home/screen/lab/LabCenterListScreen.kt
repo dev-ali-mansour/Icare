@@ -43,7 +43,7 @@ import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.util.AdaptiveGrid
+import eg.edu.cu.csds.icare.core.ui.util.calculateGridColumns
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.CenterView
 import eg.edu.cu.csds.icare.core.ui.view.CustomTopSearchBar
@@ -53,13 +53,11 @@ import eg.edu.cu.csds.icare.feature.home.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun LabCenterListScreen(onNavigationIconClicked: () -> Unit) {
     val viewModel: LabListViewModel = koinViewModel()
-    val adaptiveGrid: AdaptiveGrid = koinInject()
     val context: Context = LocalContext.current
     val scope = rememberCoroutineScope()
     val gridState = rememberLazyGridState()
@@ -156,7 +154,7 @@ internal fun LabCenterListScreen(onNavigationIconClicked: () -> Unit) {
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         },
-                    columnsCont = adaptiveGrid.calculateGridColumns(),
+                    columnsCount = calculateGridColumns(),
                     gridState = gridState,
                 )
 
@@ -178,7 +176,7 @@ internal fun LabCenterListScreen(onNavigationIconClicked: () -> Unit) {
 @Composable
 private fun LabCenterListContent(
     uiState: LabListState,
-    columnsCont: Int,
+    columnsCount: Int,
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState(),
 ) {
@@ -192,7 +190,7 @@ private fun LabCenterListContent(
             )
         } else {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(columnsCont),
+                columns = GridCells.Fixed(columnsCount),
                 modifier = modifier.fillMaxSize(),
                 state = gridState,
                 contentPadding = PaddingValues(all = S_PADDING),
@@ -243,25 +241,32 @@ private fun LabListContentPreview() {
                                     name = "Beta",
                                     type = 1,
                                     phone = "123498789",
-                                    address = "Address 1",
+                                    address = "Address 2",
                                 ),
                                 LabImagingCenter(
                                     id = 3,
                                     name = "El-Borg",
                                     type = 1,
                                     phone = "123456789",
-                                    address = "Address 1",
+                                    address = "Address 3",
                                 ),
                                 LabImagingCenter(
                                     id = 4,
                                     name = "El-Shams",
                                     type = 1,
                                     phone = "123456789",
-                                    address = "Address 1",
+                                    address = "Address 4",
+                                ),
+                                LabImagingCenter(
+                                    id = 5,
+                                    name = "Segma",
+                                    type = 1,
+                                    phone = "123456789",
+                                    address = "Address 5",
                                 ),
                             ),
                     ),
-                columnsCont = AdaptiveGrid().calculateGridColumns(),
+                columnsCount = calculateGridColumns(),
             )
         }
     }
