@@ -19,16 +19,16 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
+import eg.edu.cu.csds.icare.core.ui.theme.EmeraldGreen
 import eg.edu.cu.csds.icare.core.ui.theme.MAX_SURFACE_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.MediumGray
 import eg.edu.cu.csds.icare.core.ui.theme.Orange200
-import eg.edu.cu.csds.icare.core.ui.theme.PaidColor
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
@@ -90,8 +90,9 @@ fun AppointmentCard(
                         color =
                             when (statusId) {
                                 AppointmentStatus.PendingStatus.code -> Orange200
-                                AppointmentStatus.ConfirmedStatus.code -> PaidColor
-                                else -> Color.Gray
+                                AppointmentStatus.ConfirmedStatus.code -> EmeraldGreen
+                                AppointmentStatus.CancelledStatus.code -> MaterialTheme.colorScheme.onError
+                                else-> MediumGray
                             },
                     )
                 }

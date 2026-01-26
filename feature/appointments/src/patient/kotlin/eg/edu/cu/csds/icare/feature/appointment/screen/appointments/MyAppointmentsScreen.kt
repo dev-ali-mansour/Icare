@@ -140,7 +140,6 @@ fun MyAppointmentsScreen(
             ConstraintLayout(
                 modifier =
                     Modifier
-                        .background(backgroundColor)
                         .fillMaxWidth(),
             ) {
                 val (content, refresh) = createRefs()
@@ -322,7 +321,7 @@ private fun MyAppointmentContentPreview() {
                         appointments =
                             listOf(
                                 Appointment(
-                                    appointmentId = 1,
+                                    id = 1,
                                     doctorName = "Dr. John Smith",
                                     doctorSpecialty = "Cardiologist",
                                     dateTime = System.currentTimeMillis() + Constants.ONE_DAY,
@@ -331,7 +330,7 @@ private fun MyAppointmentContentPreview() {
                                     status = stringResource(AppointmentStatus.PendingStatus.textResId),
                                 ),
                                 Appointment(
-                                    appointmentId = 2,
+                                    id = 2,
                                     doctorName = "Dr. Sarah Johnson",
                                     doctorSpecialty = "Dermatologist",
                                     dateTime = System.currentTimeMillis() + Constants.TWO_DAYS,
@@ -340,7 +339,7 @@ private fun MyAppointmentContentPreview() {
                                     status = stringResource(AppointmentStatus.PendingStatus.textResId),
                                 ),
                                 Appointment(
-                                    appointmentId = 3,
+                                    id = 3,
                                     doctorName = "Dr. Anna Jones",
                                     doctorSpecialty = "General Practitioner",
                                     dateTime = System.currentTimeMillis() + Constants.THREE_DAYS,
@@ -349,7 +348,7 @@ private fun MyAppointmentContentPreview() {
                                     status = stringResource(AppointmentStatus.PendingStatus.textResId),
                                 ),
                                 Appointment(
-                                    appointmentId = 4,
+                                    id = 4,
                                     doctorName = "Dr. Emanuel Johnson",
                                     doctorSpecialty = "Dermatologist",
                                     dateTime = System.currentTimeMillis() + Constants.FOUR_DAYS,
@@ -358,7 +357,7 @@ private fun MyAppointmentContentPreview() {
                                     status = stringResource(AppointmentStatus.PendingStatus.textResId),
                                 ),
                                 Appointment(
-                                    appointmentId = 5,
+                                    id = 5,
                                     doctorName = "Dr. Anna Jones",
                                     doctorSpecialty = "General Practitioner",
                                     dateTime = System.currentTimeMillis() + Constants.FIVE_DAYS,
