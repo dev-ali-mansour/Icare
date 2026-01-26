@@ -1,6 +1,5 @@
-package eg.edu.cu.csds.icare.feature.notification
+package eg.edu.cu.csds.icare.feature.notification.view
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,30 +13,32 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.constraintlayout.compose.ConstraintLayout
+import eg.edu.cu.csds.icare.core.data.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.ui.theme.MAX_SURFACE_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
+import eg.edu.cu.csds.icare.feature.notification.R
 
 @Composable
 fun NotificationView(
     text: String,
-    date: String,
+    date: Long,
     modifier: Modifier = Modifier,
 ) {
     Surface(
         modifier =
             modifier
-                .padding(XS_PADDING)
                 .fillMaxWidth()
                 .wrapContentWidth(Alignment.CenterHorizontally)
                 .widthIn(max = MAX_SURFACE_WIDTH),
@@ -63,7 +64,7 @@ fun NotificationView(
                             end.linkTo(parent.end)
                         },
                 text = text,
-                color = contentColor,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                 fontFamily = helveticaFamily,
                 maxLines = 4,
@@ -79,8 +80,8 @@ fun NotificationView(
                             end.linkTo(message.end)
                         },
                 textAlign = TextAlign.End,
-                text = date,
-                color = contentColor,
+                text = date.getFormattedDateTime(LocalContext.current),
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = MaterialTheme.typography.bodySmall.fontSize,
                 fontFamily = helveticaFamily,
                 maxLines = 1,
@@ -89,16 +90,14 @@ fun NotificationView(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(locale = "ar", showBackground = true)
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Preview(locale = "ar", showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+@PreviewLightDark
+@PreviewArabicLightDark
 @Composable
 fun NotificationViewPreview() {
     Column(modifier = Modifier.background(color = backgroundColor)) {
         NotificationView(
             text = stringResource(R.string.feature_notifications_welcome_message),
-            date = "12-12-2022 12:00 PM",
+            date = System.currentTimeMillis(),
         )
     }
 }
