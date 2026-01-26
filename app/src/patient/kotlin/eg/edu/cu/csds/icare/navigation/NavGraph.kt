@@ -1,11 +1,14 @@
 package eg.edu.cu.csds.icare.navigation
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import eg.edu.cu.csds.icare.core.ui.navigation.Navigator
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
+import eg.edu.cu.csds.icare.core.ui.util.openLink
 import eg.edu.cu.csds.icare.feature.admin.screen.doctor.SelectedDoctorViewModel
 import eg.edu.cu.csds.icare.feature.appointment.navigation.appointmentsEntryBuilder
 import eg.edu.cu.csds.icare.feature.appointment.screen.SelectedAppointmentViewModel
@@ -25,6 +28,7 @@ fun NavGraph(
     navigator: Navigator,
     modifier: Modifier = Modifier,
 ) {
+    val context: Context = LocalContext.current
     val selectedDoctorViewModel: SelectedDoctorViewModel = koinViewModel()
     val selectedAppointmentViewModel: SelectedAppointmentViewModel = koinViewModel()
     val selectedConsultationViewModel: SelectedConsultationViewModel = koinViewModel()
@@ -75,6 +79,7 @@ fun NavGraph(
                 settingsEntryBuilder(
                     onNavigationIconClicked = { navigator.goBack() },
                     navigateToRoute = { navigator.navigate(it) },
+                    onSocialIconClicked = { url -> context.openLink(url) },
                 )
 
                 appointmentsEntryBuilder(
