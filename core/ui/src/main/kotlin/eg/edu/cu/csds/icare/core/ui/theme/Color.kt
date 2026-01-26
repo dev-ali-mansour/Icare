@@ -28,7 +28,6 @@ val TableRowAlternatingDark = Color(color = 0xFF424242) // Slightly lighter than
 
 // Standard
 val ErrorRed = Color(color = 0xFFAA0202)
-val Blue10 = Color(color = 0xFFE8F5F7)
 val Blue200 = Color(color = 0xFF30AEC5)
 val Blue500 = Color(color = 0xFF056B8D)
 val Blue700 = Color(color = 0xFF082E5C)
@@ -39,11 +38,9 @@ val Yellow700 = Color(color = 0xFFE3880C)
 val EmeraldGreen = Color(color = 0xFF028A02)
 val MediumGray = Color(color = 0xFF9C9C9C)
 val LightGreen = Color(color = 0xFFE2EBCD)
-val AiryGreen = Color(color = 0xFFF1F8F5)
 val DeepTeal = Color(color = 0xFF3BDDDF)
 val BurntOrange = Color(color = 0xFFEE6F5C)
 val SkyAccent = Color(color = 0xFF3EBCDF)
-val mintAccent = Color(color = 0xFF82EEA6)
 val trustBlue = Color(color = 0xFF6488D9)
 
 val titleColor: Color
