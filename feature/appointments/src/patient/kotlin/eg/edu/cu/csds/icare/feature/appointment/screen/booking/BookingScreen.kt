@@ -1,7 +1,6 @@
 package eg.edu.cu.csds.icare.feature.appointment.screen.booking
 
 import android.content.Context
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,25 +11,25 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -48,19 +47,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import eg.edu.cu.csds.icare.feature.appointment.R
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.util.getAvailableTimeSlots
 import eg.edu.cu.csds.icare.core.ui.R.drawable
+import eg.edu.cu.csds.icare.core.ui.R.string
+import eg.edu.cu.csds.icare.core.ui.common.CommonTopAppBar
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
@@ -69,15 +71,12 @@ import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow300
-import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.buttonBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
-import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
+import eg.edu.cu.csds.icare.feature.appointment.R
 import eg.edu.cu.csds.icare.feature.appointment.component.TimeSlotSelector
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
@@ -85,20 +84,19 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun BookingScreen(
-    viewModel: BookingViewModel = koinViewModel(),
     onNavigationIconClicked: () -> Unit,
     onSuccess: () -> Unit,
 ) {
+    val viewModel: BookingViewModel = koinViewModel()
     val context: Context = LocalContext.current
     val refreshState = rememberPullToRefreshState()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
     var showSuccessDialog by remember { mutableStateOf(false) }
-    var alertMessage by remember { mutableStateOf("") }
-    var showAlert by remember { mutableStateOf(false) }
 
     LaunchedUiEffectHandler(
         viewModel.effect,
-        onConsumeEffect = { viewModel.processEvent(BookingEvent.ConsumeEffect) },
+        onConsumeEffect = { viewModel.handleIntent(BookingIntent.ConsumeEffect) },
         onEffect = { effect ->
             when (effect) {
                 is BookingEffect.ShowSuccess -> {
@@ -108,10 +106,10 @@ internal fun BookingScreen(
                 }
 
                 is BookingEffect.ShowError -> {
-                    alertMessage = effect.message.asString(context)
-                    showAlert = true
-                    delay(timeMillis = 3000)
-                    showAlert = false
+                    snackbarHostState.showSnackbar(
+                        message = effect.message.asString(context),
+                        duration = SnackbarDuration.Short,
+                    )
                 }
             }
         },
@@ -119,69 +117,42 @@ internal fun BookingScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(id = R.string.feature_appointments_booking)) },
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = barBackgroundColor,
-                        navigationIconContentColor = Color.White,
-                        titleContentColor = Color.White,
-                        actionIconContentColor = Color.White,
-                    ),
-                navigationIcon = {
-                    IconButton(onClick = { onNavigationIconClicked() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            tint = Color.White,
-                        )
-                    }
-                },
-            )
+            CommonTopAppBar(
+                title = stringResource(R.string.feature_appointments_booking),
+            ) { onNavigationIconClicked() }
         },
-    ) { paddingValues ->
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+    ) { innerPadding ->
         Surface(
             modifier =
                 Modifier
+                    .padding(innerPadding)
                     .fillMaxSize()
                     .pullToRefresh(
                         state = refreshState,
                         isRefreshing = uiState.isLoading,
                         onRefresh = {
-                            viewModel.processEvent(BookingEvent.Refresh)
+                            viewModel.handleIntent(BookingIntent.Refresh)
                         },
-                    ).padding(paddingValues),
+                    ),
         ) {
-            ConstraintLayout(
-                modifier =
-                    Modifier
-                        .background(backgroundColor)
-                        .fillMaxWidth(),
-            ) {
-                val (line, content, refresh) = createRefs()
-                Box(
-                    modifier =
-                        Modifier
-                            .constrainAs(line) {
-                                top.linkTo(parent.top)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                            }.background(Yellow500)
-                            .fillMaxWidth()
-                            .height(XS_PADDING),
-                )
+            ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+                val (content, refresh) = createRefs()
+
                 BookingContent(
                     modifier =
                         Modifier.constrainAs(content) {
-                            top.linkTo(line.bottom)
+                            top.linkTo(parent.top)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                             bottom.linkTo(parent.bottom)
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         },
-                    uiState = uiState,
-                    onEvent = viewModel::processEvent,
+                    doctor = uiState.doctor,
+                    doctorSchedule = uiState.doctorSchedule,
+                    selectedSlot = uiState.selectedSlot,
+                    onIntent = viewModel::handleIntent,
                 )
 
                 Indicator(
@@ -196,7 +167,6 @@ internal fun BookingScreen(
                 )
 
                 if (showSuccessDialog) SuccessesDialog {}
-                if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
             }
         }
     }
@@ -204,37 +174,36 @@ internal fun BookingScreen(
 
 @Composable
 private fun BookingContent(
-    uiState: BookingState,
+    doctor: Doctor?,
+    doctorSchedule: DoctorSchedule?,
+    selectedSlot: Long,
     modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
-    onEvent: (BookingEvent) -> Unit,
+    onIntent: (BookingIntent) -> Unit,
 ) {
+    val context: Context = LocalContext.current
     Surface(
         modifier =
             modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(bottom = M_PADDING),
     ) {
-        ConstraintLayout(
+        Column(
             modifier =
                 Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
+                    .fillMaxWidth()
+                    .padding(horizontal = XS_PADDING),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val (card, details) = createRefs()
-            uiState.doctor?.let { doctor ->
-                uiState.doctorSchedule?.let { schedule ->
+            doctor?.let { doctor ->
+                doctorSchedule?.let { schedule ->
                     Card(
                         modifier =
                             Modifier
-                                .constrainAs(card) {
-                                    top.linkTo(parent.top)
-                                    start.linkTo(parent.start)
-                                    end.linkTo(parent.end)
-                                    width = Dimension.fillToConstraints
-                                }.height(RECORD_PATIENT_CARD_HEIGHT)
-                                .padding(XS_PADDING),
-                        colors = CardDefaults.cardColors(containerColor = cardBackgroundColor),
+                                .fillMaxWidth()
+                                .heightIn(min = RECORD_PATIENT_CARD_HEIGHT)
+                                .padding(vertical = XS_PADDING),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         elevation = CardDefaults.cardElevation(XS_PADDING),
                     ) {
                         ConstraintLayout(
@@ -277,7 +246,7 @@ private fun BookingContent(
                             Text(
                                 text = "${
                                     stringResource(
-                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_name,
+                                        string.core_ui_name,
                                     )
                                 }: ${doctor.name}",
                                 modifier =
@@ -290,16 +259,12 @@ private fun BookingContent(
                                 fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                 textAlign = TextAlign.Start,
                                 fontFamily = helveticaFamily,
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 1,
                             )
 
                             Text(
-                                text = "${
-                                    stringResource(
-                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_speciality,
-                                    )
-                                }: ${doctor.specialty}",
+                                text = "${stringResource(string.core_ui_speciality)}: ${doctor.specialty}",
                                 modifier =
                                     Modifier.constrainAs(speciality) {
                                         top.linkTo(name.bottom)
@@ -309,18 +274,18 @@ private fun BookingContent(
                                 fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                 textAlign = TextAlign.Start,
                                 fontFamily = helveticaFamily,
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 1,
                             )
 
                             Text(
                                 text = "${
                                     stringResource(
-                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_appointment_price,
+                                        string.core_ui_appointment_price,
                                     )
                                 }: ${doctor.price} ${
                                     stringResource(
-                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_egp,
+                                        string.core_ui_egp,
                                     )
                                 }",
                                 modifier =
@@ -332,14 +297,14 @@ private fun BookingContent(
                                 fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                 textAlign = TextAlign.Start,
                                 fontFamily = helveticaFamily,
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 1,
                             )
 
                             Text(
                                 text = "${
                                     stringResource(
-                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_total_appointments,
+                                        string.core_ui_total_appointments,
                                     )
                                 }: ${schedule.totalPatients}",
                                 modifier =
@@ -351,7 +316,7 @@ private fun BookingContent(
                                 fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                 textAlign = TextAlign.Start,
                                 fontFamily = helveticaFamily,
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 1,
                             )
 
@@ -366,14 +331,14 @@ private fun BookingContent(
                                 Text(
                                     text = "${
                                         stringResource(
-                                            eg.edu.cu.csds.icare.core.ui.R.string.core_ui_rating,
+                                            string.core_ui_rating,
                                         )
                                     }: ",
                                     fontWeight = FontWeight.Bold,
                                     fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                     textAlign = TextAlign.Start,
                                     fontFamily = helveticaFamily,
-                                    color = Color.White,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     maxLines = 1,
                                 )
                                 Icon(
@@ -390,72 +355,68 @@ private fun BookingContent(
                         }
                     }
 
-                    Column(
+                    Spacer(modifier = Modifier.height(S_PADDING))
+
+                    val availableSlots =
+                        getAvailableTimeSlots(
+                            from = doctor.fromTime,
+                            to = doctor.toTime,
+                            bookedAppointments = schedule.appointments,
+                        )
+
+                    TimeSlotSelector(
+                        slots = availableSlots,
+                        selectedSlot = selectedSlot,
+                        onSlotSelected = { onIntent(BookingIntent.UpdateSelectedSlot(it)) },
+                    )
+
+                    Spacer(modifier = Modifier.height(L_PADDING))
+
+                    AnimatedButton(
                         modifier =
                             Modifier
-                                .constrainAs(details) {
-                                    top.linkTo(card.bottom, margin = S_PADDING)
-                                    start.linkTo(card.start)
-                                    end.linkTo(card.end)
-                                    bottom.linkTo(parent.bottom)
-                                    width = Dimension.fillToConstraints
-                                    height = Dimension.fillToConstraints
-                                },
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        val availableSlots =
-                            getAvailableTimeSlots(
-                                from = doctor.fromTime,
-                                to = doctor.toTime,
-                                bookedAppointments = schedule.appointments,
-                            )
-
-                        TimeSlotSelector(
-                            dates = availableSlots,
-                            selectedSlot = uiState.selectedSlot,
-                            onSlotSelected = { onEvent(BookingEvent.UpdateSelectedSlot(it)) },
-                        )
-
-                        Spacer(modifier = Modifier.height(L_PADDING))
-
-                        AnimatedButton(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth(fraction = 0.6f),
-                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_book_now),
-                            color = buttonBackgroundColor,
-                            onClick = {
-                                onEvent(BookingEvent.Proceed)
-                            },
-                        )
-                    }
+                                .fillMaxWidth(fraction = 0.6f),
+                        text = stringResource(string.core_ui_book_now),
+                        color = buttonBackgroundColor,
+                        onClick = {
+                            onIntent(BookingIntent.Proceed)
+                        },
+                    )
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 private fun BookingContentPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        BookingContent(
-            uiState =
-                BookingState(
-                    doctor =
-                        Doctor(
-                            name = "Dr. John Doe",
-                            profilePicture = "https://i.ibb.co/JRkcZzhR/doctor.webp",
-                            fromTime = System.currentTimeMillis(),
-                            toTime = System.currentTimeMillis().plus(other = 5 * 60 * 60 * 1000),
-                        ),
-                    doctorSchedule = DoctorSchedule(appointments = listOf()),
-                    selectedSlot = System.currentTimeMillis().plus(other = 30 * 60 * 1000),
-                ),
-            onEvent = {},
-        )
+    IcareTheme {
+        val doctor =
+            Doctor(
+                name = "Dr. John Doe",
+                specialty = "Cardiology",
+                price = 500.0,
+                fromTime = System.currentTimeMillis(),
+                toTime = System.currentTimeMillis().plus(other = 5 * 60 * 60 * 1000),
+            )
+        val schedule = DoctorSchedule(appointments = listOf(), totalPatients = 1000)
+        val selectedSlot =
+            getAvailableTimeSlots(
+                from = doctor.fromTime,
+                to = doctor.toTime,
+                bookedAppointments = schedule.appointments,
+            ).first()
+
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            BookingContent(
+                doctor = doctor,
+                doctorSchedule = schedule,
+                selectedSlot = selectedSlot,
+                onIntent = {},
+            )
+        }
     }
 }
