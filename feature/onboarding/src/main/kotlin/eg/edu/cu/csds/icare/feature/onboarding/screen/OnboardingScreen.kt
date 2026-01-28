@@ -69,7 +69,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun OnBoardingScreen(
-    viewModel: OnBoardingViewModel = koinViewModel(),
+    viewModel: OnboardingViewModel = koinViewModel(),
     onFinished: () -> Unit,
 ) {
     val configuration: Configuration = LocalConfiguration.current
@@ -312,18 +312,18 @@ internal fun OnBoardingScreenPreview() {
 val pages =
     listOf(
         OnBoardingPage(
-            image = R.drawable.feature_on_boarding_first_page_image,
-            title = StringResourceId(R.string.feature_on_boarding_first_page_title),
-            description = StringResourceId(R.string.feature_on_boarding_first_page_description),
+            image = R.drawable.feature_onboarding_first_page_image,
+            title = StringResourceId(R.string.feature_onboarding_first_page_title),
+            description = StringResourceId(R.string.feature_onboarding_first_page_description),
         ),
         OnBoardingPage(
-            image = R.drawable.feature_on_boarding_second_page_image,
-            title = StringResourceId(R.string.feature_on_boarding_second_page_title),
-            description = StringResourceId(R.string.feature_on_boarding_second_page_description),
+            image = R.drawable.feature_onboarding_second_page_image,
+            title = StringResourceId(R.string.feature_onboarding_second_page_title),
+            description = StringResourceId(R.string.feature_onboarding_second_page_description),
         ),
         OnBoardingPage(
-            image = R.drawable.feature_on_boarding_first_page_image,
-            title = StringResourceId(R.string.feature_on_boarding_third_page_title),
-            description = StringResourceId(R.string.feature_on_boarding_third_page_description),
+            image = R.drawable.feature_onboarding_first_page_image,
+            title = StringResourceId(R.string.feature_onboarding_third_page_title),
+            description = StringResourceId(R.string.feature_onboarding_third_page_description),
         ),
     )

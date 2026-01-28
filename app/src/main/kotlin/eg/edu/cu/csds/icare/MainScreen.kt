@@ -24,13 +24,13 @@ import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.view.BottomBarNavigation
 import eg.edu.cu.csds.icare.feature.onboarding.screen.OnBoardingEffect
 import eg.edu.cu.csds.icare.feature.onboarding.screen.OnBoardingIntent
-import eg.edu.cu.csds.icare.feature.onboarding.screen.OnBoardingViewModel
+import eg.edu.cu.csds.icare.feature.onboarding.screen.OnboardingViewModel
 import eg.edu.cu.csds.icare.navigation.NavGraph
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
 @Composable
-fun MainScreen(onBoardingViewModel: OnBoardingViewModel) {
+fun MainScreen(onBoardingViewModel: OnboardingViewModel) {
     val backStack = rememberNavBackStack(Route.Splash)
     val navigator = remember { Navigator(backStack) }
     val context = LocalContext.current

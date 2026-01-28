@@ -7,4 +7,4 @@ import org.koin.core.annotation.Module
 
 @Module(includes = [CoreUiModule::class, UseCaseModule::class])
 @ComponentScan("eg.edu.cu.csds.icare.feature.onboarding")
-class OnBoardingModule
+class OnboardingModule

@@ -58,7 +58,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.feature.onBoarding)
+    implementation(projects.feature.onboarding)
     implementation(projects.feature.auth)
     implementation(projects.feature.home)
     implementation(projects.feature.notifications)

@@ -21,7 +21,7 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.util.isInternetAvailable
-import eg.edu.cu.csds.icare.feature.onboarding.screen.OnBoardingViewModel
+import eg.edu.cu.csds.icare.feature.onboarding.screen.OnboardingViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -31,7 +31,7 @@ import timber.log.Timber
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
-    private val onBoardingViewModel: OnBoardingViewModel by viewModel()
+    private val onBoardingViewModel: OnboardingViewModel by viewModel()
     private val appUpdateManager: AppUpdateManager by inject()
     private val updateType = AppUpdateType.IMMEDIATE
     private val updateFlowResultLauncher =

@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
-class OnBoardingViewModel(
+class OnboardingViewModel(
     private val dispatcher: CoroutineDispatcher,
     private val readOnBoardingUseCase: ReadOnBoardingUseCase,
     private val finishOnBoardingUseCase: FinishOnBoardingUseCase,

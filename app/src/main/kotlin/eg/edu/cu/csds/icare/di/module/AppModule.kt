@@ -9,7 +9,7 @@ import eg.edu.cu.csds.icare.feature.auth.di.module.AuthModule
 import eg.edu.cu.csds.icare.feature.consultation.di.module.ConsultationsModule
 import eg.edu.cu.csds.icare.feature.home.di.module.HomeModule
 import eg.edu.cu.csds.icare.feature.notification.di.module.NotificationsModule
-import eg.edu.cu.csds.icare.feature.onboarding.di.module.OnBoardingModule
+import eg.edu.cu.csds.icare.feature.onboarding.di.module.OnboardingModule
 import eg.edu.cu.csds.icare.feature.settings.di.module.SettingsModule
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
@@ -17,7 +17,7 @@ import org.koin.core.annotation.Single
 
 @Module(
     includes = [
-        OnBoardingModule::class,
+        OnboardingModule::class,
         AuthModule::class,
         HomeModule::class,
         NotificationsModule::class,

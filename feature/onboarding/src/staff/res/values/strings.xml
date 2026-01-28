@@ -1,0 +1,8 @@
+<resources>
+    <string name="feature_onboarding_first_page_title">Welcome to ICare</string>
+    <string name="feature_onboarding_first_page_description">Welcome! Empowering healthcare professionals.</string>
+    <string name="feature_onboarding_second_page_title">Efficient Patient Management</string>
+    <string name="feature_onboarding_second_page_description">Manage patient data efficiently and seamlessly.</string>
+    <string name="feature_onboarding_third_page_title">Smart Communication &amp; Workflow</string>
+    <string name="feature_onboarding_third_page_description">Stay connected with real-time updates and tools.</string>
+</resources>
