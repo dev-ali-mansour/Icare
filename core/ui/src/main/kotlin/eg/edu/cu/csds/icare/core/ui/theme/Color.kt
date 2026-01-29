@@ -16,7 +16,7 @@ val LightBackground = Color(color = 0xFFF8F9FA)
 val LightSurface = Color(color = 0xFFFFFFFF)
 
 // --- Dark Theme Colors (New) ---
-val DarkBackground = Color.DarkGray
+val DarkBackground = Color(color = 0xFF444444)
 val DarkSurface = Color(color = 0xFF333333) // Card background
 val DarkPrimary = Color(color = 0xFF000000) // Top Bar & Bottom Nav are Black in dark mode
 val DarkOnPrimary = Color(color = 0xFFFFFFFF)
