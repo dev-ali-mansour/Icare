@@ -30,7 +30,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
@@ -39,7 +38,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.util.neumorphicUp
-import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 
 @Composable
 fun PharmacyView(
@@ -92,12 +90,15 @@ fun PharmacyView(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
+
                 Spacer(modifier = Modifier.height(S_PADDING))
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Phone, contentDescription = null)
                     Spacer(modifier = Modifier.width(XS_PADDING))
                     Text(text = phone)
                 }
+
                 Spacer(modifier = Modifier.height(M_PADDING))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -111,8 +112,6 @@ fun PharmacyView(
 }
 
 @PreviewLightDark
-@PreviewArabicLightDark
-@PreviewScreenSizes
 @Composable
 fun PharmacyCardPreview() {
     IcareTheme {

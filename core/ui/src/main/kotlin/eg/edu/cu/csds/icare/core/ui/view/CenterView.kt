@@ -32,7 +32,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import eg.edu.cu.csds.icare.core.ui.common.CenterTypeItem
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
@@ -43,7 +42,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.util.neumorphicUp
-import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 
 @Composable
 fun CenterView(
@@ -106,6 +104,7 @@ fun CenterView(
                 )
                 if (showType) {
                     Spacer(modifier = Modifier.height(S_PADDING))
+
                     Text(
                         text =
                             stringResource(
@@ -124,6 +123,7 @@ fun CenterView(
                     Spacer(modifier = Modifier.width(XS_PADDING))
                     Text(text = phone)
                 }
+
                 Spacer(modifier = Modifier.height(M_PADDING))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -137,8 +137,6 @@ fun CenterView(
 }
 
 @PreviewLightDark
-@PreviewArabicLightDark
-@PreviewScreenSizes
 @Composable
 fun CenterCardPreview() {
     IcareTheme {

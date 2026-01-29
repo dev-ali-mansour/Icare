@@ -29,7 +29,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import eg.edu.cu.csds.icare.core.ui.R
@@ -40,7 +39,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.util.neumorphicUp
-import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 
 @Composable
 fun DoctorView(
@@ -107,38 +105,37 @@ fun DoctorView(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     fontFamily = helveticaFamily,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
+
                 Spacer(modifier = Modifier.width(M_PADDING))
+
                 Text(
                     text = specialty,
                     style = MaterialTheme.typography.bodyMedium,
                     fontFamily = helveticaFamily,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
                 )
                 Spacer(modifier = Modifier.width(M_PADDING))
+
                 Text(
                     text = availability,
                     style = MaterialTheme.typography.bodySmall,
                     fontFamily = helveticaFamily,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
-                )
+                    )
             }
         }
     }
 }
 
 @PreviewLightDark
-@PreviewArabicLightDark
-@PreviewScreenSizes
 @Composable
 fun DoctorCardPreview() {
     MaterialTheme {
         Column(
             modifier =
                 Modifier
-                    .padding(XS_PADDING)
-                    .background(color = MaterialTheme.colorScheme.background),
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .fillMaxWidth()
+                    .padding(M_PADDING),
         ) {
             DoctorView(
                 name = "Dr. John Smith",
