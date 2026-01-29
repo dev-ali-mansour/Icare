@@ -26,7 +26,7 @@ fun EntryProviderScope<NavKey>.consultationsEntryBuilder(
                 .collectAsStateWithLifecycle()
             LaunchedEffect(selectedPatientId) {
                 selectedPatientId?.let { patientId ->
-                    viewModel.processEvent(MedicalRecordEvent.LoadMedicalRecord(patientId))
+                    viewModel.handleIntent(MedicalRecordEvent.LoadMedicalRecord(patientId))
                 }
             }
             MedicalRecordScreen(
