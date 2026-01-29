@@ -139,9 +139,7 @@ private fun ClinicListContent(
             ) {
                 items(
                     items = state.clinics,
-                    key = { clinic ->
-                        clinic.id
-                    },
+                    key = { it.id },
                     span = { GridItemSpan(1) },
                 ) { clinic ->
                     ClinicView(
@@ -211,7 +209,7 @@ internal fun ClinicsContentPreview() {
                                     address = "مبنى العيادات الخارجية - الدور الأول",
                                     phone = "0123456789",
                                     isOpen = true,
-                                )
+                                ),
                             ),
                     ),
                 onIntent = {},
