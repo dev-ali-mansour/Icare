@@ -6,7 +6,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
-import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordEvent
+import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordIntent
 import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordScreen
 import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordViewModel
 import eg.edu.cu.csds.icare.feature.consultation.screen.SelectedConsultationViewModel
@@ -26,7 +26,7 @@ fun EntryProviderScope<NavKey>.consultationsEntryBuilder(
                 .collectAsStateWithLifecycle()
             LaunchedEffect(selectedPatientId) {
                 selectedPatientId?.let { patientId ->
-                    viewModel.handleIntent(MedicalRecordEvent.LoadMedicalRecord(patientId))
+                    viewModel.handleIntent(MedicalRecordIntent.LoadMedicalRecord(patientId))
                 }
             }
             MedicalRecordScreen(

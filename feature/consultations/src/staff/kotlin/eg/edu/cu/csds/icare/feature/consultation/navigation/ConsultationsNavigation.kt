@@ -7,8 +7,8 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.feature.appointment.screen.SelectedAppointmentViewModel
-import eg.edu.cu.csds.icare.feature.consultation.screen.ConsultationEvent
-import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordEvent
+import eg.edu.cu.csds.icare.feature.consultation.screen.ConsultationIntent
+import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordIntent
 import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordScreen
 import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordViewModel
 import eg.edu.cu.csds.icare.feature.consultation.screen.SelectedConsultationViewModel
@@ -36,7 +36,7 @@ fun EntryProviderScope<NavKey>.consultationsEntryBuilder(
             .collectAsStateWithLifecycle()
         LaunchedEffect(selectedPatientId) {
             selectedPatientId?.let { patientId ->
-                viewModel.processEvent(MedicalRecordEvent.LoadMedicalRecord(patientId))
+                viewModel.handleIntent(MedicalRecordIntent.LoadMedicalRecord(patientId))
             }
         }
 
@@ -55,7 +55,7 @@ fun EntryProviderScope<NavKey>.consultationsEntryBuilder(
             .collectAsStateWithLifecycle()
         LaunchedEffect(selectedAppointment) {
             selectedAppointment?.let { appointment ->
-                viewModel.processEvent(ConsultationEvent.UpdateAppointment(appointment))
+                viewModel.handleIntent(ConsultationIntent.UpdateAppointment(appointment))
             }
         }
         NewConsultationScreen(
@@ -73,7 +73,7 @@ fun EntryProviderScope<NavKey>.consultationsEntryBuilder(
             .collectAsStateWithLifecycle()
         LaunchedEffect(selectedConsultation) {
             selectedConsultation?.let { consultation ->
-                viewModel.processEvent(ConsultationEvent.LoadConsultation(consultation))
+                viewModel.handleIntent(ConsultationIntent.LoadConsultation(consultation))
             }
         }
 
