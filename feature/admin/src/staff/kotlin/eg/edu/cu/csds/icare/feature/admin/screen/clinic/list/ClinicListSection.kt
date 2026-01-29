@@ -3,10 +3,13 @@ package eg.edu.cu.csds.icare.feature.admin.screen.clinic.list
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
@@ -28,6 +31,7 @@ import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.util.UiText
+import eg.edu.cu.csds.icare.core.ui.util.calculateGridColumns
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.ClinicView
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
@@ -113,23 +117,24 @@ private fun ClinicListContent(
     onIntent: (ClinicListIntent) -> Unit,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
-        val listState = rememberLazyListState()
-        val expandedFabState = remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
+        val gridState = rememberLazyGridState()
+        val expandedFabState = remember { derivedStateOf { gridState.firstVisibleItemIndex == 0 } }
         LaunchedEffect(key1 = expandedFabState.value) {
             onIntent(ClinicListIntent.UpdateFabExpanded(expandedFabState.value))
         }
 
         if (state.clinics.isEmpty()) {
             EmptyContentView(
-                modifier =
-                    Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_no_clinics_data),
             )
         } else {
-            LazyColumn(
-                modifier =
-                    Modifier.fillMaxSize(),
-                state = listState,
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(calculateGridColumns()),
+                modifier = modifier.fillMaxSize(),
+                state = gridState,
+                contentPadding = PaddingValues(all = S_PADDING),
+                horizontalArrangement = Arrangement.spacedBy(S_PADDING),
                 verticalArrangement = Arrangement.spacedBy(S_PADDING),
             ) {
                 items(
@@ -137,8 +142,15 @@ private fun ClinicListContent(
                     key = { clinic ->
                         clinic.id
                     },
+                    span = { GridItemSpan(1) },
                 ) { clinic ->
-                    ClinicView(clinic = clinic) {
+                    ClinicView(
+                        name = clinic.name,
+                        type = clinic.type,
+                        address = clinic.address,
+                        phone = clinic.phone,
+                        isOpen = clinic.isOpen,
+                    ) {
                         onIntent(ClinicListIntent.SelectClinic(clinic))
                     }
                 }
@@ -176,6 +188,30 @@ internal fun ClinicsContentPreview() {
                                     phone = "987654321",
                                     isOpen = false,
                                 ),
+                                Clinic(
+                                    id = 3,
+                                    name = "عيادة 3",
+                                    type = "مخ وأعصاب",
+                                    address = "مبنى العيادات الخارجية - الدور الأول",
+                                    phone = "0123456789",
+                                    isOpen = true,
+                                ),
+                                Clinic(
+                                    id = 4,
+                                    name = "عيادة 4",
+                                    type = "باطنة",
+                                    address = "مبنى العيادات الخارجية - الدور الثالث",
+                                    phone = "987654321",
+                                    isOpen = false,
+                                ),
+                                Clinic(
+                                    id = 5,
+                                    name = "عيادة 5",
+                                    type = "مخ وأعصاب",
+                                    address = "مبنى العيادات الخارجية - الدور الأول",
+                                    phone = "0123456789",
+                                    isOpen = true,
+                                )
                             ),
                     ),
                 onIntent = {},
