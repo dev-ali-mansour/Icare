@@ -3,10 +3,13 @@ package eg.edu.cu.csds.icare.feature.admin.screen.center.list
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
@@ -30,6 +33,7 @@ import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.util.UiText
+import eg.edu.cu.csds.icare.core.ui.util.calculateGridColumns
 import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.CenterView
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
@@ -116,13 +120,8 @@ fun CenterListContent(
     onIntent: (CenterListIntent) -> Unit,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
-        val listState = rememberLazyListState()
-        val expandedFabState =
-            remember {
-                derivedStateOf {
-                    listState.firstVisibleItemIndex == 0
-                }
-            }
+        val gridState = rememberLazyGridState()
+        val expandedFabState = remember { derivedStateOf { gridState.firstVisibleItemIndex == 0 } }
         LaunchedEffect(key1 = expandedFabState.value) {
             onIntent(CenterListIntent.UpdateFabExpanded(expandedFabState.value))
         }
@@ -134,17 +133,18 @@ fun CenterListContent(
                 text = stringResource(string.core_ui_no_centers_data),
             )
         } else {
-            LazyColumn(
-                modifier =
-                    Modifier.fillMaxSize(),
-                state = listState,
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(calculateGridColumns()),
+                modifier = modifier.fillMaxSize(),
+                state = gridState,
+                contentPadding = PaddingValues(all = S_PADDING),
+                horizontalArrangement = Arrangement.spacedBy(S_PADDING),
                 verticalArrangement = Arrangement.spacedBy(S_PADDING),
             ) {
                 items(
                     items = uiState.centers,
-                    key = { center ->
-                        center.id
-                    },
+                    key = { it.id },
+                    span = { GridItemSpan(1) },
                 ) { center ->
                     CenterView(
                         name = center.name,
@@ -174,16 +174,39 @@ internal fun ClinicsContentPreview() {
                         centers =
                             listOf(
                                 LabImagingCenter(
+                                    id = 1,
                                     type = 1,
                                     name = "Alfa",
                                     phone = "0123456789",
                                     address = "53 Faysal street,Giza,Egypt",
                                 ),
                                 LabImagingCenter(
+                                    id = 2,
                                     type = 2,
                                     name = "Beta",
                                     phone = "0123456789",
                                     address = "13 Faysal street,Giza,Egypt",
+                                ),
+                                LabImagingCenter(
+                                    id = 3,
+                                    type = 1,
+                                    name = "Alfa",
+                                    phone = "0123456789",
+                                    address = "53 Faysal street,Giza,Egypt",
+                                ),
+                                LabImagingCenter(
+                                    id = 4,
+                                    type = 2,
+                                    name = "Beta",
+                                    phone = "0123456789",
+                                    address = "13 Faysal street,Giza,Egypt",
+                                ),
+                                LabImagingCenter(
+                                    id = 5,
+                                    type = 1,
+                                    name = "Alfa",
+                                    phone = "0123456789",
+                                    address = "53 Faysal street,Giza,Egypt",
                                 ),
                             ),
                     ),
