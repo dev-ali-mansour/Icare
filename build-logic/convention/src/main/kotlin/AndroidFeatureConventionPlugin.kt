@@ -17,15 +17,15 @@
  * Original source: https://github.com/android/nowinandroid
  */
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import dev.alimansour.shared.plugins.findPlugin
 import dev.alimansour.shared.plugins.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
+@Suppress("unused")
 class AndroidFeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
@@ -33,8 +33,9 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             apply(plugin = "convention.koin")
             pluginManager.apply(findPlugin("kotlin-serialization"))
 
-            extensions.configure<LibraryExtension> {
-                testOptions.animationsDisabled = true
+            extensions.configure<Any>("android") {
+                val android = this as LibraryExtension
+                android.testOptions.animationsDisabled = true
             }
 
             dependencies {

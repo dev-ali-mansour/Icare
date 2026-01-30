@@ -21,7 +21,10 @@ object Constants {
     const val PHONE_LENGTH: Int = 11
     const val MINUTES_TO_MILLIS = 60000
     const val ONE_DAY = 24 * 60 * 60 * 1000
-    const val THREE_DAYS = 72 * 60 * 60 * 1000
+    const val TWO_DAYS = 2 * ONE_DAY
+    const val THREE_DAYS = 3 * ONE_DAY
+    const val FOUR_DAYS = 4 * ONE_DAY
+    const val FIVE_DAYS = 5 * ONE_DAY
     const val MAX_PARTS_LENGTH = 8
     const val MAX_RATING = 5.0
 }

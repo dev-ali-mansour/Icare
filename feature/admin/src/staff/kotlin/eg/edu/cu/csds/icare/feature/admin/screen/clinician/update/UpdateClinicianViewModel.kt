@@ -2,10 +2,6 @@ package eg.edu.cu.csds.icare.feature.admin.screen.clinician.update
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.feature.admin.R
-import eg.edu.cu.csds.icare.feature.admin.screen.clinician.ClinicianEffect
-import eg.edu.cu.csds.icare.feature.admin.screen.clinician.ClinicianEvent
-import eg.edu.cu.csds.icare.feature.admin.screen.clinician.ClinicianState
 import eg.edu.cu.csds.icare.core.domain.model.Clinician
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
@@ -15,6 +11,10 @@ import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.domain.util.isValidEmail
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.feature.admin.R
+import eg.edu.cu.csds.icare.feature.admin.screen.clinician.ClinicianEffect
+import eg.edu.cu.csds.icare.feature.admin.screen.clinician.ClinicianIntent
+import eg.edu.cu.csds.icare.feature.admin.screen.clinician.ClinicianState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,54 +47,54 @@ class UpdateClinicianViewModel(
             )
     val effect = _uiState.map { it.effect }
 
-    fun processEvent(event: ClinicianEvent) {
-        when (event) {
-            is ClinicianEvent.UpdateFirstName -> {
-                _uiState.update { it.copy(firstName = event.firstName) }
+    fun handleIntent(intent: ClinicianIntent) {
+        when (intent) {
+            is ClinicianIntent.UpdateFirstName -> {
+                _uiState.update { it.copy(firstName = intent.firstName) }
             }
 
-            is ClinicianEvent.UpdateLastName -> {
-                _uiState.update { it.copy(lastName = event.lastName) }
+            is ClinicianIntent.UpdateLastName -> {
+                _uiState.update { it.copy(lastName = intent.lastName) }
             }
 
-            is ClinicianEvent.UpdateClinicId -> {
-                _uiState.update { it.copy(clinicId = event.clinicId) }
+            is ClinicianIntent.UpdateClinicId -> {
+                _uiState.update { it.copy(clinicId = intent.clinicId) }
             }
 
-            is ClinicianEvent.UpdateClinicsExpanded -> {
-                _uiState.update { it.copy(isClinicsExpanded = event.isExpanded) }
+            is ClinicianIntent.UpdateClinicsExpanded -> {
+                _uiState.update { it.copy(isClinicsExpanded = intent.isExpanded) }
             }
 
-            is ClinicianEvent.UpdateEmail -> {
-                _uiState.update { it.copy(email = event.email) }
+            is ClinicianIntent.UpdateEmail -> {
+                _uiState.update { it.copy(email = intent.email) }
             }
 
-            is ClinicianEvent.UpdatePhone -> {
-                _uiState.update { it.copy(phone = event.phone) }
+            is ClinicianIntent.UpdatePhone -> {
+                _uiState.update { it.copy(phone = intent.phone) }
             }
 
-            is ClinicianEvent.UpdateProfilePicture -> {
-                _uiState.update { it.copy(profilePicture = event.profilePicture) }
+            is ClinicianIntent.UpdateProfilePicture -> {
+                _uiState.update { it.copy(profilePicture = intent.profilePicture) }
             }
 
-            is ClinicianEvent.LoadClinician -> {
+            is ClinicianIntent.LoadClinician -> {
                 _uiState.update {
                     it.copy(
-                        id = event.clinician.id,
-                        firstName = event.clinician.firstName,
-                        lastName = event.clinician.lastName,
-                        clinicId = event.clinician.clinicId,
-                        email = event.clinician.email,
-                        phone = event.clinician.phone,
-                        profilePicture = event.clinician.profilePicture,
+                        id = intent.clinician.id,
+                        firstName = intent.clinician.firstName,
+                        lastName = intent.clinician.lastName,
+                        clinicId = intent.clinician.clinicId,
+                        email = intent.clinician.email,
+                        phone = intent.clinician.phone,
+                        profilePicture = intent.clinician.profilePicture,
                     )
                 }
             }
 
-            is ClinicianEvent.Proceed ->
+            is ClinicianIntent.Proceed -> {
                 viewModelScope.launch {
                     when {
-                        _uiState.value.firstName.isBlank() ->
+                        _uiState.value.firstName.isBlank() -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -107,8 +107,9 @@ class UpdateClinicianViewModel(
                                         ),
                                 )
                             }
+                        }
 
-                        _uiState.value.lastName.isBlank() ->
+                        _uiState.value.lastName.isBlank() -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -121,8 +122,9 @@ class UpdateClinicianViewModel(
                                         ),
                                 )
                             }
+                        }
 
-                        _uiState.value.clinicId == 0.toLong() ->
+                        _uiState.value.clinicId == 0.toLong() -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -132,8 +134,9 @@ class UpdateClinicianViewModel(
                                         ),
                                 )
                             }
+                        }
 
-                        !_uiState.value.email.isValidEmail ->
+                        !_uiState.value.email.isValidEmail -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -146,9 +149,10 @@ class UpdateClinicianViewModel(
                                         ),
                                 )
                             }
+                        }
 
                         _uiState.value.phone.isBlank() ||
-                            _uiState.value.phone.length < Constants.PHONE_LENGTH ->
+                            _uiState.value.phone.length < Constants.PHONE_LENGTH -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -158,6 +162,7 @@ class UpdateClinicianViewModel(
                                         ),
                                 )
                             }
+                        }
 
                         else -> {
                             updateClinicianJob?.cancel()
@@ -165,8 +170,11 @@ class UpdateClinicianViewModel(
                         }
                     }
                 }
+            }
 
-            ClinicianEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            ClinicianIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

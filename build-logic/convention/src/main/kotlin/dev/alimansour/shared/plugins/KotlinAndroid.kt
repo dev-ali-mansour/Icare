@@ -23,32 +23,25 @@ import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
-import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinBaseExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-/**
- * Configure base Kotlin with Android options
- */
-internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension<*, *, *, *, *, *>) {
+internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension) {
     commonExtension.apply {
         pluginManager.apply(findPlugin("kotlin-serialization"))
         pluginManager.apply(findPlugin("ktlint"))
         pluginManager.apply(findPlugin("detekt"))
 
-        defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
         compileSdk = COMPILE_SDK_VERSION
 
-        defaultConfig {
+        defaultConfig.apply {
+            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
             minSdk = MIN_SDK_VERSION
         }
 
-        compileOptions {
+        compileOptions.apply {
             // Up to Java 21 APIs are available through desugaring
             // https://developer.android.com/studio/write/java11-minimal-support-table
             sourceCompatibility = JavaVersion.VERSION_21
@@ -57,7 +50,7 @@ internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension<*, 
         }
     }
 
-    configureKotlin<KotlinAndroidProjectExtension>()
+    configureBaseKotlinCompilerOptions()
 
     dependencies {
         "implementation"(libs.findLibrary("coroutine.core").get())
@@ -78,46 +71,32 @@ internal fun Project.configureKotlinJvm() {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
-    configureKotlin<KotlinJvmProjectExtension>()
+    configureBaseKotlinCompilerOptions()
 }
 
-/**
- * Configure base Kotlin options
- */
-private inline fun <reified T : KotlinBaseExtension> Project.configureKotlin() =
-    configure<T> {
-        // Treat all Kotlin warnings as errors (disabled by default)
-        // Override by setting warningsAsErrors=true in your ~/.gradle/gradle.properties
+private fun Project.configureBaseKotlinCompilerOptions() {
+    val configure: Project.() -> Unit = {
         val warningsAsErrors =
             providers
                 .gradleProperty("warningsAsErrors")
-                .map {
-                    it.toBoolean()
-                }.orElse(false)
-        when (this) {
-            is KotlinAndroidProjectExtension -> compilerOptions
-            is KotlinJvmProjectExtension -> compilerOptions
-            else -> TODO("Unsupported project extension $this ${T::class}")
-        }.apply {
-            jvmTarget = JvmTarget.JVM_21
-            allWarningsAsErrors = warningsAsErrors
-            freeCompilerArgs.add(
-                // Enable experimental coroutines APIs, including Flow
-                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-            )
-            freeCompilerArgs.add(
-                /**
-                 * Remove this args after Phase 3.
-                 * https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-consistent-copy-visibility/#deprecation-timeline
-                 *
-                 * Deprecation timeline
-                 * Phase 3. (Supposedly Kotlin 2.2 or Kotlin 2.3).
-                 * The default changes.
-                 * Unless ExposedCopyVisibility is used, the generated 'copy' method has the same visibility as the primary constructor.
-                 * The binary signature changes. The error on the declaration is no longer reported.
-                 * '-Xconsistent-data-class-copy-visibility' compiler flag and ConsistentCopyVisibility annotation are now unnecessary.
-                 */
-                "-Xconsistent-data-class-copy-visibility",
-            )
+                .map { it.toBoolean() }
+                .orElse(false)
+
+        tasks.withType(KotlinCompile::class.java).configureEach {
+            compilerOptions {
+                jvmTarget.set(JvmTarget.JVM_21)
+                allWarningsAsErrors.set(warningsAsErrors)
+                freeCompilerArgs.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
+                freeCompilerArgs.add(
+                    // Remove this arg after Phase 3.
+                    // https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-consistent-copy-visibility/#deprecation-timeline
+                    "-Xconsistent-data-class-copy-visibility",
+                )
+            }
         }
     }
+
+    pluginManager.withPlugin("org.jetbrains.kotlin.android") { configure() }
+    pluginManager.withPlugin("org.jetbrains.kotlin.jvm") { configure() }
+    pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") { configure() }
+}

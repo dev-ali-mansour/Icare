@@ -2,11 +2,11 @@ package eg.edu.cu.csds.icare.feature.admin.screen.doctor.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.feature.admin.screen.doctor.list.DoctorListEffect.NavigateToDoctorDetails
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctorsUseCase
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.feature.admin.screen.doctor.list.DoctorListEffect.NavigateToDoctorDetails
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -36,29 +36,31 @@ class DoctorListViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: DoctorListEvent) {
-        when (event) {
-            is DoctorListEvent.Refresh -> {
+    fun handleIntent(intent: DoctorListIntent) {
+        when (intent) {
+            is DoctorListIntent.Refresh -> {
                 fetchDoctors(forceUpdate = true)
             }
 
-            is DoctorListEvent.SelectDoctor -> {
+            is DoctorListIntent.SelectDoctor -> {
                 _uiState.update {
-                    it.copy(effect = NavigateToDoctorDetails(doctor = event.doctor))
+                    it.copy(effect = NavigateToDoctorDetails(doctor = intent.doctor))
                 }
             }
 
-            is DoctorListEvent.UpdateFabExpanded -> {
+            is DoctorListIntent.UpdateFabExpanded -> {
                 _uiState.update {
                     it.copy(
                         effect =
                             DoctorListEffect
-                                .UpdateFabExpanded(isExpanded = event.isExpanded),
+                                .UpdateFabExpanded(isExpanded = intent.isExpanded),
                     )
                 }
             }
 
-            DoctorListEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            DoctorListIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

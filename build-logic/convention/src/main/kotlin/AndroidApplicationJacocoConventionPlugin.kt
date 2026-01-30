@@ -24,6 +24,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType
 
+@Suppress("unused")
 class AndroidApplicationJacocoConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
@@ -32,6 +33,7 @@ class AndroidApplicationJacocoConventionPlugin : Plugin<Project> {
             val androidExtension = extensions.getByType<ApplicationExtension>()
 
             androidExtension.buildTypes.configureEach {
+                if (this.name == "release") return@configureEach
                 enableAndroidTestCoverage = true
                 enableUnitTestCoverage = true
             }

@@ -9,7 +9,7 @@
     <string name="feature_home_discount_30" translatable="false">30%</string>
     <string name="feature_home_buy_now">Buy now</string>
     <string name="feature_home_cosmetics">Cosmetics</string>
-    <string name="feature_home_no_upcoming_appointments">No upcoming appointments</string>
+    <string name="feature_home_no_upcoming_appointments">No upcoming appointments data!</string>
     <string name="feature_home_off">OFF</string>
     <string name="feature_home_total_appointments">Total Patients</string>
     <string name="feature_home_till_today">Till Today</string>

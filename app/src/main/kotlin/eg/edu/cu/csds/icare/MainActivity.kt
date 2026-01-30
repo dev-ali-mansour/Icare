@@ -21,8 +21,7 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.util.isInternetAvailable
-import eg.edu.cu.csds.icare.splash.SplashViewModel
-import kotlinx.coroutines.delay
+import eg.edu.cu.csds.icare.feature.onboarding.screen.OnboardingViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -30,10 +29,9 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import kotlin.system.exitProcess
-import kotlin.time.Duration.Companion.milliseconds
 
 class MainActivity : AppCompatActivity() {
-    private val splashViewModel: SplashViewModel by viewModel()
+    private val onBoardingViewModel: OnboardingViewModel by viewModel()
     private val appUpdateManager: AppUpdateManager by inject()
     private val updateType = AppUpdateType.IMMEDIATE
     private val updateFlowResultLauncher =
@@ -51,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         var isLoadingSplash by mutableStateOf(true)
         lifecycleScope.launch {
-            splashViewModel.uiState
+            onBoardingViewModel.uiState
                 .onEach {
                     isLoadingSplash = it.isLoading
                 }.launchIn(this)
@@ -67,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             IcareTheme {
-                MainScreen(splashViewModel = splashViewModel)
+                MainScreen(onBoardingViewModel = onBoardingViewModel)
             }
         }
     }
@@ -92,16 +90,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkForUpdates() {
         if (!isInternetAvailable()) {
-            lifecycleScope.launch {
-                Toast
-                    .makeText(
-                        applicationContext,
-                        getString(R.string.internet_connection_error),
-                        Toast.LENGTH_LONG,
-                    ).show()
-                delay(3.milliseconds)
-                exitProcess(0)
-            }
+            Toast
+                .makeText(
+                    applicationContext,
+                    getString(R.string.internet_connection_error),
+                    Toast.LENGTH_LONG,
+                ).show()
         }
         appUpdateManager.appUpdateInfo
             .addOnSuccessListener { info ->

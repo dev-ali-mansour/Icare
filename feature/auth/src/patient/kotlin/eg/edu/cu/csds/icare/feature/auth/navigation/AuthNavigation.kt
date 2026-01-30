@@ -1,43 +1,46 @@
 package eg.edu.cu.csds.icare.feature.auth.navigation
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.feature.auth.screen.profile.ProfileScreen
 import eg.edu.cu.csds.icare.feature.auth.screen.recovery.PasswordRecoveryScreen
 import eg.edu.cu.csds.icare.feature.auth.screen.signin.SignInScreen
 import eg.edu.cu.csds.icare.feature.auth.screen.signup.SignUpScreen
-import eg.edu.cu.csds.icare.core.ui.navigation.Route
 
-fun NavGraphBuilder.authenticationRoute(
+fun EntryProviderScope<NavKey>.authenticationEntryBuilder(
     onRecoveryClicked: () -> Unit,
     onCreateAccountClicked: () -> Unit,
-    onLoginClicked: () -> Unit,
-    onLoginSuccess: () -> Unit,
+    onSignInClicked: () -> Unit,
+    onSignInSuccess: () -> Unit,
     onRecoveryCompleted: () -> Unit,
     onRegisterCompleted: () -> Unit,
+    onSignOut: () -> Unit,
 ) {
-    composable<Route.SignIn> {
+    entry<Route.SignIn> {
         SignInScreen(
             onRecoveryClicked = { onRecoveryClicked() },
-            onLoginSuccess = { onLoginSuccess() },
+            onLoginSuccess = { onSignInSuccess() },
             onCreateAnAccountClicked = { onCreateAccountClicked() },
         )
     }
 
-    composable<Route.PasswordRecovery> {
+    entry<Route.PasswordRecovery> {
         PasswordRecoveryScreen(
-            onSignInClicked = { onLoginClicked() },
+            onSignInClicked = { onSignInClicked() },
             onRecoveryCompleted = { onRecoveryCompleted() },
         )
     }
 
-    composable<Route.Profile> {
-        ProfileScreen()
+    entry<Route.Profile> {
+        ProfileScreen {
+            onSignOut()
+        }
     }
 
-    composable<Route.SignUp> {
+    entry<Route.SignUp> {
         SignUpScreen(
-            navigateToScreen = { onLoginClicked() },
+            navigateToScreen = { onSignInClicked() },
             onSignUpSuccess = { onRegisterCompleted() },
         )
     }

@@ -35,26 +35,32 @@ class StaffListViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: StaffListEvent) {
-        when (event) {
-            is StaffListEvent.Refresh -> fetchPharmacists()
+    fun handleIntent(intent: StaffListIntent) {
+        when (intent) {
+            is StaffListIntent.Refresh -> {
+                fetchPharmacists()
+            }
 
-            is StaffListEvent.SelectStaff ->
+            is StaffListIntent.SelectStaff -> {
                 _uiState.update {
                     it.copy(
                         effect =
-                            StaffListEffect.NavigateToStaffDetails(staff = event.staff),
+                            StaffListEffect.NavigateToStaffDetails(staff = intent.staff),
                     )
                 }
+            }
 
-            is StaffListEvent.UpdateFabExpanded ->
+            is StaffListIntent.UpdateFabExpanded -> {
                 _uiState.update {
                     it.copy(
-                        effect = StaffListEffect.UpdateFabExpanded(isExpanded = event.isExpanded),
+                        effect = StaffListEffect.UpdateFabExpanded(isExpanded = intent.isExpanded),
                     )
                 }
+            }
 
-            StaffListEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            StaffListIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

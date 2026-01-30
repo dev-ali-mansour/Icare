@@ -48,28 +48,28 @@ class ProfileViewModel(
 
     val effect = _uiState.map { it.effect }
 
-    fun processEvent(event: ProfileEvent) {
-        when (event) {
-            is ProfileEvent.UpdateGoogleSignInToken -> {
-                _uiState.update { it.copy(googleToken = event.token) }
+    fun handleIntent(intent: ProfileIntent) {
+        when (intent) {
+            is ProfileIntent.UpdateGoogleSignInToken -> {
+                _uiState.update { it.copy(googleToken = intent.token) }
             }
 
-            is ProfileEvent.LinkWithGoogle -> {
+            is ProfileIntent.LinkWithGoogle -> {
                 linkGoogleJob?.cancel()
                 linkGoogleJob = launchGoogleLinking()
             }
 
-            is ProfileEvent.UnlinkWithGoogle -> {
+            is ProfileIntent.UnlinkWithGoogle -> {
                 unlinkGoogleJob?.cancel()
                 unlinkGoogleJob = launchGoogleUnlinking()
             }
 
-            is ProfileEvent.SignOut -> {
+            is ProfileIntent.SignOut -> {
                 signOutJob?.cancel()
                 signOutJob = launchSignOut()
             }
 
-            is ProfileEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            is ProfileIntent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
         }
     }
 

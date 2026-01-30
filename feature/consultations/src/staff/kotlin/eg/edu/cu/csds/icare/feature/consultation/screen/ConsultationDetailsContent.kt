@@ -1,6 +1,5 @@
 package eg.edu.cu.csds.icare.feature.consultation.screen
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -58,12 +57,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import eg.edu.cu.csds.icare.feature.consultation.R
 import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
 import eg.edu.cu.csds.icare.core.data.util.getFormattedDateTime
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
@@ -74,23 +73,23 @@ import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.CONSULTATION_PATIENT_CARD_HEIGHT
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.SkyAccent
 import eg.edu.cu.csds.icare.core.ui.theme.TEXT_AREA_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.buttonBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import eg.edu.cu.csds.icare.feature.admin.R.string.feature_admin_pharmacy
+import eg.edu.cu.csds.icare.feature.consultation.R
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,7 +97,7 @@ import kotlinx.coroutines.launch
 internal fun ConsultationDetailsContent(
     uiState: ConsultationState,
     modifier: Modifier = Modifier,
-    onEvent: (ConsultationEvent) -> Unit,
+    onIntent: (ConsultationIntent) -> Unit,
 ) {
     val context = LocalContext.current
     var selectedDateFormatted by remember { mutableStateOf("") }
@@ -119,7 +118,7 @@ internal fun ConsultationDetailsContent(
                     onClick = {
                         datePickerState.selectedDateMillis?.let {
                             selectedDateFormatted = it.getFormattedDate(context)
-                            onEvent(ConsultationEvent.UpdateFollowUpdDate(it))
+                            onIntent(ConsultationIntent.UpdateFollowUpdDate(it))
                         }
                         showDatePicker = false
                     },
@@ -177,15 +176,13 @@ internal fun ConsultationDetailsContent(
                         Modifier
                             .fillMaxWidth()
                             .height(CONSULTATION_PATIENT_CARD_HEIGHT)
-                            .background(backgroundColor)
                             .padding(XS_PADDING)
                             .clickable {
-                                onEvent(
-                                    ConsultationEvent
+                                onIntent(
+                                    ConsultationIntent
                                         .NavigateToMedicalRecord(uiState.appointment.patientId),
                                 )
                             },
-                    colors = CardDefaults.cardColors(containerColor = SkyAccent),
                     elevation = CardDefaults.cardElevation(XS_PADDING),
                 ) {
                     ConstraintLayout(
@@ -256,7 +253,7 @@ internal fun ConsultationDetailsContent(
                             fontSize = MaterialTheme.typography.titleLarge.fontSize,
                             textAlign = TextAlign.Start,
                             fontFamily = helveticaFamily,
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onSurface,
                             maxLines = 1,
                         )
 
@@ -272,7 +269,7 @@ internal fun ConsultationDetailsContent(
                             fontSize = MaterialTheme.typography.titleSmall.fontSize,
                             textAlign = TextAlign.Start,
                             fontFamily = helveticaFamily,
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onSurface,
                             maxLines = 1,
                         )
                     }
@@ -291,12 +288,12 @@ internal fun ConsultationDetailsContent(
                             .padding(top = L_PADDING)
                             .fillMaxWidth(fraction = 0.8f),
                     fontFamily = helveticaFamily,
-                    color = textColor,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
 
                 OutlinedTextField(
                     value = uiState.diagnosis,
-                    onValueChange = { onEvent(ConsultationEvent.UpdateDiagnosis(it)) },
+                    onValueChange = { onIntent(ConsultationIntent.UpdateDiagnosis(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_consultations_diagnosis),
@@ -317,7 +314,7 @@ internal fun ConsultationDetailsContent(
                             unfocusedContainerColor = Color.Transparent,
                             disabledContainerColor = Color.Transparent,
                             cursorColor = contentColor,
-                            focusedTextColor = textColor,
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
                             focusedIndicatorColor = Yellow500,
                             unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
                         ),
@@ -335,7 +332,7 @@ internal fun ConsultationDetailsContent(
                             .padding(top = L_PADDING)
                             .fillMaxWidth(fraction = 0.8f),
                     expanded = uiState.isPharmaciesExpanded,
-                    onExpandedChange = { onEvent(ConsultationEvent.UpdatePharmaciesExpanded(it)) },
+                    onExpandedChange = { onIntent(ConsultationIntent.UpdatePharmaciesExpanded(it)) },
                 ) {
                     OutlinedTextField(
                         modifier =
@@ -364,8 +361,8 @@ internal fun ConsultationDetailsContent(
                             ExposedDropdownMenuDefaults.textFieldColors(
                                 focusedTextColor = Color.White,
                                 unfocusedTextColor = Color.White,
-                                focusedContainerColor = barBackgroundColor,
-                                unfocusedContainerColor = barBackgroundColor,
+                                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                                 unfocusedTrailingIconColor = Color.White,
                                 focusedTrailingIconColor = Color.White,
                                 focusedLabelColor = Color.White,
@@ -376,7 +373,7 @@ internal fun ConsultationDetailsContent(
                     ExposedDropdownMenu(
                         expanded = uiState.isPharmaciesExpanded,
                         onDismissRequest = {
-                            onEvent(ConsultationEvent.UpdatePharmaciesExpanded(false))
+                            onIntent(ConsultationIntent.UpdatePharmaciesExpanded(false))
                         },
                     ) {
                         uiState.pharmacies.forEach {
@@ -388,8 +385,8 @@ internal fun ConsultationDetailsContent(
                                     )
                                 },
                                 onClick = {
-                                    onEvent(ConsultationEvent.UpdatePharmacyId(it.id))
-                                    onEvent(ConsultationEvent.UpdatePharmaciesExpanded(false))
+                                    onIntent(ConsultationIntent.UpdatePharmacyId(it.id))
+                                    onIntent(ConsultationIntent.UpdatePharmaciesExpanded(false))
                                 },
                             )
                         }
@@ -398,7 +395,7 @@ internal fun ConsultationDetailsContent(
 
                 OutlinedTextField(
                     value = uiState.medications,
-                    onValueChange = { onEvent(ConsultationEvent.UpdateMedications(it)) },
+                    onValueChange = { onIntent(ConsultationIntent.UpdateMedications(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_consultations_Prescription),
@@ -457,7 +454,7 @@ internal fun ConsultationDetailsContent(
                             .fillMaxWidth(fraction = 0.8f),
                     expanded = uiState.isLabCentersExpanded,
                     onExpandedChange = {
-                        onEvent(ConsultationEvent.UpdateLabCentersExpanded(it))
+                        onIntent(ConsultationIntent.UpdateLabCentersExpanded(it))
                     },
                 ) {
                     OutlinedTextField(
@@ -484,8 +481,8 @@ internal fun ConsultationDetailsContent(
                             ExposedDropdownMenuDefaults.textFieldColors(
                                 focusedTextColor = Color.White,
                                 unfocusedTextColor = Color.White,
-                                focusedContainerColor = barBackgroundColor,
-                                unfocusedContainerColor = barBackgroundColor,
+                                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                                 unfocusedTrailingIconColor = Color.White,
                                 focusedTrailingIconColor = Color.White,
                                 focusedLabelColor = Color.White,
@@ -496,7 +493,7 @@ internal fun ConsultationDetailsContent(
                     ExposedDropdownMenu(
                         expanded = uiState.isLabCentersExpanded,
                         onDismissRequest = {
-                            onEvent(ConsultationEvent.UpdateLabCentersExpanded(false))
+                            onIntent(ConsultationIntent.UpdateLabCentersExpanded(false))
                         },
                     ) {
                         labCenters.forEach {
@@ -508,8 +505,8 @@ internal fun ConsultationDetailsContent(
                                     )
                                 },
                                 onClick = {
-                                    onEvent(ConsultationEvent.UpdateLabCenterId(it.id))
-                                    onEvent(ConsultationEvent.UpdateLabCentersExpanded(false))
+                                    onIntent(ConsultationIntent.UpdateLabCenterId(it.id))
+                                    onIntent(ConsultationIntent.UpdateLabCentersExpanded(false))
                                 },
                             )
                         }
@@ -518,7 +515,7 @@ internal fun ConsultationDetailsContent(
 
                 OutlinedTextField(
                     value = uiState.labTests,
-                    onValueChange = { onEvent(ConsultationEvent.UpdateLabTests(it)) },
+                    onValueChange = { onIntent(ConsultationIntent.UpdateLabTests(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_consultations_lab_tests),
@@ -577,7 +574,7 @@ internal fun ConsultationDetailsContent(
                             .fillMaxWidth(fraction = 0.8f),
                     expanded = uiState.isImagingCentersExpanded,
                     onExpandedChange = {
-                        onEvent(ConsultationEvent.UpdateImagingCentersExpanded(it))
+                        onIntent(ConsultationIntent.UpdateImagingCentersExpanded(it))
                     },
                 ) {
                     OutlinedTextField(
@@ -608,8 +605,8 @@ internal fun ConsultationDetailsContent(
                             ExposedDropdownMenuDefaults.textFieldColors(
                                 focusedTextColor = Color.White,
                                 unfocusedTextColor = Color.White,
-                                focusedContainerColor = barBackgroundColor,
-                                unfocusedContainerColor = barBackgroundColor,
+                                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                                 unfocusedTrailingIconColor = Color.White,
                                 focusedTrailingIconColor = Color.White,
                                 focusedLabelColor = Color.White,
@@ -620,7 +617,7 @@ internal fun ConsultationDetailsContent(
                     ExposedDropdownMenu(
                         expanded = uiState.isImagingCentersExpanded,
                         onDismissRequest = {
-                            onEvent(ConsultationEvent.UpdateImagingCentersExpanded(false))
+                            onIntent(ConsultationIntent.UpdateImagingCentersExpanded(false))
                         },
                     ) {
                         imagingCenters.forEach {
@@ -632,8 +629,8 @@ internal fun ConsultationDetailsContent(
                                     )
                                 },
                                 onClick = {
-                                    onEvent(ConsultationEvent.UpdateImagingCenterId(it.id))
-                                    onEvent(ConsultationEvent.UpdateImagingCentersExpanded(false))
+                                    onIntent(ConsultationIntent.UpdateImagingCenterId(it.id))
+                                    onIntent(ConsultationIntent.UpdateImagingCentersExpanded(false))
                                 },
                             )
                         }
@@ -642,7 +639,7 @@ internal fun ConsultationDetailsContent(
 
                 OutlinedTextField(
                     value = uiState.imagingTests,
-                    onValueChange = { onEvent(ConsultationEvent.UpdateImagingTests(it)) },
+                    onValueChange = { onIntent(ConsultationIntent.UpdateImagingTests(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_consultations_imaging_tests),
@@ -751,7 +748,7 @@ internal fun ConsultationDetailsContent(
                                 .fillMaxWidth(fraction = 0.6f),
                         text = stringResource(string.core_ui_proceed),
                         color = buttonBackgroundColor,
-                        onClick = { onEvent(ConsultationEvent.Proceed) },
+                        onClick = { onIntent(ConsultationIntent.Proceed) },
                     )
                 }
             }
@@ -759,35 +756,36 @@ internal fun ConsultationDetailsContent(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 internal fun ConsultationDetailsContentPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        ConsultationDetailsContent(
-            uiState =
-                ConsultationState(
-                    pharmacies = listOf(Pharmacy(id = 1, name = "صيدلية الحياة")),
-                    centers =
-                        listOf(
-                            LabImagingCenter(id = 1, name = "معمل المختبر", type = 1),
-                            LabImagingCenter(id = 2, name = "ألفا سكان", type = 2),
-                        ),
-                    appointment =
-                        Appointment(
-                            id = 1,
-                            patientName = "سالم محمد السعيد",
-                            patientImage = "https://t.pimg.jp/047/354/467/1/47354467.jpg",
-                        ),
-                    pharmacyId = 1,
-                    labCenterId = 1,
-                    imagingCenterId = 2,
-                    dateTime = System.currentTimeMillis(),
-                    readOnly = false,
-                ),
-            onEvent = {},
-        )
+    IcareTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            ConsultationDetailsContent(
+                uiState =
+                    ConsultationState(
+                        pharmacies = listOf(Pharmacy(id = 1, name = "صيدلية الحياة")),
+                        centers =
+                            listOf(
+                                LabImagingCenter(id = 1, name = "معمل المختبر", type = 1),
+                                LabImagingCenter(id = 2, name = "ألفا سكان", type = 2),
+                            ),
+                        appointment =
+                            Appointment(
+                                id = 1,
+                                patientName = "سالم محمد السعيد",
+                                patientImage = "https://t.pimg.jp/047/354/467/1/47354467.jpg",
+                            ),
+                        pharmacyId = 1,
+                        labCenterId = 1,
+                        imagingCenterId = 2,
+                        dateTime = System.currentTimeMillis(),
+                        readOnly = false,
+                    ),
+                onIntent = {},
+            )
+        }
     }
 }

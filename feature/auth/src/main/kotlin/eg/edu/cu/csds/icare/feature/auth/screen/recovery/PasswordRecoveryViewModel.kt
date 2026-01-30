@@ -2,13 +2,13 @@ package eg.edu.cu.csds.icare.feature.auth.screen.recovery
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.feature.auth.R
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SendRecoveryMailUseCase
 import eg.edu.cu.csds.icare.core.domain.util.isValidEmail
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.feature.auth.R
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,16 +36,16 @@ class PasswordRecoveryViewModel(
         )
     val effect = _uiState.map { it.effect }
 
-    fun processEvent(event: PasswordRecoveryEvent) {
-        when (event) {
-            is PasswordRecoveryEvent.UpdateEmail -> {
-                _uiState.update { it.copy(email = event.email) }
+    fun handleIntent(intent: PasswordRecoveryIntent) {
+        when (intent) {
+            is PasswordRecoveryIntent.UpdateEmail -> {
+                _uiState.update { it.copy(email = intent.email) }
             }
 
-            is PasswordRecoveryEvent.SubmitRecovery ->
+            is PasswordRecoveryIntent.SubmitRecovery -> {
                 viewModelScope.launch {
                     when {
-                        !_uiState.value.email.isValidEmail ->
+                        !_uiState.value.email.isValidEmail -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -58,6 +58,7 @@ class PasswordRecoveryViewModel(
                                         ),
                                 )
                             }
+                        }
 
                         else -> {
                             sendRecoveryMailJob?.cancel()
@@ -65,10 +66,13 @@ class PasswordRecoveryViewModel(
                         }
                     }
                 }
+            }
 
-            PasswordRecoveryEvent.NavigateToSignInScreen -> Unit
+            PasswordRecoveryIntent.NavigateToSignInScreen -> {}
 
-            PasswordRecoveryEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            PasswordRecoveryIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

@@ -14,7 +14,7 @@ data class UserEntity(
     val displayName: String = "",
     val nationalId: String,
     val birthDate: Long,
-    val gender: Char,
+    val gender: String,
     val address: String,
     val phoneNumber: String,
     @ColumnInfo(defaultValue = "")

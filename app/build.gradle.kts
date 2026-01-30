@@ -19,6 +19,9 @@ android {
         vectorDrawables.useSupportLibrary = true
         versionCode = dynamicVersionCode ?: 3
         versionName = dynamicVersionName ?: "1.0.2"
+
+        @Suppress("UnstableApiUsage")
+        androidResources.localeFilters.addAll(listOf("en", "ar"))
     }
 
     buildTypes {
@@ -36,7 +39,9 @@ android {
             )
             isMinifyEnabled = true
             isDebuggable = false
-            signingConfig = signingConfigs.getByName("release")
+            if ("release" in signingConfigs.names) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 
@@ -53,7 +58,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.feature.onBoarding)
+    implementation(projects.feature.onboarding)
     implementation(projects.feature.auth)
     implementation(projects.feature.home)
     implementation(projects.feature.notifications)

@@ -36,11 +36,11 @@ import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.named
 import java.io.File
 
+@Suppress("unused")
 class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply(findPlugin("android-application"))
-            pluginManager.apply(findPlugin("kotlin-android"))
             pluginManager.apply(findPlugin("gms"))
             pluginManager.apply(findPlugin("ksp"))
             pluginManager.apply(findPlugin("dependency-guard"))
@@ -55,16 +55,18 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 testOptions.animationsDisabled = true
                 bundle.language.enableSplit = false
                 signingConfigs {
-                    create("release") {
-                        storeFile =
-                            project.rootProject.layout.projectDirectory
-                                .file("release-key.jks")
-                                .asFile
-                        storePassword = project.getSecret("KEYSTORE_PASSWORD")
-                        keyAlias = project.getSecret("KEY_ALIAS")
-                        keyPassword = project.getSecret("KEY_PASSWORD")
-                        enableV1Signing = true
-                        enableV2Signing = true
+                    if (!project.getSecret("KEYSTORE_PASSWORD").isNullOrEmpty()) {
+                        create("release") {
+                            storeFile =
+                                project.rootProject.layout.projectDirectory
+                                    .file("release-key.jks")
+                                    .asFile
+                            storePassword = project.getSecret("KEYSTORE_PASSWORD")
+                            keyAlias = project.getSecret("KEY_ALIAS")
+                            keyPassword = project.getSecret("KEY_PASSWORD")
+                            enableV1Signing = true
+                            enableV2Signing = true
+                        }
                     }
 
                     getByName("debug") {
@@ -103,7 +105,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             }
             dependencies {
                 val bom = libs.findLibrary("firebase-bom").get()
-                "implementation"(libs.findLibrary("multidex").get())
                 "implementation"(libs.findLibrary("splashScreen").get())
                 "implementation"(libs.findLibrary("app.update").get())
                 "implementation"(libs.findBundle("lifecycle").get())

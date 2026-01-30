@@ -1,7 +1,6 @@
 package eg.edu.cu.csds.icare.feature.appointment.screen.reschedule
 
 import android.content.Context
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,25 +11,24 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -48,20 +46,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import eg.edu.cu.csds.icare.feature.appointment.R
-import eg.edu.cu.csds.icare.feature.appointment.component.TimeSlotSelector
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.util.getAvailableTimeSlots
 import eg.edu.cu.csds.icare.core.ui.R.drawable
+import eg.edu.cu.csds.icare.core.ui.R.string
+import eg.edu.cu.csds.icare.core.ui.common.CommonTopAppBar
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
@@ -71,33 +71,28 @@ import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow300
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.buttonBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
-import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.SuccessesDialog
+import eg.edu.cu.csds.icare.feature.appointment.R
+import eg.edu.cu.csds.icare.feature.appointment.component.TimeSlotSelector
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun AppointmentRescheduleScreen(
-    viewModel: RescheduleViewModel = koinViewModel(),
-    onNavigationIconClicked: () -> Unit,
-) {
+internal fun AppointmentRescheduleScreen(onNavigationIconClicked: () -> Unit) {
+    val viewModel: RescheduleViewModel = koinViewModel()
     val context: Context = LocalContext.current
     val refreshState = rememberPullToRefreshState()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
     var showSuccessDialog by remember { mutableStateOf(false) }
-    var alertMessage by remember { mutableStateOf("") }
-    var showAlert by remember { mutableStateOf(false) }
 
     LaunchedUiEffectHandler(
         viewModel.effect,
-        onConsumeEffect = { viewModel.processEvent(RescheduleEvent.ConsumeEffect) },
+        onConsumeEffect = { viewModel.handleIntent(RescheduleIntent.ConsumeEffect) },
         onEffect = { effect ->
             when (effect) {
                 is RescheduleEffect.ShowSuccess -> {
@@ -107,10 +102,10 @@ internal fun AppointmentRescheduleScreen(
                 }
 
                 is RescheduleEffect.ShowError -> {
-                    alertMessage = effect.message.asString(context)
-                    showAlert = true
-                    delay(timeMillis = 3000)
-                    showAlert = false
+                    snackbarHostState.showSnackbar(
+                        message = effect.message.asString(context),
+                        duration = SnackbarDuration.Short,
+                    )
                 }
             }
         },
@@ -118,31 +113,14 @@ internal fun AppointmentRescheduleScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.feature_appointments_appointment_reschedule),
-                    )
-                },
-                colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = barBackgroundColor,
-                        navigationIconContentColor = Color.White,
-                        titleContentColor = Color.White,
-                        actionIconContentColor = Color.White,
-                    ),
-                navigationIcon = {
-                    IconButton(onClick = { onNavigationIconClicked() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            tint = Color.White,
-                        )
-                    }
-                },
-            )
+            CommonTopAppBar(
+                title = stringResource(id = R.string.feature_appointments_appointment_reschedule),
+            ) {
+                onNavigationIconClicked()
+            }
         },
-    ) { paddingValues ->
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+    ) { innerPadding ->
         Surface(
             modifier =
                 Modifier
@@ -151,14 +129,13 @@ internal fun AppointmentRescheduleScreen(
                         state = refreshState,
                         isRefreshing = uiState.isLoading,
                         onRefresh = {
-                            viewModel.processEvent(RescheduleEvent.Refresh)
+                            viewModel.handleIntent(RescheduleIntent.Refresh)
                         },
-                    ).padding(paddingValues),
+                    ).padding(innerPadding),
         ) {
             ConstraintLayout(
                 modifier =
                     Modifier
-                        .background(backgroundColor)
                         .fillMaxWidth(),
             ) {
                 val (line, content, refresh) = createRefs()
@@ -184,7 +161,7 @@ internal fun AppointmentRescheduleScreen(
                             height = Dimension.fillToConstraints
                         },
                     uiState = uiState,
-                    onEvent = viewModel::processEvent,
+                    onIntent = viewModel::handleIntent,
                 )
 
                 Indicator(
@@ -199,7 +176,6 @@ internal fun AppointmentRescheduleScreen(
                 )
 
                 if (showSuccessDialog) SuccessesDialog {}
-                if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
             }
         }
     }
@@ -209,35 +185,32 @@ internal fun AppointmentRescheduleScreen(
 private fun AppointmentRescheduleContent(
     uiState: RescheduleState,
     modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
-    onEvent: (RescheduleEvent) -> Unit,
+    onIntent: (RescheduleIntent) -> Unit,
 ) {
+    val context: Context = LocalContext.current
     Surface(
         modifier =
             modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(bottom = M_PADDING),
     ) {
-        ConstraintLayout(
+        Column(
             modifier =
                 Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
+                    .fillMaxWidth()
+                    .padding(horizontal = XS_PADDING),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val (card, details) = createRefs()
             uiState.appointment?.let { appointment ->
                 uiState.doctorSchedule?.let { schedule ->
                     Card(
                         modifier =
                             Modifier
-                                .constrainAs(card) {
-                                    top.linkTo(parent.top)
-                                    start.linkTo(parent.start)
-                                    end.linkTo(parent.end)
-                                    width = Dimension.fillToConstraints
-                                }.height(RECORD_PATIENT_CARD_HEIGHT)
-                                .padding(XS_PADDING),
-                        colors = CardDefaults.cardColors(containerColor = cardBackgroundColor),
+                                .fillMaxWidth()
+                                .heightIn(min = RECORD_PATIENT_CARD_HEIGHT)
+                                .padding(vertical = XS_PADDING),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         elevation = CardDefaults.cardElevation(XS_PADDING),
                     ) {
                         ConstraintLayout(
@@ -280,7 +253,7 @@ private fun AppointmentRescheduleContent(
                             Text(
                                 text = "${
                                     stringResource(
-                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_name,
+                                        string.core_ui_name,
                                     )
                                 }: ${appointment.doctorName}",
                                 modifier =
@@ -293,14 +266,14 @@ private fun AppointmentRescheduleContent(
                                 fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                 textAlign = TextAlign.Start,
                                 fontFamily = helveticaFamily,
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 1,
                             )
 
                             Text(
                                 text = "${
                                     stringResource(
-                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_speciality,
+                                        string.core_ui_speciality,
                                     )
                                 }: ${appointment.doctorSpecialty}",
                                 modifier =
@@ -312,18 +285,18 @@ private fun AppointmentRescheduleContent(
                                 fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                 textAlign = TextAlign.Start,
                                 fontFamily = helveticaFamily,
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 1,
                             )
 
                             Text(
                                 text = "${
                                     stringResource(
-                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_appointment_price,
+                                        string.core_ui_appointment_price,
                                     )
                                 }: ${schedule.price} ${
                                     stringResource(
-                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_egp,
+                                        string.core_ui_egp,
                                     )
                                 }",
                                 modifier =
@@ -335,14 +308,14 @@ private fun AppointmentRescheduleContent(
                                 fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                 textAlign = TextAlign.Start,
                                 fontFamily = helveticaFamily,
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 1,
                             )
 
                             Text(
                                 text = "${
                                     stringResource(
-                                        eg.edu.cu.csds.icare.core.ui.R.string.core_ui_total_appointments,
+                                        string.core_ui_total_appointments,
                                     )
                                 }: ${schedule.totalPatients}",
                                 modifier =
@@ -354,7 +327,7 @@ private fun AppointmentRescheduleContent(
                                 fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                 textAlign = TextAlign.Start,
                                 fontFamily = helveticaFamily,
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 1,
                             )
 
@@ -369,14 +342,14 @@ private fun AppointmentRescheduleContent(
                                 Text(
                                     text = "${
                                         stringResource(
-                                            eg.edu.cu.csds.icare.core.ui.R.string.core_ui_rating,
+                                            string.core_ui_rating,
                                         )
                                     }: ",
                                     fontWeight = FontWeight.Bold,
                                     fontSize = MaterialTheme.typography.titleSmall.fontSize,
                                     textAlign = TextAlign.Start,
                                     fontFamily = helveticaFamily,
-                                    color = Color.White,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     maxLines = 1,
                                 )
                                 Icon(
@@ -393,75 +366,64 @@ private fun AppointmentRescheduleContent(
                         }
                     }
 
-                    Column(
+                    Spacer(modifier = Modifier.height(S_PADDING))
+
+                    val availableSlots =
+                        getAvailableTimeSlots(
+                            from = schedule.fromTime,
+                            to = schedule.toTime,
+                            bookedAppointments = schedule.appointments,
+                        )
+
+                    TimeSlotSelector(
+                        slots = availableSlots,
+                        selectedSlot = appointment.dateTime,
+                        onSlotSelected = { onIntent(RescheduleIntent.UpdateSelectedSlot(it)) },
+                    )
+
+                    Spacer(modifier = Modifier.height(L_PADDING))
+
+                    AnimatedButton(
                         modifier =
                             Modifier
-                                .constrainAs(details) {
-                                    top.linkTo(card.bottom, margin = S_PADDING)
-                                    start.linkTo(card.start)
-                                    end.linkTo(card.end)
-                                    bottom.linkTo(parent.bottom)
-                                    width = Dimension.fillToConstraints
-                                    height = Dimension.fillToConstraints
-                                },
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        val availableSlots =
-                            getAvailableTimeSlots(
-                                from = schedule.fromTime,
-                                to = schedule.toTime,
-                                bookedAppointments = schedule.appointments,
-                            )
-
-                        TimeSlotSelector(
-                            dates = availableSlots,
-                            selectedSlot = appointment.dateTime,
-                            onSlotSelected = { onEvent(RescheduleEvent.UpdateSelectedSlot(it)) },
-                        )
-
-                        Spacer(modifier = Modifier.height(L_PADDING))
-
-                        AnimatedButton(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth(fraction = 0.6f),
-                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_reschedule),
-                            color = buttonBackgroundColor,
-                            onClick = {
-                                onEvent(RescheduleEvent.Proceed)
-                            },
-                        )
-                    }
+                                .fillMaxWidth(fraction = 0.6f),
+                        text = stringResource(string.core_ui_reschedule),
+                        color = buttonBackgroundColor,
+                        onClick = {
+                            onIntent(RescheduleIntent.Proceed)
+                        },
+                    )
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 private fun AppointmentRescheduleContentPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        AppointmentRescheduleContent(
-            uiState =
-                RescheduleState(
-                    appointment =
-                        Appointment(
-                            doctorName = "Dr. John Doe",
-                            doctorImage = "https://i.ibb.co/JRkcZzhR/doctor.webp",
-                            dateTime = System.currentTimeMillis(), // .plus(other = 30 * 60 * 1000),
-                        ),
-                    doctorSchedule =
-                        DoctorSchedule(
-                            fromTime = System.currentTimeMillis(),
-                            toTime = System.currentTimeMillis().plus(other = 5 * 60 * 60 * 1000),
-                            appointments = listOf(),
-                        ),
-                ),
-            onEvent = {},
-        )
+    IcareTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            AppointmentRescheduleContent(
+                uiState =
+                    RescheduleState(
+                        appointment =
+                            Appointment(
+                                doctorName = "Dr. John Doe",
+                                doctorImage = "https://i.ibb.co/JRkcZzhR/doctor.webp",
+                                dateTime = System.currentTimeMillis().plus(other = 30 * 60 * 1000),
+                            ),
+                        doctorSchedule =
+                            DoctorSchedule(
+                                fromTime = System.currentTimeMillis(),
+                                toTime = System.currentTimeMillis().plus(other = 5 * 60 * 60 * 1000),
+                                appointments = listOf(),
+                            ),
+                    ),
+                onIntent = {},
+            )
+        }
     }
 }

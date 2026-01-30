@@ -1,7 +1,6 @@
 package eg.edu.cu.csds.icare.feature.home.screen.doctor
 
 import android.content.Context
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -44,7 +43,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.rememberAsyncImagePainter
@@ -53,9 +53,12 @@ import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
 import eg.edu.cu.csds.icare.core.domain.util.toFormattedString
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
 import eg.edu.cu.csds.icare.core.ui.theme.APPOINTMENTS_LIST_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
+import eg.edu.cu.csds.icare.core.ui.theme.EmeraldGreen
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.LOGO_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
@@ -67,11 +70,10 @@ import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.SkyAccent
 import eg.edu.cu.csds.icare.core.ui.theme.U_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
-import eg.edu.cu.csds.icare.core.ui.theme.mintAccent
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
 import eg.edu.cu.csds.icare.core.ui.theme.trustBlue
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.feature.home.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -90,8 +92,8 @@ fun DoctorContent(
         modifier =
             modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(M_PADDING),
+                .padding(M_PADDING)
+                .verticalScroll(rememberScrollState()),
     ) {
         val (patientsCard, confirmedCard, priceCard, slotsCard, appointments, list, seeAll) = createRefs()
 
@@ -116,10 +118,10 @@ fun DoctorContent(
         )
 
         StatCard(
-            title = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_price),
+            title = stringResource(string.core_ui_price),
             value = "${schedule.price.toFormattedString()} ${
                 stringResource(
-                    eg.edu.cu.csds.icare.core.ui.R.string.core_ui_egp,
+                    string.core_ui_egp,
                 )
             }",
             modifier =
@@ -137,7 +139,7 @@ fun DoctorContent(
         )
 
         StatCard(
-            title = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_available_slots),
+            title = stringResource(string.core_ui_available_slots),
             value = schedule.availableSlots.toString(),
             modifier =
                 Modifier.constrainAs(slotsCard) {
@@ -161,7 +163,7 @@ fun DoctorContent(
             maxLines = 1,
         )
         Text(
-            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_see_all),
+            text = stringResource(string.core_ui_see_all),
             modifier =
                 Modifier
                     .constrainAs(seeAll) {
@@ -212,7 +214,7 @@ fun TotalPatientsCard(
                 Icons.Default.Star,
                 contentDescription = null,
                 modifier = Modifier.size(SERVICE_ICON_SIZE),
-                tint = mintAccent,
+                tint = EmeraldGreen,
             )
             Column(
                 modifier = Modifier.padding(M_PADDING),
@@ -230,7 +232,7 @@ fun TotalPatientsCard(
                     text = "$totalPatients+",
                     style = MaterialTheme.typography.headlineMedium,
                     fontFamily = helveticaFamily,
-                    color = mintAccent,
+                    color = EmeraldGreen,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
                 )
@@ -272,7 +274,6 @@ fun StatCard(
                 fontSize = MaterialTheme.typography.bodySmall.fontSize,
                 fontFamily = helveticaFamily,
                 maxLines = 2,
-                color = Color.Black,
                 modifier = Modifier.fillMaxWidth(),
             )
 
@@ -303,11 +304,11 @@ fun StatCard(
 
 @Composable
 fun AppointmentItem(
-    modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
     appointment: Appointment,
+    modifier: Modifier = Modifier,
     onAppointmentClick: (Appointment) -> Unit,
 ) {
+    val context: Context = LocalContext.current
     ConstraintLayout(
         modifier =
             modifier
@@ -353,7 +354,7 @@ fun AppointmentItem(
             fontSize = MaterialTheme.typography.titleSmall.fontSize,
             textAlign = TextAlign.Start,
             fontFamily = helveticaFamily,
-            color = trustBlue,
+            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
         )
 
@@ -378,49 +379,50 @@ fun AppointmentItem(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(locale = "ar", showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(locale = "ar", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 internal fun DoctorContentPreview() {
-    Box(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(color = backgroundColor)
-                .padding(XS_PADDING),
-    ) {
-        DoctorContent(
-            schedule =
-                DoctorSchedule(
-                    totalPatients = 2000,
-                    confirmed = 16,
-                    price = 500.0,
-                    availableSlots = 5,
-                    appointments =
-                        listOf(
-                            Appointment(
-                                patientName = "محمد السيد عثمان",
-                                dateTime = System.currentTimeMillis(),
+    IcareTheme {
+        Box(
+            modifier =
+                Modifier
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .fillMaxSize()
+                    .padding(M_PADDING),
+        ) {
+            DoctorContent(
+                schedule =
+                    DoctorSchedule(
+                        totalPatients = 2000,
+                        confirmed = 16,
+                        price = 500.0,
+                        availableSlots = 5,
+                        appointments =
+                            listOf(
+                                Appointment(
+                                    patientName = "محمد السيد عثمان",
+                                    dateTime = System.currentTimeMillis(),
+                                ),
+                                Appointment(
+                                    patientName = "ابراهيم محمد",
+                                    dateTime = System.currentTimeMillis(),
+                                ),
+                                Appointment(
+                                    patientName = "شاكر محمد العربي",
+                                    dateTime = System.currentTimeMillis(),
+                                ),
+                                Appointment(
+                                    patientName = "أحمد عبد الحليم مهران",
+                                    dateTime = System.currentTimeMillis(),
+                                ),
                             ),
-                            Appointment(
-                                patientName = "ابراهيم محمد",
-                                dateTime = System.currentTimeMillis(),
-                            ),
-                            Appointment(
-                                patientName = "شاكر محمد العربي",
-                                dateTime = System.currentTimeMillis(),
-                            ),
-                            Appointment(
-                                patientName = "أحمد عبد الحليم مهران",
-                                dateTime = System.currentTimeMillis(),
-                            ),
-                        ),
-                ),
-            onPriceCardClicked = {},
-            onAppointmentClick = {},
-            onSeeAllClick = {},
-        )
+                    ),
+                onPriceCardClicked = {},
+                onAppointmentClick = {},
+                onSeeAllClick = {},
+            )
+        }
     }
 }

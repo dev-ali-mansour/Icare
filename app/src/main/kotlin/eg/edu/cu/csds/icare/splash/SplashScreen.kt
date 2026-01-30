@@ -7,23 +7,21 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import eg.edu.cu.csds.icare.core.ui.theme.SPLASH_LOGO_SIZE
 import eg.edu.cu.csds.icare.core.ui.R.drawable
+import eg.edu.cu.csds.icare.core.ui.theme.SPLASH_LOGO_SIZE
 
 @Composable
 internal fun SplashScreen() {
@@ -49,20 +47,10 @@ internal fun SplashScreen() {
 
 @Composable
 private fun Splash(degrees: Float) {
-    val brush =
-        if (isSystemInDarkTheme()) {
-            Brush.verticalGradient(
-                listOf(Color.Black, Color.Black.copy(alpha = 0.6f)),
-            )
-        } else {
-            Brush.verticalGradient(
-                listOf(Color.White, Color.White.copy(alpha = 0.6f)),
-            )
-        }
     Box(
         modifier =
             Modifier
-                .background(brush)
+                .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {

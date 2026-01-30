@@ -1,20 +1,21 @@
 package eg.edu.cu.csds.icare.feature.auth.navigation
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.feature.auth.screen.profile.ProfileScreen
 import eg.edu.cu.csds.icare.feature.auth.screen.recovery.PasswordRecoveryScreen
 import eg.edu.cu.csds.icare.feature.auth.screen.signin.SignInScreen
-import eg.edu.cu.csds.icare.core.ui.navigation.Route
 
-fun NavGraphBuilder.authenticationRoute(
+fun EntryProviderScope<NavKey>.authenticationEntryBuilder(
     onRecoveryClicked: () -> Unit,
     onCreateAccountClicked: () -> Unit,
     onSignInClicked: () -> Unit,
     onSignInSuccess: () -> Unit,
     onRecoveryCompleted: () -> Unit,
+    onSignOut: () -> Unit,
 ) {
-    composable<Route.SignIn> {
+    entry<Route.SignIn> {
         SignInScreen(
             onRecoveryClicked = { onRecoveryClicked() },
             onLoginSuccess = { onSignInSuccess() },
@@ -22,14 +23,16 @@ fun NavGraphBuilder.authenticationRoute(
         )
     }
 
-    composable<Route.PasswordRecovery> {
+    entry<Route.PasswordRecovery> {
         PasswordRecoveryScreen(
             onSignInClicked = { onSignInClicked() },
             onRecoveryCompleted = { onRecoveryCompleted() },
         )
     }
 
-    composable<Route.Profile> {
-        ProfileScreen()
+    entry<Route.Profile> {
+        ProfileScreen {
+            onSignOut()
+        }
     }
 }

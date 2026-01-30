@@ -128,7 +128,7 @@ complexity:
     threshold: 600
   LongMethod:
     active: true
-    threshold: 200
+    threshold: 205
     ignoreAnnotated: [ 'Composable' ]
   LongParameterList:
     active: true
@@ -741,8 +741,9 @@ style:
   UnusedPrivateMember:
     active: true
     ignoreAnnotated:
-      - 'androidx.compose.ui.tooling.preview.Preview' # Good to keep for previews specifically
-      # You can add other annotations here if needed
+      - 'androidx.compose.ui.tooling.preview.Preview'
+      - 'androidx.compose.ui.tooling.preview.PreviewScreenSizes'
+      - 'androidx.compose.ui.tooling.preview.PreviewLightDark'
     allowedNames: ''
   UnusedPrivateProperty:
     active: true

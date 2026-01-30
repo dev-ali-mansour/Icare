@@ -7,7 +7,6 @@ fun Appointment.toAppointmentDto(): AppointmentDto =
     AppointmentDto(
         id = this.id,
         token = this.token,
-        appointmentId = this.appointmentId,
         doctorSpecialty = this.doctorSpecialty,
         doctorId = this.doctorId,
         doctorName = this.doctorName,
@@ -24,7 +23,6 @@ fun AppointmentDto.toAppointment(): Appointment =
     Appointment(
         id = this.id,
         token = this.token,
-        appointmentId = this.appointmentId,
         doctorSpecialty = this.doctorSpecialty,
         doctorId = this.doctorId,
         doctorName = this.doctorName,

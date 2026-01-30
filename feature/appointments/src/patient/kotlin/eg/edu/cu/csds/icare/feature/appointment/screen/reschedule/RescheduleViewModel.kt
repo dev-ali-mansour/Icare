@@ -2,13 +2,13 @@ package eg.edu.cu.csds.icare.feature.appointment.screen.reschedule
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.feature.appointment.R
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.UpdateAppointmentUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.GetDoctorScheduleUseCase
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.feature.appointment.R
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,18 +39,18 @@ class RescheduleViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: RescheduleEvent) {
-        when (event) {
-            is RescheduleEvent.Refresh -> {
+    fun handleIntent(intent: RescheduleIntent) {
+        when (intent) {
+            is RescheduleIntent.Refresh -> {
                 _uiState.value.appointment?.let { appointment ->
                     getDoctorScheduleJob?.cancel()
                     getDoctorScheduleJob = launchGetDoctorSchedule(appointment.doctorId)
                 }
             }
 
-            is RescheduleEvent.SelectAppointment -> {
+            is RescheduleIntent.SelectAppointment -> {
                 _uiState.update {
-                    it.copy(appointment = event.appointment)
+                    it.copy(appointment = intent.appointment)
                 }
                 _uiState.value.appointment?.let { appointment ->
                     getDoctorScheduleJob?.cancel()
@@ -58,14 +58,14 @@ class RescheduleViewModel(
                 }
             }
 
-            is RescheduleEvent.UpdateSelectedSlot -> {
-                _uiState.update { it.copy(appointment = it.appointment?.copy(dateTime = event.slot)) }
+            is RescheduleIntent.UpdateSelectedSlot -> {
+                _uiState.update { it.copy(appointment = it.appointment?.copy(dateTime = intent.slot)) }
             }
 
-            is RescheduleEvent.Proceed ->
+            is RescheduleIntent.Proceed -> {
                 viewModelScope.launch {
                     when {
-                        _uiState.value.appointment == null ->
+                        _uiState.value.appointment == null -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -79,6 +79,7 @@ class RescheduleViewModel(
                                         ),
                                 )
                             }
+                        }
 
                         else -> {
                             rescheduleJob?.cancel()
@@ -86,8 +87,11 @@ class RescheduleViewModel(
                         }
                     }
                 }
+            }
 
-            RescheduleEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            RescheduleIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

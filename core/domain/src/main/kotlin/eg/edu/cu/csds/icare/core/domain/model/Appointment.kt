@@ -3,7 +3,6 @@ package eg.edu.cu.csds.icare.core.domain.model
 data class Appointment(
     val id: Long = 0,
     val token: String = "",
-    val appointmentId: Long = 0,
     val doctorSpecialty: String = "",
     val doctorId: String = "",
     val doctorName: String = "",

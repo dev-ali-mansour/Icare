@@ -17,17 +17,17 @@
  * Original source: https://github.com/android/nowinandroid
  */
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import dev.alimansour.shared.plugins.configureFlavors
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
 
+@Suppress("unused")
 class AndroidLibraryFlavorsConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            extensions.configure<LibraryExtension> {
-                configureFlavors(this)
+            extensions.configure<Any>("android") {
+                configureFlavors(this as LibraryExtension)
             }
         }
     }

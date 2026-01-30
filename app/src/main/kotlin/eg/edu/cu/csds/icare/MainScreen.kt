@@ -1,92 +1,67 @@
 package eg.edu.cu.csds.icare
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.navigation.compose.rememberNavController
-import eg.edu.cu.csds.icare.core.ui.common.BottomNavItem
+import androidx.navigation3.runtime.rememberNavBackStack
+import eg.edu.cu.csds.icare.core.ui.common.BOTTOM_NAV_ENTRIES
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
+import eg.edu.cu.csds.icare.core.ui.navigation.Navigator
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.view.BottomBarNavigation
-import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
-import eg.edu.cu.csds.icare.navigation.SetupNavGraph
-import eg.edu.cu.csds.icare.splash.SplashEffect
-import eg.edu.cu.csds.icare.splash.SplashEvent
-import eg.edu.cu.csds.icare.splash.SplashViewModel
+import eg.edu.cu.csds.icare.feature.onboarding.screen.OnBoardingEffect
+import eg.edu.cu.csds.icare.feature.onboarding.screen.OnBoardingIntent
+import eg.edu.cu.csds.icare.feature.onboarding.screen.OnboardingViewModel
+import eg.edu.cu.csds.icare.navigation.NavGraph
 import kotlinx.coroutines.delay
 import timber.log.Timber
-import kotlin.system.exitProcess
 
 @Composable
-fun MainScreen(splashViewModel: SplashViewModel) {
-    val navController = rememberNavController()
-    var isBottomBarVisible by remember { mutableStateOf(false) }
-    val layoutDirection = LocalLayoutDirection.current
+fun MainScreen(onBoardingViewModel: OnboardingViewModel) {
+    val backStack = rememberNavBackStack(Route.Splash)
+    val navigator = remember { Navigator(backStack) }
     val context = LocalContext.current
-    rememberCoroutineScope()
-    var alertMessage by remember { mutableStateOf("") }
-    var showAlert by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    var isBottomBarVisible by remember { mutableStateOf(false) }
 
-    val bottomNavItems =
-        listOf(
-            BottomNavItem.Home,
-            BottomNavItem.Notifications,
-            BottomNavItem.Profile,
-            BottomNavItem.Settings,
-        )
-
-    LaunchedEffect(navController) {
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            isBottomBarVisible = destination.route != Route.Splash::class.qualifiedName &&
-                bottomNavItems.any { it.route::class.qualifiedName == destination.route }
-        }
+    LaunchedEffect(navigator.currentScreen) {
+        delay(timeMillis = 50L)
+        isBottomBarVisible =
+            BOTTOM_NAV_ENTRIES.any {
+                it.key == navigator.currentScreen
+            }
     }
 
     LaunchedUiEffectHandler(
-        splashViewModel.effect,
-        onConsumeEffect = { splashViewModel.processEvent(SplashEvent.ConsumeEffect) },
+        onBoardingViewModel.effect,
+        onConsumeEffect = { onBoardingViewModel.handleIntent(OnBoardingIntent.ConsumeEffect) },
         onEffect = { effect ->
             runCatching {
-                val currentStartDestinationId = navController.graph.startDestinationId
-                val popUpToRoute = navController.graph.findNode(currentStartDestinationId)?.route
-
-                val navigateAndPopUp: (Route) -> Unit = { screen ->
-                    navController.navigate(screen) {
-                        if (popUpToRoute != null) {
-                            popUpTo(popUpToRoute) { inclusive = true }
-                        } else {
-                            popUpTo(navController.graph.id) { inclusive = true }
-                        }
-                    }
-                }
-
                 when (effect) {
-                    is SplashEffect.NavigateToRoute -> navigateAndPopUp(effect.route)
+                    is OnBoardingEffect.NavigateToRoute -> {
+                        navigator.navigate(effect.route, inclusive = true)
+                    }
 
-                    is SplashEffect.ShowError -> {
-                        alertMessage = effect.message.asString(context)
-                        showAlert = true
-                        delay(timeMillis = 5000)
-                        showAlert = false
-                        exitProcess(0)
+                    is OnBoardingEffect.OnBoardingFinished -> {}
+
+                    is OnBoardingEffect.ShowError -> {
+                        snackbarHostState.showSnackbar(
+                            message = effect.message.asString(context),
+                            duration = SnackbarDuration.Long,
+                        )
                     }
                 }
             }.onFailure {
@@ -99,27 +74,23 @@ fun MainScreen(splashViewModel: SplashViewModel) {
         bottomBar = {
             if (isBottomBarVisible) {
                 BottomBarNavigation(
-                    navController = navController,
-                    items = bottomNavItems,
+                    items = BOTTOM_NAV_ENTRIES,
+                    selectedKey = navigator.currentScreen,
+                    onSelect = {
+                        navigator.navigate(it)
+                    },
                 )
             }
         },
-    ) { paddingValues ->
-        Column(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        contentWindowInsets = WindowInsets.safeDrawing,
+    ) { innerPadding ->
+        NavGraph(
+            navigator = navigator,
             modifier =
                 Modifier
-                    .windowInsetsPadding(WindowInsets.safeDrawing)
-                    .background(color = backgroundColor)
-                    .fillMaxSize()
-                    .padding(
-                        start = paddingValues.calculateStartPadding(layoutDirection),
-                        end = paddingValues.calculateEndPadding(layoutDirection),
-                        bottom = paddingValues.calculateBottomPadding(),
-                    ),
-        ) {
-            SetupNavGraph(navController = navController)
-
-            if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
-        }
+                    .padding(innerPadding)
+                    .consumeWindowInsets(innerPadding),
+        )
     }
 }

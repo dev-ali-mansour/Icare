@@ -59,7 +59,7 @@ android {
 
     sourceSets {
         getByName("test") {
-            resources.srcDir("src/test/resources")
+            resources.directories.add("src/test/resources")
         }
     }
 }

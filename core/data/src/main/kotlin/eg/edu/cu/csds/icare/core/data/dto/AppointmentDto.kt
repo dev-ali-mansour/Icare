@@ -5,9 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AppointmentDto(
+    @SerialName("appointmentId")
     val id: Long = 0,
     val token: String = "",
-    val appointmentId: Long = 0,
     val doctorSpecialty: String = "",
     val doctorId: String = "",
     val doctorName: String = "",

@@ -24,6 +24,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
+@Suppress("unused")
 class KoinConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) =
         with(target) {
@@ -39,7 +40,7 @@ class KoinConventionPlugin : Plugin<Project> {
                 "ksp"(libs.findLibrary("koin.ksp.compiler").get())
             }
 
-            pluginManager.withPlugin("org.jetbrains.kotlin.android") {
+            pluginManager.withPlugin("com.android.base") {
                 dependencies {
                     "implementation"(libs.findBundle("koin.android").get())
                 }

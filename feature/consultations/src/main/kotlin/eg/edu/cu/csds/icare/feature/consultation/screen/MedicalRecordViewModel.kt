@@ -35,26 +35,29 @@ class MedicalRecordViewModel(
 
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: MedicalRecordEvent) {
-        when (event) {
-            is MedicalRecordEvent.NavigateToConsultation ->
+    fun handleIntent(intent: MedicalRecordIntent) {
+        when (intent) {
+            is MedicalRecordIntent.NavigateToConsultation -> {
                 _uiState.update {
-                    it.copy(effect = MedicalRecordEffect.NavigateToConsultation(event.consultation))
+                    it.copy(effect = MedicalRecordEffect.NavigateToConsultation(intent.consultation))
                 }
-
-            is MedicalRecordEvent.LoadMedicalRecord -> {
-                getMedicalRecordJob?.cancel()
-                getMedicalRecordJob = launchGetMedicalRecord(event.patientId)
             }
 
-            is MedicalRecordEvent.Refresh -> {
+            is MedicalRecordIntent.LoadMedicalRecord -> {
+                getMedicalRecordJob?.cancel()
+                getMedicalRecordJob = launchGetMedicalRecord(intent.patientId)
+            }
+
+            is MedicalRecordIntent.Refresh -> {
                 _uiState.value.medicalRecord?.patientId?.let { patientId ->
                     getMedicalRecordJob?.cancel()
                     getMedicalRecordJob = launchGetMedicalRecord(patientId)
                 }
             }
 
-            MedicalRecordEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            MedicalRecordIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

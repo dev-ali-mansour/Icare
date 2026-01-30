@@ -2,10 +2,6 @@ package eg.edu.cu.csds.icare.feature.admin.screen.staff.update
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.feature.admin.R
-import eg.edu.cu.csds.icare.feature.admin.screen.staff.StaffEffect
-import eg.edu.cu.csds.icare.feature.admin.screen.staff.StaffEvent
-import eg.edu.cu.csds.icare.feature.admin.screen.staff.StaffState
 import eg.edu.cu.csds.icare.core.domain.model.Staff
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
@@ -15,6 +11,10 @@ import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.domain.util.isValidEmail
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.feature.admin.R
+import eg.edu.cu.csds.icare.feature.admin.screen.staff.StaffEffect
+import eg.edu.cu.csds.icare.feature.admin.screen.staff.StaffIntent
+import eg.edu.cu.csds.icare.feature.admin.screen.staff.StaffState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,45 +47,51 @@ class UpdateStaffViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: StaffEvent) {
-        when (event) {
-            is StaffEvent.UpdateFirstName ->
-                _uiState.update { it.copy(firstName = event.firstName) }
-
-            is StaffEvent.UpdateLastName ->
-                _uiState.update { it.copy(lastName = event.lastName) }
-
-            is StaffEvent.UpdateCenterId ->
-                _uiState.update { it.copy(centerId = event.centerId) }
-
-            is StaffEvent.UpdateCentersExpanded -> {
-                _uiState.update { it.copy(isCentersExpanded = event.isExpanded) }
+    fun handleIntent(intent: StaffIntent) {
+        when (intent) {
+            is StaffIntent.UpdateFirstName -> {
+                _uiState.update { it.copy(firstName = intent.firstName) }
             }
 
-            is StaffEvent.UpdateEmail ->
-                _uiState.update { it.copy(email = event.email) }
+            is StaffIntent.UpdateLastName -> {
+                _uiState.update { it.copy(lastName = intent.lastName) }
+            }
 
-            is StaffEvent.UpdatePhone ->
-                _uiState.update { it.copy(phone = event.phone) }
+            is StaffIntent.UpdateCenterId -> {
+                _uiState.update { it.copy(centerId = intent.centerId) }
+            }
 
-            is StaffEvent.UpdateProfilePicture ->
-                _uiState.update { it.copy(profilePicture = event.profilePicture) }
+            is StaffIntent.UpdateCentersExpanded -> {
+                _uiState.update { it.copy(isCentersExpanded = intent.isExpanded) }
+            }
 
-            is StaffEvent.LoadStaff -> {
+            is StaffIntent.UpdateEmail -> {
+                _uiState.update { it.copy(email = intent.email) }
+            }
+
+            is StaffIntent.UpdatePhone -> {
+                _uiState.update { it.copy(phone = intent.phone) }
+            }
+
+            is StaffIntent.UpdateProfilePicture -> {
+                _uiState.update { it.copy(profilePicture = intent.profilePicture) }
+            }
+
+            is StaffIntent.LoadStaff -> {
                 _uiState.update {
                     it.copy(
-                        id = event.staff.id,
-                        firstName = event.staff.firstName,
-                        lastName = event.staff.lastName,
-                        centerId = event.staff.centerId,
-                        email = event.staff.email,
-                        phone = event.staff.phone,
-                        profilePicture = event.staff.profilePicture,
+                        id = intent.staff.id,
+                        firstName = intent.staff.firstName,
+                        lastName = intent.staff.lastName,
+                        centerId = intent.staff.centerId,
+                        email = intent.staff.email,
+                        phone = intent.staff.phone,
+                        profilePicture = intent.staff.profilePicture,
                     )
                 }
             }
 
-            is StaffEvent.Proceed ->
+            is StaffIntent.Proceed -> {
                 viewModelScope.launch {
                     when {
                         _uiState.value.firstName.isBlank() -> {
@@ -164,8 +170,11 @@ class UpdateStaffViewModel(
                         }
                     }
                 }
+            }
 
-            StaffEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            StaffIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

@@ -1,11 +1,12 @@
 package eg.edu.cu.csds.icare.core.ui.view
 
 import android.content.Context
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,9 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,39 +28,43 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import eg.edu.cu.csds.icare.core.domain.model.Doctor
-import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.theme.BOARDER_SIZE
+import eg.edu.cu.csds.icare.core.ui.theme.MAX_SURFACE_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.cardBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
+import eg.edu.cu.csds.icare.core.ui.util.neumorphicUp
 
 @Composable
 fun DoctorView(
-    doctor: Doctor,
+    name: String,
+    specialty: String,
+    availability: String,
+    profilePicture: String,
     modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
     onClick: () -> Unit,
 ) {
-    Card(
-        onClick = onClick,
+    val context: Context = LocalContext.current
+    Box(
         modifier =
             modifier
-                .fillMaxWidth()
-                .padding(horizontal = M_PADDING, vertical = XS_PADDING),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = cardBackgroundColor,
-            ),
-        elevation = CardDefaults.cardElevation(defaultElevation = XS_PADDING),
-        shape = MaterialTheme.shapes.medium,
+                .background(
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(percent = 20),
+                ).fillMaxWidth()
+                .wrapContentWidth(Alignment.CenterHorizontally)
+                .widthIn(max = MAX_SURFACE_WIDTH)
+                .neumorphicUp(
+                    shape = RoundedCornerShape(percent = 20),
+                    shadowPadding = XS_PADDING,
+                ).clickable {
+                    onClick()
+                },
     ) {
         Row(
             modifier =
@@ -79,7 +85,7 @@ fun DoctorView(
                     rememberAsyncImagePainter(
                         ImageRequest
                             .Builder(context)
-                            .data(data = doctor.profilePicture)
+                            .data(data = profilePicture)
                             .placeholder(R.drawable.core_ui_user_placeholder)
                             .error(R.drawable.core_ui_user_placeholder)
                             .build(),
@@ -95,58 +101,47 @@ fun DoctorView(
                 verticalArrangement = Arrangement.spacedBy(XS_PADDING),
             ) {
                 Text(
-                    text = "${doctor.firstName} ${doctor.lastName}",
+                    text = name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     fontFamily = helveticaFamily,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
+
                 Spacer(modifier = Modifier.width(M_PADDING))
+
                 Text(
-                    text = doctor.specialty,
+                    text = specialty,
                     style = MaterialTheme.typography.bodyMedium,
                     fontFamily = helveticaFamily,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
                 )
                 Spacer(modifier = Modifier.width(M_PADDING))
+
                 Text(
-                    text = doctor.availability,
+                    text = availability,
                     style = MaterialTheme.typography.bodySmall,
                     fontFamily = helveticaFamily,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
-                )
+                    )
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Preview(locale = "ar", showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(locale = "ar", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PreviewLightDark
 @Composable
 fun DoctorCardPreview() {
     MaterialTheme {
         Column(
             modifier =
                 Modifier
-                    .padding(XS_PADDING)
-                    .background(color = backgroundColor),
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .fillMaxWidth()
+                    .padding(M_PADDING),
         ) {
             DoctorView(
-                doctor =
-                    Doctor(
-                        id = "101",
-                        firstName = "Dr. John",
-                        lastName = "Smith",
-                        specialty = "Cardiologist",
-                        fromTime = System.currentTimeMillis(),
-                        toTime = System.currentTimeMillis() + Constants.ONE_DAY,
-                        availability = "10:00 AM - 6:00 PM",
-                        profilePicture = "",
-                        availableSlots = emptyList(),
-                        clinicId = 1,
-                    ),
+                name = "Dr. John Smith",
+                specialty = "Cardiologist",
+                availability = "10:00 AM - 6:00 PM",
+                profilePicture = "",
                 onClick = {},
             )
         }

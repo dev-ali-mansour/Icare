@@ -2,7 +2,6 @@ package eg.edu.cu.csds.icare.feature.auth.screen.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.feature.auth.R
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOutUseCase
@@ -12,13 +11,14 @@ import eg.edu.cu.csds.icare.core.domain.util.isValidEmail
 import eg.edu.cu.csds.icare.core.domain.util.isValidPassword
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.feature.auth.R
+import eg.edu.cu.csds.icare.feature.auth.screen.signup.SignUpEffect.ShowError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -34,218 +34,230 @@ class SignUpViewModel(
     private var signUpJob: Job? = null
     private var signOutJob: Job? = null
 
-    private val _state = MutableStateFlow(SignUpState())
-    val state =
-        _state.stateIn(
+    private val _uiState = MutableStateFlow(SignUpState())
+    val uiState =
+        _uiState.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
-            initialValue = _state.value,
+            initialValue = _uiState.value,
         )
-    private val _singleEvent = MutableSharedFlow<SignUpSingleEvent>()
-    val singleEvent = _singleEvent.asSharedFlow()
 
-    fun processEvent(intent: SignUpIntent) {
+    val effect = uiState.map { it.effect }
+
+    fun handleIntent(intent: SignUpIntent) {
         when (intent) {
             is SignUpIntent.UpdateFirstName -> {
-                _state.update { it.copy(firstName = intent.firstName) }
+                _uiState.update { it.copy(firstName = intent.firstName) }
             }
 
             is SignUpIntent.UpdateLastName -> {
-                _state.value = _state.value.copy(lastName = intent.lastName)
+                _uiState.value = _uiState.value.copy(lastName = intent.lastName)
             }
 
             is SignUpIntent.UpdateEmail -> {
-                _state.update { it.copy(email = intent.email) }
+                _uiState.update { it.copy(email = intent.email) }
             }
 
             is SignUpIntent.UpdateBirthDate -> {
-                _state.update { _state.value.copy(birthDate = intent.birthDate) }
+                _uiState.update { _uiState.value.copy(birthDate = intent.birthDate) }
             }
 
             is SignUpIntent.UpdateGender -> {
-                _state.update { it.copy(gender = intent.gender) }
+                _uiState.update { it.copy(gender = intent.gender) }
             }
 
             is SignUpIntent.UpdateGenderExpanded -> {
-                _state.update { it.copy(isGenderExpanded = intent.isExpanded) }
+                _uiState.update { it.copy(isGenderExpanded = intent.isExpanded) }
             }
 
             is SignUpIntent.UpdateNationalId -> {
-                _state.update { it.copy(nationalId = intent.nationalId) }
+                _uiState.update { it.copy(nationalId = intent.nationalId) }
             }
 
             is SignUpIntent.UpdatePhone -> {
-                _state.update { it.copy(phone = intent.phone) }
+                _uiState.update { it.copy(phone = intent.phone) }
             }
 
             is SignUpIntent.UpdateAddress -> {
-                _state.update { it.copy(address = intent.address) }
+                _uiState.update { it.copy(address = intent.address) }
             }
 
             is SignUpIntent.UpdateWeight -> {
-                _state.update { it.copy(weight = intent.weight) }
+                _uiState.update { it.copy(weight = intent.weight) }
             }
 
             is SignUpIntent.UpdateChronicDiseases -> {
-                _state.update { it.copy(chronicDiseases = intent.chronicDiseases) }
+                _uiState.update { it.copy(chronicDiseases = intent.chronicDiseases) }
             }
 
             is SignUpIntent.UpdateCurrentMedications -> {
-                _state.update { it.copy(currentMedications = intent.currentMedications) }
+                _uiState.update { it.copy(currentMedications = intent.currentMedications) }
             }
 
             is SignUpIntent.UpdateAllergies -> {
-                _state.update { it.copy(allergies = intent.allergies) }
+                _uiState.update { it.copy(allergies = intent.allergies) }
             }
 
             is SignUpIntent.UpdatePastSurgeries -> {
-                _state.update { it.copy(pastSurgeries = intent.pastSurgeries) }
+                _uiState.update { it.copy(pastSurgeries = intent.pastSurgeries) }
             }
 
             is SignUpIntent.UpdatePassword -> {
-                _state.update { it.copy(password = intent.password) }
+                _uiState.update { it.copy(password = intent.password) }
             }
 
             is SignUpIntent.ToggleShowAlert -> {
-                _state.update { it.copy(showAlert = !it.showAlert) }
+                _uiState.update { it.copy(showAlert = !it.showAlert) }
             }
 
             is SignUpIntent.TogglePasswordVisibility -> {
-                _state.update { it.copy(isPasswordVisible = !it.isPasswordVisible) }
+                _uiState.update { it.copy(isPasswordVisible = !it.isPasswordVisible) }
             }
 
-            is SignUpIntent.SubmitSignUp ->
+            is SignUpIntent.SubmitSignUp -> {
                 viewModelScope.launch {
                     when {
-                        _state.value.firstName.isBlank() -> {
-                            _singleEvent.emit(
-                                SignUpSingleEvent
-                                    .ShowError(
-                                        message =
-                                            StringResourceId(
-                                                R.string.feature_auth_error_blank_first_name,
-                                            ),
-                                    ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
+                        _uiState.value.firstName.isBlank() -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        ShowError(
+                                            message =
+                                                StringResourceId(
+                                                    R.string.feature_auth_error_blank_first_name,
+                                                ),
+                                        ),
+                                )
+                            }
                         }
 
-                        _state.value.lastName.isBlank() -> {
-                            _singleEvent.emit(
-                                SignUpSingleEvent
-                                    .ShowError(
-                                        message =
-                                            StringResourceId(
-                                                R.string.feature_auth_error_blank_last_name,
-                                            ),
-                                    ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
+                        _uiState.value.lastName.isBlank() -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        ShowError(
+                                            message =
+                                                StringResourceId(
+                                                    R.string.feature_auth_error_blank_last_name,
+                                                ),
+                                        ),
+                                )
+                            }
                         }
 
-                        !_state.value.email.isValidEmail -> {
-                            _singleEvent.emit(
-                                SignUpSingleEvent
-                                    .ShowError(
-                                        message =
-                                            StringResourceId(
-                                                R.string.feature_auth_error_invalid_email,
-                                            ),
-                                    ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
+                        !_uiState.value.email.isValidEmail -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        ShowError(
+                                            message =
+                                                StringResourceId(R.string.feature_auth_error_invalid_email),
+                                        ),
+                                )
+                            }
                         }
 
-                        _state.value.gender == 0.toShort() -> {
-                            _singleEvent.emit(
-                                SignUpSingleEvent
-                                    .ShowError(
-                                        message =
-                                            StringResourceId(
-                                                R.string.feature_auth_error_invalid_gender,
-                                            ),
-                                    ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
+                        _uiState.value.gender == 0.toShort() -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        ShowError(
+                                            message =
+                                                StringResourceId(R.string.feature_auth_error_invalid_gender),
+                                        ),
+                                )
+                            }
                         }
 
-                        _state.value.phone.isBlank() ||
-                            _state.value.phone.length < Constants.PHONE_LENGTH -> {
-                            _singleEvent.emit(
-                                SignUpSingleEvent
-                                    .ShowError(
-                                        message =
-                                            StringResourceId(
-                                                R.string.feature_auth_error_invalid_phone,
-                                            ),
-                                    ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
+                        _uiState.value.phone.isBlank() ||
+                            _uiState.value.phone.length < Constants.PHONE_LENGTH -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        ShowError(
+                                            message =
+                                                StringResourceId(R.string.feature_auth_error_invalid_phone),
+                                        ),
+                                )
+                            }
                         }
 
-                        _state.value.chronicDiseases.isBlank() -> {
-                            _singleEvent.emit(
-                                SignUpSingleEvent
-                                    .ShowError(
-                                        message =
-                                            StringResourceId(
-                                                R.string.feature_auth_error_blank_chronic_diseases,
-                                            ),
-                                    ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
+                        _uiState.value.chronicDiseases.isBlank() -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        ShowError(
+                                            message =
+                                                StringResourceId(
+                                                    R.string.feature_auth_error_blank_chronic_diseases,
+                                                ),
+                                        ),
+                                )
+                            }
                         }
 
-                        _state.value.currentMedications.isBlank() -> {
-                            _singleEvent.emit(
-                                SignUpSingleEvent
-                                    .ShowError(
-                                        message =
-                                            StringResourceId(
-                                                R.string.feature_auth_error_blank_current_medications,
-                                            ),
-                                    ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
+                        _uiState.value.currentMedications.isBlank() -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        ShowError(
+                                            message =
+                                                StringResourceId(
+                                                    R.string.feature_auth_error_blank_current_medications,
+                                                ),
+                                        ),
+                                )
+                            }
                         }
 
-                        _state.value.allergies.isBlank() -> {
-                            _singleEvent.emit(
-                                SignUpSingleEvent
-                                    .ShowError(
-                                        message =
-                                            StringResourceId(
-                                                R.string.feature_auth_error_blank_allergies,
-                                            ),
-                                    ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
+                        _uiState.value.allergies.isBlank() -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        ShowError(
+                                            message =
+                                                StringResourceId(R.string.feature_auth_error_blank_allergies),
+                                        ),
+                                )
+                            }
                         }
 
-                        _state.value.pastSurgeries.isBlank() -> {
-                            _singleEvent.emit(
-                                SignUpSingleEvent
-                                    .ShowError(
-                                        message =
-                                            StringResourceId(
-                                                R.string.feature_auth_error_blank_past_surgeries,
-                                            ),
-                                    ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
+                        _uiState.value.pastSurgeries.isBlank() -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        ShowError(
+                                            message =
+                                                StringResourceId(
+                                                    R.string.feature_auth_error_blank_past_surgeries,
+                                                ),
+                                        ),
+                                )
+                            }
                         }
 
-                        !_state.value.password.isValidPassword -> {
-                            _singleEvent.emit(
-                                SignUpSingleEvent
-                                    .ShowError(
-                                        message =
-                                            StringResourceId(
-                                                R.string.feature_auth_error_invalid_password,
-                                            ),
-                                    ),
-                            )
-                            _state.update { it.copy(isLoading = false) }
+                        !_uiState.value.password.isValidPassword -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    effect =
+                                        ShowError(
+                                            message =
+                                                StringResourceId(
+                                                    R.string.feature_auth_error_invalid_password,
+                                                ),
+                                        ),
+                                )
+                            }
                         }
 
                         else -> {
@@ -254,29 +266,34 @@ class SignUpViewModel(
                         }
                     }
                 }
+            }
 
-            is SignUpIntent.NavigateToSignInScreen -> Unit
+            is SignUpIntent.NavigateToSignInScreen -> {}
+
+            SignUpIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 
     private fun launchSignUp() =
         viewModelScope.launch(dispatcher) {
-            _state.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(isLoading = true) }
             signUpUseCase(
-                firstName = _state.value.firstName,
-                lastName = _state.value.lastName,
-                email = _state.value.email,
-                birthDate = _state.value.birthDate,
-                gender = if (_state.value.gender == 1.toShort()) "M" else "F",
-                nationalId = _state.value.nationalId,
-                phone = _state.value.phone,
-                address = _state.value.address,
-                weight = _state.value.weight,
-                chronicDiseases = _state.value.chronicDiseases,
-                currentMedications = _state.value.currentMedications,
-                allergies = _state.value.allergies,
-                pastSurgeries = _state.value.pastSurgeries,
-                password = _state.value.password,
+                firstName = _uiState.value.firstName,
+                lastName = _uiState.value.lastName,
+                email = _uiState.value.email,
+                birthDate = _uiState.value.birthDate,
+                gender = if (_uiState.value.gender == 1.toShort()) "M" else "F",
+                nationalId = _uiState.value.nationalId,
+                phone = _uiState.value.phone,
+                address = _uiState.value.address,
+                weight = _uiState.value.weight,
+                chronicDiseases = _uiState.value.chronicDiseases,
+                currentMedications = _uiState.value.currentMedications,
+                allergies = _uiState.value.allergies,
+                pastSurgeries = _uiState.value.pastSurgeries,
+                password = _uiState.value.password,
             ).onEach { result ->
                 result
                     .onSuccess {
@@ -286,30 +303,37 @@ class SignUpViewModel(
                                 .onEach { signOutResult ->
                                     signOutResult
                                         .onSuccess {
-                                            _singleEvent.emit(
-                                                SignUpSingleEvent
-                                                    .ShowInfo(
-                                                        message =
-                                                            StringResourceId(
-                                                                R.string.feature_auth_register_message,
-                                                            ),
-                                                    ),
-                                            )
-                                            _state.update { it.copy(isLoading = false) }
+                                            _uiState.update {
+                                                it.copy(
+                                                    isLoading = false,
+                                                    effect =
+                                                        SignUpEffect.ShowInfo(
+                                                            message =
+                                                                StringResourceId(
+                                                                    R.string.feature_auth_register_message,
+                                                                ),
+                                                        ),
+                                                )
+                                            }
                                         }.onError { error ->
-                                            _singleEvent.emit(
-                                                SignUpSingleEvent
-                                                    .ShowError(message = error.toUiText()),
-                                            )
-                                            _state.update { it.copy(isLoading = false) }
+                                            _uiState.update {
+                                                it.copy(
+                                                    isLoading = false,
+                                                    effect =
+                                                        SignUpEffect.ShowError(
+                                                            message = error.toUiText(),
+                                                        ),
+                                                )
+                                            }
                                         }
                                 }.launchIn(viewModelScope)
                     }.onError { error ->
-                        _singleEvent.emit(
-                            SignUpSingleEvent
-                                .ShowError(message = error.toUiText()),
-                        )
-                        _state.update { it.copy(isLoading = false) }
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                effect = SignUpEffect.ShowError(message = error.toUiText()),
+                            )
+                        }
                     }
             }.launchIn(viewModelScope)
         }

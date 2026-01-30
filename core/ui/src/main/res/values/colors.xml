@@ -3,6 +3,6 @@
     <color name="core_ui_blue_500">#FF024680</color>
     <color name="core_ui_blue_700">#FF01345F</color>
     <color name="core_ui_blue_200">#FF30AEC5</color>
-    <color name="core_ui_black">#FF000000</color>
-    <color name="core_ui_white">#FFFFFFFF</color>
+    <color name="core_ui_splash_background_light">#FFF8F9FA</color>
+    <color name="core_ui_splash_background_dark">#FF444444</color>
 </resources>

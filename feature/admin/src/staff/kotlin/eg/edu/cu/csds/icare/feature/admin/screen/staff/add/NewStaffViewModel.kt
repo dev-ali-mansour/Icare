@@ -2,10 +2,6 @@ package eg.edu.cu.csds.icare.feature.admin.screen.staff.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.feature.admin.R
-import eg.edu.cu.csds.icare.feature.admin.screen.staff.StaffEffect
-import eg.edu.cu.csds.icare.feature.admin.screen.staff.StaffEvent
-import eg.edu.cu.csds.icare.feature.admin.screen.staff.StaffState
 import eg.edu.cu.csds.icare.core.domain.model.Staff
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
@@ -15,6 +11,10 @@ import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.domain.util.isValidEmail
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.feature.admin.R
+import eg.edu.cu.csds.icare.feature.admin.screen.staff.StaffEffect
+import eg.edu.cu.csds.icare.feature.admin.screen.staff.StaffIntent
+import eg.edu.cu.csds.icare.feature.admin.screen.staff.StaffState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,33 +48,41 @@ class NewStaffViewModel(
 
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: StaffEvent) {
-        when (event) {
-            is StaffEvent.UpdateFirstName ->
-                _uiState.update { it.copy(firstName = event.firstName) }
-
-            is StaffEvent.UpdateLastName ->
-                _uiState.update { it.copy(lastName = event.lastName) }
-
-            is StaffEvent.UpdateCenterId ->
-                _uiState.update { it.copy(centerId = event.centerId) }
-
-            is StaffEvent.UpdateCentersExpanded -> {
-                _uiState.update { it.copy(isCentersExpanded = event.isExpanded) }
+    fun handleIntent(intent: StaffIntent) {
+        when (intent) {
+            is StaffIntent.UpdateFirstName -> {
+                _uiState.update { it.copy(firstName = intent.firstName) }
             }
 
-            is StaffEvent.UpdateEmail ->
-                _uiState.update { it.copy(email = event.email) }
+            is StaffIntent.UpdateLastName -> {
+                _uiState.update { it.copy(lastName = intent.lastName) }
+            }
 
-            is StaffEvent.UpdatePhone ->
-                _uiState.update { it.copy(phone = event.phone) }
+            is StaffIntent.UpdateCenterId -> {
+                _uiState.update { it.copy(centerId = intent.centerId) }
+            }
 
-            is StaffEvent.UpdateProfilePicture ->
-                _uiState.update { it.copy(profilePicture = event.profilePicture) }
+            is StaffIntent.UpdateCentersExpanded -> {
+                _uiState.update { it.copy(isCentersExpanded = intent.isExpanded) }
+            }
 
-            is StaffEvent.LoadStaff -> Unit
+            is StaffIntent.UpdateEmail -> {
+                _uiState.update { it.copy(email = intent.email) }
+            }
 
-            is StaffEvent.Proceed ->
+            is StaffIntent.UpdatePhone -> {
+                _uiState.update { it.copy(phone = intent.phone) }
+            }
+
+            is StaffIntent.UpdateProfilePicture -> {
+                _uiState.update { it.copy(profilePicture = intent.profilePicture) }
+            }
+
+            is StaffIntent.LoadStaff -> {
+                Unit
+            }
+
+            is StaffIntent.Proceed -> {
                 viewModelScope.launch {
                     when {
                         _uiState.value.firstName.isBlank() -> {
@@ -153,8 +161,11 @@ class NewStaffViewModel(
                         }
                     }
                 }
+            }
 
-            StaffEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            StaffIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

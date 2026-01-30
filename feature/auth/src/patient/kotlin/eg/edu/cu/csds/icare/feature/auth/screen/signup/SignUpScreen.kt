@@ -1,7 +1,6 @@
 package eg.edu.cu.csds.icare.feature.auth.screen.signup
 
 import android.content.Context
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -31,6 +30,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -57,7 +59,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -66,88 +69,90 @@ import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
 import eg.edu.cu.csds.icare.core.ui.R.drawable
 import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.GenderItem
+import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.theme.Blue200
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.TEXT_AREA_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.XL4_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
+
 import eg.edu.cu.csds.icare.core.ui.theme.buttonBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.dropDownTextColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
-import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.feature.auth.R
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun SignUpScreen(
-    viewModel: SignUpViewModel = koinViewModel(),
     navigateToScreen: (Route) -> Unit,
     onSignUpSuccess: () -> Unit,
-    context: Context = LocalContext.current,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    var alertMessage by remember { mutableStateOf("") }
-    var showAlert by remember { mutableStateOf(false) }
+    val viewModel: SignUpViewModel = koinViewModel()
+    val context: Context = LocalContext.current
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(Unit) {
-        viewModel.singleEvent.collect { event ->
-            when (event) {
-                is SignUpSingleEvent.LoginSuccess -> onSignUpSuccess()
-                is SignUpSingleEvent.ShowError -> {
-                    alertMessage = event.message.asString(context)
-                    showAlert = true
-                    delay(timeMillis = 3000)
-                    showAlert = false
+    LaunchedUiEffectHandler(
+        viewModel.effect,
+        onConsumeEffect = { viewModel.handleIntent(SignUpIntent.ConsumeEffect) },
+        onEffect = { effect ->
+            when (effect) {
+                is SignUpEffect.SignUpSuccess -> {
+                    onSignUpSuccess()
                 }
 
-                is SignUpSingleEvent.ShowInfo -> {
-                    alertMessage = event.message.asString(context)
-                    showAlert = true
-                    delay(timeMillis = 3000)
-                    showAlert = false
+                is SignUpEffect.ShowError -> {
+                    snackbarHostState.showSnackbar(
+                        message = effect.message.asString(context),
+                        duration = SnackbarDuration.Short,
+                    )
+                }
+
+                is SignUpEffect.ShowInfo -> {
+                    snackbarHostState.showSnackbar(
+                        message = effect.message.asString(context),
+                        duration = SnackbarDuration.Short,
+                    )
                 }
             }
-        }
-    }
+        },
+    )
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-    ) { paddingValues ->
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+    ) { innerPadding ->
 
         Box(
             modifier =
                 Modifier
-                    .background(color = backgroundColor)
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(innerPadding),
             contentAlignment = Alignment.BottomCenter,
         ) {
             SignUpContent(
                 state = state,
-                onEvent = { intent ->
+                onIntent = { intent ->
                     when (intent) {
                         is SignUpIntent.NavigateToSignInScreen -> {
                             navigateToScreen(Route.SignIn)
                         }
 
-                        else -> viewModel.processEvent(intent)
+                        else -> {
+                            viewModel.handleIntent(intent)
+                        }
                     }
                 },
-                context = context,
             )
-
-            if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
         }
     }
 }
@@ -156,9 +161,9 @@ internal fun SignUpScreen(
 @Composable
 private fun SignUpContent(
     state: SignUpState,
-    onEvent: (SignUpIntent) -> Unit,
-    context: Context = LocalContext.current,
+    onIntent: (SignUpIntent) -> Unit,
 ) {
+    val context: Context = LocalContext.current
     val genders =
         listOf(
             GenderItem(code = 1, textResId = string.core_ui_male),
@@ -177,7 +182,7 @@ private fun SignUpContent(
                 TextButton(
                     onClick = {
                         datePickerState.selectedDateMillis?.let {
-                            onEvent(SignUpIntent.UpdateBirthDate(it))
+                            onIntent(SignUpIntent.UpdateBirthDate(it))
                         }
                         showDatePicker = false
                     },
@@ -275,13 +280,12 @@ private fun SignUpContent(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .background(backgroundColor)
                         .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 TextField(
                     value = state.firstName,
-                    onValueChange = { onEvent(SignUpIntent.UpdateFirstName(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateFirstName(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_auth_first_name),
@@ -314,7 +318,7 @@ private fun SignUpContent(
 
                 TextField(
                     value = state.lastName,
-                    onValueChange = { onEvent(SignUpIntent.UpdateLastName(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateLastName(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_auth_last_name),
@@ -346,7 +350,7 @@ private fun SignUpContent(
 
                 TextField(
                     value = state.email,
-                    onValueChange = { onEvent(SignUpIntent.UpdateEmail(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateEmail(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_auth_email),
@@ -429,7 +433,7 @@ private fun SignUpContent(
                 ExposedDropdownMenuBox(
                     modifier = Modifier.fillMaxWidth(fraction = 0.8f),
                     expanded = state.isGenderExpanded,
-                    onExpandedChange = { onEvent(SignUpIntent.UpdateGenderExpanded(it)) },
+                    onExpandedChange = { onIntent(SignUpIntent.UpdateGenderExpanded(it)) },
                 ) {
                     OutlinedTextField(
                         modifier =
@@ -457,8 +461,8 @@ private fun SignUpContent(
                             ExposedDropdownMenuDefaults.textFieldColors(
                                 focusedTextColor = Color.White,
                                 unfocusedTextColor = Color.White,
-                                focusedContainerColor = barBackgroundColor,
-                                unfocusedContainerColor = barBackgroundColor,
+                                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                                 unfocusedTrailingIconColor = Color.White,
                                 focusedTrailingIconColor = Color.White,
                                 focusedLabelColor = Color.White,
@@ -469,7 +473,7 @@ private fun SignUpContent(
                     ExposedDropdownMenu(
                         expanded = state.isGenderExpanded,
                         onDismissRequest = {
-                            onEvent(SignUpIntent.UpdateGenderExpanded(false))
+                            onIntent(SignUpIntent.UpdateGenderExpanded(false))
                         },
                     ) {
                         genders.forEach {
@@ -481,8 +485,8 @@ private fun SignUpContent(
                                     )
                                 },
                                 onClick = {
-                                    onEvent(SignUpIntent.UpdateGender(it.code))
-                                    onEvent(SignUpIntent.UpdateGenderExpanded(false))
+                                    onIntent(SignUpIntent.UpdateGender(it.code))
+                                    onIntent(SignUpIntent.UpdateGenderExpanded(false))
                                 },
                             )
                         }
@@ -491,7 +495,7 @@ private fun SignUpContent(
 
                 TextField(
                     value = state.nationalId,
-                    onValueChange = { if (it.length < 15) onEvent(SignUpIntent.UpdateNationalId(it)) },
+                    onValueChange = { if (it.length < 15) onIntent(SignUpIntent.UpdateNationalId(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_auth_national_id),
@@ -522,7 +526,7 @@ private fun SignUpContent(
                 )
                 TextField(
                     value = state.phone,
-                    onValueChange = { if (it.length < 14) onEvent(SignUpIntent.UpdatePhone(it)) },
+                    onValueChange = { if (it.length < 14) onIntent(SignUpIntent.UpdatePhone(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_auth_phone_number),
@@ -554,7 +558,7 @@ private fun SignUpContent(
 
                 TextField(
                     value = state.address,
-                    onValueChange = { onEvent(SignUpIntent.UpdateAddress(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateAddress(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_auth_address),
@@ -588,7 +592,7 @@ private fun SignUpContent(
                     value = state.weight.toString(),
                     onValueChange = {
                         runCatching {
-                            onEvent(SignUpIntent.UpdateWeight(if (it.isEmpty()) 0.0 else it.toDouble()))
+                            onIntent(SignUpIntent.UpdateWeight(if (it.isEmpty()) 0.0 else it.toDouble()))
                         }
                     },
                     label = {
@@ -623,7 +627,7 @@ private fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.chronicDiseases,
-                    onValueChange = { onEvent(SignUpIntent.UpdateChronicDiseases(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateChronicDiseases(it)) },
                     label = {
                         Text(
                             text =
@@ -667,7 +671,7 @@ private fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.currentMedications,
-                    onValueChange = { onEvent(SignUpIntent.UpdateCurrentMedications(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateCurrentMedications(it)) },
                     label = {
                         Text(
                             text = stringResource(string.core_ui_current_medications),
@@ -708,7 +712,7 @@ private fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.allergies,
-                    onValueChange = { onEvent(SignUpIntent.UpdateAllergies(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdateAllergies(it)) },
                     label = {
                         Text(
                             text = stringResource(string.core_ui_allergies),
@@ -745,7 +749,7 @@ private fun SignUpContent(
 
                 OutlinedTextField(
                     value = state.pastSurgeries,
-                    onValueChange = { onEvent(SignUpIntent.UpdatePastSurgeries(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdatePastSurgeries(it)) },
                     label = {
                         Text(
                             text = stringResource(string.core_ui_past_surgeries),
@@ -782,7 +786,7 @@ private fun SignUpContent(
 
                 TextField(
                     value = state.password,
-                    onValueChange = { onEvent(SignUpIntent.UpdatePassword(it)) },
+                    onValueChange = { onIntent(SignUpIntent.UpdatePassword(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.feature_auth_password),
@@ -806,7 +810,7 @@ private fun SignUpContent(
                         ),
                     trailingIcon = {
                         IconButton(
-                            onClick = { onEvent(SignUpIntent.TogglePasswordVisibility) },
+                            onClick = { onIntent(SignUpIntent.TogglePasswordVisibility) },
                         ) {
                             Icon(
                                 painter =
@@ -840,7 +844,7 @@ private fun SignUpContent(
                             .fillMaxWidth(fraction = 0.6f),
                     text = stringResource(R.string.feature_auth_sign_up),
                     color = buttonBackgroundColor,
-                    onClick = { onEvent(SignUpIntent.SubmitSignUp) },
+                    onClick = { onIntent(SignUpIntent.SubmitSignUp) },
                 )
 
                 Spacer(modifier = Modifier.height(L_PADDING))
@@ -852,7 +856,7 @@ private fun SignUpContent(
                     color = textColor,
                     modifier =
                         Modifier
-                            .clickable { onEvent(SignUpIntent.NavigateToSignInScreen) },
+                            .clickable { onIntent(SignUpIntent.NavigateToSignInScreen) },
                 )
             }
         }
@@ -871,16 +875,17 @@ private fun SignUpContent(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 private fun SignUpContentPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        SignUpContent(
-            state = SignUpState(),
-            onEvent = {},
-        )
+    IcareTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            SignUpContent(
+                state = SignUpState(),
+                onIntent = {},
+            )
+        }
     }
 }

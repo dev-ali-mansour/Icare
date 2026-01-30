@@ -3,11 +3,12 @@ package eg.edu.cu.csds.icare.feature.consultation.navigation
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
+import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.feature.appointment.screen.SelectedAppointmentViewModel
-import eg.edu.cu.csds.icare.feature.consultation.screen.ConsultationEvent
-import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordEvent
+import eg.edu.cu.csds.icare.feature.consultation.screen.ConsultationIntent
+import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordIntent
 import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordScreen
 import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordViewModel
 import eg.edu.cu.csds.icare.feature.consultation.screen.SelectedConsultationViewModel
@@ -16,17 +17,16 @@ import eg.edu.cu.csds.icare.feature.consultation.screen.add.NewConsultationScree
 import eg.edu.cu.csds.icare.feature.consultation.screen.add.NewConsultationViewModel
 import eg.edu.cu.csds.icare.feature.consultation.screen.update.UpdateConsultationScreen
 import eg.edu.cu.csds.icare.feature.consultation.screen.update.UpdateConsultationViewModel
-import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import org.koin.androidx.compose.koinViewModel
 
-fun NavGraphBuilder.consultationsRoute(
+fun EntryProviderScope<NavKey>.consultationsEntryBuilder(
     selectedAppointmentViewModel: SelectedAppointmentViewModel,
     selectedConsultationViewModel: SelectedConsultationViewModel,
     selectedPatientViewModel: SelectedPatientViewModel,
-    navigateUp: () -> Unit,
+    onNavigationIconClicked: () -> Unit,
     navigateToRoute: (Route) -> Unit,
 ) {
-    composable<Route.PatientMedicalRecord> {
+    entry<Route.PatientMedicalRecord> {
         LaunchedEffect(true) {
             selectedConsultationViewModel.onSelectConsultation(null)
         }
@@ -36,12 +36,12 @@ fun NavGraphBuilder.consultationsRoute(
             .collectAsStateWithLifecycle()
         LaunchedEffect(selectedPatientId) {
             selectedPatientId?.let { patientId ->
-                viewModel.processEvent(MedicalRecordEvent.LoadMedicalRecord(patientId))
+                viewModel.handleIntent(MedicalRecordIntent.LoadMedicalRecord(patientId))
             }
         }
 
         MedicalRecordScreen(
-            navigateUp = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             navigateToConsultationRoute = {
                 selectedConsultationViewModel.onSelectConsultation(it)
                 navigateToRoute(Route.UpdateConsultation)
@@ -49,17 +49,17 @@ fun NavGraphBuilder.consultationsRoute(
         )
     }
 
-    composable<Route.NewConsultation> {
+    entry<Route.NewConsultation> {
         val viewModel: NewConsultationViewModel = koinViewModel()
         val selectedAppointment by selectedAppointmentViewModel.selectedAppointment
             .collectAsStateWithLifecycle()
         LaunchedEffect(selectedAppointment) {
             selectedAppointment?.let { appointment ->
-                viewModel.processEvent(ConsultationEvent.UpdateAppointment(appointment))
+                viewModel.handleIntent(ConsultationIntent.UpdateAppointment(appointment))
             }
         }
         NewConsultationScreen(
-            navigateUp = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             navigateToMedicalRecord = {
                 selectedPatientViewModel.onSelectPatientId(it)
                 navigateToRoute(Route.PatientMedicalRecord)
@@ -67,18 +67,18 @@ fun NavGraphBuilder.consultationsRoute(
         )
     }
 
-    composable<Route.UpdateConsultation> {
+    entry<Route.UpdateConsultation> {
         val viewModel: UpdateConsultationViewModel = koinViewModel()
         val selectedConsultation by selectedConsultationViewModel.selectedConsultation
             .collectAsStateWithLifecycle()
         LaunchedEffect(selectedConsultation) {
             selectedConsultation?.let { consultation ->
-                viewModel.processEvent(ConsultationEvent.LoadConsultation(consultation))
+                viewModel.handleIntent(ConsultationIntent.LoadConsultation(consultation))
             }
         }
 
         UpdateConsultationScreen(
-            navigateUp = { navigateUp() },
+            onNavigationIconClicked = { onNavigationIconClicked() },
             navigateToMedicalRecord = {
                 selectedPatientViewModel.onSelectPatientId(it)
                 navigateToRoute(Route.PatientMedicalRecord)

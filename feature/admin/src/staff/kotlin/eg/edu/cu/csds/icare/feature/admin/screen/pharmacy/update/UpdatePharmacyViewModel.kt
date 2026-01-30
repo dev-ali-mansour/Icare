@@ -2,10 +2,6 @@ package eg.edu.cu.csds.icare.feature.admin.screen.pharmacy.update
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.feature.admin.R
-import eg.edu.cu.csds.icare.feature.admin.screen.pharmacy.PharmacyEffect
-import eg.edu.cu.csds.icare.feature.admin.screen.pharmacy.PharmacyEvent
-import eg.edu.cu.csds.icare.feature.admin.screen.pharmacy.PharmacyState
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
@@ -13,6 +9,10 @@ import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.UpdatePharmacyUseCase
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.feature.admin.R
+import eg.edu.cu.csds.icare.feature.admin.screen.pharmacy.PharmacyEffect
+import eg.edu.cu.csds.icare.feature.admin.screen.pharmacy.PharmacyIntent
+import eg.edu.cu.csds.icare.feature.admin.screen.pharmacy.PharmacyState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,35 +41,35 @@ class UpdatePharmacyViewModel(
             )
     val effect = _uiState.map { it.effect }
 
-    fun processEvent(event: PharmacyEvent) {
-        when (event) {
-            is PharmacyEvent.UpdateName -> {
-                _uiState.update { it.copy(name = event.name) }
+    fun handleIntent(intent: PharmacyIntent) {
+        when (intent) {
+            is PharmacyIntent.UpdateName -> {
+                _uiState.update { it.copy(name = intent.name) }
             }
 
-            is PharmacyEvent.UpdatePhone -> {
-                _uiState.update { it.copy(phone = event.phone) }
+            is PharmacyIntent.UpdatePhone -> {
+                _uiState.update { it.copy(phone = intent.phone) }
             }
 
-            is PharmacyEvent.UpdateAddress -> {
-                _uiState.update { it.copy(address = event.address) }
+            is PharmacyIntent.UpdateAddress -> {
+                _uiState.update { it.copy(address = intent.address) }
             }
 
-            is PharmacyEvent.LoadPharmacy -> {
+            is PharmacyIntent.LoadPharmacy -> {
                 _uiState.update {
                     it.copy(
-                        id = event.pharmacy.id,
-                        name = event.pharmacy.name,
-                        phone = event.pharmacy.phone,
-                        address = event.pharmacy.address,
+                        id = intent.pharmacy.id,
+                        name = intent.pharmacy.name,
+                        phone = intent.pharmacy.phone,
+                        address = intent.pharmacy.address,
                     )
                 }
             }
 
-            is PharmacyEvent.Proceed ->
+            is PharmacyIntent.Proceed -> {
                 viewModelScope.launch {
                     when {
-                        _uiState.value.name.isBlank() ->
+                        _uiState.value.name.isBlank() -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -79,9 +79,10 @@ class UpdatePharmacyViewModel(
                                         ),
                                 )
                             }
+                        }
 
                         _uiState.value.phone.isBlank() ||
-                            _uiState.value.phone.length < Constants.PHONE_LENGTH ->
+                            _uiState.value.phone.length < Constants.PHONE_LENGTH -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -91,8 +92,9 @@ class UpdatePharmacyViewModel(
                                         ),
                                 )
                             }
+                        }
 
-                        _uiState.value.address.isBlank() ->
+                        _uiState.value.address.isBlank() -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -102,6 +104,7 @@ class UpdatePharmacyViewModel(
                                         ),
                                 )
                             }
+                        }
 
                         else -> {
                             updatePharmacyJob?.cancel()
@@ -109,8 +112,11 @@ class UpdatePharmacyViewModel(
                         }
                     }
                 }
+            }
 
-            PharmacyEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            PharmacyIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

@@ -28,9 +28,6 @@ enum class FlavorDimension {
     App,
 }
 
-// The content for the App can either come from local static data which is useful for demo
-// purposes, or from a production backend server which supplies up-to-date, real content.
-// These two product flavors reflect this behaviour.
 enum class Flavor(
     val dimension: FlavorDimension,
     val applicationIdSuffix: String? = null,
@@ -48,8 +45,8 @@ enum class Flavor(
     ),
 }
 
-fun configureFlavors(
-    commonExtension: CommonExtension<*, *, *, *, *, *>,
+internal fun configureFlavors(
+    commonExtension: CommonExtension,
     flavorConfigurationBlock: ProductFlavor.(flavor: Flavor) -> Unit = {},
 ) {
     commonExtension.apply {
@@ -57,12 +54,13 @@ fun configureFlavors(
             flavorDimensions += flavorDimension.name.lowercase()
         }
 
-        productFlavors {
+        productFlavors.apply {
             Flavor.entries.forEach { flavor ->
                 register(flavor.name.lowercase()) {
                     dimension = flavor.dimension.name.lowercase()
                     flavorConfigurationBlock(this, flavor)
-                    if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {
+
+                    if (commonExtension is ApplicationExtension && this is ApplicationProductFlavor) {
                         flavor.applicationIdSuffix?.let { suffix ->
                             applicationIdSuffix = suffix
                         }
