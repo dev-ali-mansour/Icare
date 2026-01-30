@@ -1,6 +1,5 @@
 package eg.edu.cu.csds.icare.feature.admin.screen
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,33 +11,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SecondaryScrollableTabRow
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import eg.edu.cu.csds.icare.feature.admin.screen.center.list.CenterListSection
-import eg.edu.cu.csds.icare.feature.admin.screen.clinic.list.ClinicListSection
-import eg.edu.cu.csds.icare.feature.admin.screen.clinician.list.ClinicianListSection
-import eg.edu.cu.csds.icare.feature.admin.screen.doctor.list.DoctorListSection
-import eg.edu.cu.csds.icare.feature.admin.screen.pharmacist.list.PharmacistListSection
-import eg.edu.cu.csds.icare.feature.admin.screen.pharmacy.list.PharmacyListSection
-import eg.edu.cu.csds.icare.feature.admin.screen.staff.list.StaffListSection
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.Clinician
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
@@ -49,17 +36,25 @@ import eg.edu.cu.csds.icare.core.domain.model.Staff
 import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.common.SectionCategory
 import eg.edu.cu.csds.icare.core.ui.common.SectionItem
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.MEDIUM_ICON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.TAB_INDICATOR_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.TAB_INDICATOR_ROUND_CORNER_SIZE
+import eg.edu.cu.csds.icare.core.ui.theme.TabRowContainerColor
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow700
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
-import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
+import eg.edu.cu.csds.icare.core.ui.util.UiText
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
+import eg.edu.cu.csds.icare.feature.admin.screen.center.list.CenterListSection
+import eg.edu.cu.csds.icare.feature.admin.screen.clinic.list.ClinicListSection
+import eg.edu.cu.csds.icare.feature.admin.screen.clinician.list.ClinicianListSection
+import eg.edu.cu.csds.icare.feature.admin.screen.doctor.list.DoctorListSection
+import eg.edu.cu.csds.icare.feature.admin.screen.pharmacist.list.PharmacistListSection
+import eg.edu.cu.csds.icare.feature.admin.screen.pharmacy.list.PharmacyListSection
+import eg.edu.cu.csds.icare.feature.admin.screen.staff.list.StaffListSection
+import timber.log.Timber
 
 @Composable
 internal fun AdminContent(
@@ -76,11 +71,8 @@ internal fun AdminContent(
     navigateToPharmacistDetails: (Pharmacist) -> Unit,
     navigateToCenterDetails: (LabImagingCenter) -> Unit,
     navigateToStaffDetails: (Staff) -> Unit,
+    onError: suspend (UiText) -> Unit,
 ) {
-    rememberCoroutineScope()
-    var alertMessage by remember { mutableStateOf("") }
-    var showAlert by remember { mutableStateOf(false) }
-
     ConstraintLayout(
         modifier =
             modifier
@@ -90,7 +82,7 @@ internal fun AdminContent(
     ) {
         val (tabRow, subTabRow, content) = createRefs()
 
-        ScrollableTabRow(
+        SecondaryScrollableTabRow(
             selectedTabIndex = selectedCategoryTabIndex,
             modifier =
                 Modifier.constrainAs(tabRow) {
@@ -99,17 +91,17 @@ internal fun AdminContent(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
-            containerColor = contentBackgroundColor,
+            containerColor = TabRowContainerColor,
             contentColor = Yellow700,
-            indicator = { tabPositions ->
+            indicator = {
                 Box(
                     modifier =
                         Modifier
-                            .tabIndicatorOffset(tabPositions[selectedCategoryTabIndex])
+                            .tabIndicatorOffset(selectedCategoryTabIndex)
                             .height(TAB_INDICATOR_HEIGHT)
                             .clip(RoundedCornerShape(TAB_INDICATOR_ROUND_CORNER_SIZE))
                             .background(
-                                color = barBackgroundColor,
+                                color = MaterialTheme.colorScheme.primary,
                                 shape = RoundedCornerShape(TAB_INDICATOR_ROUND_CORNER_SIZE),
                             ),
                 )
@@ -124,7 +116,7 @@ internal fun AdminContent(
                     text = {
                         Text(
                             text = stringResource(category.titleResId),
-                            color = barBackgroundColor,
+                            color = MaterialTheme.colorScheme.primary,
                             fontSize = MaterialTheme.typography.titleSmall.fontSize,
                             fontFamily = helveticaFamily,
                             fontWeight = FontWeight.Bold,
@@ -132,13 +124,13 @@ internal fun AdminContent(
                             maxLines = 1,
                         )
                     },
-                    selectedContentColor = barBackgroundColor,
-                    unselectedContentColor = barBackgroundColor,
+                    selectedContentColor = MaterialTheme.colorScheme.primary,
+                    unselectedContentColor = MaterialTheme.colorScheme.primary,
                 )
             }
         }
 
-        TabRow(
+        SecondaryTabRow(
             selectedTabIndex = selectedSectionTabIndex,
             modifier =
                 Modifier.constrainAs(subTabRow) {
@@ -147,30 +139,30 @@ internal fun AdminContent(
                     end.linkTo(tabRow.end)
                     width = Dimension.fillToConstraints
                 },
-            containerColor = contentBackgroundColor,
+            containerColor = TabRowContainerColor,
             contentColor = Yellow700,
-            indicator = { tabPositions ->
+            indicator = {
                 Box(
                     modifier =
                         Modifier
-                            .tabIndicatorOffset(tabPositions[selectedSectionTabIndex])
+                            .tabIndicatorOffset(selectedSectionTabIndex)
                             .height(TAB_INDICATOR_HEIGHT)
                             .clip(RoundedCornerShape(TAB_INDICATOR_ROUND_CORNER_SIZE))
                             .background(
-                                color = barBackgroundColor,
+                                color = MaterialTheme.colorScheme.primary,
                                 shape = RoundedCornerShape(TAB_INDICATOR_ROUND_CORNER_SIZE),
                             ),
                 )
             },
         ) {
-            adminCategories[selectedCategoryTabIndex].sections.forEachIndexed { index, section ->
+            adminCategories[selectedCategoryTabIndex].sections.forEachIndexed { sectionIndex, section ->
                 Tab(
-                    selected = selectedSectionTabIndex == index,
-                    onClick = { onSectionTabClicked(index) },
+                    selected = selectedSectionTabIndex == sectionIndex,
+                    onClick = { onSectionTabClicked(sectionIndex) },
                     text = {
                         Text(
                             text = stringResource(section.titleResId),
-                            color = barBackgroundColor,
+                            color = MaterialTheme.colorScheme.primary,
                             fontSize = MaterialTheme.typography.titleSmall.fontSize,
                             fontFamily = helveticaFamily,
                             fontWeight = FontWeight.Bold,
@@ -185,8 +177,8 @@ internal fun AdminContent(
                             contentDescription = null,
                         )
                     },
-                    selectedContentColor = barBackgroundColor,
-                    unselectedContentColor = barBackgroundColor,
+                    selectedContentColor = MaterialTheme.colorScheme.primary,
+                    unselectedContentColor = MaterialTheme.colorScheme.primary,
                 )
             }
         }
@@ -204,84 +196,101 @@ internal fun AdminContent(
                     },
         ) {
             when (selectedCategoryTabIndex) {
-                0 ->
+                0 -> {
                     when (selectedSectionTabIndex) {
-                        0 ->
+                        0 -> {
                             ClinicListSection(
                                 navigateToClinicDetails = { navigateToClinicDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
+                                onError = onError,
                             )
+                        }
 
-                        1 ->
+                        1 -> {
                             DoctorListSection(
                                 navigateToDoctorDetails = { navigateToDoctorDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
+                                onError = onError,
                             )
+                        }
 
-                        2 ->
+                        2 -> {
                             ClinicianListSection(
                                 navigateToClinicianDetails = { navigateToClinicianDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
+                                onError = onError,
                             )
+                        }
                     }
+                }
 
-                1 ->
+                1 -> {
                     when (selectedSectionTabIndex) {
-                        0 ->
+                        0 -> {
                             PharmacyListSection(
                                 navigateToPharmacyDetails = { navigateToPharmacyDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
+                                onError = onError,
                             )
+                        }
 
-                        1 ->
+                        1 -> {
                             PharmacistListSection(
                                 navigateToPharmacistDetails = { navigateToPharmacistDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
+                                onError = onError,
                             )
+                        }
                     }
+                }
 
-                2 ->
+                2 -> {
                     when (selectedSectionTabIndex) {
-                        0 ->
+                        0 -> {
                             CenterListSection(
                                 navigateToCenterDetails = { navigateToCenterDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
+                                onError = onError,
                             )
+                        }
 
-                        1 ->
+                        1 -> {
                             StaffListSection(
                                 navigateToStaffDetails = { navigateToStaffDetails(it) },
                                 onExpandStateChanged = { onExpandStateChanged(it) },
+                                onError = onError,
                             )
+                        }
                     }
+                }
             }
         }
     }
-
-    if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 internal fun AdminContentPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        AdminContent(
-            selectedCategoryTabIndex = 0,
-            selectedSectionTabIndex = 0,
-            onCategoryTabClicked = {},
-            onSectionTabClicked = {},
-            onExpandStateChanged = {},
-            navigateToClinicDetails = {},
-            navigateToDoctorDetails = {},
-            navigateToClinicianDetails = {},
-            navigateToPharmacyDetails = {},
-            navigateToPharmacistDetails = {},
-            navigateToCenterDetails = {},
-            navigateToStaffDetails = {},
-        )
+    IcareTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            AdminContent(
+                selectedCategoryTabIndex = 0,
+                selectedSectionTabIndex = 0,
+                onCategoryTabClicked = {},
+                onSectionTabClicked = {},
+                onExpandStateChanged = {},
+                navigateToClinicDetails = {},
+                navigateToDoctorDetails = {},
+                navigateToClinicianDetails = {},
+                navigateToPharmacyDetails = {},
+                navigateToPharmacistDetails = {},
+                navigateToCenterDetails = {},
+                navigateToStaffDetails = {},
+                onError = {},
+            )
+        }
     }
 }
 

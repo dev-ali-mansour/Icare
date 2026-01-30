@@ -150,4 +150,6 @@
     <string name="core_ui_lab_centers">معامل تحاليل</string>
     <string name="core_ui_search_for_pharmacy">ابحث باسم الصيدلية</string>
     <string name="core_ui_reschedule">إعادة جدولة</string>
+    <string name="core_ui_back">عودة</string>
+    <string name="core_ui_no_available_data">لا توجد بيانات!</string>
 </resources>

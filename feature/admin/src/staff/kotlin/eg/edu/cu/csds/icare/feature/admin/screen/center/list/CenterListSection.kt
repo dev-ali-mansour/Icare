@@ -1,15 +1,16 @@
 package eg.edu.cu.csds.icare.feature.admin.screen.center.list
 
-import android.content.Context
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -17,43 +18,40 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.util.UiText
+import eg.edu.cu.csds.icare.core.ui.util.calculateGridColumns
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.CenterView
-import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
-import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CenterListSection(
     modifier: Modifier = Modifier,
-    viewModel: CenterListViewModel = koinViewModel(),
     navigateToCenterDetails: (LabImagingCenter) -> Unit,
     onExpandStateChanged: (Boolean) -> Unit,
+    onError: suspend (UiText) -> Unit,
 ) {
-    val context: Context = LocalContext.current
+    val viewModel: CenterListViewModel = koinViewModel()
     val refreshState = rememberPullToRefreshState()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var alertMessage by remember { mutableStateOf("") }
-    var showAlert by remember { mutableStateOf(false) }
 
     LaunchedUiEffectHandler(
         viewModel.effect,
-        onConsumeEffect = { viewModel.processEvent(CenterListEvent.ConsumeEffect) },
+        onConsumeEffect = { viewModel.handleIntent(CenterListIntent.ConsumeEffect) },
         onEffect = { effect ->
             when (effect) {
                 is CenterListEffect.NavigateToCenterDetails -> {
@@ -65,10 +63,7 @@ fun CenterListSection(
                 }
 
                 is CenterListEffect.ShowError -> {
-                    alertMessage = effect.message.asString(context)
-                    showAlert = true
-                    delay(timeMillis = 3000)
-                    showAlert = false
+                    onError(effect.message)
                 }
             }
         },
@@ -82,7 +77,7 @@ fun CenterListSection(
                     state = refreshState,
                     isRefreshing = uiState.isLoading,
                     onRefresh = {
-                        viewModel.processEvent(CenterListEvent.Refresh)
+                        viewModel.handleIntent(CenterListIntent.Refresh)
                     },
                 ),
     ) {
@@ -99,7 +94,7 @@ fun CenterListSection(
                     height = Dimension.fillToConstraints
                 },
             uiState = uiState,
-            onEvent = viewModel::processEvent,
+            onIntent = viewModel::handleIntent,
         )
 
         Indicator(
@@ -113,8 +108,6 @@ fun CenterListSection(
             isRefreshing = uiState.isLoading,
             state = refreshState,
         )
-
-        if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
     }
 }
 
@@ -122,41 +115,43 @@ fun CenterListSection(
 fun CenterListContent(
     modifier: Modifier = Modifier,
     uiState: CenterListState,
-    onEvent: (CenterListEvent) -> Unit,
+    onIntent: (CenterListIntent) -> Unit,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
-        val listState = rememberLazyListState()
-        val expandedFabState =
-            remember {
-                derivedStateOf {
-                    listState.firstVisibleItemIndex == 0
-                }
-            }
+        val gridState = rememberLazyGridState()
+        val expandedFabState = remember { derivedStateOf { gridState.firstVisibleItemIndex == 0 } }
         LaunchedEffect(key1 = expandedFabState.value) {
-            onEvent(CenterListEvent.UpdateFabExpanded(expandedFabState.value))
+            onIntent(CenterListIntent.UpdateFabExpanded(expandedFabState.value))
         }
 
         if (uiState.centers.isEmpty()) {
             EmptyContentView(
                 modifier =
                     Modifier.fillMaxSize(),
-                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_no_centers_data),
+                text = stringResource(string.core_ui_no_centers_data),
             )
         } else {
-            LazyColumn(
-                modifier =
-                    Modifier.fillMaxSize(),
-                state = listState,
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(calculateGridColumns()),
+                modifier = modifier.fillMaxSize(),
+                state = gridState,
+                contentPadding = PaddingValues(all = S_PADDING),
+                horizontalArrangement = Arrangement.spacedBy(S_PADDING),
                 verticalArrangement = Arrangement.spacedBy(S_PADDING),
             ) {
                 items(
                     items = uiState.centers,
-                    key = { center ->
-                        center.id
-                    },
+                    key = { it.id },
+                    span = { GridItemSpan(1) },
                 ) { center ->
-                    CenterView(center = center, showType = true) {
-                        onEvent(CenterListEvent.SelectCenter(center))
+                    CenterView(
+                        name = center.name,
+                        type = center.type,
+                        phone = center.phone,
+                        address = center.address,
+                        showType = true,
+                    ) {
+                        onIntent(CenterListIntent.SelectCenter(center))
                     }
                 }
             }
@@ -164,33 +159,57 @@ fun CenterListContent(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 internal fun ClinicsContentPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        CenterListContent(
-            uiState =
-                CenterListState(
-                    centers =
-                        listOf(
-                            LabImagingCenter(
-                                type = 1,
-                                name = "Alfa",
-                                phone = "0123456789",
-                                address = "53 Faysal street,Giza,Egypt",
+    IcareTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            CenterListContent(
+                uiState =
+                    CenterListState(
+                        centers =
+                            listOf(
+                                LabImagingCenter(
+                                    id = 1,
+                                    type = 1,
+                                    name = "Alfa",
+                                    phone = "0123456789",
+                                    address = "53 Faysal street,Giza,Egypt",
+                                ),
+                                LabImagingCenter(
+                                    id = 2,
+                                    type = 2,
+                                    name = "Beta",
+                                    phone = "0123456789",
+                                    address = "13 Faysal street,Giza,Egypt",
+                                ),
+                                LabImagingCenter(
+                                    id = 3,
+                                    type = 1,
+                                    name = "Alfa",
+                                    phone = "0123456789",
+                                    address = "53 Faysal street,Giza,Egypt",
+                                ),
+                                LabImagingCenter(
+                                    id = 4,
+                                    type = 2,
+                                    name = "Beta",
+                                    phone = "0123456789",
+                                    address = "13 Faysal street,Giza,Egypt",
+                                ),
+                                LabImagingCenter(
+                                    id = 5,
+                                    type = 1,
+                                    name = "Alfa",
+                                    phone = "0123456789",
+                                    address = "53 Faysal street,Giza,Egypt",
+                                ),
                             ),
-                            LabImagingCenter(
-                                type = 2,
-                                name = "Beta",
-                                phone = "0123456789",
-                                address = "13 Faysal street,Giza,Egypt",
-                            ),
-                        ),
-                ),
-            onEvent = {},
-        )
+                    ),
+                onIntent = {},
+            )
+        }
     }
 }

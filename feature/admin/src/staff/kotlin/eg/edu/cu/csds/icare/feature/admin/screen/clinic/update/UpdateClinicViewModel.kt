@@ -2,10 +2,6 @@ package eg.edu.cu.csds.icare.feature.admin.screen.clinic.update
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.feature.admin.R
-import eg.edu.cu.csds.icare.feature.admin.screen.clinic.ClinicEffect
-import eg.edu.cu.csds.icare.feature.admin.screen.clinic.ClinicEvent
-import eg.edu.cu.csds.icare.feature.admin.screen.clinic.ClinicState
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
@@ -13,6 +9,10 @@ import eg.edu.cu.csds.icare.core.domain.usecase.clinic.UpdateClinicUseCase
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.feature.admin.R
+import eg.edu.cu.csds.icare.feature.admin.screen.clinic.ClinicEffect
+import eg.edu.cu.csds.icare.feature.admin.screen.clinic.ClinicIntent
+import eg.edu.cu.csds.icare.feature.admin.screen.clinic.ClinicState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,45 +41,45 @@ class UpdateClinicViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: ClinicEvent) {
-        when (event) {
-            is ClinicEvent.UpdateName -> {
-                _uiState.update { it.copy(name = event.name) }
+    fun handleIntent(intent: ClinicIntent) {
+        when (intent) {
+            is ClinicIntent.UpdateName -> {
+                _uiState.update { it.copy(name = intent.name) }
             }
 
-            is ClinicEvent.UpdateType -> {
-                _uiState.update { it.copy(type = event.type) }
+            is ClinicIntent.UpdateType -> {
+                _uiState.update { it.copy(type = intent.type) }
             }
 
-            is ClinicEvent.UpdatePhone -> {
-                _uiState.update { it.copy(phone = event.phone) }
+            is ClinicIntent.UpdatePhone -> {
+                _uiState.update { it.copy(phone = intent.phone) }
             }
 
-            is ClinicEvent.UpdateAddress -> {
-                _uiState.update { it.copy(address = event.address) }
+            is ClinicIntent.UpdateAddress -> {
+                _uiState.update { it.copy(address = intent.address) }
             }
 
-            is ClinicEvent.UpdateIsOpen -> {
-                _uiState.update { it.copy(isOpen = event.isOpen) }
+            is ClinicIntent.UpdateIsOpen -> {
+                _uiState.update { it.copy(isOpen = intent.isOpen) }
             }
 
-            is ClinicEvent.LoadClinic -> {
+            is ClinicIntent.LoadClinic -> {
                 _uiState.update {
                     it.copy(
-                        id = event.clinic.id,
-                        name = event.clinic.name,
-                        type = event.clinic.type,
-                        phone = event.clinic.phone,
-                        address = event.clinic.address,
-                        isOpen = event.clinic.isOpen,
+                        id = intent.clinic.id,
+                        name = intent.clinic.name,
+                        type = intent.clinic.type,
+                        phone = intent.clinic.phone,
+                        address = intent.clinic.address,
+                        isOpen = intent.clinic.isOpen,
                     )
                 }
             }
 
-            is ClinicEvent.Proceed ->
+            is ClinicIntent.Proceed -> {
                 viewModelScope.launch {
                     when {
-                        _uiState.value.name.isBlank() ->
+                        _uiState.value.name.isBlank() -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -89,8 +89,9 @@ class UpdateClinicViewModel(
                                         ),
                                 )
                             }
+                        }
 
-                        _uiState.value.type.isBlank() ->
+                        _uiState.value.type.isBlank() -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -100,9 +101,10 @@ class UpdateClinicViewModel(
                                         ),
                                 )
                             }
+                        }
 
                         _uiState.value.phone.isBlank() ||
-                            _uiState.value.phone.length < Constants.PHONE_LENGTH ->
+                            _uiState.value.phone.length < Constants.PHONE_LENGTH -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -112,9 +114,10 @@ class UpdateClinicViewModel(
                                         ),
                                 )
                             }
+                        }
 
                         _uiState.value.address.isBlank() ||
-                            _uiState.value.phone.length < Constants.PHONE_LENGTH ->
+                            _uiState.value.phone.length < Constants.PHONE_LENGTH -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -124,6 +127,7 @@ class UpdateClinicViewModel(
                                         ),
                                 )
                             }
+                        }
 
                         else -> {
                             updateClinicJob?.cancel()
@@ -131,8 +135,11 @@ class UpdateClinicViewModel(
                         }
                     }
                 }
+            }
 
-            is ClinicEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            is ClinicIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

@@ -2,13 +2,13 @@ package eg.edu.cu.csds.icare.feature.appointment.screen.booking
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.feature.appointment.R
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.BookAppointmentUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.GetDoctorScheduleUseCase
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.feature.appointment.R
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,18 +39,18 @@ class BookingViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: BookingEvent) {
-        when (event) {
-            is BookingEvent.Refresh -> {
+    fun handleIntent(intent: BookingIntent) {
+        when (intent) {
+            is BookingIntent.Refresh -> {
                 _uiState.value.doctor?.let { doctor ->
                     getDoctorScheduleJob?.cancel()
                     getDoctorScheduleJob = launchGetDoctorSchedule(doctor.id)
                 }
             }
 
-            is BookingEvent.SelectDoctor -> {
+            is BookingIntent.SelectDoctor -> {
                 _uiState.update {
-                    it.copy(doctor = event.doctor)
+                    it.copy(doctor = intent.doctor)
                 }
                 _uiState.value.doctor?.let { doctor ->
                     getDoctorScheduleJob?.cancel()
@@ -58,14 +58,14 @@ class BookingViewModel(
                 }
             }
 
-            is BookingEvent.UpdateSelectedSlot -> {
-                _uiState.update { it.copy(selectedSlot = event.slot) }
+            is BookingIntent.UpdateSelectedSlot -> {
+                _uiState.update { it.copy(selectedSlot = intent.slot) }
             }
 
-            is BookingEvent.Proceed ->
+            is BookingIntent.Proceed -> {
                 viewModelScope.launch {
                     when {
-                        _uiState.value.doctor == null ->
+                        _uiState.value.doctor == null -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -78,7 +78,9 @@ class BookingViewModel(
                                         ),
                                 )
                             }
-                        _uiState.value.selectedSlot == 0L ->
+                        }
+
+                        _uiState.value.selectedSlot == 0L -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -91,6 +93,7 @@ class BookingViewModel(
                                         ),
                                 )
                             }
+                        }
 
                         else -> {
                             bookingJob?.cancel()
@@ -98,8 +101,11 @@ class BookingViewModel(
                         }
                     }
                 }
+            }
 
-            BookingEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            BookingIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

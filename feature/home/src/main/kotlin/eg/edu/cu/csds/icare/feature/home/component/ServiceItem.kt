@@ -22,7 +22,6 @@ import eg.edu.cu.csds.icare.core.ui.theme.GRID_ITEM_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.GRID_ITEM_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.SERVICE_ICON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
-import eg.edu.cu.csds.icare.core.ui.theme.textColor
 
 @Composable
 fun ServiceItem(
@@ -51,7 +50,7 @@ fun ServiceItem(
             fontWeight = FontWeight.Bold,
             fontSize = MaterialTheme.typography.bodyMedium.fontSize,
             fontFamily = helveticaFamily,
-            color = textColor,
+            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 2,
         )
     }

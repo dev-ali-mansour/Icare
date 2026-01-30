@@ -4,15 +4,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
-import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordEvent
+import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordIntent
 import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordScreen
 import eg.edu.cu.csds.icare.feature.consultation.screen.MedicalRecordViewModel
 import eg.edu.cu.csds.icare.feature.consultation.screen.SelectedConsultationViewModel
 import eg.edu.cu.csds.icare.feature.consultation.screen.SelectedPatientViewModel
 import org.koin.androidx.compose.koinViewModel
 
-fun EntryProviderScope<Any>.consultationsEntryBuilder(
+fun EntryProviderScope<NavKey>.consultationsEntryBuilder(
     selectedConsultationViewModel: SelectedConsultationViewModel,
     selectedPatientViewModel: SelectedPatientViewModel,
     onNavigationIconClicked: () -> Unit,
@@ -25,7 +26,7 @@ fun EntryProviderScope<Any>.consultationsEntryBuilder(
                 .collectAsStateWithLifecycle()
             LaunchedEffect(selectedPatientId) {
                 selectedPatientId?.let { patientId ->
-                    viewModel.processEvent(MedicalRecordEvent.LoadMedicalRecord(patientId))
+                    viewModel.handleIntent(MedicalRecordIntent.LoadMedicalRecord(patientId))
                 }
             }
             MedicalRecordScreen(

@@ -42,35 +42,38 @@ class AppointmentListViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: AppointmentListEvent) {
-        when (event) {
-            is AppointmentListEvent.OnBackClick -> {
+    fun handleIntent(intent: AppointmentListIntent) {
+        when (intent) {
+            is AppointmentListIntent.OnBackClick -> {
                 _uiState.update { it.copy(effect = AppointmentListEffect.OnBackClick) }
             }
 
-            is AppointmentListEvent.Refresh -> {
+            is AppointmentListIntent.Refresh -> {
                 getAppointmentsJob?.cancel()
                 getAppointmentsJob = launchGetAppointments()
             }
 
-            is AppointmentListEvent.RescheduleAppointment -> {
+            is AppointmentListIntent.RescheduleAppointment -> {
                 _uiState.update {
                     it.copy(
                         effect =
                             AppointmentListEffect
-                                .NavigateToRescheduleAppointment(event.appointment),
+                                .NavigateToRescheduleAppointment(intent.appointment),
                     )
                 }
             }
-            is AppointmentListEvent.CancelAppointment -> {
+
+            is AppointmentListIntent.CancelAppointment -> {
                 cancelAppointmentJob?.cancel()
                 cancelAppointmentJob =
                     launchCancelAppointment(
-                        event.appointment.copy(statusId = AppointmentStatus.CancelledStatus.code),
+                        intent.appointment.copy(statusId = AppointmentStatus.CancelledStatus.code),
                     )
             }
 
-            is AppointmentListEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            is AppointmentListIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

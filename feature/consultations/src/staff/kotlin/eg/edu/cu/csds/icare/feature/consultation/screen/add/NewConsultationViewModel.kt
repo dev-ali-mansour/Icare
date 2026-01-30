@@ -2,10 +2,6 @@ package eg.edu.cu.csds.icare.feature.consultation.screen.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.feature.admin.R
-import eg.edu.cu.csds.icare.feature.consultation.screen.ConsultationEffect
-import eg.edu.cu.csds.icare.feature.consultation.screen.ConsultationEvent
-import eg.edu.cu.csds.icare.feature.consultation.screen.ConsultationState
 import eg.edu.cu.csds.icare.core.domain.model.Consultation
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
@@ -14,6 +10,10 @@ import eg.edu.cu.csds.icare.core.domain.usecase.consultation.AddNewConsultationU
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.ListPharmaciesUseCase
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.feature.admin.R
+import eg.edu.cu.csds.icare.feature.consultation.screen.ConsultationEffect
+import eg.edu.cu.csds.icare.feature.consultation.screen.ConsultationIntent
+import eg.edu.cu.csds.icare.feature.consultation.screen.ConsultationState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,57 +50,72 @@ class NewConsultationViewModel(
 
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: ConsultationEvent) {
+    fun handleIntent(event: ConsultationIntent) {
         when (event) {
-            is ConsultationEvent.NavigateToMedicalRecord ->
+            is ConsultationIntent.NavigateToMedicalRecord -> {
                 _uiState.update {
                     it.copy(effect = ConsultationEffect.NavigateToMedicalRecord(event.patientId))
                 }
+            }
 
-            is ConsultationEvent.Refresh -> {
+            is ConsultationIntent.Refresh -> {
                 fetchPharmacies(forceUpdate = true)
                 fetchCenters(forceUpdate = true)
             }
 
-            is ConsultationEvent.UpdateAppointment ->
+            is ConsultationIntent.UpdateAppointment -> {
                 _uiState.update { it.copy(appointment = event.appointment) }
+            }
 
-            is ConsultationEvent.UpdateDiagnosis ->
+            is ConsultationIntent.UpdateDiagnosis -> {
                 _uiState.update { it.copy(diagnosis = event.diagnosis) }
+            }
 
-            is ConsultationEvent.UpdatePharmacyId ->
+            is ConsultationIntent.UpdatePharmacyId -> {
                 _uiState.update { it.copy(pharmacyId = event.pharmacyId) }
+            }
 
-            is ConsultationEvent.UpdatePharmaciesExpanded ->
+            is ConsultationIntent.UpdatePharmaciesExpanded -> {
                 _uiState.update { it.copy(isPharmaciesExpanded = event.isExpanded) }
+            }
 
-            is ConsultationEvent.UpdateMedications ->
+            is ConsultationIntent.UpdateMedications -> {
                 _uiState.update { it.copy(medications = event.medications) }
+            }
 
-            is ConsultationEvent.UpdateLabCenterId ->
+            is ConsultationIntent.UpdateLabCenterId -> {
                 _uiState.update { it.copy(labCenterId = event.labCenterId) }
+            }
 
-            is ConsultationEvent.UpdateLabCentersExpanded ->
+            is ConsultationIntent.UpdateLabCentersExpanded -> {
                 _uiState.update { it.copy(isLabCentersExpanded = event.isExpanded) }
+            }
 
-            is ConsultationEvent.UpdateLabTests ->
+            is ConsultationIntent.UpdateLabTests -> {
                 _uiState.update { it.copy(labTests = event.labTests) }
+            }
 
-            is ConsultationEvent.UpdateImagingCenterId ->
+            is ConsultationIntent.UpdateImagingCenterId -> {
                 _uiState.update { it.copy(imagingCenterId = event.imagingCenterId) }
+            }
 
-            is ConsultationEvent.UpdateImagingCentersExpanded ->
+            is ConsultationIntent.UpdateImagingCentersExpanded -> {
                 _uiState.update { it.copy(isImagingCentersExpanded = event.isExpanded) }
+            }
 
-            is ConsultationEvent.UpdateImagingTests ->
+            is ConsultationIntent.UpdateImagingTests -> {
                 _uiState.update { it.copy(imagingTests = event.imagingTests) }
+            }
 
-            is ConsultationEvent.UpdateFollowUpdDate ->
+            is ConsultationIntent.UpdateFollowUpdDate -> {
                 _uiState.update { it.copy(followUpdDate = event.followUpdDate) }
+            }
 
-            is ConsultationEvent.LoadConsultation -> Unit
+            is ConsultationIntent.LoadConsultation -> {
+                Unit
+            }
 
-            is ConsultationEvent.Proceed ->
+            is ConsultationIntent.Proceed -> {
                 viewModelScope.launch {
                     when {
                         _uiState.value.diagnosis
@@ -253,8 +268,11 @@ class NewConsultationViewModel(
                         }
                     }
                 }
+            }
 
-            ConsultationEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            ConsultationIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

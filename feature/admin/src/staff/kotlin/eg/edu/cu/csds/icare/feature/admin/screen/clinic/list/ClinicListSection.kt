@@ -1,15 +1,16 @@
 package eg.edu.cu.csds.icare.feature.admin.screen.clinic.list
 
-import android.content.Context
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -17,43 +18,40 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
+import eg.edu.cu.csds.icare.core.ui.util.UiText
+import eg.edu.cu.csds.icare.core.ui.util.calculateGridColumns
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.ClinicView
-import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.EmptyContentView
-import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClinicListSection(
     modifier: Modifier = Modifier,
-    viewModel: ClinicListViewModel = koinViewModel(),
     navigateToClinicDetails: (Clinic) -> Unit,
     onExpandStateChanged: (Boolean) -> Unit,
+    onError: suspend (UiText) -> Unit,
 ) {
-    val context: Context = LocalContext.current
+    val viewModel: ClinicListViewModel = koinViewModel()
     val refreshState = rememberPullToRefreshState()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    var alertMessage by remember { mutableStateOf("") }
-    var showAlert by remember { mutableStateOf(false) }
 
     LaunchedUiEffectHandler(
         viewModel.effect,
-        onConsumeEffect = { viewModel.processEvent(ClinicListEvent.ConsumeEffect) },
+        onConsumeEffect = { viewModel.handleIntent(ClinicListIntent.ConsumeEffect) },
         onEffect = { effect ->
             when (effect) {
                 is ClinicListEffect.NavigateToClinicDetails -> {
@@ -65,10 +63,7 @@ fun ClinicListSection(
                 }
 
                 is ClinicListEffect.ShowError -> {
-                    alertMessage = effect.message.asString(context)
-                    showAlert = true
-                    delay(timeMillis = 3000)
-                    showAlert = false
+                    onError(effect.message)
                 }
             }
         },
@@ -82,7 +77,7 @@ fun ClinicListSection(
                     state = refreshState,
                     isRefreshing = state.isLoading,
                     onRefresh = {
-                        viewModel.processEvent(ClinicListEvent.Refresh)
+                        viewModel.handleIntent(ClinicListIntent.Refresh)
                     },
                 ),
     ) {
@@ -99,7 +94,7 @@ fun ClinicListSection(
                     height = Dimension.fillToConstraints
                 },
             state = state,
-            onEvent = viewModel::processEvent,
+            onIntent = viewModel::handleIntent,
         )
 
         Indicator(
@@ -113,8 +108,6 @@ fun ClinicListSection(
             isRefreshing = state.isLoading,
             state = refreshState,
         )
-
-        if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
     }
 }
 
@@ -122,36 +115,42 @@ fun ClinicListSection(
 private fun ClinicListContent(
     modifier: Modifier,
     state: ClinicListState,
-    onEvent: (ClinicListEvent) -> Unit,
+    onIntent: (ClinicListIntent) -> Unit,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
-        val listState = rememberLazyListState()
-        val expandedFabState = remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
+        val gridState = rememberLazyGridState()
+        val expandedFabState = remember { derivedStateOf { gridState.firstVisibleItemIndex == 0 } }
         LaunchedEffect(key1 = expandedFabState.value) {
-            onEvent(ClinicListEvent.UpdateFabExpanded(expandedFabState.value))
+            onIntent(ClinicListIntent.UpdateFabExpanded(expandedFabState.value))
         }
 
         if (state.clinics.isEmpty()) {
             EmptyContentView(
-                modifier =
-                    Modifier.fillMaxSize(),
-                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_no_clinics_data),
+                modifier = Modifier.fillMaxSize(),
+                text = stringResource(string.core_ui_no_clinics_data),
             )
         } else {
-            LazyColumn(
-                modifier =
-                    Modifier.fillMaxSize(),
-                state = listState,
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(calculateGridColumns()),
+                modifier = modifier.fillMaxSize(),
+                state = gridState,
+                contentPadding = PaddingValues(all = S_PADDING),
+                horizontalArrangement = Arrangement.spacedBy(S_PADDING),
                 verticalArrangement = Arrangement.spacedBy(S_PADDING),
             ) {
                 items(
                     items = state.clinics,
-                    key = { clinic ->
-                        clinic.id
-                    },
+                    key = { it.id },
+                    span = { GridItemSpan(1) },
                 ) { clinic ->
-                    ClinicView(clinic = clinic) {
-                        onEvent(ClinicListEvent.SelectClinic(clinic))
+                    ClinicView(
+                        name = clinic.name,
+                        type = clinic.type,
+                        address = clinic.address,
+                        phone = clinic.phone,
+                        isOpen = clinic.isOpen,
+                    ) {
+                        onIntent(ClinicListIntent.SelectClinic(clinic))
                     }
                 }
             }
@@ -159,38 +158,63 @@ private fun ClinicListContent(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 internal fun ClinicsContentPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        ClinicListContent(
-            modifier = Modifier,
-            state =
-                ClinicListState(
-                    clinics =
-                        listOf(
-                            Clinic(
-                                id = 1,
-                                name = "عيادة 1",
-                                type = "مخ وأعصاب",
-                                address = "مبنى العيادات الخارجية - الدور الأول",
-                                phone = "0123456789",
-                                isOpen = true,
+    IcareTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            ClinicListContent(
+                modifier = Modifier,
+                state =
+                    ClinicListState(
+                        clinics =
+                            listOf(
+                                Clinic(
+                                    id = 1,
+                                    name = "عيادة 1",
+                                    type = "مخ وأعصاب",
+                                    address = "مبنى العيادات الخارجية - الدور الأول",
+                                    phone = "0123456789",
+                                    isOpen = true,
+                                ),
+                                Clinic(
+                                    id = 2,
+                                    name = "عيادة 2",
+                                    type = "باطنة",
+                                    address = "مبنى العيادات الخارجية - الدور الثالث",
+                                    phone = "987654321",
+                                    isOpen = false,
+                                ),
+                                Clinic(
+                                    id = 3,
+                                    name = "عيادة 3",
+                                    type = "مخ وأعصاب",
+                                    address = "مبنى العيادات الخارجية - الدور الأول",
+                                    phone = "0123456789",
+                                    isOpen = true,
+                                ),
+                                Clinic(
+                                    id = 4,
+                                    name = "عيادة 4",
+                                    type = "باطنة",
+                                    address = "مبنى العيادات الخارجية - الدور الثالث",
+                                    phone = "987654321",
+                                    isOpen = false,
+                                ),
+                                Clinic(
+                                    id = 5,
+                                    name = "عيادة 5",
+                                    type = "مخ وأعصاب",
+                                    address = "مبنى العيادات الخارجية - الدور الأول",
+                                    phone = "0123456789",
+                                    isOpen = true,
+                                ),
                             ),
-                            Clinic(
-                                id = 2,
-                                name = "عيادة 2",
-                                type = "باطنة",
-                                address = "مبنى العيادات الخارجية - الدور الثالث",
-                                phone = "987654321",
-                                isOpen = false,
-                            ),
-                        ),
-                ),
-            onEvent = {},
-        )
+                    ),
+                onIntent = {},
+            )
+        }
     }
 }

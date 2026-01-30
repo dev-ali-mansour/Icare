@@ -42,46 +42,57 @@ class HomeViewModel(
             )
     val effect = _uiState.map { it.effect }
 
-    fun processEvent(event: HomeEvent) {
-        when (event) {
-            is HomeEvent.UpdateOpenDialog -> _uiState.update { it.copy(openDialog = event.isOpen) }
+    fun handleIntent(intent: HomeIntent) {
+        when (intent) {
+            is HomeIntent.UpdateOpenDialog -> {
+                _uiState.update { it.copy(openDialog = intent.isOpen) }
+            }
 
-            HomeEvent.NavigateToProfileScreen ->
+            HomeIntent.NavigateToProfileScreen -> {
                 _uiState.update {
                     it.copy(effect = HomeEffect.NavigateToRoute(route = Route.Profile))
                 }
+            }
 
-            is HomeEvent.NavigateToBookAppointmentScreen ->
+            is HomeIntent.NavigateToBookAppointmentScreen -> {
                 _uiState.update {
                     it.copy(effect = HomeEffect.NavigateToRoute(route = Route.DoctorList))
                 }
+            }
 
-            HomeEvent.NavigateToPharmaciesScreen ->
+            HomeIntent.NavigateToPharmaciesScreen -> {
                 _uiState.update {
                     it.copy(effect = HomeEffect.NavigateToRoute(route = Route.Pharmacies))
                 }
+            }
 
-            HomeEvent.NavigateToLabCentersScreen ->
+            HomeIntent.NavigateToLabCentersScreen -> {
                 _uiState.update {
                     it.copy(effect = HomeEffect.NavigateToRoute(route = Route.LabCenters))
                 }
+            }
 
-            HomeEvent.NavigateToScanCentersScreen ->
+            HomeIntent.NavigateToScanCentersScreen -> {
                 _uiState.update {
                     it.copy(effect = HomeEffect.NavigateToRoute(route = Route.ScanCenters))
                 }
+            }
 
-            HomeEvent.NavigateToMyAppointmentsScreen ->
+            HomeIntent.NavigateToMyAppointmentsScreen -> {
                 _uiState.update {
                     it.copy(effect = HomeEffect.NavigateToRoute(route = Route.MyAppointments))
                 }
+            }
 
-            is HomeEvent.NavigateToDoctorDetails ->
+            is HomeIntent.NavigateToDoctorDetails -> {
                 _uiState.update {
-                    it.copy(effect = HomeEffect.NavigateToDoctorDetails(doctor = event.doctor))
+                    it.copy(effect = HomeEffect.NavigateToDoctorDetails(doctor = intent.doctor))
                 }
+            }
 
-            is HomeEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            is HomeIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

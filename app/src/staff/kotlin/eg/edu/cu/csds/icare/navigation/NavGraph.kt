@@ -1,16 +1,14 @@
 package eg.edu.cu.csds.icare.navigation
 
 import android.content.Context
-import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import eg.edu.cu.csds.icare.MainActivity
 import eg.edu.cu.csds.icare.core.ui.navigation.Navigator
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
-import eg.edu.cu.csds.icare.core.ui.util.activity
+import eg.edu.cu.csds.icare.core.ui.util.openLink
 import eg.edu.cu.csds.icare.feature.admin.navigation.adminEntryBuilder
 import eg.edu.cu.csds.icare.feature.admin.screen.center.SelectedCenterViewModel
 import eg.edu.cu.csds.icare.feature.admin.screen.clinic.SelectedClinicViewModel
@@ -58,30 +56,28 @@ fun NavGraph(
                     SplashScreen()
                 }
                 onBoardingEntryBuilder {
-                    navigator.clearBackStack()
-                    navigator.goTo(Route.SignIn)
+                    navigator.navigate(key = Route.SignIn, inclusive = true)
                 }
                 authenticationEntryBuilder(
-                    onRecoveryClicked = { navigator.goTo(Route.PasswordRecovery) },
-                    onCreateAccountClicked = { navigator.goTo(Route.SignUp) },
+                    onRecoveryClicked = { navigator.navigate(Route.PasswordRecovery) },
+                    onCreateAccountClicked = { navigator.navigate(Route.SignUp) },
                     onSignInClicked = {
-                        navigator.clearBackStack()
-                        navigator.goTo(Route.SignIn)
+                        navigator.navigate(key = Route.SignIn, inclusive = true)
                     },
                     onSignInSuccess = {
-                        val intent = Intent(context, MainActivity::class.java)
-                        context.activity.finish()
-                        context.startActivity(intent)
+                        navigator.navigate(key = Route.Home, inclusive = true)
                     },
                     onRecoveryCompleted = {
-                        navigator.clearBackStack()
-                        navigator.goTo(Route.SignIn)
+                        navigator.navigate(key = Route.SignIn, inclusive = true)
+                    },
+                    onSignOut = {
+                        navigator.navigate(key = Route.SignIn, inclusive = true)
                     },
                 )
                 homeEntryBuilder(
                     selectedDoctorViewModel = selectedDoctorViewModel,
                     selectedAppointmentViewModel = selectedAppointmentViewModel,
-                    navigateToRoute = { navigator.goTo(it) },
+                    navigateToRoute = { navigator.navigate(it) },
                 )
 
                 notificationsEntryBuilder()
@@ -95,12 +91,13 @@ fun NavGraph(
                     selectedCenterViewModel = selectedCenterViewModel,
                     selectedStaffViewModel = selectedStaffViewModel,
                     onNavigationIconClicked = { navigator.goBack() },
-                    navigateToRoute = { navigator.goTo(it) },
+                    navigateToRoute = { navigator.navigate(it) },
                 )
 
                 settingsEntryBuilder(
                     onNavigationIconClicked = { navigator.goBack() },
-                    navigateToRoute = { navigator.goTo(it) },
+                    navigateToRoute = { navigator.navigate(it) },
+                    onSocialIconClicked = { url -> context.openLink(url) },
                 )
 
                 consultationsEntryBuilder(
@@ -108,7 +105,7 @@ fun NavGraph(
                     selectedConsultationViewModel = selectedConsultationViewModel,
                     selectedPatientViewModel = selectedPatientViewModel,
                     onNavigationIconClicked = { navigator.goBack() },
-                    navigateToRoute = { navigator.goTo(it) },
+                    navigateToRoute = { navigator.navigate(it) },
                 )
             },
     )

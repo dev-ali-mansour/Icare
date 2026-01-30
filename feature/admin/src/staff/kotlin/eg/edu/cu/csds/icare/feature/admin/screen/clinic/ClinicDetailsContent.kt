@@ -1,6 +1,5 @@
 package eg.edu.cu.csds.icare.feature.admin.screen.clinic
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,8 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -28,252 +26,232 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
-import eg.edu.cu.csds.icare.feature.admin.R
+import eg.edu.cu.csds.icare.core.ui.R.string
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.TabRowContainerColor
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow300
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.buttonBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
+import eg.edu.cu.csds.icare.feature.admin.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ClinicDetailsContent(
     modifier: Modifier = Modifier,
     state: ClinicState,
-    onEvent: (ClinicEvent) -> Unit,
+    onIntent: (ClinicIntent) -> Unit,
 ) {
-    ConstraintLayout(
+    Column(
         modifier =
             modifier
                 .fillMaxSize()
-                .padding(bottom = XL_PADDING),
+                .padding(bottom = M_PADDING)
+                .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val (card) = createRefs()
-        Surface(
+        TextField(
+            value = state.name,
+            onValueChange = { onIntent(ClinicIntent.UpdateName(it)) },
+            label = {
+                Text(
+                    text = stringResource(string.core_ui_name),
+                    fontFamily = helveticaFamily,
+                    color = textColor,
+                )
+            },
+            singleLine = true,
             modifier =
                 Modifier
-                    .constrainAs(card) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
-                        width = Dimension.fillToConstraints
-                        height = Dimension.fillToConstraints
-                    },
+                    .fillMaxWidth(fraction = 0.8f)
+                    .padding(top = L_PADDING),
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    cursorColor = contentColor,
+                    focusedTextColor = textColor,
+                    focusedIndicatorColor = Yellow500,
+                    unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                ),
+            keyboardOptions =
+                KeyboardOptions.Default.copy(
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next,
+                ),
+        )
+
+        TextField(
+            value = state.type,
+            onValueChange = { onIntent(ClinicIntent.UpdateType(it)) },
+            label = {
+                Text(
+                    text = stringResource(R.string.feature_admin_type),
+                    fontFamily = helveticaFamily,
+                    color = textColor,
+                )
+            },
+            singleLine = true,
+            modifier =
+                Modifier
+                    .fillMaxWidth(fraction = 0.8f),
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    cursorColor = contentColor,
+                    focusedTextColor = textColor,
+                    focusedIndicatorColor = Yellow500,
+                    unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                ),
+            keyboardOptions =
+                KeyboardOptions.Default.copy(
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next,
+                ),
+        )
+
+        TextField(
+            value = state.phone,
+            onValueChange = { if (it.length < 14) onIntent(ClinicIntent.UpdatePhone(it)) },
+            label = {
+                Text(
+                    text = stringResource(R.string.feature_admin_phone_number),
+                    fontFamily = helveticaFamily,
+                    color = textColor,
+                )
+            },
+            singleLine = true,
+            modifier =
+                Modifier
+                    .fillMaxWidth(fraction = 0.8f),
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    cursorColor = contentColor,
+                    focusedTextColor = textColor,
+                    focusedIndicatorColor = Yellow500,
+                    unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                ),
+            keyboardOptions =
+                KeyboardOptions.Default.copy(
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Phone,
+                    imeAction = ImeAction.Next,
+                ),
+        )
+
+        TextField(
+            value = state.address,
+            onValueChange = { onIntent(ClinicIntent.UpdateAddress(it)) },
+            label = {
+                Text(
+                    text = stringResource(R.string.feature_admin_address),
+                    fontFamily = helveticaFamily,
+                    color = textColor,
+                )
+            },
+            singleLine = true,
+            modifier =
+                Modifier
+                    .fillMaxWidth(fraction = 0.8f),
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    cursorColor = contentColor,
+                    focusedTextColor = textColor,
+                    focusedIndicatorColor = Yellow500,
+                    unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
+                ),
+            keyboardOptions =
+                KeyboardOptions.Default.copy(
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done,
+                ),
+        )
+
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = XL_PADDING),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement =
+                Arrangement.spacedBy(
+                    space = 10.dp,
+                    alignment = Alignment.Start,
+                ),
         ) {
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(backgroundColor)
-                        .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                TextField(
-                    value = state.name,
-                    onValueChange = { onEvent(ClinicEvent.UpdateName(it)) },
-                    label = {
-                        Text(
-                            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_name),
-                            fontFamily = helveticaFamily,
-                            color = textColor,
+            Switch(
+                checked = state.isOpen,
+                onCheckedChange = { onIntent(ClinicIntent.UpdateIsOpen(it)) },
+                colors =
+                    SwitchDefaults.colors(
+                        checkedThumbColor = MaterialTheme.colorScheme.primary,
+                        checkedTrackColor = TabRowContainerColor,
+                        checkedBorderColor = Yellow500,
+                        uncheckedThumbColor = Color.LightGray,
+                        uncheckedTrackColor = TabRowContainerColor,
+                        uncheckedBorderColor = Yellow300,
+                    ),
+            )
+
+            Text(
+                text =
+                    if (state.isOpen) {
+                        stringResource(
+                            string.core_ui_open,
                         )
+                    } else {
+                        stringResource(string.core_ui_closed)
                     },
-                    singleLine = true,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(fraction = 0.8f)
-                            .padding(top = L_PADDING),
-                    colors =
-                        TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            cursorColor = contentColor,
-                            focusedTextColor = textColor,
-                            focusedIndicatorColor = Yellow500,
-                            unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                        ),
-                    keyboardOptions =
-                        KeyboardOptions.Default.copy(
-                            autoCorrectEnabled = false,
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next,
-                        ),
-                )
-
-                TextField(
-                    value = state.type,
-                    onValueChange = { onEvent(ClinicEvent.UpdateType(it)) },
-                    label = {
-                        Text(
-                            text = stringResource(R.string.feature_admin_type),
-                            fontFamily = helveticaFamily,
-                            color = textColor,
-                        )
-                    },
-                    singleLine = true,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(fraction = 0.8f),
-                    colors =
-                        TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            cursorColor = contentColor,
-                            focusedTextColor = textColor,
-                            focusedIndicatorColor = Yellow500,
-                            unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                        ),
-                    keyboardOptions =
-                        KeyboardOptions.Default.copy(
-                            autoCorrectEnabled = false,
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next,
-                        ),
-                )
-
-                TextField(
-                    value = state.phone,
-                    onValueChange = { if (it.length < 14) onEvent(ClinicEvent.UpdatePhone(it)) },
-                    label = {
-                        Text(
-                            text = stringResource(R.string.feature_admin_phone_number),
-                            fontFamily = helveticaFamily,
-                            color = textColor,
-                        )
-                    },
-                    singleLine = true,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(fraction = 0.8f),
-                    colors =
-                        TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            cursorColor = contentColor,
-                            focusedTextColor = textColor,
-                            focusedIndicatorColor = Yellow500,
-                            unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                        ),
-                    keyboardOptions =
-                        KeyboardOptions.Default.copy(
-                            autoCorrectEnabled = false,
-                            keyboardType = KeyboardType.Phone,
-                            imeAction = ImeAction.Next,
-                        ),
-                )
-
-                TextField(
-                    value = state.address,
-                    onValueChange = { onEvent(ClinicEvent.UpdateAddress(it)) },
-                    label = {
-                        Text(
-                            text = stringResource(R.string.feature_admin_address),
-                            fontFamily = helveticaFamily,
-                            color = textColor,
-                        )
-                    },
-                    singleLine = true,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(fraction = 0.8f),
-                    colors =
-                        TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            cursorColor = contentColor,
-                            focusedTextColor = textColor,
-                            focusedIndicatorColor = Yellow500,
-                            unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
-                        ),
-                    keyboardOptions =
-                        KeyboardOptions.Default.copy(
-                            autoCorrectEnabled = false,
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done,
-                        ),
-                )
-
-                Row(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = XL_PADDING),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement =
-                        Arrangement.spacedBy(
-                            space = 10.dp,
-                            alignment = Alignment.Start,
-                        ),
-                ) {
-                    Switch(
-                        checked = state.isOpen,
-                        onCheckedChange = { onEvent(ClinicEvent.UpdateIsOpen(it)) },
-                        colors =
-                            SwitchDefaults.colors(
-                                checkedThumbColor = barBackgroundColor,
-                                checkedTrackColor = contentBackgroundColor,
-                                checkedBorderColor = Yellow500,
-                                uncheckedThumbColor = Color.LightGray,
-                                uncheckedTrackColor = contentBackgroundColor,
-                                uncheckedBorderColor = Yellow300,
-                            ),
-                    )
-
-                    Text(
-                        text =
-                            if (state.isOpen) {
-                                stringResource(
-                                    eg.edu.cu.csds.icare.core.ui.R.string.core_ui_open,
-                                )
-                            } else {
-                                stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_closed)
-                            },
-                        fontFamily = helveticaFamily,
-                        color = textColor,
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(L_PADDING))
-
-                AnimatedButton(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(fraction = 0.6f),
-                    text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
-                    color = buttonBackgroundColor,
-                    onClick = { onEvent(ClinicEvent.Proceed) },
-                )
-            }
+                fontFamily = helveticaFamily,
+                color = textColor,
+            )
         }
+
+        Spacer(modifier = Modifier.height(L_PADDING))
+
+        AnimatedButton(
+            modifier =
+                Modifier
+                    .fillMaxWidth(fraction = 0.6f),
+            text = stringResource(string.core_ui_proceed),
+            color = buttonBackgroundColor,
+            onClick = { onIntent(ClinicIntent.Proceed) },
+        )
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 internal fun ClinicDetailsContentPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        ClinicDetailsContent(
-            state = ClinicState(),
-            onEvent = {},
-        )
+    IcareTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            ClinicDetailsContent(
+                state = ClinicState(),
+                onIntent = {},
+            )
+        }
     }
 }

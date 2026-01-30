@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="feature_on_boarding_first_page_title">مرحبًا بك في آي كير للطاقم الطبي!</string>
-    <string name="feature_on_boarding_first_page_description">نمنحك الأدوات الذكية لإدارة المرضى والمواعيد بكفاءة.</string>
-    <string name="feature_on_boarding_second_page_title">إدارة سهلة للمرضى والمواعيد</string>
-    <string name="feature_on_boarding_second_page_description">قم بإدارة بيانات المرضى وجدولة المواعيد بكل سهولة ودقة.</string>
-    <string name="feature_on_boarding_third_page_title">تواصل فعال وسير عمل سلس</string>
-    <string name="feature_on_boarding_third_page_description">ابقَ على اتصال مع فريقك وتلقَّ الإشعارات المهمة في الوقت الفعلي.</string>
-</resources>

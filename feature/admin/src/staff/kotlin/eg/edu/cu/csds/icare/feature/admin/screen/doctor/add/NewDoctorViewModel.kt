@@ -2,10 +2,6 @@ package eg.edu.cu.csds.icare.feature.admin.screen.doctor.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.feature.admin.R
-import eg.edu.cu.csds.icare.feature.admin.screen.doctor.DoctorEffect
-import eg.edu.cu.csds.icare.feature.admin.screen.doctor.DoctorEvent
-import eg.edu.cu.csds.icare.feature.admin.screen.doctor.DoctorState
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
@@ -15,6 +11,10 @@ import eg.edu.cu.csds.icare.core.domain.util.Constants
 import eg.edu.cu.csds.icare.core.domain.util.isValidEmail
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.feature.admin.R
+import eg.edu.cu.csds.icare.feature.admin.screen.doctor.DoctorEffect
+import eg.edu.cu.csds.icare.feature.admin.screen.doctor.DoctorIntent
+import eg.edu.cu.csds.icare.feature.admin.screen.doctor.DoctorState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,58 +47,59 @@ class NewDoctorViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: DoctorEvent) {
-        when (event) {
-            is DoctorEvent.UpdateFirstName -> {
-                _uiState.update { it.copy(firstName = event.firstName) }
+    fun handleIntent(intent: DoctorIntent) {
+        when (intent) {
+            is DoctorIntent.UpdateFirstName -> {
+                _uiState.update { it.copy(firstName = intent.firstName) }
             }
 
-            is DoctorEvent.UpdateLastName -> {
-                _uiState.update { it.copy(lastName = event.lastName) }
+            is DoctorIntent.UpdateLastName -> {
+                _uiState.update { it.copy(lastName = intent.lastName) }
             }
 
-            is DoctorEvent.UpdateClinicId -> {
-                _uiState.update { it.copy(clinicId = event.clinicId) }
+            is DoctorIntent.UpdateClinicId -> {
+                _uiState.update { it.copy(clinicId = intent.clinicId) }
             }
 
-            is DoctorEvent.UpdateClinicsExpanded -> {
-                _uiState.update { it.copy(isClinicsExpanded = event.isExpanded) }
+            is DoctorIntent.UpdateClinicsExpanded -> {
+                _uiState.update { it.copy(isClinicsExpanded = intent.isExpanded) }
             }
 
-            is DoctorEvent.UpdateEmail -> {
-                _uiState.update { it.copy(email = event.email) }
+            is DoctorIntent.UpdateEmail -> {
+                _uiState.update { it.copy(email = intent.email) }
             }
 
-            is DoctorEvent.UpdatePhone -> {
-                _uiState.update { it.copy(phone = event.phone) }
+            is DoctorIntent.UpdatePhone -> {
+                _uiState.update { it.copy(phone = intent.phone) }
             }
 
-            is DoctorEvent.UpdateSpeciality -> {
-                _uiState.update { it.copy(speciality = event.speciality) }
+            is DoctorIntent.UpdateSpeciality -> {
+                _uiState.update { it.copy(speciality = intent.speciality) }
             }
 
-            is DoctorEvent.UpdateFromTime -> {
-                _uiState.update { it.copy(fromTime = event.fromTime) }
+            is DoctorIntent.UpdateFromTime -> {
+                _uiState.update { it.copy(fromTime = intent.fromTime) }
             }
 
-            is DoctorEvent.UpdateToTime -> {
-                _uiState.update { it.copy(toTime = event.toTime) }
+            is DoctorIntent.UpdateToTime -> {
+                _uiState.update { it.copy(toTime = intent.toTime) }
             }
 
-            is DoctorEvent.UpdateRating -> {
-                _uiState.update { it.copy(rating = event.rating) }
+            is DoctorIntent.UpdateRating -> {
+                _uiState.update { it.copy(rating = intent.rating) }
             }
 
-            is DoctorEvent.UpdatePrice -> {
-                _uiState.update { it.copy(price = event.price) }
+            is DoctorIntent.UpdatePrice -> {
+                _uiState.update { it.copy(price = intent.price) }
             }
 
-            is DoctorEvent.UpdateProfilePicture -> {
-                _uiState.update { it.copy(profilePicture = event.profilePicture) }
+            is DoctorIntent.UpdateProfilePicture -> {
+                _uiState.update { it.copy(profilePicture = intent.profilePicture) }
             }
 
-            is DoctorEvent.LoadDoctor -> Unit
-            is DoctorEvent.Proceed ->
+            is DoctorIntent.LoadDoctor -> {}
+
+            is DoctorIntent.Proceed -> {
                 viewModelScope.launch {
                     when {
                         _uiState.value.firstName.isBlank() -> {
@@ -222,8 +223,11 @@ class NewDoctorViewModel(
                         }
                     }
                 }
+            }
 
-            DoctorEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            DoctorIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

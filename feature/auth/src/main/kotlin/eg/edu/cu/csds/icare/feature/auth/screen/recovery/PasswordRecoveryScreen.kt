@@ -1,7 +1,6 @@
 package eg.edu.cu.csds.icare.feature.auth.screen.recovery
 
 import android.content.Context
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,51 +36,57 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import eg.edu.cu.csds.icare.feature.auth.R
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL4_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL5_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.buttonBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
+import eg.edu.cu.csds.icare.feature.auth.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun PasswordRecoveryScreen(
-    viewModel: PasswordRecoveryViewModel = koinViewModel(),
     onSignInClicked: () -> Unit,
     onRecoveryCompleted: () -> Unit,
-    context: Context = LocalContext.current,
 ) {
+    val viewModel: PasswordRecoveryViewModel = koinViewModel()
+    val context: Context = LocalContext.current
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     var alertMessage by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
+    val recoveryEmailSentMessage = stringResource(R.string.feature_auth_recovery_email_sent)
 
     LaunchedUiEffectHandler(
         viewModel.effect,
-        onConsumeEffect = { viewModel.processEvent(PasswordRecoveryEvent.ConsumeEffect) },
+        onConsumeEffect = { viewModel.handleIntent(PasswordRecoveryIntent.ConsumeEffect) },
         onEffect = { effect ->
             when (effect) {
-                PasswordRecoveryEffect.RecoverySuccess -> onRecoveryCompleted()
+                PasswordRecoveryEffect.RecoverySuccess -> {
+                    onRecoveryCompleted()
+                }
+
                 is PasswordRecoveryEffect.ShowInfo -> {
-                    alertMessage = context.getString(R.string.feature_auth_recovery_email_sent)
+                    alertMessage = recoveryEmailSentMessage
                     showAlert = true
                     delay(timeMillis = 3000)
                     showAlert = false
@@ -102,22 +107,20 @@ internal fun PasswordRecoveryScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-    ) { paddingValues ->
-
+    ) { innerPadding ->
         Box(
             modifier =
                 Modifier
-                    .background(color = backgroundColor)
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(innerPadding),
             contentAlignment = Alignment.Center,
         ) {
             PasswordRecoveryContent(
                 state = state,
-                onEvent = { intent ->
+                onIntent = { intent ->
                     when (intent) {
-                        is PasswordRecoveryEvent.NavigateToSignInScreen -> onSignInClicked()
-                        else -> viewModel.processEvent(intent)
+                        is PasswordRecoveryIntent.NavigateToSignInScreen -> onSignInClicked()
+                        else -> viewModel.handleIntent(intent)
                     }
                 },
             )
@@ -130,7 +133,7 @@ internal fun PasswordRecoveryScreen(
 @Composable
 private fun PasswordRecoveryContent(
     state: PasswordRecoveryState,
-    onEvent: (PasswordRecoveryEvent) -> Unit,
+    onIntent: (PasswordRecoveryIntent) -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize(),
@@ -195,14 +198,13 @@ private fun PasswordRecoveryContent(
             Column(
                 modifier =
                     Modifier
-                        .fillMaxSize()
-                        .background(backgroundColor),
+                        .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Spacer(modifier = Modifier.height(XL5_PADDING))
                 Surface(
                     modifier = Modifier.fillMaxWidth(fraction = 0.8f),
-                    color = backgroundColor,
+                    color = MaterialTheme.colorScheme.background,
                     tonalElevation = L_PADDING,
                 ) {
                     Column(
@@ -219,7 +221,7 @@ private fun PasswordRecoveryContent(
                             TextField(
                                 value = state.email,
                                 onValueChange = {
-                                    onEvent(PasswordRecoveryEvent.UpdateEmail(it))
+                                    onIntent(PasswordRecoveryIntent.UpdateEmail(it))
                                 },
                                 label = {
                                     Text(
@@ -255,7 +257,7 @@ private fun PasswordRecoveryContent(
                                         .fillMaxWidth(fraction = 0.8f),
                                 text = stringResource(id = R.string.feature_auth_reset),
                                 color = buttonBackgroundColor,
-                                onClick = { onEvent(PasswordRecoveryEvent.SubmitRecovery) },
+                                onClick = { onIntent(PasswordRecoveryIntent.SubmitRecovery) },
                             )
 
                             Text(
@@ -267,8 +269,8 @@ private fun PasswordRecoveryContent(
                                     Modifier
                                         .padding(L_PADDING)
                                         .clickable {
-                                            onEvent(
-                                                PasswordRecoveryEvent.NavigateToSignInScreen,
+                                            onIntent(
+                                                PasswordRecoveryIntent.NavigateToSignInScreen,
                                             )
                                         },
                             )
@@ -292,16 +294,17 @@ private fun PasswordRecoveryContent(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 private fun PasswordRecoveryContentPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        PasswordRecoveryContent(
-            state = PasswordRecoveryState(),
-            onEvent = {},
-        )
+    IcareTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            PasswordRecoveryContent(
+                state = PasswordRecoveryState(),
+                onIntent = {},
+            )
+        }
     }
 }

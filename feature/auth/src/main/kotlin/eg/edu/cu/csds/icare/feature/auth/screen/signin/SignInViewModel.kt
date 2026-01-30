@@ -2,7 +2,6 @@ package eg.edu.cu.csds.icare.feature.auth.screen.signin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.feature.auth.R
 import eg.edu.cu.csds.icare.core.domain.model.onError
 import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInUseCase
@@ -11,6 +10,7 @@ import eg.edu.cu.csds.icare.core.domain.util.isValidEmail
 import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.feature.auth.R
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,33 +41,33 @@ class SignInViewModel(
 
     val effect = _uiState.map { it.effect }
 
-    fun processEvent(event: SignInEvent) {
-        when (event) {
-            is SignInEvent.UpdateGoogleSignInToken -> {
-                _uiState.update { it.copy(googleSignInToken = event.token) }
+    fun handleIntent(intent: SignInIntent) {
+        when (intent) {
+            is SignInIntent.UpdateGoogleSignInToken -> {
+                _uiState.update { it.copy(googleSignInToken = intent.token) }
             }
 
-            is SignInEvent.UpdateEmail -> {
-                _uiState.update { it.copy(email = event.email) }
+            is SignInIntent.UpdateEmail -> {
+                _uiState.update { it.copy(email = intent.email) }
             }
 
-            is SignInEvent.UpdatePassword -> {
-                _uiState.update { it.copy(password = event.password) }
+            is SignInIntent.UpdatePassword -> {
+                _uiState.update { it.copy(password = intent.password) }
             }
 
-            is SignInEvent.TogglePasswordVisibility -> {
+            is SignInIntent.TogglePasswordVisibility -> {
                 _uiState.update { it.copy(isPasswordVisible = !it.isPasswordVisible) }
             }
 
-            is SignInEvent.SignInWithGoogle -> {
+            is SignInIntent.SignInWithGoogle -> {
                 signInJob?.cancel()
                 signInJob = launchGoogleSignIn()
             }
 
-            is SignInEvent.SubmitSignIn ->
+            is SignInIntent.SubmitSignIn -> {
                 viewModelScope.launch {
                     when {
-                        !_uiState.value.email.isValidEmail ->
+                        !_uiState.value.email.isValidEmail -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -78,8 +78,9 @@ class SignInViewModel(
                                         ),
                                 )
                             }
+                        }
 
-                        _uiState.value.password.isBlank() ->
+                        _uiState.value.password.isBlank() -> {
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
@@ -90,6 +91,7 @@ class SignInViewModel(
                                         ),
                                 )
                             }
+                        }
 
                         else -> {
                             signInJob?.cancel()
@@ -97,10 +99,15 @@ class SignInViewModel(
                         }
                     }
                 }
+            }
 
-            is SignInEvent.NavigateToPasswordRecoveryScreen -> Unit
-            is SignInEvent.NavigateToSignUpScreen -> Unit
-            is SignInEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            is SignInIntent.NavigateToPasswordRecoveryScreen -> {}
+
+            is SignInIntent.NavigateToSignUpScreen -> {}
+
+            is SignInIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 
@@ -114,7 +121,7 @@ class SignInViewModel(
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
-                                    effect = SignInEffect.LoginSuccess,
+                                    effect = SignInEffect.SignInSuccess,
                                 )
                             }
                         }.onError { error ->
@@ -139,7 +146,7 @@ class SignInViewModel(
                                 _uiState.update {
                                     it.copy(
                                         isLoading = false,
-                                        effect = SignInEffect.LoginSuccess,
+                                        effect = SignInEffect.SignInSuccess,
                                     )
                                 }
                             }.onError { error ->

@@ -1,6 +1,6 @@
 package eg.edu.cu.csds.icare.core.ui.view
 
-import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -26,15 +27,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import eg.edu.cu.csds.icare.core.ui.R
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.LANGUAGE_CARD_HEIGHT
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.MAX_SURFACE_WIDTH
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 
 @Composable
 fun RadioButtonGroupWithHeader(
@@ -48,9 +51,9 @@ fun RadioButtonGroupWithHeader(
         Surface(
             modifier =
                 Modifier
-                    .height(LANGUAGE_CARD_HEIGHT)
-                    .fillMaxWidth(),
-            color = contentBackgroundColor,
+                    .fillMaxWidth()
+                    .widthIn(max = MAX_SURFACE_WIDTH)
+                    .height(LANGUAGE_CARD_HEIGHT),
             shape =
                 RoundedCornerShape(
                     topStart = L_PADDING,
@@ -70,7 +73,6 @@ fun RadioButtonGroupWithHeader(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = header,
-                    color = contentColor,
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
                     fontWeight = FontWeight.Bold,
                     fontFamily = helveticaFamily,
@@ -108,10 +110,7 @@ fun RadioButtonGroupWithHeader(
                             )
                             Text(
                                 text = text,
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth(),
-                                color = contentColor,
+                                modifier = Modifier.fillMaxWidth(),
                                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = helveticaFamily,
@@ -126,19 +125,28 @@ fun RadioButtonGroupWithHeader(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(locale = "ar", showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(locale = "ar", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 fun RadioButtonGroupWithHeaderPreview() {
-    RadioButtonGroupWithHeader(
-        stringResource(id = R.string.core_ui_choose_app_lang),
-        radioOptions =
-            listOf(
-                stringResource(id = R.string.core_ui_radio_lang_english),
-                stringResource(id = R.string.core_ui_radio_lang_arabic),
-            ),
-        selected = 0,
-    ) {}
+    IcareTheme {
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(M_PADDING)
+                    .background(color = MaterialTheme.colorScheme.background),
+        ) {
+            RadioButtonGroupWithHeader(
+                stringResource(id = R.string.core_ui_choose_app_lang),
+                radioOptions =
+                    listOf(
+                        stringResource(id = R.string.core_ui_radio_lang_english),
+                        stringResource(id = R.string.core_ui_radio_lang_arabic),
+                    ),
+                selected = 0,
+            ) {}
+        }
+    }
 }

@@ -35,29 +35,34 @@ class ClinicianListViewModel(
             )
     val effect = _uiState.map { it.effect }
 
-    fun processEvent(event: ClinicianListEvent) {
-        when (event) {
-            is ClinicianListEvent.Refresh -> {
+    fun handleIntent(intent: ClinicianListIntent) {
+        when (intent) {
+            is ClinicianListIntent.Refresh -> {
                 fetchClinicians()
             }
 
-            is ClinicianListEvent.SelectClinician ->
+            is ClinicianListIntent.SelectClinician -> {
                 _uiState.update {
                     it.copy(
                         effect =
-                            ClinicianListEffect.NavigateToClinicianDetails(event.clinician),
+                            ClinicianListEffect.NavigateToClinicianDetails(intent.clinician),
                     )
                 }
+            }
 
-            is ClinicianListEvent.UpdateFabExpanded ->
+            is ClinicianListIntent.UpdateFabExpanded -> {
                 _uiState.update {
                     it.copy(
                         effect =
                             ClinicianListEffect
-                                .UpdateFabExpanded(isExpanded = event.isExpanded),
+                                .UpdateFabExpanded(isExpanded = intent.isExpanded),
                     )
                 }
-            ClinicianListEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            }
+
+            ClinicianListIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

@@ -1,8 +1,10 @@
 package eg.edu.cu.csds.icare.core.ui.common
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Stable
 import eg.edu.cu.csds.icare.core.ui.R
 
+@Stable
 sealed class AppointmentStatus(
     val code: Short,
     @param:StringRes

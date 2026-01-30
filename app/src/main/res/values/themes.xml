@@ -13,7 +13,7 @@
         <item name="android:windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="windowSplashScreenBackground">@color/core_ui_white</item>
+        <item name="windowSplashScreenBackground">@color/core_ui_splash_background_light</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/core_ui_logo</item>
         <item name="postSplashScreenTheme">@style/Theme.Icare</item>
     </style>

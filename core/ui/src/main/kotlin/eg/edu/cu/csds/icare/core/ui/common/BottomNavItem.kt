@@ -2,13 +2,16 @@ package eg.edu.cu.csds.icare.core.ui.common
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Stable
+import androidx.navigation3.runtime.NavKey
 import eg.edu.cu.csds.icare.core.ui.R
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 
+@Stable
 sealed class BottomNavItem(
     @param:DrawableRes var iconResId: Int,
     @param:StringRes val titleResId: Int,
-    var route: Route,
+    var key: NavKey,
 ) {
     data object Home : BottomNavItem(
         R.drawable.core_ui_ic_home,
@@ -34,3 +37,11 @@ sealed class BottomNavItem(
         Route.Settings,
     )
 }
+
+val BOTTOM_NAV_ENTRIES =
+    setOf(
+        BottomNavItem.Home,
+        BottomNavItem.Notifications,
+        BottomNavItem.Profile,
+        BottomNavItem.Settings,
+    )

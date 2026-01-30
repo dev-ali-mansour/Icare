@@ -7,6 +7,7 @@ import eg.edu.cu.csds.icare.core.domain.model.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCentersUseCase
 import eg.edu.cu.csds.icare.core.ui.common.CenterTypeItem
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import eg.edu.cu.csds.icare.core.ui.view.TopSearchBarState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -41,27 +42,37 @@ class LabListViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: LabListEvent) {
-        when (event) {
-            is LabListEvent.OnBackClick -> {
+    fun handleIntent(intent: LabListIntent) {
+        when (intent) {
+            is LabListIntent.OnBackClick -> {
                 _uiState.update { it.copy(effect = LabListEffect.OnBackClick) }
             }
 
-            is LabListEvent.Refresh -> {
+            is LabListIntent.Refresh -> {
                 fetchLabsJob?.cancel()
                 fetchLabsJob = refreshLabCenters()
             }
 
-            is LabListEvent.UpdateSearchQuery -> {
-                _uiState.update { it.copy(searchQuery = event.query) }
+            is LabListIntent.UpdateSearchTopBarState -> {
+                _uiState.update { it.copy(searchBarState = intent.state) }
+                if (intent.state == TopSearchBarState.Collapsed) {
+                    fetchLabsJob?.cancel()
+                    fetchLabsJob = launchSearchLabCenters(_uiState.value.searchQuery)
+                }
             }
 
-            is LabListEvent.Search -> {
+            is LabListIntent.UpdateSearchQuery -> {
+                _uiState.update { it.copy(searchQuery = intent.query) }
+            }
+
+            is LabListIntent.Search -> {
                 fetchLabsJob?.cancel()
                 fetchLabsJob = launchSearchLabCenters(query = _uiState.value.searchQuery)
             }
 
-            LabListEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            LabListIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 

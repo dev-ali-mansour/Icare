@@ -55,44 +55,51 @@ class HomeViewModel(
             )
     val effect = _uiState.map { it.effect }
 
-    fun processEvent(event: HomeEvent) {
-        when (event) {
-            HomeEvent.NavigateToProfileScreen ->
+    fun handleIntent(intent: HomeIntent) {
+        when (intent) {
+            HomeIntent.NavigateToProfileScreen -> {
                 _uiState.update {
                     it.copy(effect = NavigateToRoute(route = Route.Profile))
                 }
+            }
 
-            is HomeEvent.Refresh -> {
+            is HomeIntent.Refresh -> {
                 getCurrentUserJob?.cancel()
                 getCurrentUserJob = launchGetCurrentUser(true)
             }
 
-            is HomeEvent.UpdateOpenDialog ->
-                _uiState.update { it.copy(openDialog = event.isOpen) }
-
-            is HomeEvent.NavigateToAppointmentsScreen -> Unit
-
-            is HomeEvent.ConfirmAppointment -> {
-                confirmAppointmentJob?.cancel()
-                confirmAppointmentJob = launchConfirmAppointment(event.appointment)
+            is HomeIntent.UpdateOpenDialog -> {
+                _uiState.update { it.copy(openDialog = intent.isOpen) }
             }
 
-            is HomeEvent.NavigateToUpdateDoctorScreen ->
-                _uiState.update {
-                    it.copy(effect = HomeEffect.NavigateToUpdateDoctorScreen(doctor = event.doctor))
-                }
+            is HomeIntent.NavigateToAppointmentsScreen -> {}
 
-            is HomeEvent.NavigateToNewConsultation ->
-                _uiState.update {
-                    it.copy(effect = HomeEffect.NavigateToNewConsultation(appointment = event.appointment))
-                }
+            is HomeIntent.ConfirmAppointment -> {
+                confirmAppointmentJob?.cancel()
+                confirmAppointmentJob = launchConfirmAppointment(intent.appointment)
+            }
 
-            is HomeEvent.NavigateToSectionsAdminScreen ->
+            is HomeIntent.NavigateToUpdateDoctorScreen -> {
+                _uiState.update {
+                    it.copy(effect = HomeEffect.NavigateToUpdateDoctorScreen(doctor = intent.doctor))
+                }
+            }
+
+            is HomeIntent.NavigateToNewConsultation -> {
+                _uiState.update {
+                    it.copy(effect = HomeEffect.NavigateToNewConsultation(appointment = intent.appointment))
+                }
+            }
+
+            is HomeIntent.NavigateToSectionsAdminScreen -> {
                 _uiState.update {
                     it.copy(effect = NavigateToRoute(route = Route.Admin))
                 }
+            }
 
-            is HomeEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            is HomeIntent.ConsumeEffect -> {
+                _uiState.update { it.copy(effect = null) }
+            }
         }
     }
 
@@ -119,13 +126,9 @@ class HomeViewModel(
                                 getAppointmentsJob = launchGetAppointments()
                             }
 
-                            Role.PharmacistRole.code -> {
-                                Unit
-                            }
+                            Role.PharmacistRole.code -> {}
 
-                            Role.CenterStaffRole.code -> {
-                                Unit
-                            }
+                            Role.CenterStaffRole.code -> {}
                         }
                     }.onError { error ->
                         _uiState.update {
