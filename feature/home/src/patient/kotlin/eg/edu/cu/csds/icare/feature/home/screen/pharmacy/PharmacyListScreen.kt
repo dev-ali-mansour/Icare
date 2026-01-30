@@ -53,7 +53,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PharmacyListScreen(onNavigationIconClicked: () -> Unit) {
     val viewModel: PharmacyListViewModel = koinViewModel()

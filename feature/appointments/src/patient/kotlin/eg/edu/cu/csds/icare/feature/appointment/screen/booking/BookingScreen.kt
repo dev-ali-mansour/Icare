@@ -81,7 +81,6 @@ import eg.edu.cu.csds.icare.feature.appointment.component.TimeSlotSelector
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun BookingScreen(
     onNavigationIconClicked: () -> Unit,

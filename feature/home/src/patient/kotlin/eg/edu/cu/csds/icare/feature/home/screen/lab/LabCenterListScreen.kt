@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -53,7 +52,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun LabCenterListScreen(onNavigationIconClicked: () -> Unit) {
     val viewModel: LabListViewModel = koinViewModel()
@@ -191,9 +189,7 @@ private fun LabCenterListContent(
             ) {
                 items(
                     uiState.labs,
-                    key = { lab ->
-                        lab.id
-                    },
+                    key = { it.id },
                     span = { GridItemSpan(1) },
                 ) { lab ->
                     CenterView(
