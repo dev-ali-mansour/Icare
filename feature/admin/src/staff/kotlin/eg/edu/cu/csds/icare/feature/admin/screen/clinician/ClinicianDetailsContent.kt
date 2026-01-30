@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
 import eg.edu.cu.csds.icare.core.ui.theme.buttonBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
@@ -55,7 +55,7 @@ internal fun ClinicianDetailsContent(
         modifier =
             modifier
                 .fillMaxSize()
-                .padding(bottom = XL_PADDING)
+                .padding(bottom = M_PADDING)
                 .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
