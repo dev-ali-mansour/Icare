@@ -1,7 +1,6 @@
 package eg.edu.cu.csds.icare.feature.auth.screen.signin
 
 import android.content.Context
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,38 +47,35 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import eg.edu.cu.csds.icare.feature.auth.R
-import eg.edu.cu.csds.icare.feature.auth.screen.signin.SignInEffect
-import eg.edu.cu.csds.icare.feature.auth.screen.signin.SignInEvent
-import eg.edu.cu.csds.icare.feature.auth.screen.signin.SignInState
-import eg.edu.cu.csds.icare.feature.auth.screen.signin.SignInViewModel
-import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.R.drawable
-import eg.edu.cu.csds.icare.feature.auth.util.handleSignIn
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.Blue500
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL3_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL4_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XL_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
-import eg.edu.cu.csds.icare.core.ui.theme.barBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.buttonBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.SocialSignInButton
+import eg.edu.cu.csds.icare.feature.auth.R
+import eg.edu.cu.csds.icare.feature.auth.util.handleSignIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -89,12 +85,12 @@ import timber.log.Timber
 
 @Composable
 internal fun SignInScreen(
-    viewModel: SignInViewModel = koinViewModel(),
     onRecoveryClicked: () -> Unit,
     onLoginSuccess: () -> Unit,
     onCreateAnAccountClicked: () -> Unit = {},
-    context: Context = LocalContext.current,
 ) {
+    val viewModel: SignInViewModel = koinViewModel()
+    val context: Context = LocalContext.current
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val scope: CoroutineScope = rememberCoroutineScope()
     var alertMessage by remember { mutableStateOf("") }
@@ -104,10 +100,13 @@ internal fun SignInScreen(
 
     LaunchedUiEffectHandler(
         viewModel.effect,
-        onConsumeEffect = { viewModel.processEvent(SignInEvent.ConsumeEffect) },
+        onConsumeEffect = { viewModel.handleIntent(SignInIntent.ConsumeEffect) },
         onEffect = { effect ->
             when (effect) {
-                is SignInEffect.LoginSuccess -> onLoginSuccess()
+                is SignInEffect.SignInSuccess -> {
+                    onLoginSuccess()
+                }
+
                 is SignInEffect.ShowError -> {
                     alertMessage = effect.message.asString(context)
                     scope.launch {
@@ -120,22 +119,19 @@ internal fun SignInScreen(
         },
     )
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-    ) { paddingValues ->
+    Scaffold { innerPadding ->
         Box(
             modifier =
                 Modifier
-                    .background(color = backgroundColor)
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(innerPadding),
             contentAlignment = Alignment.Center,
         ) {
             SignInContent(
                 state = state,
-                onEvent = { intent ->
+                onIntent = { intent ->
                     when (intent) {
-                        is SignInEvent.SignInWithGoogle -> {
+                        is SignInIntent.SignInWithGoogle -> {
                             scope.launch {
                                 runCatching {
                                     val result =
@@ -144,12 +140,12 @@ internal fun SignInScreen(
                                             context = context,
                                         )
                                     handleSignIn(result, onSuccess = {
-                                        viewModel.processEvent(
-                                            SignInEvent.UpdateGoogleSignInToken(
+                                        viewModel.handleIntent(
+                                            SignInIntent.UpdateGoogleSignInToken(
                                                 it,
                                             ),
                                         )
-                                        viewModel.processEvent(SignInEvent.SignInWithGoogle)
+                                        viewModel.handleIntent(SignInIntent.SignInWithGoogle)
                                     }, onError = { error ->
                                         Timber.e("Google Sign-In failed: $error")
                                     })
@@ -159,16 +155,16 @@ internal fun SignInScreen(
                             }
                         }
 
-                        is SignInEvent.NavigateToPasswordRecoveryScreen -> {
+                        is SignInIntent.NavigateToPasswordRecoveryScreen -> {
                             onRecoveryClicked()
                         }
 
-                        is SignInEvent.NavigateToSignUpScreen -> {
+                        is SignInIntent.NavigateToSignUpScreen -> {
                             onCreateAnAccountClicked()
                         }
 
                         else -> {
-                            viewModel.processEvent(event = intent)
+                            viewModel.handleIntent(intent = intent)
                         }
                     }
                 },
@@ -182,7 +178,7 @@ internal fun SignInScreen(
 @Composable
 private fun SignInContent(
     state: SignInState,
-    onEvent: (SignInEvent) -> Unit,
+    onIntent: (SignInIntent) -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier.fillMaxSize(),
@@ -196,7 +192,8 @@ private fun SignInContent(
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    }.fillMaxWidth()
+                    }
+                    .fillMaxWidth()
                     .height(300.dp)
                     .background(
                         brush =
@@ -204,8 +201,8 @@ private fun SignInContent(
                                 startY = 0.0f,
                                 colors =
                                     listOf(
-                                        barBackgroundColor,
-                                        barBackgroundColor,
+                                        MaterialTheme.colorScheme.primary,
+                                        MaterialTheme.colorScheme.primary,
                                         Color.White,
                                     ),
                             ),
@@ -251,25 +248,25 @@ private fun SignInContent(
                         end.linkTo(parent.end)
                         top.linkTo(parent.top, margin = 230.dp)
                         height = Dimension.fillToConstraints
-                    }.clip(RoundedCornerShape(topStart = XL4_PADDING, topEnd = XL4_PADDING)),
+                    }
+                    .clip(RoundedCornerShape(topStart = XL4_PADDING, topEnd = XL4_PADDING)),
         ) {
             Column(
                 modifier =
                     Modifier
-                        .fillMaxSize()
-                        .background(backgroundColor),
+                        .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Spacer(modifier = Modifier.height(XL3_PADDING))
                 Surface(
                     modifier = Modifier.fillMaxWidth(fraction = 0.8f),
-                    color = backgroundColor,
+                    color = MaterialTheme.colorScheme.background,
                     tonalElevation = L_PADDING,
                 ) {
                     Column {
                         TextField(
                             value = state.email,
-                            onValueChange = { onEvent(SignInEvent.UpdateEmail(it)) },
+                            onValueChange = { onIntent(SignInIntent.UpdateEmail(it)) },
                             label = {
                                 Text(
                                     text = stringResource(id = R.string.feature_auth_email),
@@ -306,7 +303,7 @@ private fun SignInContent(
                         )
                         TextField(
                             value = state.password,
-                            onValueChange = { onEvent(SignInEvent.UpdatePassword(it)) },
+                            onValueChange = { onIntent(SignInIntent.UpdatePassword(it)) },
                             colors =
                                 TextFieldDefaults.colors(
                                     focusedContainerColor = Color.Transparent,
@@ -318,7 +315,7 @@ private fun SignInContent(
                                     unfocusedIndicatorColor = Yellow500.copy(alpha = 0.38f),
                                 ),
                             trailingIcon = {
-                                IconButton(onClick = { onEvent(SignInEvent.TogglePasswordVisibility) }) {
+                                IconButton(onClick = { onIntent(SignInIntent.TogglePasswordVisibility) }) {
                                     Icon(
                                         painter =
                                             painterResource(
@@ -365,7 +362,7 @@ private fun SignInContent(
                         Modifier
                             .fillMaxWidth()
                             .padding(horizontal = XL_PADDING)
-                            .clickable { onEvent(SignInEvent.NavigateToPasswordRecoveryScreen) },
+                            .clickable { onIntent(SignInIntent.NavigateToPasswordRecoveryScreen) },
                 )
 
                 Spacer(modifier = Modifier.height(S_PADDING))
@@ -374,7 +371,7 @@ private fun SignInContent(
                     modifier = Modifier.fillMaxWidth(fraction = 0.6f),
                     text = stringResource(id = R.string.feature_auth_sign_in),
                     color = buttonBackgroundColor,
-                    onClick = { onEvent(SignInEvent.SubmitSignIn) },
+                    onClick = { onIntent(SignInIntent.SubmitSignIn) },
                 )
 
                 Spacer(modifier = Modifier.height(S_PADDING))
@@ -402,7 +399,7 @@ private fun SignInContent(
                         modifier = Modifier.fillMaxWidth(fraction = 0.8f),
                         iconId = drawable.core_ui_ic_social_google,
                     ) {
-                        onEvent(SignInEvent.SignInWithGoogle)
+                        onIntent(SignInIntent.SignInWithGoogle)
                     }
                 }
                 Spacer(modifier = Modifier.height(S_PADDING))
@@ -423,16 +420,17 @@ private fun SignInContent(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, locale = "ar")
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ar")
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 private fun SignInContentPreview() {
-    Box(modifier = Modifier.background(backgroundColor)) {
-        SignInContent(
-            state = SignInState(),
-            onEvent = {},
-        )
+    IcareTheme {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            SignInContent(
+                state = SignInState(),
+                onIntent = {},
+            )
+        }
     }
 }

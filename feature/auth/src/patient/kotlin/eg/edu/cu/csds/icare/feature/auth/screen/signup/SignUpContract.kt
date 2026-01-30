@@ -1,5 +1,43 @@
 package eg.edu.cu.csds.icare.feature.auth.screen.signup
 
+import androidx.compose.runtime.Stable
+import eg.edu.cu.csds.icare.core.ui.util.UiText
+
+@Stable
+data class SignUpState(
+    val isLoading: Boolean = false,
+    val firstName: String = "",
+    val lastName: String = "",
+    val email: String = "",
+    val birthDate: Long = System.currentTimeMillis(),
+    val gender: Short = 0,
+    val isGenderExpanded: Boolean = false,
+    val nationalId: String = "",
+    val phone: String = "",
+    val address: String = "",
+    val weight: Double = 0.0,
+    val chronicDiseases: String = "",
+    val currentMedications: String = "",
+    val allergies: String = "",
+    val pastSurgeries: String = "",
+    val password: String = "",
+    val isPasswordVisible: Boolean = false,
+    val showAlert: Boolean = false,
+    val effect: SignUpEffect? = null,
+)
+
+sealed interface SignUpEffect {
+    object SignUpSuccess : SignUpEffect
+
+    data class ShowInfo(
+        val message: UiText,
+    ) : SignUpEffect
+
+    data class ShowError(
+        val message: UiText,
+    ) : SignUpEffect
+}
+
 sealed interface SignUpIntent {
     data class UpdateFirstName(
         val firstName: String,
@@ -68,4 +106,6 @@ sealed interface SignUpIntent {
     object SubmitSignUp : SignUpIntent
 
     object NavigateToSignInScreen : SignUpIntent
+
+    object ConsumeEffect : SignUpIntent
 }

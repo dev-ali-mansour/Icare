@@ -57,9 +57,9 @@ import eg.edu.cu.csds.icare.core.ui.theme.MEDIUM_ICON_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.PROFILE_IMAGE_SIZE
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
+import eg.edu.cu.csds.icare.core.ui.theme.TabRowContainerColor
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Yellow500
-import eg.edu.cu.csds.icare.core.ui.theme.contentBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.contentColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.util.currentLanguage
@@ -142,7 +142,7 @@ internal fun ProfileScreen(onSignOut: () -> Unit) {
                     .padding(innerPadding)
                     .fillMaxSize()
                     .padding(top = M_PADDING),
-            onEvent = { intent ->
+            onIntent = { intent ->
                 scope.launch {
                     when (intent) {
                         is ProfileIntent.LinkWithGoogle -> {
@@ -174,7 +174,7 @@ internal fun ProfileScreen(onSignOut: () -> Unit) {
 private fun ProfileContent(
     uiState: ProfileState,
     modifier: Modifier = Modifier,
-    onEvent: (profileIntent: ProfileIntent) -> Unit,
+    onIntent: (profileIntent: ProfileIntent) -> Unit,
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (progress, logout) = createRefs()
@@ -201,7 +201,7 @@ private fun ProfileContent(
                     },
             text = stringResource(id = R.string.feature_auth_sign_out),
             color = Color.Red.copy(alpha = 0.6f),
-            onClick = { onEvent(ProfileIntent.SignOut) },
+            onClick = { onIntent(ProfileIntent.SignOut) },
         )
     }
 }
@@ -217,7 +217,7 @@ private fun ProfileTopAppBar(
         ConstraintLayout(
             modifier =
                 modifier
-                    .background(contentBackgroundColor)
+                    .background(TabRowContainerColor)
                     .fillMaxWidth()
                     .padding(S_PADDING),
         ) {
@@ -375,7 +375,7 @@ private fun ProfileContentPreview() {
         Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
             ProfileContent(
                 uiState = ProfileState(),
-                onEvent = {},
+                onIntent = {},
             )
         }
     }
