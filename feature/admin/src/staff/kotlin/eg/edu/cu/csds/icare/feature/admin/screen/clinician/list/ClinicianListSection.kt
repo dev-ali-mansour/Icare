@@ -27,6 +27,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.Clinician
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
@@ -129,7 +130,7 @@ private fun ClinicianListContent(
             EmptyContentView(
                 modifier =
                     Modifier.fillMaxSize(),
-                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_no_clinicians_data),
+                text = stringResource(string.core_ui_no_clinicians_data),
             )
         } else {
             LazyVerticalGrid(
@@ -169,45 +170,47 @@ internal fun ClinicStaffsContentPreview() {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
             ClinicianListContent(
                 modifier = Modifier,
-                state = ClinicianListState(
-                    clinicians = listOf(
-                        Clinician(
-                            id="1",
-                            name = "Clinician 1",
-                            clinicName = "Clinic Name",
-                            email = "clinic@mail.com",
-                            phone = "01210015678",
-                        ),
-                        Clinician(
-                            id="2",
-                            name = "Clinician 2",
-                            clinicName = "Clinic Name",
-                            email = "clinic@mail.com",
-                            phone = "01210015678",
-                        ),
-                        Clinician(
-                            id="3",
-                            name = "Clinician 3",
-                            clinicName = "Clinic Name",
-                            email = "clinic@mail.com",
-                            phone = "01210015678",
-                        ),
-                        Clinician(
-                            id="4",
-                            name = "Clinician 4",
-                            clinicName = "Clinic Name",
-                            email = "clinic@mail.com",
-                            phone = "01210015678",
-                        ),
-                        Clinician(
-                            id="5",
-                            name = "Clinician 5",
-                            clinicName = "Clinic Name",
-                            email = "clinic@mail.com",
-                            phone = "01210015678",
-                        ),
-                    )
-                ),
+                state =
+                    ClinicianListState(
+                        clinicians =
+                            listOf(
+                                Clinician(
+                                    id = "1",
+                                    name = "Clinician 1",
+                                    clinicName = "Clinic Name",
+                                    email = "clinic@mail.com",
+                                    phone = "01210015678",
+                                ),
+                                Clinician(
+                                    id = "2",
+                                    name = "Clinician 2",
+                                    clinicName = "Clinic Name",
+                                    email = "clinic@mail.com",
+                                    phone = "01210015678",
+                                ),
+                                Clinician(
+                                    id = "3",
+                                    name = "Clinician 3",
+                                    clinicName = "Clinic Name",
+                                    email = "clinic@mail.com",
+                                    phone = "01210015678",
+                                ),
+                                Clinician(
+                                    id = "4",
+                                    name = "Clinician 4",
+                                    clinicName = "Clinic Name",
+                                    email = "clinic@mail.com",
+                                    phone = "01210015678",
+                                ),
+                                Clinician(
+                                    id = "5",
+                                    name = "Clinician 5",
+                                    clinicName = "Clinic Name",
+                                    email = "clinic@mail.com",
+                                    phone = "01210015678",
+                                ),
+                            ),
+                    ),
                 onIntent = {},
             )
         }

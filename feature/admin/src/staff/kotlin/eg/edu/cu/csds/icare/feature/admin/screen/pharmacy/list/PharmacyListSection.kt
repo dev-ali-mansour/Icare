@@ -27,6 +27,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
@@ -127,7 +128,7 @@ private fun PharmacyListContent(
             EmptyContentView(
                 modifier =
                     Modifier.fillMaxSize(),
-                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_no_pharmacies_data),
+                text = stringResource(string.core_ui_no_pharmacies_data),
             )
         } else {
             LazyVerticalGrid(
@@ -142,7 +143,7 @@ private fun PharmacyListContent(
                     items = uiState.pharmacies,
                     key = { it.id },
                     span = { GridItemSpan(1) },
-                ) {pharmacy ->
+                ) { pharmacy ->
                     PharmacyView(
                         name = pharmacy.name,
                         phone = pharmacy.phone,

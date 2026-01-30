@@ -27,6 +27,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
@@ -126,7 +127,7 @@ private fun ClinicListContent(
         if (state.clinics.isEmpty()) {
             EmptyContentView(
                 modifier = Modifier.fillMaxSize(),
-                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_no_clinics_data),
+                text = stringResource(string.core_ui_no_clinics_data),
             )
         } else {
             LazyVerticalGrid(
