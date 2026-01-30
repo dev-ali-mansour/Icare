@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import eg.edu.cu.csds.icare.core.domain.model.Notification
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
@@ -68,7 +69,7 @@ private fun NotificationsContent(
     ) {
         Text(
             modifier = Modifier.padding(bottom = S_PADDING),
-            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_nav_notifications),
+            text = stringResource(string.core_ui_nav_notifications),
             fontWeight = FontWeight.Bold,
             fontSize = MaterialTheme.typography.titleLarge.fontSize,
             fontFamily = helveticaFamily,

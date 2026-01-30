@@ -45,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.util.Constants.LAST_ON_BOARDING_PAGE
 import eg.edu.cu.csds.icare.core.domain.util.Constants.ON_BOARDING_PAGE_COUNT
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.common.OnBoardingPage
 import eg.edu.cu.csds.icare.core.ui.theme.PAGING_INDICATOR_SPACING
@@ -68,10 +69,8 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-internal fun OnBoardingScreen(
-    viewModel: OnboardingViewModel = koinViewModel(),
-    onFinished: () -> Unit,
-) {
+internal fun OnBoardingScreen(onFinished: () -> Unit) {
+    val viewModel: OnboardingViewModel = koinViewModel()
     val configuration: Configuration = LocalConfiguration.current
     val context: Context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -275,7 +274,7 @@ internal fun FinishButton(
                     ),
             ) {
                 Text(
-                    text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_finish),
+                    text = stringResource(string.core_ui_finish),
                     fontFamily = helveticaFamily,
                 )
             }
