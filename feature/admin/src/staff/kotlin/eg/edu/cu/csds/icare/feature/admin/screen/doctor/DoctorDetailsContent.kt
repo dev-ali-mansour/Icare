@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
 import eg.edu.cu.csds.icare.core.ui.R.drawable
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
@@ -266,7 +267,7 @@ internal fun DoctorDetailsContent(
             onValueChange = { onIntent(DoctorIntent.UpdateSpeciality(it)) },
             label = {
                 Text(
-                    text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_speciality),
+                    text = stringResource(string.core_ui_speciality),
                     fontFamily = helveticaFamily,
                     color = textColor,
                 )
@@ -296,14 +297,14 @@ internal fun DoctorDetailsContent(
         DoubleTextField(
             value = uiState.price,
             onValueChanged = { onIntent(DoctorIntent.UpdatePrice(it)) },
-            label = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_price),
+            label = stringResource(string.core_ui_price),
             textColor = textColor,
         )
 
         DoubleTextField(
             value = uiState.rating,
             onValueChanged = { onIntent(DoctorIntent.UpdateRating(it)) },
-            label = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_rating),
+            label = stringResource(string.core_ui_rating),
             textColor = textColor,
             readOnly = uiState.ratingReadOnly,
             imeAction = ImeAction.Done,
@@ -440,7 +441,7 @@ internal fun DoctorDetailsContent(
             modifier =
                 Modifier
                     .fillMaxWidth(fraction = 0.6f),
-            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
+            text = stringResource(string.core_ui_proceed),
             color = buttonBackgroundColor,
             onClick = { onIntent(DoctorIntent.Proceed) },
         )

@@ -27,7 +27,6 @@ import eg.edu.cu.csds.icare.feature.admin.screen.doctor.DoctorIntent
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun UpdateDoctorScreen(
     onNavigationIconClicked: () -> Unit,

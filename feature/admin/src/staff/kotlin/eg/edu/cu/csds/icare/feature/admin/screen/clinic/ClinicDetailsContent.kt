@@ -29,6 +29,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
@@ -63,7 +64,7 @@ internal fun ClinicDetailsContent(
             onValueChange = { onIntent(ClinicIntent.UpdateName(it)) },
             label = {
                 Text(
-                    text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_name),
+                    text = stringResource(string.core_ui_name),
                     fontFamily = helveticaFamily,
                     color = textColor,
                 )
@@ -217,10 +218,10 @@ internal fun ClinicDetailsContent(
                 text =
                     if (state.isOpen) {
                         stringResource(
-                            eg.edu.cu.csds.icare.core.ui.R.string.core_ui_open,
+                            string.core_ui_open,
                         )
                     } else {
-                        stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_closed)
+                        stringResource(string.core_ui_closed)
                     },
                 fontFamily = helveticaFamily,
                 color = textColor,
@@ -233,7 +234,7 @@ internal fun ClinicDetailsContent(
             modifier =
                 Modifier
                     .fillMaxWidth(fraction = 0.6f),
-            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
+            text = stringResource(string.core_ui_proceed),
             color = buttonBackgroundColor,
             onClick = { onIntent(ClinicIntent.Proceed) },
         )

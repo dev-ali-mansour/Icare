@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
@@ -257,7 +258,7 @@ internal fun ClinicianDetailsContent(
             modifier =
                 Modifier
                     .fillMaxWidth(fraction = 0.6f),
-            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
+            text = stringResource(string.core_ui_proceed),
             color = buttonBackgroundColor,
             onClick = { onIntent(ClinicianIntent.Proceed) },
         )

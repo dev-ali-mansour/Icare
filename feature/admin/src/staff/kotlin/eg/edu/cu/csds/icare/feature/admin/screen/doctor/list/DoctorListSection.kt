@@ -28,6 +28,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
@@ -94,7 +95,7 @@ fun DoctorListSection(
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
                 },
-            state = uiState,
+            uiState = uiState,
             onIntent = viewModel::handleIntent,
         )
 
@@ -115,7 +116,7 @@ fun DoctorListSection(
 @Composable
 private fun DoctorListContent(
     modifier: Modifier,
-    state: DoctorListState,
+    uiState: DoctorListState,
     onIntent: (DoctorListIntent) -> Unit,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -125,10 +126,10 @@ private fun DoctorListContent(
             onIntent(DoctorListIntent.UpdateFabExpanded(expandedFabState.value))
         }
 
-        if (state.doctors.isEmpty()) {
+        if (uiState.doctors.isEmpty()) {
             EmptyContentView(
                 modifier = Modifier.fillMaxSize(),
-                text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_no_doctors_data),
+                text = stringResource(string.core_ui_no_doctors_data),
             )
         } else {
             LazyVerticalGrid(
@@ -140,7 +141,7 @@ private fun DoctorListContent(
                 verticalArrangement = Arrangement.spacedBy(S_PADDING),
             ) {
                 items(
-                    items = state.doctors,
+                    items = uiState.doctors,
                     key = { it.id },
                     span = { GridItemSpan(1) },
                 ) { doctor ->
@@ -172,7 +173,7 @@ internal fun DoctorListContentPreview() {
         ) {
             DoctorListContent(
                 modifier = Modifier,
-                state =
+                uiState =
                     DoctorListState(
                         doctors =
                             listOf(

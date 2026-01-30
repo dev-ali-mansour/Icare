@@ -30,6 +30,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.CenterTypeItem
 import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
@@ -66,7 +67,7 @@ internal fun CenterDetailsContent(
             onValueChange = { onIntent(CenterIntent.UpdateName(it)) },
             label = {
                 Text(
-                    text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_name),
+                    text = stringResource(string.core_ui_name),
                     fontFamily = helveticaFamily,
                     color = textColor,
                 )
@@ -229,7 +230,7 @@ internal fun CenterDetailsContent(
             modifier =
                 Modifier
                     .fillMaxWidth(fraction = 0.6f),
-            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_proceed),
+            text = stringResource(string.core_ui_proceed),
             color = buttonBackgroundColor,
             onClick = { onIntent(CenterIntent.Proceed) },
         )

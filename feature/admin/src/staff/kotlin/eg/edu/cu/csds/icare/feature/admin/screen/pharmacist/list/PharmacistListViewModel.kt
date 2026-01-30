@@ -35,30 +35,30 @@ class PharmacistListViewModel(
             )
     val effect = uiState.map { it.effect }
 
-    fun processEvent(event: PharmacistListEvent) {
-        when (event) {
-            is PharmacistListEvent.Refresh -> {
+    fun handleIntent(intent: PharmacistListIntent) {
+        when (intent) {
+            is PharmacistListIntent.Refresh -> {
                 fetchPharmacists()
             }
 
-            is PharmacistListEvent.SelectPharmacist -> {
+            is PharmacistListIntent.SelectPharmacist -> {
                 _uiState.update {
                     it.copy(
                         effect =
-                            PharmacistListEffect.NavigateToPharmacistDetails(pharmacist = event.pharmacist),
+                            PharmacistListEffect.NavigateToPharmacistDetails(pharmacist = intent.pharmacist),
                     )
                 }
             }
 
-            is PharmacistListEvent.UpdateFabExpanded -> {
+            is PharmacistListIntent.UpdateFabExpanded -> {
                 _uiState.update {
                     it.copy(
-                        effect = PharmacistListEffect.UpdateFabExpanded(isExpanded = event.isExpanded),
+                        effect = PharmacistListEffect.UpdateFabExpanded(isExpanded = intent.isExpanded),
                     )
                 }
             }
 
-            PharmacistListEvent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
+            PharmacistListIntent.ConsumeEffect -> _uiState.update { it.copy(effect = null) }
         }
     }
 
