@@ -2,7 +2,6 @@ package eg.edu.cu.csds.icare.feature.home.screen.home
 
 import android.app.Activity
 import android.content.Context
-import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -31,7 +29,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -44,12 +43,14 @@ import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.common.Role
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.Orange200
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.util.MediaHelper
+import eg.edu.cu.csds.icare.core.ui.util.calculateGridColumns
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.ConfirmDialog
 import eg.edu.cu.csds.icare.feature.home.R
 import eg.edu.cu.csds.icare.feature.home.component.HomeTopAppBar
@@ -61,7 +62,6 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import kotlin.system.exitProcess
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreen(
     navigateToRoute: (Route) -> Unit,
@@ -139,22 +139,12 @@ internal fun HomeScreen(
                         },
                     ),
         ) {
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxSize(),
-            ) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 if (uiState.openDialog) {
                     ConfirmDialog(
-                        backgroundColor = backgroundColor,
-                        title =
-                            stringResource(
-                                id = string.core_ui_exit_dialog_title,
-                            ),
-                        message =
-                            stringResource(
-                                id = string.core_ui_exit_dialog,
-                            ),
+                        backgroundColor = MaterialTheme.colorScheme.background,
+                        title = stringResource(id = string.core_ui_exit_dialog_title),
+                        message = stringResource(id = string.core_ui_exit_dialog),
                         onDismissRequest = {
                             viewModel.handleIntent(HomeIntent.UpdateOpenDialog(isOpen = false))
                         },
@@ -171,6 +161,7 @@ internal fun HomeScreen(
 
                 HomeContent(
                     uiState = uiState,
+                    columnsCount = calculateGridColumns(),
                     onIntent = viewModel::handleIntent,
                 )
             }
@@ -187,6 +178,7 @@ internal fun HomeScreen(
 @Composable
 private fun HomeContent(
     uiState: HomeState,
+    columnsCount: Int,
     onIntent: (HomeIntent) -> Unit,
 ) {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
@@ -255,6 +247,7 @@ private fun HomeContent(
                                     appointment.copy(status = stringResource(it.textResId))
                                 } ?: appointment
                             },
+                        columnsCount = columnsCount,
                         onConfirm = { onIntent(HomeIntent.ConfirmAppointment(it)) },
                     )
                 }
@@ -273,7 +266,8 @@ private fun HomeContent(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         bottom.linkTo(parent.bottom)
-                    }.fillMaxWidth(fraction = 0.9f)
+                    }
+                    .fillMaxWidth(fraction = 0.9f)
                     .basicMarquee(iterations = Int.MAX_VALUE),
             color = Orange200,
             fontSize = MaterialTheme.typography.titleMedium.fontSize,
@@ -285,69 +279,71 @@ private fun HomeContent(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(locale = "ar", showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(locale = "ar", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 private fun HomeContentPreview() {
-    Box(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(color = backgroundColor)
-                .padding(XS_PADDING),
-    ) {
-        HomeContent(
-            uiState =
-                HomeState(
-                    currentUser =
-                        User(
-                            roleId = Role.AdminRole.code,
-                            displayName = "Ali Mansour",
-                            email = "",
-                            photoUrl = "",
-                        ),
-                    adminStatistics =
-                        AdminStatistics(
-                            totalUsers = 2500,
-                            doctors = 150,
-                            pharmacies = 35,
-                            scanCenters = 25,
-                            labCenters = 15,
-                            pending = 4590,
-                            confirmed = 178,
-                            completed = 2850,
-                            cancelled = 12,
-                        ),
-                    doctorSchedule =
-                        DoctorSchedule(
-                            totalPatients = 2000,
-                            confirmed = 16,
-                            price = 500.0,
-                            availableSlots = 5,
-                            appointments =
-                                listOf(
-                                    Appointment(
-                                        patientName = "محمد السيد عثمان",
-                                        dateTime = System.currentTimeMillis(),
+    IcareTheme {
+        Box(
+            modifier =
+                Modifier
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .fillMaxSize()
+                    .padding(XS_PADDING),
+        ) {
+            HomeContent(
+                uiState =
+                    HomeState(
+                        currentUser =
+                            User(
+                                roleId = Role.AdminRole.code,
+                                displayName = "Ali Mansour",
+                                email = "",
+                                photoUrl = "",
+                            ),
+                        adminStatistics =
+                            AdminStatistics(
+                                totalUsers = 2500,
+                                doctors = 150,
+                                pharmacies = 35,
+                                scanCenters = 25,
+                                labCenters = 15,
+                                pending = 4590,
+                                confirmed = 178,
+                                completed = 2850,
+                                cancelled = 12,
+                            ),
+                        doctorSchedule =
+                            DoctorSchedule(
+                                totalPatients = 2000,
+                                confirmed = 16,
+                                price = 500.0,
+                                availableSlots = 5,
+                                appointments =
+                                    listOf(
+                                        Appointment(
+                                            patientName = "محمد السيد عثمان",
+                                            dateTime = System.currentTimeMillis(),
+                                        ),
+                                        Appointment(
+                                            patientName = "ابراهيم محمد",
+                                            dateTime = System.currentTimeMillis(),
+                                        ),
+                                        Appointment(
+                                            patientName = "شاكر محمد العربي",
+                                            dateTime = System.currentTimeMillis(),
+                                        ),
+                                        Appointment(
+                                            patientName = "أحمد عبد الحليم مهران",
+                                            dateTime = System.currentTimeMillis(),
+                                        ),
                                     ),
-                                    Appointment(
-                                        patientName = "ابراهيم محمد",
-                                        dateTime = System.currentTimeMillis(),
-                                    ),
-                                    Appointment(
-                                        patientName = "شاكر محمد العربي",
-                                        dateTime = System.currentTimeMillis(),
-                                    ),
-                                    Appointment(
-                                        patientName = "أحمد عبد الحليم مهران",
-                                        dateTime = System.currentTimeMillis(),
-                                    ),
-                                ),
-                        ),
-                ),
-            onIntent = {},
-        )
+                            ),
+                    ),
+                columnsCount = calculateGridColumns(),
+                onIntent = {},
+            )
+        }
     }
 }

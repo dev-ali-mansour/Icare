@@ -1,6 +1,5 @@
 package eg.edu.cu.csds.icare.feature.home.screen.admin
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,14 +18,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.constraintlayout.compose.ConstraintLayout
 import eg.edu.cu.csds.icare.core.domain.model.AdminStatistics
+import eg.edu.cu.csds.icare.core.ui.R.string
+import eg.edu.cu.csds.icare.core.ui.theme.IcareTheme
 import eg.edu.cu.csds.icare.core.ui.theme.L_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.M_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.STAT_CARD_SIZE
@@ -34,10 +35,10 @@ import eg.edu.cu.csds.icare.core.ui.theme.S_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.SkyAccent
 import eg.edu.cu.csds.icare.core.ui.theme.U_PADDING
 import eg.edu.cu.csds.icare.core.ui.theme.XS_PADDING
-import eg.edu.cu.csds.icare.core.ui.theme.backgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.buttonBackgroundColor
 import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.textColor
+import eg.edu.cu.csds.icare.core.ui.util.tooling.preview.PreviewArabicLightDark
 import eg.edu.cu.csds.icare.core.ui.view.AnimatedButton
 import eg.edu.cu.csds.icare.feature.home.R
 
@@ -51,8 +52,8 @@ fun AdminContent(
         modifier =
             modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(M_PADDING),
+                .padding(M_PADDING)
+                .verticalScroll(rememberScrollState()),
     ) {
         val (
             overview, usersCard, pending, confirmedCard, completedCard, cancelledCard,
@@ -71,8 +72,9 @@ fun AdminContent(
             fontFamily = helveticaFamily,
             color = textColor,
         )
+
         StatCard(
-            title = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_doctors),
+            title = stringResource(string.core_ui_doctors),
             value = stats.doctors.toString(),
             modifier =
                 Modifier.constrainAs(doctorsCard) {
@@ -94,7 +96,7 @@ fun AdminContent(
         )
 
         StatCard(
-            title = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_pharmacies),
+            title = stringResource(string.core_ui_pharmacies),
             value = stats.pharmacies.toString(),
             modifier =
                 Modifier.constrainAs(pharmaciesCard) {
@@ -105,7 +107,7 @@ fun AdminContent(
         )
 
         StatCard(
-            title = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_scan_centers),
+            title = stringResource(string.core_ui_scan_centers),
             value = stats.scanCenters.toString(),
             modifier =
                 Modifier.constrainAs(scanCentersCard) {
@@ -116,7 +118,7 @@ fun AdminContent(
         )
 
         StatCard(
-            title = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_lab_centers),
+            title = stringResource(string.core_ui_lab_centers),
             value = stats.labCenters.toString(),
             modifier =
                 Modifier.constrainAs(labsCard) {
@@ -127,7 +129,7 @@ fun AdminContent(
         )
 
         StatCard(
-            title = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_pending),
+            title = stringResource(string.core_ui_pending),
             value = stats.pending.toString(),
             modifier =
                 Modifier.constrainAs(pending) {
@@ -138,7 +140,7 @@ fun AdminContent(
         )
 
         StatCard(
-            title = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_confirmed),
+            title = stringResource(string.core_ui_confirmed),
             value = stats.confirmed.toString(),
             modifier =
                 Modifier.constrainAs(confirmedCard) {
@@ -149,7 +151,7 @@ fun AdminContent(
         )
 
         StatCard(
-            title = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_cancelled),
+            title = stringResource(string.core_ui_cancelled),
             value = stats.cancelled.toString(),
             modifier =
                 Modifier.constrainAs(cancelledCard) {
@@ -160,7 +162,7 @@ fun AdminContent(
         )
 
         StatCard(
-            title = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_completed),
+            title = stringResource(string.core_ui_completed),
             value = stats.completed.toString(),
             modifier =
                 Modifier.constrainAs(completedCard) {
@@ -178,7 +180,7 @@ fun AdminContent(
                         start.linkTo(completedCard.start)
                         end.linkTo(completedCard.end)
                     }.fillMaxWidth(fraction = 0.6f),
-            text = stringResource(eg.edu.cu.csds.icare.core.ui.R.string.core_ui_sections_admin),
+            text = stringResource(string.core_ui_sections_admin),
             color = buttonBackgroundColor,
             onClick = { onSectionsAdminClicked() },
         )
@@ -196,7 +198,6 @@ fun StatCard(
             modifier
                 .size(STAT_CARD_SIZE)
                 .padding(XS_PADDING),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(XS_PADDING),
     ) {
         Column(
@@ -211,7 +212,6 @@ fun StatCard(
                 fontFamily = helveticaFamily,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = Color.Black,
                 modifier = Modifier.fillMaxWidth(),
             )
 
@@ -229,33 +229,34 @@ fun StatCard(
     }
 }
 
-@Preview(showBackground = true)
-@Preview(locale = "ar", showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(locale = "ar", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PreviewLightDark
+@PreviewArabicLightDark
+@PreviewScreenSizes
 @Composable
 internal fun AdminContentPreview() {
-    Box(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(color = backgroundColor)
-                .padding(XS_PADDING),
-    ) {
-        AdminContent(
-            stats =
-                AdminStatistics(
-                    totalUsers = 2500,
-                    doctors = 150,
-                    pharmacies = 35,
-                    scanCenters = 25,
-                    labCenters = 15,
-                    pending = 4590,
-                    confirmed = 178,
-                    completed = 2850,
-                    cancelled = 12,
-                ),
-            onSectionsAdminClicked = {},
-        )
+    IcareTheme {
+        Box(
+            modifier =
+                Modifier
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .fillMaxSize()
+                    .padding(M_PADDING),
+        ) {
+            AdminContent(
+                stats =
+                    AdminStatistics(
+                        totalUsers = 2500,
+                        doctors = 150,
+                        pharmacies = 35,
+                        scanCenters = 25,
+                        labCenters = 15,
+                        pending = 4590,
+                        confirmed = 178,
+                        completed = 2850,
+                        cancelled = 12,
+                    ),
+                onSectionsAdminClicked = {},
+            )
+        }
     }
 }
