@@ -1,6 +1,6 @@
 # ICare
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.0-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.3.0-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 [![Github Actions](https://github.com/dev-ali-mansour/Icare/actions/workflows/pull_request.yml/badge.svg)](https://github.com/dev-ali-mansour/Icare/actions/workflows/pull_request.yml)
 [![Apache 2 License](https://img.shields.io/github/license/InsertKoinIO/koin)](https://github.com/dev-ali-mansour/Icare?tab=Apache-2.0-1-ov-file)
 
@@ -48,7 +48,7 @@ icare/
 │   ├── consultation/         # consultation-related views and actions
 │   ├── home/                 # Home Screen and navigation
 │   ├── notifications/        # push notifications and alerts
-│   ├── on_boarding/          # On boarding screens
+│   ├── onboarding/           # Onboarding screens
 │   └── settings/             # User settings and preferences
 └── build.gradle.kts          # Modular Gradle configuration
 
