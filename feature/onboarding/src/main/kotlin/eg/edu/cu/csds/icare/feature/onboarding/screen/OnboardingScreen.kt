@@ -21,14 +21,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -36,17 +37,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import eg.edu.cu.csds.icare.core.domain.util.Constants.LAST_ON_BOARDING_PAGE
 import eg.edu.cu.csds.icare.core.domain.util.Constants.ON_BOARDING_PAGE_COUNT
 import eg.edu.cu.csds.icare.core.ui.R.string
-import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.common.OnBoardingPage
 import eg.edu.cu.csds.icare.core.ui.theme.PAGING_INDICATOR_SPACING
 import eg.edu.cu.csds.icare.core.ui.theme.PAGING_INDICATOR_WIDTH
@@ -59,78 +64,86 @@ import eg.edu.cu.csds.icare.core.ui.theme.helveticaFamily
 import eg.edu.cu.csds.icare.core.ui.theme.inactiveIndicatorColor
 import eg.edu.cu.csds.icare.core.ui.theme.titleColor
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
-import eg.edu.cu.csds.icare.core.ui.view.DialogWithIcon
 import eg.edu.cu.csds.icare.core.ui.view.HorizontalPagerIndicator
 import eg.edu.cu.csds.icare.core.ui.view.VerticalPagerIndicator
 import eg.edu.cu.csds.icare.feature.onboarding.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun OnBoardingScreen(onFinished: () -> Unit) {
     val viewModel: OnboardingViewModel = koinViewModel()
     val configuration: Configuration = LocalConfiguration.current
-    val context: Context = LocalContext.current
+    val resources = LocalResources.current
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val scope: CoroutineScope = rememberCoroutineScope()
-    var alertMessage by remember { mutableStateOf("") }
-    var showAlert by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
     val pagerState = rememberPagerState { ON_BOARDING_PAGE_COUNT }
 
-    LaunchedUiEffectHandler(
-        viewModel.effect,
-        onConsumeEffect = { viewModel.handleIntent(OnBoardingIntent.ConsumeEffect) },
-        onEffect = { effect ->
-            when (effect) {
-                is OnBoardingEffect.OnBoardingFinished -> {
-                    onFinished()
-                }
+    LaunchedEffect(viewModel.effect, lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.effect.collect { effect ->
+                when (effect) {
+                    is OnBoardingEffect.OnBoardingFinished -> {
+                        onFinished()
+                    }
 
-                is OnBoardingEffect.NavigateToRoute -> {}
+                    is OnBoardingEffect.NavigateToRoute -> {}
 
-                is OnBoardingEffect.ShowError -> {
-                    alertMessage = effect.message.asString(context)
-                    scope.launch {
-                        showAlert = true
-                        delay(timeMillis = 3000)
-                        showAlert = false
+                    is OnBoardingEffect.ShowError -> {
+                        snackbarHostState.showSnackbar(
+                            message = effect.message.asString(resources),
+                            duration = SnackbarDuration.Short,
+                        )
                     }
                 }
-            }
-        },
-    )
-
-    when (configuration.orientation) {
-        Configuration.ORIENTATION_LANDSCAPE -> {
-            WelcomeScreenInLandscape(MaterialTheme.colorScheme.background, pagerState, pages) {
-                viewModel.handleIntent(OnBoardingIntent.FinishOnBoarding)
-            }
-        }
-
-        else -> {
-            WelcomeScreenInPortrait(MaterialTheme.colorScheme.background, pagerState, pages) {
-                viewModel.handleIntent(OnBoardingIntent.FinishOnBoarding)
             }
         }
     }
 
-    if (uiState.isLoading) CircularProgressIndicator()
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+    ) { innerPadding ->
+        when (configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                WelcomeScreenInLandscape(
+                    modifier = Modifier.padding(innerPadding),
+                    screenBackgroundColor = MaterialTheme.colorScheme.background,
+                    pagerState = pagerState,
+                    pages = uiState.pages,
+                ) {
+                    viewModel.handleIntent(OnBoardingIntent.FinishOnBoarding)
+                }
+            }
 
-    if (showAlert) DialogWithIcon(text = alertMessage) { showAlert = false }
+            else -> {
+                WelcomeScreenInPortrait(
+                    modifier = Modifier.padding(innerPadding),
+                    screenBackgroundColor = MaterialTheme.colorScheme.background,
+                    pagerState = pagerState,
+                    pages = uiState.pages,
+                ) {
+                    viewModel.handleIntent(OnBoardingIntent.FinishOnBoarding)
+                }
+            }
+        }
+
+        if (uiState.isLoading) CircularProgressIndicator()
+    }
 }
 
 @Composable
 private fun WelcomeScreenInPortrait(
     screenBackgroundColor: Color,
     pagerState: PagerState,
-    pages: List<OnBoardingPage>,
+    pages: ImmutableList<OnBoardingPage>,
+    modifier: Modifier = Modifier,
     onFinishClicked: () -> Unit,
 ) {
     Column(
         modifier =
-            Modifier
+            modifier
                 .fillMaxSize()
                 .background(screenBackgroundColor),
     ) {
@@ -163,12 +176,13 @@ private fun WelcomeScreenInPortrait(
 private fun WelcomeScreenInLandscape(
     screenBackgroundColor: Color,
     pagerState: PagerState,
-    pages: List<OnBoardingPage>,
+    pages: ImmutableList<OnBoardingPage>,
+    modifier: Modifier = Modifier,
     onFinishClicked: () -> Unit,
 ) {
     Column(
         modifier =
-            Modifier
+            modifier
                 .fillMaxSize()
                 .background(screenBackgroundColor),
     ) {
@@ -309,7 +323,7 @@ internal fun OnBoardingScreenPreview() {
 }
 
 val pages =
-    listOf(
+    persistentListOf(
         OnBoardingPage(
             image = R.drawable.feature_onboarding_first_page_image,
             title = StringResourceId(R.string.feature_onboarding_first_page_title),

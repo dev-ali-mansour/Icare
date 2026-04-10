@@ -1,10 +1,8 @@
 package eg.edu.cu.csds.icare.feature.onboarding.screen
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.core.domain.util.DataError
-import eg.edu.cu.csds.icare.core.domain.util.onError
-import eg.edu.cu.csds.icare.core.domain.util.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfoUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCentersUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinicsUseCase
@@ -12,21 +10,26 @@ import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListDoctorsUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.FinishOnBoardingUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.onboarding.ReadOnBoardingUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.ListPharmaciesUseCase
+import eg.edu.cu.csds.icare.core.domain.util.DataError
+import eg.edu.cu.csds.icare.core.domain.util.onError
+import eg.edu.cu.csds.icare.core.domain.util.onSuccess
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 
+@Stable
 @KoinViewModel
 class OnboardingViewModel(
     private val dispatcher: CoroutineDispatcher,
@@ -51,17 +54,14 @@ class OnboardingViewModel(
                         .WhileSubscribed(stopTimeoutMillis = 5000L),
                 initialValue = _uiState.value,
             )
-    val effect = _uiState.map { it.effect }
+    private val _effect = Channel<OnBoardingEffect>()
+    val effect = _effect.receiveAsFlow()
 
     fun handleIntent(intent: OnBoardingIntent) {
         when (intent) {
             is OnBoardingIntent.FinishOnBoarding -> {
                 finishOnBoardingJob?.cancel()
                 finishOnBoardingJob = launchFinishingOnBoarding()
-            }
-
-            is OnBoardingIntent.ConsumeEffect -> {
-                _uiState.update { it.copy(effect = null) }
             }
         }
     }
@@ -77,20 +77,12 @@ class OnboardingViewModel(
                             if (isOnBoardingCompleted) {
                                 getCurrentUser()
                             } else {
-                                _uiState.update {
-                                    it.copy(
-                                        isLoading = false,
-                                        effect = OnBoardingEffect.NavigateToRoute(Route.OnBoarding),
-                                    )
-                                }
+                                _uiState.update { it.copy(isLoading = false) }
+                                _effect.send(OnBoardingEffect.NavigateToRoute(Route.OnBoarding))
                             }
                         }.onError { error ->
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    effect = OnBoardingEffect.ShowError(error.toUiText()),
-                                )
-                            }
+                            _uiState.update { it.copy(isLoading = false) }
+                            _effect.send(OnBoardingEffect.ShowError(error.toUiText()))
                         }
                 }.launchIn(viewModelScope)
         }
@@ -106,20 +98,11 @@ class OnboardingViewModel(
                         _uiState.update { it.copy(isLoading = false) }
                         when (error) {
                             DataError.Remote.USER_NOT_AUTHORIZED -> {
-                                _uiState.update {
-                                    it.copy(
-                                        effect = OnBoardingEffect.NavigateToRoute(Route.SignIn),
-                                    )
-                                }
+                                _effect.send(OnBoardingEffect.NavigateToRoute(Route.SignIn))
                             }
 
                             else -> {
-                                _uiState.update {
-                                    it.copy(
-                                        isLoading = false,
-                                        effect = OnBoardingEffect.ShowError(error.toUiText()),
-                                    )
-                                }
+                                _effect.send(OnBoardingEffect.ShowError(error.toUiText()))
                             }
                         }
                     }
@@ -136,21 +119,12 @@ class OnboardingViewModel(
                         _uiState.update { it.copy(isLoading = false) }
                         when (error) {
                             DataError.Remote.USER_NOT_AUTHORIZED -> {
-                                _uiState.update {
-                                    it.copy(
-                                        effect =
-                                            OnBoardingEffect.NavigateToRoute(Route.SignIn),
-                                    )
-                                }
+                                _effect.send(OnBoardingEffect.NavigateToRoute(Route.SignIn))
                             }
 
                             else -> {
-                                _uiState.update {
-                                    it.copy(
-                                        isLoading = false,
-                                        effect = OnBoardingEffect.NavigateToRoute(Route.Home),
-                                    )
-                                }
+                                _uiState.update { it.copy(isLoading = false) }
+                                _effect.send(OnBoardingEffect.NavigateToRoute(Route.Home))
                             }
                         }
                     }
@@ -167,20 +141,14 @@ class OnboardingViewModel(
                 }.onError { error ->
                     when (error) {
                         DataError.Remote.USER_NOT_AUTHORIZED -> {
-                            _uiState.update {
-                                it.copy(
-                                    effect = OnBoardingEffect.NavigateToRoute(Route.SignIn),
-                                )
-                            }
+                            _effect.send(
+                                OnBoardingEffect.NavigateToRoute(Route.SignIn),
+                            )
                         }
 
                         else -> {
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    effect = OnBoardingEffect.NavigateToRoute(Route.Home),
-                                )
-                            }
+                            _uiState.update { it.copy(isLoading = false) }
+                            _effect.send(OnBoardingEffect.NavigateToRoute(Route.Home))
                         }
                     }
                 }
@@ -197,20 +165,14 @@ class OnboardingViewModel(
                 }.onError { error ->
                     when (error) {
                         DataError.Remote.USER_NOT_AUTHORIZED -> {
-                            _uiState.update {
-                                it.copy(
-                                    effect = OnBoardingEffect.NavigateToRoute(Route.SignIn),
-                                )
-                            }
+                            _effect.send(
+                                OnBoardingEffect.NavigateToRoute(Route.SignIn),
+                            )
                         }
 
                         else -> {
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    effect = OnBoardingEffect.NavigateToRoute(Route.Home),
-                                )
-                            }
+                            _uiState.update { it.copy(isLoading = false) }
+                            _effect.send(OnBoardingEffect.NavigateToRoute(Route.Home))
                         }
                     }
                 }
@@ -223,29 +185,17 @@ class OnboardingViewModel(
         ).onEach { centersResult ->
             centersResult
                 .onSuccess {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            effect = OnBoardingEffect.NavigateToRoute(Route.Home),
-                        )
-                    }
+                    _uiState.update { it.copy(isLoading = false) }
+                    _effect.send(OnBoardingEffect.NavigateToRoute(Route.Home))
                 }.onError { error ->
                     when (error) {
                         DataError.Remote.USER_NOT_AUTHORIZED -> {
-                            _uiState.update {
-                                it.copy(
-                                    effect = OnBoardingEffect.NavigateToRoute(Route.SignIn),
-                                )
-                            }
+                            _effect.send(OnBoardingEffect.NavigateToRoute(Route.SignIn))
                         }
 
                         else -> {
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    effect = OnBoardingEffect.NavigateToRoute(Route.Home),
-                                )
-                            }
+                            _uiState.update { it.copy(isLoading = false) }
+                            _effect.send(OnBoardingEffect.NavigateToRoute(Route.Home))
                         }
                     }
                 }
@@ -261,12 +211,8 @@ class OnboardingViewModel(
                         .onSuccess {
                             _uiState.update { it.copy(isLoading = false) }
                         }.onError { error ->
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    effect = OnBoardingEffect.ShowError(error.toUiText()),
-                                )
-                            }
+                            _uiState.update { it.copy(isLoading = false) }
+                            _effect.send(OnBoardingEffect.ShowError(error.toUiText()))
                         }
                 }.launchIn(viewModelScope)
         }

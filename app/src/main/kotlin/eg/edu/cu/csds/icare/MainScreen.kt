@@ -15,15 +15,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation3.runtime.rememberNavBackStack
 import eg.edu.cu.csds.icare.core.ui.common.BOTTOM_NAV_ENTRIES
-import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.navigation.Navigator
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.view.BottomBarNavigation
 import eg.edu.cu.csds.icare.feature.onboarding.screen.OnBoardingEffect
-import eg.edu.cu.csds.icare.feature.onboarding.screen.OnBoardingIntent
 import eg.edu.cu.csds.icare.feature.onboarding.screen.OnboardingViewModel
 import eg.edu.cu.csds.icare.navigation.NavGraph
 import kotlinx.coroutines.delay
@@ -33,7 +35,8 @@ import timber.log.Timber
 fun MainScreen(onBoardingViewModel: OnboardingViewModel) {
     val backStack = rememberNavBackStack(Route.Splash)
     val navigator = remember { Navigator(backStack) }
-    val context = LocalContext.current
+    val resources = LocalResources.current
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val snackbarHostState = remember { SnackbarHostState() }
     var isBottomBarVisible by remember { mutableStateOf(false) }
 
@@ -45,30 +48,30 @@ fun MainScreen(onBoardingViewModel: OnboardingViewModel) {
             }
     }
 
-    LaunchedUiEffectHandler(
-        onBoardingViewModel.effect,
-        onConsumeEffect = { onBoardingViewModel.handleIntent(OnBoardingIntent.ConsumeEffect) },
-        onEffect = { effect ->
-            runCatching {
-                when (effect) {
-                    is OnBoardingEffect.NavigateToRoute -> {
-                        navigator.navigate(effect.route, inclusive = true)
-                    }
+    LaunchedEffect(onBoardingViewModel.effect, lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            onBoardingViewModel.effect.collect { effect ->
+                runCatching {
+                    when (effect) {
+                        is OnBoardingEffect.NavigateToRoute -> {
+                            navigator.navigate(effect.route, inclusive = true)
+                        }
 
-                    is OnBoardingEffect.OnBoardingFinished -> {}
+                        is OnBoardingEffect.OnBoardingFinished -> {}
 
-                    is OnBoardingEffect.ShowError -> {
-                        snackbarHostState.showSnackbar(
-                            message = effect.message.asString(context),
-                            duration = SnackbarDuration.Long,
-                        )
+                        is OnBoardingEffect.ShowError -> {
+                            snackbarHostState.showSnackbar(
+                                message = effect.message.asString(resources),
+                                duration = SnackbarDuration.Long,
+                            )
+                        }
                     }
+                }.onFailure {
+                    Timber.e(it, "Error during navigation in MainScreen")
                 }
-            }.onFailure {
-                Timber.e(it, "Error during navigation in MainScreen")
             }
-        },
-    )
+        }
+    }
 
     Scaffold(
         bottomBar = {

@@ -1,12 +1,34 @@
 package eg.edu.cu.csds.icare.feature.onboarding.screen
 
+import eg.edu.cu.csds.icare.core.ui.common.OnBoardingPage
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.util.UiText
+import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId
+import eg.edu.cu.csds.icare.feature.onboarding.R
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 
 data class OnBoardingState(
     val isLoading: Boolean = false,
+    val pages: PersistentList<OnBoardingPage> =
+        persistentListOf(
+            OnBoardingPage(
+                image = R.drawable.feature_onboarding_first_page_image,
+                title = StringResourceId(R.string.feature_onboarding_first_page_title),
+                description = StringResourceId(R.string.feature_onboarding_first_page_description),
+            ),
+            OnBoardingPage(
+                image = R.drawable.feature_onboarding_second_page_image,
+                title = StringResourceId(R.string.feature_onboarding_second_page_title),
+                description = StringResourceId(R.string.feature_onboarding_second_page_description),
+            ),
+            OnBoardingPage(
+                image = R.drawable.feature_onboarding_first_page_image,
+                title = StringResourceId(R.string.feature_onboarding_third_page_title),
+                description = StringResourceId(R.string.feature_onboarding_third_page_description),
+            ),
+        ),
     val isOnBoardingCompleted: Boolean = false,
-    val effect: OnBoardingEffect? = null,
 )
 
 sealed interface OnBoardingEffect {
@@ -23,6 +45,4 @@ sealed interface OnBoardingEffect {
 
 sealed interface OnBoardingIntent {
     object FinishOnBoarding : OnBoardingIntent
-
-    object ConsumeEffect : OnBoardingIntent
 }
