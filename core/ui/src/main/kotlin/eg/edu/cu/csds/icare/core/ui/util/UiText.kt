@@ -1,6 +1,7 @@
 package eg.edu.cu.csds.icare.core.ui.util
 
 import android.content.Context
+import android.content.res.Resources
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Stable
 
@@ -19,5 +20,11 @@ sealed interface UiText {
         when (this) {
             is DynamicString -> value
             is StringResourceId -> context.getString(id, args)
+        }
+
+    fun asString(resources: Resources): String =
+        when (this) {
+            is DynamicString -> value
+            is StringResourceId -> resources.getString(id, args)
         }
 }
