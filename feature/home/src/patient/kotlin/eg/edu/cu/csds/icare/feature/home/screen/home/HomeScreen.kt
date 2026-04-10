@@ -47,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,7 +56,11 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import coil.compose.AsyncImage
 import eg.edu.cu.csds.icare.core.data.util.getFormattedDate
 import eg.edu.cu.csds.icare.core.data.util.getFormattedTime
@@ -68,7 +73,6 @@ import eg.edu.cu.csds.icare.core.ui.R.drawable
 import eg.edu.cu.csds.icare.core.ui.R.string
 import eg.edu.cu.csds.icare.core.ui.common.AppService
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus
-import eg.edu.cu.csds.icare.core.ui.common.LaunchedUiEffectHandler
 import eg.edu.cu.csds.icare.core.ui.common.Role
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.theme.ACTION_BUTTON_SIZE
@@ -98,6 +102,7 @@ import eg.edu.cu.csds.icare.feature.home.component.PromotionItem
 import eg.edu.cu.csds.icare.feature.home.component.ServiceItem
 import eg.edu.cu.csds.icare.feature.home.component.TopDoctorCard
 import eg.edu.cu.csds.icare.feature.home.util.statusList
+import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import kotlin.system.exitProcess
@@ -109,6 +114,8 @@ internal fun HomeScreen(
 ) {
     val viewModel: HomeViewModel = koinViewModel()
     val context: Context = LocalContext.current
+    val resources = LocalResources.current
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val mediaHelper: MediaHelper = koinInject()
@@ -127,28 +134,28 @@ internal fun HomeScreen(
         }
     }
 
-    LaunchedUiEffectHandler(
-        viewModel.effect,
-        onConsumeEffect = { viewModel.handleIntent(HomeIntent.ConsumeEffect) },
-        onEffect = { effect ->
-            when (effect) {
-                is HomeEffect.NavigateToRoute -> {
-                    navigateToRoute(effect.route)
-                }
+    LaunchedEffect(viewModel.effect, lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.effect.collect { effect ->
+                when (effect) {
+                    is HomeEffect.NavigateToRoute -> {
+                        navigateToRoute(effect.route)
+                    }
 
-                is HomeEffect.NavigateToDoctorDetails -> {
-                    navigateToDoctorDetails(effect.doctor)
-                }
+                    is HomeEffect.NavigateToDoctorDetails -> {
+                        navigateToDoctorDetails(effect.doctor)
+                    }
 
-                is HomeEffect.ShowError -> {
-                    snackbarHostState.showSnackbar(
-                        message = effect.message.asString(context),
-                        duration = SnackbarDuration.Short,
-                    )
+                    is HomeEffect.ShowError -> {
+                        snackbarHostState.showSnackbar(
+                            message = effect.message.asString(resources),
+                            duration = SnackbarDuration.Short,
+                        )
+                    }
                 }
             }
-        },
-    )
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -597,7 +604,7 @@ private fun HomeContentPreview() {
                                 photoUrl = "",
                             ),
                         myAppointments =
-                            listOf(
+                            persistentListOf(
                                 Appointment(
                                     id = 1,
                                     doctorName = "Dr. Ahmed Gad",
@@ -608,7 +615,7 @@ private fun HomeContentPreview() {
                                 ),
                             ),
                         topDoctors =
-                            listOf(
+                            persistentListOf(
                                 Doctor(
                                     name = "Dr. Anna Jones",
                                     specialty = "General Practitioner",
@@ -626,7 +633,7 @@ private fun HomeContentPreview() {
                                 ),
                             ),
                         promotions =
-                            listOf(
+                            persistentListOf(
                                 Promotion(
                                     id = 1,
                                     imageUrl = "https://i.postimg.cc/5jjyk7Jn/promo1.png",

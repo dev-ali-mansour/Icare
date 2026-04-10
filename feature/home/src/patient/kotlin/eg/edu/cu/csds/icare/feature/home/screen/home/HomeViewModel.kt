@@ -10,11 +10,14 @@ import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfoUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.ListTopDoctorsUseCase
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.util.toUiText
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -40,58 +43,43 @@ class HomeViewModel(
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
                 initialValue = _uiState.value,
             )
-    val effect = _uiState.map { it.effect }
+    private val _effect = Channel<HomeEffect>()
+    val effect = _effect.receiveAsFlow()
 
     fun handleIntent(intent: HomeIntent) {
-        when (intent) {
-            is HomeIntent.UpdateOpenDialog -> {
-                _uiState.update { it.copy(openDialog = intent.isOpen) }
-            }
-
-            HomeIntent.NavigateToProfileScreen -> {
-                _uiState.update {
-                    it.copy(effect = HomeEffect.NavigateToRoute(route = Route.Profile))
+        viewModelScope.launch {
+            when (intent) {
+                is HomeIntent.UpdateOpenDialog -> {
+                    _uiState.update { it.copy(openDialog = intent.isOpen) }
                 }
-            }
 
-            is HomeIntent.NavigateToBookAppointmentScreen -> {
-                _uiState.update {
-                    it.copy(effect = HomeEffect.NavigateToRoute(route = Route.DoctorList))
+                HomeIntent.NavigateToProfileScreen -> {
+                    _effect.send(HomeEffect.NavigateToRoute(route = Route.Profile))
                 }
-            }
 
-            HomeIntent.NavigateToPharmaciesScreen -> {
-                _uiState.update {
-                    it.copy(effect = HomeEffect.NavigateToRoute(route = Route.Pharmacies))
+                is HomeIntent.NavigateToBookAppointmentScreen -> {
+                    _effect.send(HomeEffect.NavigateToRoute(route = Route.DoctorList))
                 }
-            }
 
-            HomeIntent.NavigateToLabCentersScreen -> {
-                _uiState.update {
-                    it.copy(effect = HomeEffect.NavigateToRoute(route = Route.LabCenters))
+                HomeIntent.NavigateToPharmaciesScreen -> {
+                    _effect.send(HomeEffect.NavigateToRoute(route = Route.Pharmacies))
                 }
-            }
 
-            HomeIntent.NavigateToScanCentersScreen -> {
-                _uiState.update {
-                    it.copy(effect = HomeEffect.NavigateToRoute(route = Route.ScanCenters))
+                HomeIntent.NavigateToLabCentersScreen -> {
+                    _effect.send(HomeEffect.NavigateToRoute(route = Route.LabCenters))
                 }
-            }
 
-            HomeIntent.NavigateToMyAppointmentsScreen -> {
-                _uiState.update {
-                    it.copy(effect = HomeEffect.NavigateToRoute(route = Route.MyAppointments))
+                HomeIntent.NavigateToScanCentersScreen -> {
+                    _effect.send(HomeEffect.NavigateToRoute(route = Route.ScanCenters))
                 }
-            }
 
-            is HomeIntent.NavigateToDoctorDetails -> {
-                _uiState.update {
-                    it.copy(effect = HomeEffect.NavigateToDoctorDetails(doctor = intent.doctor))
+                HomeIntent.NavigateToMyAppointmentsScreen -> {
+                    _effect.send(HomeEffect.NavigateToRoute(route = Route.MyAppointments))
                 }
-            }
 
-            is HomeIntent.ConsumeEffect -> {
-                _uiState.update { it.copy(effect = null) }
+                is HomeIntent.NavigateToDoctorDetails -> {
+                    _effect.send(HomeEffect.NavigateToDoctorDetails(doctor = intent.doctor))
+                }
             }
         }
     }
@@ -102,14 +90,15 @@ class HomeViewModel(
             getPatientAppointmentUseCase().collect { result ->
                 result
                     .onSuccess { appointments ->
-                        _uiState.update { it.copy(isLoading = false, myAppointments = appointments) }
-                    }.onError { error ->
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                effect = HomeEffect.ShowError(message = error.toUiText()),
+                                myAppointments = appointments.toPersistentList(),
                             )
                         }
+                    }.onError { error ->
+                        _uiState.update { it.copy(isLoading = false) }
+                        _effect.send(HomeEffect.ShowError(message = error.toUiText()))
                     }
             }
         }
@@ -124,9 +113,7 @@ class HomeViewModel(
                             it.copy(isLoading = false, currentUser = user)
                         }
                     }.onError { error ->
-                        _uiState.update {
-                            it.copy(effect = HomeEffect.ShowError(message = error.toUiText()))
-                        }
+                        _effect.send(HomeEffect.ShowError(message = error.toUiText()))
                     }
             }
         }
@@ -136,7 +123,7 @@ class HomeViewModel(
             _uiState.update {
                 it.copy(
                     promotions =
-                        listOf(
+                        persistentListOf(
                             Promotion(
                                 id = 1,
                                 imageUrl = "https://i.postimg.cc/5jjyk7Jn/promo1.png",
@@ -158,12 +145,10 @@ class HomeViewModel(
                 result
                     .onSuccess { doctors ->
                         _uiState.update {
-                            it.copy(topDoctors = doctors)
+                            it.copy(topDoctors = doctors.toPersistentList())
                         }
                     }.onError { error ->
-                        _uiState.update {
-                            it.copy(effect = HomeEffect.ShowError(message = error.toUiText()))
-                        }
+                        _effect.send(HomeEffect.ShowError(message = error.toUiText()))
                     }
             }
         }

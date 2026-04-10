@@ -7,16 +7,17 @@ import eg.edu.cu.csds.icare.core.domain.model.Promotion
 import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.ui.navigation.Route
 import eg.edu.cu.csds.icare.core.ui.util.UiText
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Stable
 data class HomeState(
     val isLoading: Boolean = false,
     val currentUser: User? = null,
     val openDialog: Boolean = false,
-    val myAppointments: List<Appointment> = emptyList(),
-    val promotions: List<Promotion> = emptyList(),
-    val topDoctors: List<Doctor> = emptyList(),
-    val effect: HomeEffect? = null,
+    val myAppointments: ImmutableList<Appointment> = persistentListOf(),
+    val promotions: ImmutableList<Promotion> = persistentListOf(),
+    val topDoctors: ImmutableList<Doctor> = persistentListOf(),
 )
 
 sealed interface HomeEffect {
@@ -53,6 +54,4 @@ sealed interface HomeIntent {
     data class NavigateToDoctorDetails(
         val doctor: Doctor,
     ) : HomeIntent
-
-    object ConsumeEffect : HomeIntent
 }
