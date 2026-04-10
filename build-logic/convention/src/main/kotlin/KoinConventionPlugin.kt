@@ -17,27 +17,20 @@
  * Original source: https://github.com/android/nowinandroid
  */
 
-import com.google.devtools.ksp.gradle.KspExtension
 import dev.alimansour.shared.plugins.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
 @Suppress("unused")
 class KoinConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) =
         with(target) {
-            pluginManager.apply("com.google.devtools.ksp")
-
-            extensions.configure<KspExtension> {
-                arg("KOIN_DEFAULT_MODULE", "false")
-            }
+            pluginManager.apply("io.insert-koin.compiler.plugin")
 
             dependencies {
                 "implementation"(platform(libs.findLibrary("koin.bom").get()))
                 "implementation"(libs.findBundle("koin.core").get())
-                "ksp"(libs.findLibrary("koin.ksp.compiler").get())
             }
 
             pluginManager.withPlugin("com.android.base") {

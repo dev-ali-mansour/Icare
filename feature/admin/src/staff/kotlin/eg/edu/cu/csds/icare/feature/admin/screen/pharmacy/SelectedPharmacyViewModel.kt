@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import eg.edu.cu.csds.icare.core.domain.model.Pharmacy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.koin.android.annotation.KoinViewModel
+import org.koin.core.annotation.KoinViewModel
 
 @KoinViewModel
 class SelectedPharmacyViewModel : ViewModel() {

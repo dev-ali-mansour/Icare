@@ -23,7 +23,12 @@ internal fun Project.configureDetekt() {
     val reportMerge =
         tasks.register<ReportMergeTask>("detektReportMerge") {
             output.set(layout.buildDirectory.file("reports/detekt/merge.xml"))
-            input.from(tasks.withType<Detekt>().map { it.xmlReportFile }) // or .sarifReportFile
+
+            input.from(
+                project
+                    .files(tasks.withType<Detekt>().map { it.xmlReportFile })
+                    .filter { it.exists() },
+            )
         }
 
     tasks {
@@ -39,48 +44,33 @@ internal fun Project.configureDetekt() {
             reports {
                 xml {
                     required.set(true)
-                    outputLocation
-                        .set(
-                            file(
-                                "${rootProject.projectDir}/detekt/reports/${project.name}/detekt-report.xml",
-                            ),
-                        )
+                    outputLocation.set(
+                        file("${rootProject.projectDir}/detekt/reports/${project.name}/$name.xml"),
+                    )
                 }
                 html {
                     required.set(false)
-                    outputLocation
-                        .set(
-                            file(
-                                "${rootProject.projectDir}/detekt/reports/${project.name}/detekt-report.html",
-                            ),
-                        )
+                    outputLocation.set(
+                        file("${rootProject.projectDir}/detekt/reports/${project.name}/$name.html"),
+                    )
                 }
                 sarif {
                     required.set(false)
-                    outputLocation
-                        .set(
-                            file(
-                                "${rootProject.projectDir}/detekt/reports/${project.name}/detekt-report.sarif",
-                            ),
-                        )
+                    outputLocation.set(
+                        file("${rootProject.projectDir}/detekt/reports/${project.name}/$name.sarif"),
+                    )
                 }
                 md {
                     required.set(false)
-                    outputLocation
-                        .set(
-                            file(
-                                "${rootProject.projectDir}/detekt/reports/${project.name}/detekt-report.md",
-                            ),
-                        )
+                    outputLocation.set(
+                        file("${rootProject.projectDir}/detekt/reports/${project.name}/$name.md"),
+                    )
                 }
                 txt {
                     required.set(false)
-                    outputLocation
-                        .set(
-                            file(
-                                "${rootProject.projectDir}/detekt/reports/${project.name}/detekt-report.txt",
-                            ),
-                        )
+                    outputLocation.set(
+                        file("${rootProject.projectDir}/detekt/reports/${project.name}/$name.txt"),
+                    )
                 }
             }
             jvmTarget = JavaVersion.VERSION_21.toString()

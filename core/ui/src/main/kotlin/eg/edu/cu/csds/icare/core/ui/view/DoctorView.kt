@@ -120,7 +120,7 @@ fun DoctorView(
                     text = availability,
                     style = MaterialTheme.typography.bodySmall,
                     fontFamily = helveticaFamily,
-                    )
+                )
             }
         }
     }

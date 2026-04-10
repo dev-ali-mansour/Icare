@@ -147,8 +147,7 @@ internal fun AboutContent(
                         top.linkTo(made.bottom, margin = S_PADDING)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    }
-                    .clickable {
+                    }.clickable {
                         onSocialIconClicked(websiteUrl)
                     },
             painter = painterResource(id = drawable.core_ui_logo),
@@ -172,8 +171,7 @@ internal fun AboutContent(
                         .constrainAs(facebook) {
                             top.linkTo(logo.bottom, margin = S_PADDING)
                             start.linkTo(parent.start)
-                        }
-                        .clickable {
+                        }.clickable {
                             onSocialIconClicked(facebookUrl)
                         },
                 painter = painterResource(id = drawable.core_ui_ic_social_facebook),
@@ -188,8 +186,7 @@ internal fun AboutContent(
                         .constrainAs(twitter) {
                             top.linkTo(facebook.top)
                             start.linkTo(facebook.end)
-                        }
-                        .clickable {},
+                        }.clickable {},
                 painter = painterResource(id = drawable.core_ui_ic_social_twitter),
                 contentScale = ContentScale.Fit,
                 contentDescription = null,
@@ -202,8 +199,7 @@ internal fun AboutContent(
                         .constrainAs(linkedIn) {
                             top.linkTo(facebook.top)
                             start.linkTo(twitter.end)
-                        }
-                        .clickable {},
+                        }.clickable {},
                 painter = painterResource(id = drawable.core_ui_ic_social_linkedin),
                 contentScale = ContentScale.Fit,
                 contentDescription = null,
@@ -215,8 +211,7 @@ internal fun AboutContent(
                             top.linkTo(facebook.top)
                             start.linkTo(linkedIn.end)
                             end.linkTo(parent.end)
-                        }
-                        .size(SOCIAL_ICON_SIZE)
+                        }.size(SOCIAL_ICON_SIZE)
                         .clickable {},
                 painter = painterResource(id = drawable.core_ui_ic_social_youtube),
                 contentScale = ContentScale.Fit,

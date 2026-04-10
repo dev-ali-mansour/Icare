@@ -62,15 +62,13 @@ fun StaffView(
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(percent = 20),
-                )
-                .fillMaxWidth()
+                ).fillMaxWidth()
                 .wrapContentWidth(Alignment.CenterHorizontally)
                 .widthIn(max = MAX_SURFACE_WIDTH)
                 .neumorphicUp(
                     shape = RoundedCornerShape(percent = 20),
                     shadowPadding = XS_PADDING,
-                )
-                .clickable {
+                ).clickable {
                     onClick()
                 },
     ) {

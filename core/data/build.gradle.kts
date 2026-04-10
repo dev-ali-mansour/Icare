@@ -72,5 +72,4 @@ dependencies {
     api(platform(libs.firebase.bom))
     api(libs.bundles.firebase)
     implementation(libs.bundles.retrofit)
-    ksp(libs.koin.ksp.compiler)
 }

@@ -54,10 +54,12 @@ import eg.edu.cu.csds.icare.core.domain.usecase.pharmacist.UpdatePharmacistUseCa
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.AddNewPharmacyUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.ListPharmaciesUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.pharmacy.UpdatePharmacyUseCase
+import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 
-@Module(includes = [RepositoryModule::class])
+@Module
+@Configuration
 class UseCaseModule {
     @Single
     fun provideReadOnBoarding(appRepository: AppRepository) = ReadOnBoardingUseCase(appRepository)

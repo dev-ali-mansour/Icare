@@ -7,12 +7,12 @@ import eg.edu.cu.csds.icare.core.data.local.db.dao.DoctorDao
 import eg.edu.cu.csds.icare.core.data.local.db.dao.PharmacyDao
 import eg.edu.cu.csds.icare.core.data.local.db.dao.SettingsDao
 import eg.edu.cu.csds.icare.core.data.local.db.dao.UserDao
-import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 
 @Module
-@ComponentScan
+@Configuration
 class DaoModule {
     @Single
     fun provideSettingsDao(db: AppDatabase): SettingsDao = db.settingsDao()

@@ -40,7 +40,7 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension) {
             "implementation"(libs.findBundle("compose").get())
             "implementation"(libs.findBundle("coil").get())
             "implementation"(libs.findBundle("appcompat").get())
-            "implementation"(libs.findLibrary("androidx-compose-ui-tooling-preview").get())
+            "implementation"(libs.findLibrary("kotlinx-collections-immutable").get())
 
             "testImplementation"(libs.findBundle("domain.test").get())
             "androidTestImplementation"(platform(bom))

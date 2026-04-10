@@ -54,7 +54,6 @@ import eg.edu.cu.csds.icare.feature.admin.screen.doctor.list.DoctorListSection
 import eg.edu.cu.csds.icare.feature.admin.screen.pharmacist.list.PharmacistListSection
 import eg.edu.cu.csds.icare.feature.admin.screen.pharmacy.list.PharmacyListSection
 import eg.edu.cu.csds.icare.feature.admin.screen.staff.list.StaffListSection
-import timber.log.Timber
 
 @Composable
 internal fun AdminContent(

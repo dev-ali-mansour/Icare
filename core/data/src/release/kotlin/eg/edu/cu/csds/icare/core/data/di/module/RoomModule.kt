@@ -5,12 +5,12 @@ import androidx.room.Room
 import eg.edu.cu.csds.icare.core.data.local.db.AppDatabase
 import eg.edu.cu.csds.icare.core.data.local.db.DbPassPhrase
 import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
-import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 
 @Module
-@ComponentScan
+@Configuration
 class RoomModule {
     @Single
     fun provideSupportFactory(passphrase: DbPassPhrase): SupportOpenHelperFactory =

@@ -3,7 +3,7 @@ package eg.edu.cu.csds.icare.feature.consultation.screen
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.koin.android.annotation.KoinViewModel
+import org.koin.core.annotation.KoinViewModel
 
 @KoinViewModel
 class SelectedPatientViewModel : ViewModel() {

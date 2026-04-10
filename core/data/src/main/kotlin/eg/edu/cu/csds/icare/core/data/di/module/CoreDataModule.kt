@@ -4,15 +4,22 @@ import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import eg.edu.cu.csds.icare.core.data.BuildConfig
 import eg.edu.cu.csds.icare.core.data.util.generateNonce
 import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 
 @Module
-@ComponentScan
-class FirebaseAuthModule {
+@Configuration
+@ComponentScan("eg.edu.cu.csds.icare.core.data")
+class CoreDataModule {
+    @Single
+    fun provideFirebaseAuth() = Firebase.auth
+
     @Single
     fun provideGetGoogleIdOption(): GetGoogleIdOption =
         GetGoogleIdOption

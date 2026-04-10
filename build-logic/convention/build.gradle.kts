@@ -41,17 +41,18 @@ kotlin {
 }
 
 dependencies {
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.room.gradlePlugin)
+    implementation(libs.koin.gradlePlugin)
+    implementation(libs.truth)
+    compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.android.tools.common)
     compileOnly(libs.compose.gradlePlugin)
     compileOnly(libs.firebase.crashlytics.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
-    compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.ktlint.gradle)
     compileOnly(libs.detekt.gradle)
-    implementation(libs.room.gradlePlugin)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.truth)
     lintChecks(libs.androidx.lint.gradle)
 }
 

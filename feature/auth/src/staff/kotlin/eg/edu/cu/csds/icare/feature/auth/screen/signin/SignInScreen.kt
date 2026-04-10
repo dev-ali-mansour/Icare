@@ -192,8 +192,7 @@ private fun SignInContent(
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    }
-                    .fillMaxWidth()
+                    }.fillMaxWidth()
                     .height(300.dp)
                     .background(
                         brush =
@@ -248,8 +247,7 @@ private fun SignInContent(
                         end.linkTo(parent.end)
                         top.linkTo(parent.top, margin = 230.dp)
                         height = Dimension.fillToConstraints
-                    }
-                    .clip(RoundedCornerShape(topStart = XL4_PADDING, topEnd = XL4_PADDING)),
+                    }.clip(RoundedCornerShape(topStart = XL4_PADDING, topEnd = XL4_PADDING)),
         ) {
             Column(
                 modifier =
