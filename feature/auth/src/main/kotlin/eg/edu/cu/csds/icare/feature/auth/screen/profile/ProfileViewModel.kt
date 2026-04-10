@@ -2,8 +2,8 @@ package eg.edu.cu.csds.icare.feature.auth.screen.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.core.domain.model.onError
-import eg.edu.cu.csds.icare.core.domain.model.onSuccess
+import eg.edu.cu.csds.icare.core.domain.util.onError
+import eg.edu.cu.csds.icare.core.domain.util.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfoUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.LinkGoogleAccountUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOutUseCase

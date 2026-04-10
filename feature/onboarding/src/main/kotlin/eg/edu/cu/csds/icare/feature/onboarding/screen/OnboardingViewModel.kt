@@ -2,9 +2,9 @@ package eg.edu.cu.csds.icare.feature.onboarding.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.core.domain.model.DataError
-import eg.edu.cu.csds.icare.core.domain.model.onError
-import eg.edu.cu.csds.icare.core.domain.model.onSuccess
+import eg.edu.cu.csds.icare.core.domain.util.DataError
+import eg.edu.cu.csds.icare.core.domain.util.onError
+import eg.edu.cu.csds.icare.core.domain.util.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfoUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.center.ListCentersUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.clinic.ListClinicsUseCase

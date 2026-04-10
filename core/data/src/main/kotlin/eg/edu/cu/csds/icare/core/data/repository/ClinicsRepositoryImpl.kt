@@ -15,12 +15,12 @@ import eg.edu.cu.csds.icare.core.data.mappers.toDoctorSchedule
 import eg.edu.cu.csds.icare.core.data.remote.datasource.RemoteClinicsDataSource
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.Clinician
-import eg.edu.cu.csds.icare.core.domain.model.DataError
+import eg.edu.cu.csds.icare.core.domain.util.DataError
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
-import eg.edu.cu.csds.icare.core.domain.model.Result
-import eg.edu.cu.csds.icare.core.domain.model.onError
-import eg.edu.cu.csds.icare.core.domain.model.onSuccess
+import eg.edu.cu.csds.icare.core.domain.util.RequestState
+import eg.edu.cu.csds.icare.core.domain.util.onError
+import eg.edu.cu.csds.icare.core.domain.util.onSuccess
 import eg.edu.cu.csds.icare.core.domain.repository.ClinicsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -35,7 +35,7 @@ class ClinicsRepositoryImpl(
     private val localClinicsDataSource: LocalClinicsDataSource,
     private val localDoctorDataSource: LocalDoctorDataSource,
 ) : ClinicsRepository {
-    override fun listClinics(forceUpdate: Boolean): Flow<Result<List<Clinic>, DataError.Remote>> =
+    override fun listClinics(forceUpdate: Boolean): Flow<RequestState<List<Clinic>, DataError.Remote>> =
         flow {
             Timber
                 .tag("ClinicsRepositoryImpl")
@@ -45,7 +45,7 @@ class ClinicsRepositoryImpl(
                     .listClinics()
                     .distinctUntilChanged()
                     .collect { entities ->
-                        emit(Result.Success(data = entities.map { it.toClinic() }))
+                        emit(RequestState.Success(data = entities.map { it.toClinic() }))
                     }
                 return@flow
             }
@@ -57,13 +57,13 @@ class ClinicsRepositoryImpl(
                             .listClinics()
                             .distinctUntilChanged()
                             .collect { entities ->
-                                emit(Result.Success(data = entities.map { it.toClinic() }))
+                                emit(RequestState.Success(data = entities.map { it.toClinic() }))
                             }
-                    }.onError { emit(Result.Error(it)) }
+                    }.onError { emit(RequestState.Error(it)) }
             }
         }
 
-    override fun addNewClinic(clinic: Clinic): Flow<Result<Unit, DataError.Remote>> =
+    override fun addNewClinic(clinic: Clinic): Flow<RequestState<Unit, DataError.Remote>> =
         flow {
             remoteClinicsDataSource
                 .addNewClinic(clinic.toClinicDto())
@@ -72,14 +72,14 @@ class ClinicsRepositoryImpl(
                         .onSuccess {
                             listClinics(forceUpdate = true).collect { listResult ->
                                 listResult
-                                    .onSuccess { emit(Result.Success(Unit)) }
-                                    .onError { emit(Result.Error(it)) }
+                                    .onSuccess { emit(RequestState.Success(Unit)) }
+                                    .onError { emit(RequestState.Error(it)) }
                             }
-                        }.onError { emit(Result.Error(it)) }
+                        }.onError { emit(RequestState.Error(it)) }
                 }
         }
 
-    override fun updateClinic(clinic: Clinic): Flow<Result<Unit, DataError.Remote>> =
+    override fun updateClinic(clinic: Clinic): Flow<RequestState<Unit, DataError.Remote>> =
         flow {
             remoteClinicsDataSource
                 .updateClinic(clinic.toClinicDto())
@@ -88,21 +88,21 @@ class ClinicsRepositoryImpl(
                         .onSuccess {
                             listClinics(forceUpdate = true).collect { listResult ->
                                 listResult
-                                    .onSuccess { emit(Result.Success(Unit)) }
-                                    .onError { emit(Result.Error(it)) }
+                                    .onSuccess { emit(RequestState.Success(Unit)) }
+                                    .onError { emit(RequestState.Error(it)) }
                             }
-                        }.onError { emit(Result.Error(it)) }
+                        }.onError { emit(RequestState.Error(it)) }
                 }
         }
 
-    override fun listDoctors(forceUpdate: Boolean): Flow<Result<List<Doctor>, DataError.Remote>> =
+    override fun listDoctors(forceUpdate: Boolean): Flow<RequestState<List<Doctor>, DataError.Remote>> =
         flow {
             if (!forceUpdate) {
                 localDoctorDataSource
                     .listDoctors()
                     .distinctUntilChanged()
                     .collect { entities ->
-                        emit(Result.Success(data = entities.map { it.toDoctor(context) }))
+                        emit(RequestState.Success(data = entities.map { it.toDoctor(context) }))
                     }
                 return@flow
             }
@@ -114,58 +114,58 @@ class ClinicsRepositoryImpl(
                             .listDoctors()
                             .distinctUntilChanged()
                             .collect { entities ->
-                                emit(Result.Success(data = entities.map { it.toDoctor(context) }))
+                                emit(RequestState.Success(data = entities.map { it.toDoctor(context) }))
                             }
-                    }.onError { emit(Result.Error(it)) }
+                    }.onError { emit(RequestState.Error(it)) }
             }
         }
 
-    override fun getCurrentDoctor(): Flow<Result<Doctor, DataError.Remote>> =
+    override fun getCurrentDoctor(): Flow<RequestState<Doctor, DataError.Remote>> =
         flow {
             runCatching {
                 localDoctorDataSource.getCurrentDoctor()?.let { doctorEntity ->
-                    emit(Result.Success(data = doctorEntity.toDoctor(context)))
+                    emit(RequestState.Success(data = doctorEntity.toDoctor(context)))
                 } ?: run {
-                    emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                    emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED))
                 }
             }.onFailure {
-                emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED))
             }
         }
 
-    override fun listClinicDoctors(clinicId: Long): Flow<Result<List<Doctor>, DataError.Remote>> =
+    override fun listClinicDoctors(clinicId: Long): Flow<RequestState<List<Doctor>, DataError.Remote>> =
         flow {
             localDoctorDataSource
                 .listDoctors(clinicId)
                 .distinctUntilChanged()
                 .collect { entities ->
-                    emit(Result.Success(data = entities.map { it.toDoctor(context) }))
+                    emit(RequestState.Success(data = entities.map { it.toDoctor(context) }))
                 }
         }
 
-    override fun getDoctorSchedule(uid: String?): Flow<Result<DoctorSchedule, DataError.Remote>> =
+    override fun getDoctorSchedule(uid: String?): Flow<RequestState<DoctorSchedule, DataError.Remote>> =
         flow {
             remoteClinicsDataSource
                 .getDoctorSchedule(uid)
                 .collect { result ->
                     result
                         .onSuccess { scheduleDto ->
-                            emit(Result.Success(data = scheduleDto.toDoctorSchedule()))
-                        }.onError { emit(Result.Error(it)) }
+                            emit(RequestState.Success(data = scheduleDto.toDoctorSchedule()))
+                        }.onError { emit(RequestState.Error(it)) }
                 }
         }
 
-    override fun listTopDoctors(): Flow<Result<List<Doctor>, DataError.Remote>> =
+    override fun listTopDoctors(): Flow<RequestState<List<Doctor>, DataError.Remote>> =
         flow {
             localDoctorDataSource
                 .listTopDoctors()
                 .distinctUntilChanged()
                 .collect { entities ->
-                    emit(Result.Success(data = entities.map { it.toDoctor(context) }))
+                    emit(RequestState.Success(data = entities.map { it.toDoctor(context) }))
                 }
         }
 
-    override fun addNewDoctor(doctor: Doctor): Flow<Result<Unit, DataError.Remote>> =
+    override fun addNewDoctor(doctor: Doctor): Flow<RequestState<Unit, DataError.Remote>> =
         flow {
             remoteClinicsDataSource
                 .addNewDoctor(doctor.toDoctorDto())
@@ -174,14 +174,14 @@ class ClinicsRepositoryImpl(
                         .onSuccess {
                             listDoctors(forceUpdate = true).collect { listResult ->
                                 listResult
-                                    .onSuccess { emit(Result.Success(Unit)) }
-                                    .onError { emit(Result.Error(it)) }
+                                    .onSuccess { emit(RequestState.Success(Unit)) }
+                                    .onError { emit(RequestState.Error(it)) }
                             }
-                        }.onError { emit(Result.Error(it)) }
+                        }.onError { emit(RequestState.Error(it)) }
                 }
         }
 
-    override fun updateDoctor(doctor: Doctor): Flow<Result<Unit, DataError.Remote>> =
+    override fun updateDoctor(doctor: Doctor): Flow<RequestState<Unit, DataError.Remote>> =
         flow {
             remoteClinicsDataSource
                 .updateDoctor(doctor.toDoctorDto())
@@ -190,28 +190,28 @@ class ClinicsRepositoryImpl(
                         .onSuccess {
                             listDoctors(forceUpdate = true).collect { listResult ->
                                 listResult
-                                    .onSuccess { emit(Result.Success(Unit)) }
-                                    .onError { emit(Result.Error(it)) }
+                                    .onSuccess { emit(RequestState.Success(Unit)) }
+                                    .onError { emit(RequestState.Error(it)) }
                             }
-                        }.onError { emit(Result.Error(it)) }
+                        }.onError { emit(RequestState.Error(it)) }
                 }
         }
 
-    override fun listClinicians(): Flow<Result<List<Clinician>, DataError.Remote>> =
+    override fun listClinicians(): Flow<RequestState<List<Clinician>, DataError.Remote>> =
         flow {
             remoteClinicsDataSource
                 .listClinicians()
                 .collect { result ->
                     result
                         .onSuccess {
-                            emit(Result.Success(data = it.map { staffDto -> staffDto.toClinician() }))
-                        }.onError { emit(Result.Error(it)) }
+                            emit(RequestState.Success(data = it.map { staffDto -> staffDto.toClinician() }))
+                        }.onError { emit(RequestState.Error(it)) }
                 }
         }
 
-    override fun addNewClinician(clinician: Clinician): Flow<Result<Unit, DataError.Remote>> =
+    override fun addNewClinician(clinician: Clinician): Flow<RequestState<Unit, DataError.Remote>> =
         remoteClinicsDataSource.updateClinician(clinician.toClinicianDto())
 
-    override fun updateClinician(clinician: Clinician): Flow<Result<Unit, DataError.Remote>> =
+    override fun updateClinician(clinician: Clinician): Flow<RequestState<Unit, DataError.Remote>> =
         remoteClinicsDataSource.updateClinician(clinician.toClinicianDto())
 }

@@ -7,12 +7,12 @@ import eg.edu.cu.csds.icare.core.data.mappers.toCenterStaff
 import eg.edu.cu.csds.icare.core.data.mappers.toCenterStaffDto
 import eg.edu.cu.csds.icare.core.data.mappers.toLabImagingCenter
 import eg.edu.cu.csds.icare.core.data.remote.datasource.RemoteCentersDataSource
-import eg.edu.cu.csds.icare.core.domain.model.DataError
+import eg.edu.cu.csds.icare.core.domain.util.DataError
 import eg.edu.cu.csds.icare.core.domain.model.LabImagingCenter
-import eg.edu.cu.csds.icare.core.domain.model.Result
+import eg.edu.cu.csds.icare.core.domain.util.RequestState
 import eg.edu.cu.csds.icare.core.domain.model.Staff
-import eg.edu.cu.csds.icare.core.domain.model.onError
-import eg.edu.cu.csds.icare.core.domain.model.onSuccess
+import eg.edu.cu.csds.icare.core.domain.util.onError
+import eg.edu.cu.csds.icare.core.domain.util.onSuccess
 import eg.edu.cu.csds.icare.core.domain.repository.CentersRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -24,14 +24,16 @@ class CentersRepositoryImpl(
     private val remoteCentersDataSource: RemoteCentersDataSource,
     private val localCentersDataSource: LocalCentersDataSource,
 ) : CentersRepository {
-    override fun listCenters(forceUpdate: Boolean): Flow<Result<List<LabImagingCenter>, DataError.Remote>> =
+    override fun listCenters(
+        forceUpdate: Boolean,
+    ): Flow<RequestState<List<LabImagingCenter>, DataError.Remote>> =
         flow {
             if (!forceUpdate) {
                 localCentersDataSource
                     .listCenters()
                     .distinctUntilChanged()
                     .collect { entities ->
-                        emit(Result.Success(data = entities.map { it.toLabImagingCenter() }))
+                        emit(RequestState.Success(data = entities.map { it.toLabImagingCenter() }))
                     }
                 return@flow
             }
@@ -44,13 +46,13 @@ class CentersRepositoryImpl(
                             .listCenters()
                             .distinctUntilChanged()
                             .collect { entities ->
-                                emit(Result.Success(data = entities.map { it.toLabImagingCenter() }))
+                                emit(RequestState.Success(data = entities.map { it.toLabImagingCenter() }))
                             }
-                    }.onError { emit(Result.Error(it)) }
+                    }.onError { emit(RequestState.Error(it)) }
             }
         }
 
-    override fun addNewCenter(center: LabImagingCenter): Flow<Result<Unit, DataError.Remote>> =
+    override fun addNewCenter(center: LabImagingCenter): Flow<RequestState<Unit, DataError.Remote>> =
         flow {
             remoteCentersDataSource
                 .addNewCenter(center.toCenterDto())
@@ -59,14 +61,14 @@ class CentersRepositoryImpl(
                         .onSuccess {
                             listCenters(forceUpdate = true).collect { listResult ->
                                 listResult
-                                    .onSuccess { emit(Result.Success(Unit)) }
-                                    .onError { emit(Result.Error(it)) }
+                                    .onSuccess { emit(RequestState.Success(Unit)) }
+                                    .onError { emit(RequestState.Error(it)) }
                             }
-                        }.onError { emit(Result.Error(it)) }
+                        }.onError { emit(RequestState.Error(it)) }
                 }
         }
 
-    override fun updateCenter(center: LabImagingCenter): Flow<Result<Unit, DataError.Remote>> =
+    override fun updateCenter(center: LabImagingCenter): Flow<RequestState<Unit, DataError.Remote>> =
         flow {
             remoteCentersDataSource
                 .updateCenter(center.toCenterDto())
@@ -75,28 +77,28 @@ class CentersRepositoryImpl(
                         .onSuccess {
                             listCenters(forceUpdate = true).collect { listResult ->
                                 listResult
-                                    .onSuccess { emit(Result.Success(Unit)) }
-                                    .onError { emit(Result.Error(it)) }
+                                    .onSuccess { emit(RequestState.Success(Unit)) }
+                                    .onError { emit(RequestState.Error(it)) }
                             }
-                        }.onError { emit(Result.Error(it)) }
+                        }.onError { emit(RequestState.Error(it)) }
                 }
         }
 
-    override fun listCenterStaff(): Flow<Result<List<Staff>, DataError.Remote>> =
+    override fun listCenterStaff(): Flow<RequestState<List<Staff>, DataError.Remote>> =
         flow {
             remoteCentersDataSource
                 .listCenterStaff()
                 .collect { result ->
                     result
                         .onSuccess { entities ->
-                            emit(Result.Success(data = entities.map { it.toCenterStaff() }))
-                        }.onError { emit(Result.Error(it)) }
+                            emit(RequestState.Success(data = entities.map { it.toCenterStaff() }))
+                        }.onError { emit(RequestState.Error(it)) }
                 }
         }
 
-    override fun addNewCenterStaff(staff: Staff): Flow<Result<Unit, DataError.Remote>> =
+    override fun addNewCenterStaff(staff: Staff): Flow<RequestState<Unit, DataError.Remote>> =
         remoteCentersDataSource.addNewCenterStaff(staff.toCenterStaffDto())
 
-    override fun updateCenterStaff(staff: Staff): Flow<Result<Unit, DataError.Remote>> =
+    override fun updateCenterStaff(staff: Staff): Flow<RequestState<Unit, DataError.Remote>> =
         remoteCentersDataSource.updateCenterStaff(staff.toCenterStaffDto())
 }

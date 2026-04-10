@@ -3,8 +3,8 @@ package eg.edu.cu.csds.icare.feature.appointment.screen.appointments
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eg.edu.cu.csds.icare.core.domain.model.Appointment
-import eg.edu.cu.csds.icare.core.domain.model.onError
-import eg.edu.cu.csds.icare.core.domain.model.onSuccess
+import eg.edu.cu.csds.icare.core.domain.util.onError
+import eg.edu.cu.csds.icare.core.domain.util.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.GetPatientAppointmentsUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.UpdateAppointmentUseCase
 import eg.edu.cu.csds.icare.core.ui.common.AppointmentStatus

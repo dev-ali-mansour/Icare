@@ -4,8 +4,8 @@ import com.google.firebase.auth.FirebaseAuth
 import eg.edu.cu.csds.icare.core.data.dto.AdminStatisticsDto
 import eg.edu.cu.csds.icare.core.data.dto.AppointmentDto
 import eg.edu.cu.csds.icare.core.data.remote.serivce.ApiService
-import eg.edu.cu.csds.icare.core.domain.model.DataError
-import eg.edu.cu.csds.icare.core.domain.model.Result
+import eg.edu.cu.csds.icare.core.domain.util.DataError
+import eg.edu.cu.csds.icare.core.domain.util.RequestState
 import eg.edu.cu.csds.icare.core.domain.util.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -21,7 +21,7 @@ class RemoteAppointmentsDataSourceImpl(
     private val auth: FirebaseAuth,
     private val service: ApiService,
 ) : RemoteAppointmentsDataSource {
-    override fun getPatientAppointments(): Flow<Result<List<AppointmentDto>, DataError.Remote>> =
+    override fun getPatientAppointments(): Flow<RequestState<List<AppointmentDto>, DataError.Remote>> =
         flow {
             auth.currentUser?.let { user ->
                 auth.currentUser
@@ -33,35 +33,44 @@ class RemoteAppointmentsDataSourceImpl(
                         map["token"] = token
                         val response = service.getPatientAppointments(map)
                         when (response.code()) {
-                            HTTP_OK ->
+                            HTTP_OK -> {
                                 response.body()?.let { res ->
                                     when (res.statusCode) {
-                                        Constants.ERROR_CODE_OK -> emit(Result.Success(res.appointments))
+                                        Constants.ERROR_CODE_OK -> {
+                                            emit(RequestState.Success(res.appointments))
+                                        }
 
-                                        Constants.ERROR_CODE_EXPIRED_TOKEN ->
-                                            emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                                        Constants.ERROR_CODE_EXPIRED_TOKEN -> {
+                                            emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                                        }
 
-                                        Constants.ERROR_CODE_SERVER_ERROR ->
-                                            emit(Result.Error(DataError.Remote.SERVER))
+                                        Constants.ERROR_CODE_SERVER_ERROR -> {
+                                            emit(RequestState.Error(DataError.Remote.SERVER))
+                                        }
 
-                                        else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                                        else -> {
+                                            emit(RequestState.Error(DataError.Remote.UNKNOWN))
+                                        }
                                     }
                                 }
+                            }
 
-                            HttpURLConnection.HTTP_UNAUTHORIZED ->
-                                emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                            HttpURLConnection.HTTP_UNAUTHORIZED -> {
+                                emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                            }
 
-                            else ->
-                                emit(Result.Error(DataError.Remote.UNKNOWN))
+                            else -> {
+                                emit(RequestState.Error(DataError.Remote.UNKNOWN))
+                            }
                         }
                     }
             }
         }.catch {
             Timber.e("getPatientAppointments() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(RequestState.Error(DataError.Remote.UNKNOWN))
         }
 
-    override fun getAppointments(): Flow<Result<List<AppointmentDto>, DataError.Remote>> =
+    override fun getAppointments(): Flow<RequestState<List<AppointmentDto>, DataError.Remote>> =
         flow {
             auth.currentUser
                 ?.getIdToken(false)
@@ -72,37 +81,47 @@ class RemoteAppointmentsDataSourceImpl(
                     map["token"] = token
                     val response = service.getAppointments(map)
                     when (response.code()) {
-                        HTTP_OK ->
+                        HTTP_OK -> {
                             response.body()?.let { res ->
                                 when (res.statusCode) {
-                                    Constants.ERROR_CODE_OK ->
+                                    Constants.ERROR_CODE_OK -> {
                                         emit(
-                                            Result.Success(res.appointments),
+                                            RequestState.Success(res.appointments),
                                         )
+                                    }
 
-                                    Constants.ERROR_CODE_EXPIRED_TOKEN ->
-                                        emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                                    Constants.ERROR_CODE_EXPIRED_TOKEN -> {
+                                        emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                                    }
 
-                                    Constants.ERROR_CODE_SERVER_ERROR ->
-                                        emit(Result.Error(DataError.Remote.SERVER))
+                                    Constants.ERROR_CODE_SERVER_ERROR -> {
+                                        emit(RequestState.Error(DataError.Remote.SERVER))
+                                    }
 
-                                    else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                                    else -> {
+                                        emit(RequestState.Error(DataError.Remote.UNKNOWN))
+                                    }
                                 }
                             }
+                        }
 
-                        HttpURLConnection.HTTP_UNAUTHORIZED ->
-                            emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                        HttpURLConnection.HTTP_UNAUTHORIZED -> {
+                            emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                        }
 
-                        else ->
-                            emit(Result.Error(DataError.Remote.UNKNOWN))
+                        else -> {
+                            emit(RequestState.Error(DataError.Remote.UNKNOWN))
+                        }
                     }
                 }
         }.catch {
             Timber.e("getAppointments() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(RequestState.Error(DataError.Remote.UNKNOWN))
         }
 
-    override fun getAppointments(statusId: Short): Flow<Result<List<AppointmentDto>, DataError.Remote>> =
+    override fun getAppointments(
+        statusId: Short,
+    ): Flow<RequestState<List<AppointmentDto>, DataError.Remote>> =
         flow {
             auth.currentUser
                 ?.getIdToken(false)
@@ -113,40 +132,48 @@ class RemoteAppointmentsDataSourceImpl(
                     map["statusId"] = statusId.toString()
                     val response = service.getAppointmentsByStatus(map)
                     when (response.code()) {
-                        HTTP_OK ->
+                        HTTP_OK -> {
                             response.body()?.let { res ->
                                 when (res.statusCode) {
-                                    Constants.ERROR_CODE_OK ->
+                                    Constants.ERROR_CODE_OK -> {
                                         emit(
-                                            Result.Success(res.appointments),
+                                            RequestState.Success(res.appointments),
                                         )
+                                    }
 
-                                    Constants.ERROR_CODE_EXPIRED_TOKEN ->
-                                        emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                                    Constants.ERROR_CODE_EXPIRED_TOKEN -> {
+                                        emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                                    }
 
-                                    Constants.ERROR_CODE_SERVER_ERROR ->
-                                        emit(Result.Error(DataError.Remote.SERVER))
+                                    Constants.ERROR_CODE_SERVER_ERROR -> {
+                                        emit(RequestState.Error(DataError.Remote.SERVER))
+                                    }
 
-                                    else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                                    else -> {
+                                        emit(RequestState.Error(DataError.Remote.UNKNOWN))
+                                    }
                                 }
                             }
+                        }
 
-                        HttpURLConnection.HTTP_UNAUTHORIZED ->
-                            emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                        HttpURLConnection.HTTP_UNAUTHORIZED -> {
+                            emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                        }
 
-                        else ->
-                            emit(Result.Error(DataError.Remote.UNKNOWN))
+                        else -> {
+                            emit(RequestState.Error(DataError.Remote.UNKNOWN))
+                        }
                     }
                 }
         }.catch {
             Timber.e("getAppointmentsByStatus() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(RequestState.Error(DataError.Remote.UNKNOWN))
         }
 
     override fun bookAppointment(
         doctorId: String,
         dateTime: Long,
-    ): Flow<Result<Unit, DataError.Remote>> =
+    ): Flow<RequestState<Unit, DataError.Remote>> =
         flow {
             auth.currentUser?.let { currentUser ->
                 currentUser
@@ -165,38 +192,46 @@ class RemoteAppointmentsDataSourceImpl(
                         val response =
                             service.bookAppointment(appointment)
                         when (response.code()) {
-                            HTTP_OK ->
+                            HTTP_OK -> {
                                 response.body()?.let { res ->
                                     when (res.statusCode) {
-                                        Constants.ERROR_CODE_OK ->
+                                        Constants.ERROR_CODE_OK -> {
                                             emit(
-                                                Result.Success(Unit),
+                                                RequestState.Success(Unit),
                                             )
+                                        }
 
-                                        Constants.ERROR_CODE_EXPIRED_TOKEN ->
-                                            emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                                        Constants.ERROR_CODE_EXPIRED_TOKEN -> {
+                                            emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                                        }
 
-                                        Constants.ERROR_CODE_SERVER_ERROR ->
-                                            emit(Result.Error(DataError.Remote.SERVER))
+                                        Constants.ERROR_CODE_SERVER_ERROR -> {
+                                            emit(RequestState.Error(DataError.Remote.SERVER))
+                                        }
 
-                                        else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                                        else -> {
+                                            emit(RequestState.Error(DataError.Remote.UNKNOWN))
+                                        }
                                     }
                                 }
+                            }
 
-                            HttpURLConnection.HTTP_UNAUTHORIZED ->
-                                emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                            HttpURLConnection.HTTP_UNAUTHORIZED -> {
+                                emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                            }
 
-                            else ->
-                                emit(Result.Error(DataError.Remote.UNKNOWN))
+                            else -> {
+                                emit(RequestState.Error(DataError.Remote.UNKNOWN))
+                            }
                         }
                     }
-            } ?: run { emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED)) }
+            } ?: run { emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED)) }
         }.catch {
             Timber.e("bookAppointment() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(RequestState.Error(DataError.Remote.UNKNOWN))
         }
 
-    override fun updateAppointment(appointment: AppointmentDto): Flow<Result<Unit, DataError.Remote>> =
+    override fun updateAppointment(appointment: AppointmentDto): Flow<RequestState<Unit, DataError.Remote>> =
         flow {
             auth.currentUser
                 ?.getIdToken(false)
@@ -205,37 +240,45 @@ class RemoteAppointmentsDataSourceImpl(
                 ?.let { token ->
                     val response = service.updateAppointment(appointment.copy(token = token))
                     when (response.code()) {
-                        HTTP_OK ->
+                        HTTP_OK -> {
                             response.body()?.let { res ->
                                 when (res.statusCode) {
-                                    Constants.ERROR_CODE_OK ->
+                                    Constants.ERROR_CODE_OK -> {
                                         emit(
-                                            Result.Success(Unit),
+                                            RequestState.Success(Unit),
                                         )
+                                    }
 
-                                    Constants.ERROR_CODE_EXPIRED_TOKEN ->
-                                        emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                                    Constants.ERROR_CODE_EXPIRED_TOKEN -> {
+                                        emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                                    }
 
-                                    Constants.ERROR_CODE_SERVER_ERROR ->
-                                        emit(Result.Error(DataError.Remote.SERVER))
+                                    Constants.ERROR_CODE_SERVER_ERROR -> {
+                                        emit(RequestState.Error(DataError.Remote.SERVER))
+                                    }
 
-                                    else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                                    else -> {
+                                        emit(RequestState.Error(DataError.Remote.UNKNOWN))
+                                    }
                                 }
                             }
+                        }
 
-                        HttpURLConnection.HTTP_UNAUTHORIZED ->
-                            emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                        HttpURLConnection.HTTP_UNAUTHORIZED -> {
+                            emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                        }
 
-                        else ->
-                            emit(Result.Error(DataError.Remote.UNKNOWN))
+                        else -> {
+                            emit(RequestState.Error(DataError.Remote.UNKNOWN))
+                        }
                     }
-                } ?: run { emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED)) }
+                } ?: run { emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED)) }
         }.catch {
             Timber.e("updateAppointment() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(RequestState.Error(DataError.Remote.UNKNOWN))
         }
 
-    override fun getAdminStatistics(): Flow<Result<AdminStatisticsDto, DataError.Remote>> =
+    override fun getAdminStatistics(): Flow<RequestState<AdminStatisticsDto, DataError.Remote>> =
         flow {
             auth.currentUser?.let { user ->
                 auth.currentUser
@@ -247,31 +290,40 @@ class RemoteAppointmentsDataSourceImpl(
                         map["token"] = token
                         val response = service.getAdminStatistics(map)
                         when (response.code()) {
-                            HTTP_OK ->
+                            HTTP_OK -> {
                                 response.body()?.let { res ->
                                     when (res.statusCode) {
-                                        Constants.ERROR_CODE_OK -> emit(Result.Success(res.stats))
+                                        Constants.ERROR_CODE_OK -> {
+                                            emit(RequestState.Success(res.stats))
+                                        }
 
-                                        Constants.ERROR_CODE_EXPIRED_TOKEN ->
-                                            emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                                        Constants.ERROR_CODE_EXPIRED_TOKEN -> {
+                                            emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                                        }
 
-                                        Constants.ERROR_CODE_SERVER_ERROR ->
-                                            emit(Result.Error(DataError.Remote.SERVER))
+                                        Constants.ERROR_CODE_SERVER_ERROR -> {
+                                            emit(RequestState.Error(DataError.Remote.SERVER))
+                                        }
 
-                                        else -> emit(Result.Error(DataError.Remote.UNKNOWN))
+                                        else -> {
+                                            emit(RequestState.Error(DataError.Remote.UNKNOWN))
+                                        }
                                     }
                                 }
+                            }
 
-                            HttpURLConnection.HTTP_UNAUTHORIZED ->
-                                emit(Result.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                            HttpURLConnection.HTTP_UNAUTHORIZED -> {
+                                emit(RequestState.Error(DataError.Remote.USER_NOT_AUTHORIZED))
+                            }
 
-                            else ->
-                                emit(Result.Error(DataError.Remote.UNKNOWN))
+                            else -> {
+                                emit(RequestState.Error(DataError.Remote.UNKNOWN))
+                            }
                         }
                     }
             }
         }.catch {
             Timber.e("getAdminStatistics() error ${it.javaClass.simpleName}: ${it.message}")
-            emit(Result.Error(DataError.Remote.UNKNOWN))
+            emit(RequestState.Error(DataError.Remote.UNKNOWN))
         }
 }

@@ -2,36 +2,36 @@ package eg.edu.cu.csds.icare.core.domain.repository
 
 import eg.edu.cu.csds.icare.core.domain.model.Clinic
 import eg.edu.cu.csds.icare.core.domain.model.Clinician
-import eg.edu.cu.csds.icare.core.domain.model.DataError
+import eg.edu.cu.csds.icare.core.domain.util.DataError
 import eg.edu.cu.csds.icare.core.domain.model.Doctor
 import eg.edu.cu.csds.icare.core.domain.model.DoctorSchedule
-import eg.edu.cu.csds.icare.core.domain.model.Result
+import eg.edu.cu.csds.icare.core.domain.util.RequestState
 import kotlinx.coroutines.flow.Flow
 
 interface ClinicsRepository {
-    fun listClinics(forceUpdate: Boolean): Flow<Result<List<Clinic>, DataError.Remote>>
+    fun listClinics(forceUpdate: Boolean): Flow<RequestState<List<Clinic>, DataError.Remote>>
 
-    fun addNewClinic(clinic: Clinic): Flow<Result<Unit, DataError.Remote>>
+    fun addNewClinic(clinic: Clinic): Flow<RequestState<Unit, DataError.Remote>>
 
-    fun updateClinic(clinic: Clinic): Flow<Result<Unit, DataError.Remote>>
+    fun updateClinic(clinic: Clinic): Flow<RequestState<Unit, DataError.Remote>>
 
-    fun listDoctors(forceUpdate: Boolean): Flow<Result<List<Doctor>, DataError.Remote>>
+    fun listDoctors(forceUpdate: Boolean): Flow<RequestState<List<Doctor>, DataError.Remote>>
 
-    fun getCurrentDoctor(): Flow<Result<Doctor, DataError.Remote>>
+    fun getCurrentDoctor(): Flow<RequestState<Doctor, DataError.Remote>>
 
-    fun getDoctorSchedule(uid: String?): Flow<Result<DoctorSchedule, DataError.Remote>>
+    fun getDoctorSchedule(uid: String?): Flow<RequestState<DoctorSchedule, DataError.Remote>>
 
-    fun listTopDoctors(): Flow<Result<List<Doctor>, DataError.Remote>>
+    fun listTopDoctors(): Flow<RequestState<List<Doctor>, DataError.Remote>>
 
-    fun listClinicDoctors(clinicId: Long): Flow<Result<List<Doctor>, DataError.Remote>>
+    fun listClinicDoctors(clinicId: Long): Flow<RequestState<List<Doctor>, DataError.Remote>>
 
-    fun addNewDoctor(doctor: Doctor): Flow<Result<Unit, DataError.Remote>>
+    fun addNewDoctor(doctor: Doctor): Flow<RequestState<Unit, DataError.Remote>>
 
-    fun updateDoctor(doctor: Doctor): Flow<Result<Unit, DataError.Remote>>
+    fun updateDoctor(doctor: Doctor): Flow<RequestState<Unit, DataError.Remote>>
 
-    fun listClinicians(): Flow<Result<List<Clinician>, DataError.Remote>>
+    fun listClinicians(): Flow<RequestState<List<Clinician>, DataError.Remote>>
 
-    fun addNewClinician(clinician: Clinician): Flow<Result<Unit, DataError.Remote>>
+    fun addNewClinician(clinician: Clinician): Flow<RequestState<Unit, DataError.Remote>>
 
-    fun updateClinician(clinician: Clinician): Flow<Result<Unit, DataError.Remote>>
+    fun updateClinician(clinician: Clinician): Flow<RequestState<Unit, DataError.Remote>>
 }

@@ -1,6 +1,6 @@
 import app.cash.turbine.test
-import eg.edu.cu.csds.icare.core.domain.model.DataError
-import eg.edu.cu.csds.icare.core.domain.model.Result
+import eg.edu.cu.csds.icare.core.domain.util.DataError
+import eg.edu.cu.csds.icare.core.domain.util.RequestState
 import eg.edu.cu.csds.icare.core.domain.repository.AuthRepository
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignInUseCase
 import io.mockk.coEvery
@@ -31,15 +31,15 @@ class SignInUseCaseTest {
             // Arrange
             val testEmail = "test@example.com"
             val testPassword = "password123"
-            val expectedResult = Result.Success(Unit)
+            val expectedRequestState = RequestState.Success(Unit)
 
             coEvery {
                 mockAuthRepository.signInWithEmailAndPassword(testEmail, testPassword)
-            } returns flowOf(expectedResult)
+            } returns flowOf(expectedRequestState)
 
             // Act & Assert
             signInUseCase(testEmail, testPassword).test {
-                assertEquals(expectedResult, awaitItem())
+                assertEquals(expectedRequestState, awaitItem())
                 awaitComplete()
             }
 
@@ -55,15 +55,15 @@ class SignInUseCaseTest {
             val testEmail = "test@example.com"
             val testPassword = "wrongpassword"
             val expectedError = DataError.Remote.INVALID_CREDENTIALS
-            val expectedResult = Result.Error(expectedError)
+            val expectedRequestState = RequestState.Error(expectedError)
 
             coEvery {
                 mockAuthRepository.signInWithEmailAndPassword(testEmail, testPassword)
-            } returns flowOf(expectedResult)
+            } returns flowOf(expectedRequestState)
 
             // Act & Assert
             signInUseCase(testEmail, testPassword).test {
-                assertEquals(expectedResult, awaitItem())
+                assertEquals(expectedRequestState, awaitItem())
                 awaitComplete()
             }
 
@@ -79,15 +79,15 @@ class SignInUseCaseTest {
             val testEmail = "nonexistent@example.com"
             val testPassword = "password123"
             val expectedError = DataError.Remote.USER_NOT_AUTHORIZED
-            val expectedResult = Result.Error(expectedError)
+            val expectedRequestState = RequestState.Error(expectedError)
 
             coEvery {
                 mockAuthRepository.signInWithEmailAndPassword(testEmail, testPassword)
-            } returns flowOf(expectedResult)
+            } returns flowOf(expectedRequestState)
 
             // Act & Assert
             signInUseCase(testEmail, testPassword).test {
-                assertEquals(expectedResult, awaitItem())
+                assertEquals(expectedRequestState, awaitItem())
                 awaitComplete()
             }
 
@@ -103,15 +103,15 @@ class SignInUseCaseTest {
             val testEmail = "test@example.com"
             val testPassword = "password123"
             val expectedError = DataError.Remote.NO_INTERNET
-            val expectedResult = Result.Error(expectedError)
+            val expectedRequestState = RequestState.Error(expectedError)
 
             coEvery {
                 mockAuthRepository.signInWithEmailAndPassword(testEmail, testPassword)
-            } returns flowOf(expectedResult)
+            } returns flowOf(expectedRequestState)
 
             // Act & Assert
             signInUseCase(testEmail, testPassword).test {
-                assertEquals(expectedResult, awaitItem())
+                assertEquals(expectedRequestState, awaitItem())
                 awaitComplete()
             }
 
@@ -150,15 +150,15 @@ class SignInUseCaseTest {
             // Arrange
             val testEmail = "exception@example.com"
             val testPassword = "password"
-            val expectedResult = Result.Error(DataError.Remote.UNKNOWN)
+            val expectedRequestState = RequestState.Error(DataError.Remote.UNKNOWN)
 
             coEvery {
                 mockAuthRepository.signInWithEmailAndPassword(testEmail, testPassword)
-            } returns flowOf(expectedResult)
+            } returns flowOf(expectedRequestState)
 
             // Act & Assert
             signInUseCase(testEmail, testPassword).test {
-                assertEquals(expectedResult, awaitItem())
+                assertEquals(expectedRequestState, awaitItem())
                 awaitComplete()
             }
 

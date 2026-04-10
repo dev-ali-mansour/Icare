@@ -2,8 +2,8 @@ package eg.edu.cu.csds.icare.feature.auth.screen.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.core.domain.model.onError
-import eg.edu.cu.csds.icare.core.domain.model.onSuccess
+import eg.edu.cu.csds.icare.core.domain.util.onError
+import eg.edu.cu.csds.icare.core.domain.util.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignOutUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.SignUpUseCase
 import eg.edu.cu.csds.icare.core.domain.util.Constants
@@ -320,7 +320,7 @@ class SignUpViewModel(
                                                 it.copy(
                                                     isLoading = false,
                                                     effect =
-                                                        SignUpEffect.ShowError(
+                                                        ShowError(
                                                             message = error.toUiText(),
                                                         ),
                                                 )
@@ -331,7 +331,7 @@ class SignUpViewModel(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                effect = SignUpEffect.ShowError(message = error.toUiText()),
+                                effect = ShowError(message = error.toUiText()),
                             )
                         }
                     }

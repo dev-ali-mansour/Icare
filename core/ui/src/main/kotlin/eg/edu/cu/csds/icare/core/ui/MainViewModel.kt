@@ -3,7 +3,7 @@ package eg.edu.cu.csds.icare.core.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eg.edu.cu.csds.icare.core.domain.model.Resource
-import eg.edu.cu.csds.icare.core.domain.model.Result
+import eg.edu.cu.csds.icare.core.domain.util.RequestState
 import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.domain.usecase.auth.GetUserInfoUseCase
 import kotlinx.coroutines.CoroutineDispatcher
@@ -41,11 +41,11 @@ class MainViewModel(
                 .distinctUntilChanged()
                 .onEach {
                     when (it) {
-                        is Result.Success -> {
+                        is RequestState.Success -> {
                             _currentUserFlow.value = Resource.Success(it.data)
                         }
 
-                        is Result.Error -> {
+                        is RequestState.Error -> {
                             _currentUserFlow.value = Resource.Error(ConnectException())
                         }
                     }

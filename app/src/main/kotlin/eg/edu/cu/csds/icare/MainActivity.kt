@@ -34,13 +34,13 @@ class MainActivity : AppCompatActivity() {
     private val onBoardingViewModel: OnboardingViewModel by viewModel()
     private val appUpdateManager: AppUpdateManager by inject()
     private val updateType = AppUpdateType.IMMEDIATE
-    private val updateFlowResultLauncher =
+    private val updateFlowRequestStateLauncher =
         (this as ComponentActivity)
             .registerForActivityResult(
                 ActivityResultContracts.StartIntentSenderForResult(),
             ) { result ->
                 if (result.resultCode != RESULT_OK) {
-                    Timber.e("Update flow failed! Result code: ${result.resultCode}")
+                    Timber.e("Update flow failed! RequestState code: ${result.resultCode}")
                     exitProcess(0)
                 }
             }
@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                     // If an in-app update is already running, resume the update.
                     appUpdateManager.startUpdateFlowForResult(
                         appUpdateInfo,
-                        updateFlowResultLauncher,
+                        updateFlowRequestStateLauncher,
                         AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build(),
                     )
                 }
@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                                     .setFillInIntent(fillInIntent)
                                     .setFlags(flagsValues, flagsMask)
                                     .build()
-                            updateFlowResultLauncher.launch(request)
+                            updateFlowRequestStateLauncher.launch(request)
                         }
                     appUpdateManager.startUpdateFlowForResult(
                         info,

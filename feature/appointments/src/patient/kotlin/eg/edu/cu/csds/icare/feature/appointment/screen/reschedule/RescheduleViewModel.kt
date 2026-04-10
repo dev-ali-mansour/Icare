@@ -2,8 +2,8 @@ package eg.edu.cu.csds.icare.feature.appointment.screen.reschedule
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import eg.edu.cu.csds.icare.core.domain.model.onError
-import eg.edu.cu.csds.icare.core.domain.model.onSuccess
+import eg.edu.cu.csds.icare.core.domain.util.onError
+import eg.edu.cu.csds.icare.core.domain.util.onSuccess
 import eg.edu.cu.csds.icare.core.domain.usecase.appointment.UpdateAppointmentUseCase
 import eg.edu.cu.csds.icare.core.domain.usecase.doctor.GetDoctorScheduleUseCase
 import eg.edu.cu.csds.icare.core.ui.util.UiText.StringResourceId

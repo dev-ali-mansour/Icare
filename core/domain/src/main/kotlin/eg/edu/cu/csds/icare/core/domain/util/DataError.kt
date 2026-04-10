@@ -1,4 +1,4 @@
-package eg.edu.cu.csds.icare.core.domain.model
+package eg.edu.cu.csds.icare.core.domain.util
 
 sealed interface DataError : Error {
     enum class Remote : DataError {

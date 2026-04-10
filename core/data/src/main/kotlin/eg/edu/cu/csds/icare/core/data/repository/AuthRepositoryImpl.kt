@@ -5,8 +5,8 @@ import eg.edu.cu.csds.icare.core.data.local.datasource.LocalAuthDataSource
 import eg.edu.cu.csds.icare.core.data.mappers.toUser
 import eg.edu.cu.csds.icare.core.data.mappers.toUserEntity
 import eg.edu.cu.csds.icare.core.data.remote.datasource.RemoteAuthDataSource
-import eg.edu.cu.csds.icare.core.domain.model.DataError
-import eg.edu.cu.csds.icare.core.domain.model.Result
+import eg.edu.cu.csds.icare.core.domain.util.DataError
+import eg.edu.cu.csds.icare.core.domain.util.RequestState
 import eg.edu.cu.csds.icare.core.domain.model.User
 import eg.edu.cu.csds.icare.core.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
@@ -35,7 +35,7 @@ class AuthRepositoryImpl(
         allergies: String,
         pastSurgeries: String,
         password: String,
-    ): Flow<Result<Unit, DataError.Remote>> =
+    ): Flow<RequestState<Unit, DataError.Remote>> =
         remoteAuthDataSource.register(
             firstName,
             lastName,
@@ -56,57 +56,63 @@ class AuthRepositoryImpl(
     override fun signInWithEmailAndPassword(
         email: String,
         password: String,
-    ): Flow<Result<Unit, DataError.Remote>> =
+    ): Flow<RequestState<Unit, DataError.Remote>> =
         remoteAuthDataSource
             .signInWithEmailAndPassword(
                 email,
                 password,
             ).map { result ->
                 when (result) {
-                    is Result.Success -> getUserInfo(true).collect {}
-                    is Result.Error -> signOut().collect { }
+                    is RequestState.Success -> getUserInfo(true).collect {}
+                    is RequestState.Error -> signOut().collect { }
                 }
                 result
             }
 
-    override fun signInWithGoogle(token: String): Flow<Result<Unit, DataError.Remote>> =
+    override fun signInWithGoogle(token: String): Flow<RequestState<Unit, DataError.Remote>> =
         flow {
             remoteAuthDataSource
                 .signInWithGoogle(
                     token,
                 ).collect { result ->
                     when (result) {
-                        is Result.Success ->
+                        is RequestState.Success -> {
                             getUserInfo(
                                 true,
                             ).collect { result ->
                                 when (result) {
-                                    is Result.Success ->
-                                        emit(Result.Success(Unit))
+                                    is RequestState.Success -> {
+                                        emit(RequestState.Success(Unit))
+                                    }
 
-                                    is Result.Error ->
-                                        emit(Result.Error(result.error))
+                                    is RequestState.Error -> {
+                                        emit(RequestState.Error(result.error))
+                                    }
                                 }
                             }
+                        }
 
-                        is Result.Error ->
+                        is RequestState.Error -> {
                             signOut().collect { signOutRes ->
                                 when (signOutRes) {
-                                    is Result.Success ->
-                                        emit(Result.Success(Unit))
+                                    is RequestState.Success -> {
+                                        emit(RequestState.Success(Unit))
+                                    }
 
-                                    is Result.Error ->
-                                        emit(Result.Error(signOutRes.error))
+                                    is RequestState.Error -> {
+                                        emit(RequestState.Error(signOutRes.error))
+                                    }
                                 }
                             }
+                        }
                     }
                 }
         }
 
-    override fun sendRecoveryEmail(email: String): Flow<Result<Unit, DataError.Remote>> =
+    override fun sendRecoveryEmail(email: String): Flow<RequestState<Unit, DataError.Remote>> =
         remoteAuthDataSource.sendRecoveryEmail(email)
 
-    override fun getUserInfo(forceUpdate: Boolean): Flow<Result<User, DataError.Remote>> =
+    override fun getUserInfo(forceUpdate: Boolean): Flow<RequestState<User, DataError.Remote>> =
         flow {
             runCatching {
                 localAuthDataSource
@@ -114,35 +120,37 @@ class AuthRepositoryImpl(
                     ?.let { userEntity ->
                         if (!forceUpdate) {
                             val currentUser = userEntity.toUser()
-                            emit(Result.Success(currentUser))
+                            emit(RequestState.Success(currentUser))
                             return@flow
                         }
                     }
                 remoteAuthDataSource.getUserInfo().collect { result ->
                     when (result) {
-                        is Result.Success -> {
+                        is RequestState.Success -> {
                             localAuthDataSource.saveEmployee(entity = result.data.toUserEntity())
-                            emit(Result.Success(data = result.data.toUser()))
+                            emit(RequestState.Success(data = result.data.toUser()))
                         }
 
-                        is Result.Error -> emit(Result.Error(result.error))
+                        is RequestState.Error -> {
+                            emit(RequestState.Error(result.error))
+                        }
                     }
                 }
             }.onFailure {
-                emit(Result.Error(DataError.Remote.UNKNOWN))
+                emit(RequestState.Error(DataError.Remote.UNKNOWN))
             }
         }
 
     override fun linkEmailAccount(
         email: String,
         password: String,
-    ): Flow<Result<Unit, DataError.Remote>> = remoteAuthDataSource.linkEmailAccount(email, password)
+    ): Flow<RequestState<Unit, DataError.Remote>> = remoteAuthDataSource.linkEmailAccount(email, password)
 
-    override fun linkGoogleAccount(token: String): Flow<Result<Unit, DataError.Remote>> =
+    override fun linkGoogleAccount(token: String): Flow<RequestState<Unit, DataError.Remote>> =
         flow {
             remoteAuthDataSource.linkGoogleAccount(token).collect { res ->
                 when (res) {
-                    is Result.Success -> {
+                    is RequestState.Success -> {
                         localAuthDataSource.getUser()?.let { cachedUser ->
                             localAuthDataSource.saveEmployee(
                                 cachedUser
@@ -151,26 +159,29 @@ class AuthRepositoryImpl(
                                         photoUrl = auth.currentUser?.photoUrl.toString(),
                                     ),
                             )
-                            emit(Result.Success(Unit))
+                            emit(RequestState.Success(Unit))
                         }
                     }
 
-                    else -> emit(res)
+                    else -> {
+                        emit(res)
+                    }
                 }
             }
         }
 
-    override fun unlinkGoogleAccount(): Flow<Result<Unit, DataError.Remote>> =
+    override fun unlinkGoogleAccount(): Flow<RequestState<Unit, DataError.Remote>> =
         remoteAuthDataSource.unlinkGoogleAccount()
 
-    override fun signOut(): Flow<Result<Unit, DataError.Remote>> =
+    override fun signOut(): Flow<RequestState<Unit, DataError.Remote>> =
         flow {
             localAuthDataSource.clearEmployee()
             auth.signOut()
             if (auth.currentUser == null) {
-                emit(Result.Success(Unit))
+                emit(RequestState.Success(Unit))
             }
         }
 
-    override fun deleteAccount(): Flow<Result<Unit, DataError.Remote>> = remoteAuthDataSource.deleteAccount()
+    override fun deleteAccount(): Flow<RequestState<Unit, DataError.Remote>> =
+        remoteAuthDataSource.deleteAccount()
 }

@@ -1,6 +1,6 @@
 package eg.edu.cu.csds.icare.core.ui.util
 
-import eg.edu.cu.csds.icare.core.domain.model.DataError
+import eg.edu.cu.csds.icare.core.domain.util.DataError
 import eg.edu.cu.csds.icare.core.ui.R
 
 fun DataError.toUiText(): UiText {
